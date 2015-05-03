@@ -41,8 +41,8 @@ To get started right away and run some sample test cases, proceed to the
 
 We provide indicative experimental results from [switch scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-scalability-results) 
 and [stability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-stability-results) 
-test cases with OpenDaylight controller. The [CPU shares](https://github.com/intracom-telecom-sdn/nstat/wiki/Cpu-shares)  
-page shows the performance effect of allocating different CPU partitions 
+test cases with OpenDaylight controller. The [CPU shares](https://github.com/intracom-telecom-sdn/nstat/wiki/Cpu-shares) page 
+shows the performance effect of allocating different CPU partitions 
 to test components. 
 
 -----------------------------------------------------------
