@@ -1,0 +1,103 @@
+## two #'s = not tested; 1 # = worked once
+
+# Basic Tests
+test_hello/run.pl
+test_barrier/run.pl
+test_packet_in/run.pl
+test_packet_out/run.pl
+test_switch_config/run.pl
+test_flow_expired/run.pl
+test_flow_expired_idle_timeout/run.pl
+test_flow_expired_precision/run.pl
+test_flow_expired_send_flow_exp/run.pl
+test_miss_send_length/run.pl
+
+# Read State Tests
+test_stats_desc/run.pl
+test_port_stats/run.pl
+test_flow_stats/run.pl
+test_flow_stats_precision/run.pl
+
+## Forwarding Tests
+test_forward_any_port/run.pl
+test_forward_exact_port/run.pl
+test_forward_broadcast_exact_port/run.pl
+test_forward_exact_all/run.pl
+test_forward_exact_controller/run.pl
+test_forward_wildcard_port/run.pl
+test_forward_wildcard_all/run.pl
+test_forward_wildcard_controller/run.pl
+test_forward_after_expiration/run.pl
+test_forward_overlapping_flow_entries/run.pl
+test_delete/run.pl
+test_delete_strict/run.pl
+test_delete_send_flow_exp/run.pl
+test_drop_exact/run.pl
+
+## Modify Action Tests
+test_forward_exact_modify_action/run.pl
+test_forward_wildcard_modify_action/run.pl
+test_flow_mod_check/run.pl
+test_set_nw_dst/run.pl
+test_set_n_match_nw_tos/run.pl
+test_set_dl_nw_flip/run.pl
+
+## ICMP handling Tests
+test_forward_exact_icmp_port/run.pl
+test_forward_exact_icmp_all/run.pl
+test_forward_exact_icmp_controller/run.pl
+test_forward_exact_icmp_fool/run.pl
+test_forward_wildcard_icmp_port/run.pl
+test_forward_wildcard_icmp_all/run.pl
+test_forward_wildcard_icmp_controller/run.pl
+test_forward_wildcard_icmp_fool/run.pl
+
+## ARP handling Tests
+test_forward_exact_arp_port/run.pl
+test_forward_exact_arp_all/run.pl
+test_forward_exact_arp_controller/run.pl
+test_forward_exact_arp_fool/run.pl
+test_forward_wildcard_arp_port/run.pl
+test_forward_wildcard_arp_all/run.pl
+test_forward_wildcard_arp_controller/run.pl
+test_forward_wildcard_arp_fool/run.pl
+
+# Flow cookies
+test_cookie_flow_expired/run.pl
+test_cookie_flow_stats/run.pl
+
+## Slicing Tests - can be disable via --no_slicing
+test_queue_config/run.pl
+## These assume that there is a queue with queue_id=1 at port 1.
+## Uncomment if your setup supports this.
+## Should work OK with the reference implementation
+#test_queue_stats/run.pl
+test_queue_forward/run.pl
+
+## Unusual Data
+test_ip_options/run.pl
+##test_ip_protocol/run.pl
+test_ip_offset/run.pl	
+test_tcp_options/run.pl
+##test_llc/run.pl
+
+# Failover Tests
+test_failover_startup/run.pl
+test_failover_close/run.pl
+
+# BELOW NOT INCLUDED IN CURRRENT RELEASE 
+# WILL BE AVAILABLE SOON
+# Stress Tests / Performance Evaluation
+#test_send_bandwidth_fixed/run.pl
+#test_send_bandwidth_random/run.pl
+#test_add_flow_bandwidth/run.pl
+#test_add_flow_latency/run.pl
+#test_receive_bandwidth_fixed/run.pl
+#test_receive_bandwidth_random/run.pl
+#test_forward_bandwidth_fixed/run.pl
+#test_forward_bandwidth_random/run.pl
+#test_forward_latency/run.pl
+#test_switch_bandwidth_random/run.pl
+#test_switch_bandwidth_random/run.pl
+# Additional Failover tests
+#test_failover_stop_responding/run.pl

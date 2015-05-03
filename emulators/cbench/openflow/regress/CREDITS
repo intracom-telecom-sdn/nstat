@@ -1,0 +1,22 @@
+Credit goes to those who contributed code to the regression suite. Unless
+otherwise noted, the contributors are at Stanford University.
+
+
+Test writers/editors:
+  Clay Collier
+  David Erickson
+  Mikio Hara (NEC)
+  Brandon Heller
+  Peyman Kazemian
+  Masayoshi Kobayashi (NEC)
+  Bob Lantz
+  Brandon Nefcy
+  Rob Sherwood (Deutsche Telekom R&D Labs)
+  Jean Tourrilhes (HP Labs)
+  Tatsuya Yabe (NEC)
+  Yiannis Yiakoumis
+
+Supporting libraries:
+  Adam Covington
+  Glen Gibb
+  Jad Naous

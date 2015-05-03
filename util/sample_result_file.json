@@ -1,0 +1,16 @@
+[
+{"switches":32, "hosts":100, "java_opts":"-Xms=8G", "throughput":700.0, "id":1, "controller":"ODL" },
+{"switches":32, "hosts":100, "java_opts":"-Xms=8G", "throughput":1710.0, "id":2, "controller":"ODL" },
+{"switches":32, "hosts":200, "java_opts":"-Xms=8G", "throughput":800.0, "id":3, "controller":"ODL" },
+{"switches":32, "hosts":200, "java_opts":"-Xms=8G", "throughput":1120.0, "id":4, "controller":"ODL" },
+{"switches":64, "hosts":100, "java_opts":"-Xms=8G", "throughput":1400.0, "id":5, "controller":"ODL" },
+{"switches":64, "hosts":100, "java_opts":"-Xms=8G", "throughput":1850.0, "id":6, "controller":"ODL" },
+{"switches":64, "hosts":200, "java_opts":"-Xms=8G", "throughput":1600.0, "id":7, "controller":"ODL" },
+{"switches":64, "hosts":200, "java_opts":"-Xms=8G", "throughput":1690.0, "id":8, "controller":"ODL" },
+{"switches":128, "hosts":100, "java_opts":"-Xms=8G", "throughput":2800.0, "id":9, "controller":"ODL" },
+{"switches":128, "hosts":100, "java_opts":"-Xms=8G", "throughput":2900.0, "id":10, "controller":"ODL" },
+{"switches":128, "hosts":200, "java_opts":"-Xms=8G", "throughput":3200.0, "id":11, "controller":"ODL" },
+{"switches":128, "hosts":200, "java_opts":"-Xms=8G", "throughput":3900.0, "id":11, "controller":"ODL" },
+{"switches":128, "hosts":200, "java_opts":"-Xms=8G", "throughput":3400.0, "id":12, "controller":"ODL" }
+]
+
