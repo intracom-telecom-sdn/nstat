@@ -12,7 +12,6 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo "Building Cbench generator."
 echo "Building oflops/configure file"
 cd $SCRIPT_DIR/oflops
-find . -name '*.lo' | xargs rm -f 
 ./boot.sh 
 ./configure --with-openflow-src-dir=../openflow/ 
 make
