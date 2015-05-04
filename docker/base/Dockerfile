@@ -1,5 +1,11 @@
 FROM centos:centos7
 
+# Activate the following environment variables
+# if you sit behind a proxy
+#ENV http_proxy http://your.proxy.ip:port 
+#ENV https_proxy https://your.proxy.ip:port
+#ENV no_proxy 127.0.0.1,localhost
+
 RUN yum -y update
 RUN yum clean all
 
