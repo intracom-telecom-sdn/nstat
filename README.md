@@ -9,7 +9,7 @@ Key features in brief:
 - [Fully automated, end-to-end testing](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT#work-flow) with exhaustive test cases
 - Easy and rich [configuration system](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT#configuration-keys)
 - [Scalable traffic generation](https://github.com/intracom-telecom-sdn/nstat/wiki/MT-Cbench), 
-  able to emulate networks in the order of [thousand switches](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-scalability-results)
+  able to emulate networks in the order of [thousands of switches](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-scalability-results)
 - Unification of different stress tests (see [here](https://github.com/intracom-telecom-sdn/nstat/wiki/SB-Active-Test)
   and [here](https://github.com/intracom-telecom-sdn/nstat/wiki/SB-Idle-Test) ) under a common environment
 - Comprehensive reporting and [configurable plotting](https://github.com/intracom-telecom-sdn/nstat/wiki/Plotting)
