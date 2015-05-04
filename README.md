@@ -28,7 +28,7 @@ To get started right away and run some sample test cases, proceed to the
 ## Read the docs
 
 - [NSTAT testing procedure, command line options and configuration parameters](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT)
-- descriptions for [active]( https://github.com/intracom-telecom-sdn/nstat/wiki/SB-Active-Test) 
+- documentation for [active]( https://github.com/intracom-telecom-sdn/nstat/wiki/SB-Active-Test) 
   and [idle](https://github.com/intracom-telecom-sdn/nstat/wiki/SB-Idle-Test) tests
 - [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/MT-Cbench) traffic generator
 - [code design, concepts and conventions](https://github.com/intracom-telecom-sdn/nstat/wiki/Code-design)
