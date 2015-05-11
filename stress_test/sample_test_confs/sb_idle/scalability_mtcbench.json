@@ -4,7 +4,7 @@
 "controller_stop":"./controllers/odl_helium_sr3_pb/stop.sh",
 "controller_status":"./controllers/odl_helium_sr3_pb/status.sh",
 "controller_clean":"./controllers/odl_helium_sr3_pb/clean.sh",
-"controller_logs_dir":"./controllers/odl_helium_sr3_pb/controller/opendaylight/distribution/opendaylight-karaf/target/assembly/data/log/",
+"controller_logs_dir":"./controllers/odl_helium_sr3_pb/distribution-karaf-0.2.3-Helium-SR3/data/log/",
 
 "controller_rebuild":true,
 "controller_cleanup":false,
