@@ -1,55 +1,39 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
+# ignore PYTHON compiled files
+*.pyc
 
-# C extensions
+# ignore PydeVproject file
+*.pydevproject
+
+# ignore PDF files
+# *.pdf
+
+# ignore Eclipse PROJECT relevant files
+*.project
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
 *.so
+*.so.*
+*.dylib
 
-# Distribution / packaging
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*,cover
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
