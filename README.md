@@ -38,6 +38,8 @@ To get started right away and run some sample test cases, proceed to the
 -----------------------------------------------------------
 
 ## Browse performance results 
+OpenDaylight Performance Stress Tests Report v0.1 (DRAFT): [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v0.1.pdf). 
+Final version to be released on 6/29/2015.
 
 We provide indicative experimental results from [switch scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-scalability-results) 
 and [stability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-stability-results) 
