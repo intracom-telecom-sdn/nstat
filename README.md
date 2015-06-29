@@ -39,8 +39,7 @@ To get started right away and run some sample test cases, proceed to the
 
 ## Browse performance results 
 
-- *NEW*: Performance Stress Tests Report for **OpenDaylight Lithium Release**: [[draft]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v0.1.pdf). 
-  Final version to be released on 6/29/2015.
+- [6/29/2015]: Performance Stress Tests Report for **OpenDaylight Lithium Release**: [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.0.pdf). 
 
 - We provide indicative experimental results from [switch  scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-scalability-results) 
 and [stability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-stability-results) 
