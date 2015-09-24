@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/gpa.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat)
+
 # NSTAT: Network Stress-Test Automation Toolkit
 
 ## Overview 
