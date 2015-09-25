@@ -1,0 +1,3 @@
+ignore-paths:
+    - emulators/cbench
+    - emulators/mt_cbench
