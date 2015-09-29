@@ -17,7 +17,7 @@
 "controller_restconf_user":"admin",
 "controller_restconf_password":"admin",
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":50,
+"controller_cpu_shares":100,
 
 
 "mininet_boot_handler":"./mininet_custom_boot.py",
@@ -31,14 +31,14 @@
 "mininet_username":"vagrant",
 "mininet_password":"vagrant",
 "mininet_size":[50],
-"mininet_topology_type":["LinearTopo","MeshTopo"],
+"mininet_topology_type":["LinearTopo"],
 "mininet_hosts_per_switch":[1],
 "mininet_group_size":[3],
 "mininet_group_delay_ms":[2000],
 
-"flow_workers":[1,2,5,10,20],
-"total_flows":[100,200,500,1000,2000,5000,10000,20000,50000,100000],
-"flow_operations_delay_ms":[0,10,50,100],
+"flow_workers":[1,10,20],
+"total_flows":[100,1000,10000,100000],
+"flow_operations_delay_ms":[0,5,10],
 "flow_delete_flag":false,
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
