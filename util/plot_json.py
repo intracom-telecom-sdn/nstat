@@ -4,25 +4,17 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Plotting values from JSON """
+"""Methods that implement plotting functionality in NSTAT"""
 
-from collections import defaultdict
-import json
-import matplotlib as mpl
-mpl.use('Agg')
-import matplotlib.pyplot as plt
+import util.plot_utils
 import util.stats
-import textwrap
 
-def plot_json(results_file,
-              x_axis_key, y_axis_key, z_axis_key,
-              x_axis_label, y_axis_label,
-              plot_type, plot_title, plot_subtitle_keys, out_fig,
-              xmin=None, xmax=None, ymin=None, ymax=None):
-    """
-    Wrapper function for plotting a set of samples from a JSON file.
-    The function ends up calling specific functions for one of the following
-    plot types: errobar plots, scatter plots
+
+def plot_json(results_file, x_axis_key, y_axis_key, z_axis_key, plot_type,
+              plot_subtitle_keys, plot_options):
+    """Acts as a wrapper method for plotting a set of samples from a
+    JSON file. The method ends up calling specific methods for one of the
+    following plot types: errorbar plots, scatter plots
 
     Prerequisites:
     1. the result JSON file must have the following format:
@@ -35,13 +27,6 @@ def plot_json(results_file,
 
     2. the values for both the x_axis_key and y_axis_key must be numeric
 
-    :param plot_type: plot type, one of:
-                                        'errorbar,
-                                        'errorbar_connected',
-                                        'scatter',
-                                        'multi_errorbar,
-                                        'multi_errorbar_connected',
-                                        'multi_scatter'
     :param results_file: results file to plot samples from
     :param x_axis_key: some key from the results file with numeric type value,
                        which is intended to serve as the x-axis key
@@ -49,65 +34,56 @@ def plot_json(results_file,
                        which is intended to serve as the y-axis key
     :param z_axis_key: some key from the result file with numeric type value,
                        which is intended to serve as the z-axis key
-    :param x_axis_label: description for the x-axis label
-    :param y_axis_label: description for the y-axis label
-    :param plot_title: description for the plot title
+    :param plot_type: plot type, one of:
+                                        'errorbar,
+                                        'errorbar_connected',
+                                        'scatter',
+                                        'multi_errorbar,
+                                        'multi_errorbar_connected',
+                                        'multi_scatter'
     :param plot_subtitle_keys: list of keys from the result file which we would
                                like to print as key-value pairs in the plot
                                subtitle
-    :param out_fig: filename for the output file (png)
-    :param x_min: minimum limit for the x axis
-    :param x_max: maximum limit for the x axis
-    :param y_min: minimum limit for the y axis
-    :param y_max: maximum limit for the y axis
+    :param plot_options: object containing configuration parameters of the
+    produced plot.
+    :raises ValueError: When we give an invalid plot_type.
+    :type results_file: str
+    :type x_axis_key: str
+    :type y_axis_key: str
+    :type z_axis_key: str
+    :type plot_type: str
+    :type plot_subtitle_keys: list<str>
+    :type plot_options: PlotOptions
     """
 
     if plot_type == 'errorbar':
-        plot_errorbar_json(results_file,
-                           x_axis_key, y_axis_key,
-                           x_axis_label, y_axis_label,
-                           plot_title, plot_subtitle_keys, out_fig,
-                           xmin, xmax, ymin, ymax, 'o')
+        plot_errorbar_json(results_file, x_axis_key, y_axis_key,
+                           plot_subtitle_keys, plot_options)
     elif plot_type == 'errorbar_connected':
-        plot_errorbar_json(results_file,
-                           x_axis_key, y_axis_key,
-                           x_axis_label, y_axis_label,
-                           plot_title, plot_subtitle_keys, out_fig,
-                           xmin, xmax, ymin, ymax, '-o')
+        plot_options.fmt = '-o'
+        plot_errorbar_json(results_file, x_axis_key, y_axis_key,
+                           plot_subtitle_keys, plot_options)
     elif plot_type == 'multi_errorbar':
-        multiplot_errorbar_json(results_file,
-                                x_axis_key, y_axis_key, z_axis_key,
-                                x_axis_label, y_axis_label,
-                                plot_title, plot_subtitle_keys, out_fig,
-                                xmin, xmax, ymin, ymax, 'o')
+        multiplot_errorbar_json(results_file, x_axis_key, y_axis_key,
+                                z_axis_key, plot_subtitle_keys, plot_options)
     elif plot_type == 'multi_errorbar_connected':
-        multiplot_errorbar_json(results_file,
-                                x_axis_key, y_axis_key, z_axis_key,
-                                x_axis_label, y_axis_label,
-                                plot_title, plot_subtitle_keys, out_fig,
-                                xmin, xmax, ymin, ymax, '-o')
+        plot_options.fmt = '-o'
+        multiplot_errorbar_json(results_file, x_axis_key, y_axis_key,
+                                z_axis_key, plot_subtitle_keys, plot_options)
     elif plot_type == 'scatter':
-        plot_scatter_json(results_file,
-                          x_axis_key, y_axis_key,
-                          x_axis_label, y_axis_label,
-                          plot_title, plot_subtitle_keys, out_fig,
-                          xmin, xmax, ymin, ymax)
+        plot_scatter_json(results_file, x_axis_key, y_axis_key,
+                          plot_subtitle_keys, plot_options)
     elif plot_type == 'multi_scatter':
-        multiplot_scatter_json(results_file,
-                               x_axis_key, y_axis_key, z_axis_key,
-                               x_axis_label, y_axis_label,
-                               plot_title, plot_subtitle_keys, out_fig,
-                               xmin, xmax, ymin, ymax)
+        multiplot_scatter_json(results_file, x_axis_key, y_axis_key,
+                               z_axis_key, plot_subtitle_keys, plot_options)
     else:
         raise ValueError('Unknown plot type:' + plot_type)
 
 
 def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
-                       x_axis_label, y_axis_label,
-                       plot_title, plot_subtitle_keys, out_fig,
-                       xmin=None, xmax=None, ymin=None, ymax=None, fmt='o'):
-    """
-    Draw a single collection of errobars over a set of samples from a JSON file.
+                       plot_subtitle_keys, plot_options):
+    """Draw a single collection of errorbars over a set of samples from a
+    JSON file.
 
     For each different x value, the function finds one or more
     corresponding y values and plots an errorbar over them.
@@ -130,43 +106,39 @@ def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
                        which is intended to serve as the x-axis key
     :param y_axis_key: some key from the result file with numeric type value,
                        which is intended to serve as the y-axis key
-    :param x_axis_label: description for the x-axis label
-    :param y_axis_label: description for the y-axis label
-    :param plot_title: description for the plot title
     :param plot_subtitle_keys: list of keys from the result file which we would
                                like to print as key-value pairs in the plot
                                subtitle
-    :param out_fig: filename for the output file (png)
-    :param x_min: minimum limit for the x axis
-    :param x_max: maximum limit for the x axis
-    :param y_min: minimum limit for the y axis
-    :param y_max: maximum limit for the y axis
-    :param fmt: format string used to plot errorbars
+    :param plot_options: object containing configuration parameters of the
+           produced plot.
+    :type results_file: str
+    :type x_axis_key: str
+    :type y_axis_key: str
+    :type z_axis_key: str
+    :type plot_type: str
+    :type plot_subtitle_keys: list<str>
+    :type plot_options: PlotOptions
     """
 
     # Dictionary that maps a x_axis_key value to one or more y_axis_key values
-    y_values = defaultdict(list)
-
-    with open(results_file, 'rb') as f:
-        lines = json.load(f)
-
-    for line in lines:
-        xv = line[x_axis_key]
-        yv = line[y_axis_key]
-        y_values[xv].append(yv)
+    lines, y_values = util.plot_utils.create_xy_dict_from_file(results_file,
+                                                               x_axis_key,
+                                                               y_axis_key)
 
     # Create plot title
     subtitle = ''
-    for sk in plot_subtitle_keys:
-        v = lines[0][sk]
-        # if key value is a list, convert it to a single
-        # string consisting of its elements
-        if isinstance(v, list):
-            s = ' '.join(map(str, v))
-        else:
-            s = str(v)
-        subtitle += sk + ':' + s + ', '
+    for sub_key in plot_subtitle_keys:
+        value = lines[0][sub_key]
 
+        # If key value is a list, convert it to a single
+        # string consisting of its elements
+        if isinstance(value, list):
+            curr_string = ' '.join(map(str, value))
+        else:
+            curr_string = str(value)
+        subtitle += sub_key + ':' + curr_string + ', '
+
+    plot_options.subtitle = subtitle
     # Compute mean and +/- diff values
     y_mean = []
     y_diff_plus = []
@@ -175,39 +147,21 @@ def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
 
     for key in x_keys_sorted:
         mean = util.stats.mean(y_values[key])
-        diff_plus = max(y_values[key]) - mean
-        diff_minus = mean - min(y_values[key])
+        diff_plus = plot_options.y_axis_fct * (max(y_values[key]) - mean)
+        diff_minus = plot_options.y_axis_fct * (mean - min(y_values[key]))
         y_mean.append(mean)
         y_diff_plus.append(diff_plus)
         y_diff_minus.append(diff_minus)
 
     # Plot
-    plt.clf()
-    plt.xlabel(x_axis_label)
-    plt.ylabel(y_axis_label)
-    subtitle = '\n'.join(textwrap.wrap(subtitle, 115))
-    plt.title(subtitle, fontsize=8)
-    plt.suptitle(plot_title)
-    plt.errorbar(x=x_keys_sorted,
-                 y=y_mean,
-                 yerr=[y_diff_minus,y_diff_plus],
-                 fmt=fmt)
-    cur_xmin, cur_xmax, cur_ymin, cur_ymax = plt.axis()
-    new_xmin = cur_xmin if xmin == None else xmin
-    new_xmax = cur_xmax if xmax == None else xmax
-    new_ymin = cur_ymin if ymin == None else ymin
-    new_ymax = cur_ymax if ymax == None else ymax
-    plt.axis([new_xmin, new_xmax, new_ymin, new_ymax])
-    plt.grid()
-    plt.savefig(out_fig)
+    util.plot_utils.plot_errorbar(x_keys_sorted, y_mean, y_diff_minus,
+                                  y_diff_plus, plot_options)
 
 
 def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
-                            x_axis_label, y_axis_label,
-                            plot_title, plot_subtitle_keys, out_fig,
-                            xmin=None, xmax=None, ymin=None, ymax=None, fmt='o'):
-    """
-    Draw multiple collection of errorbars over a set of samples from a JSON file.
+                            plot_subtitle_keys, plot_options):
+    """Draw multiple collection of errorbars over a set of samples from a
+    JSON file.
 
     For each different z value do the following:
       for each different x value, the function finds one or more
@@ -235,101 +189,46 @@ def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
                        which is intended to serve as the y-axis key
     :param z_axis_key: some key from the result file with numeric type value,
                        which is intended to serve as the z-axis key
-    :param x_axis_label: description for the x-axis label
-    :param y_axis_label: description for the y-axis label
-    :param plot_title: description for the plot title
     :param plot_subtitle_keys: list of keys from the result file which we would
                                like to print as key-value pairs in the plot
                                subtitle
-    :param out_fig: filename for the output file (png)
-    :param x_min: minimum limit for the x axis
-    :param x_max: maximum limit for the x axis
-    :param y_min: minimum limit for the y axis
-    :param y_max: maximum limit for the y axis
+    :param plot_options: object containing configuration parameters of the
+           produced plot.
+    :type results_file: str
+    :type x_axis_key: str
+    :type y_axis_key: str
+    :type z_axis_key: str
+    :type plot_type: str
+    :type plot_subtitle_keys: list<str>
+    :type plot_options: PlotOptions
     """
 
-    with open(results_file, 'rb') as f:
-        lines = json.load(f)
-
-    y_values = defaultdict(dict)
-
-    for line in lines:
-        xv = line[x_axis_key]
-        yv = line[y_axis_key]
-        zv = line[z_axis_key]
-
-        if zv not in y_values:
-            y_values[zv] = {}
-        if xv not in y_values[zv]:
-            y_values[zv][xv] = []
-        y_values[zv][xv].append(yv)
+    lines, y_values = util.plot_utils.create_xyz_dict_from_file(results_file,
+                                                                x_axis_key,
+                                                                y_axis_key,
+                                                                z_axis_key)
 
     # Create plot title
     subtitle = ''
-    for sk in plot_subtitle_keys:
-        v = lines[0][sk]
+
+    for sub_key in plot_subtitle_keys:
+        value = lines[0][sub_key]
         # if key value is a list, convert it to a single
         # string consisting of its elements
-        if isinstance(v, list):
-            s = ' '.join(map(str, v))
+        if isinstance(value, list):
+            curr_string = ' '.join(map(str, value))
         else:
-            s = str(v)
-        subtitle += sk + ':' + s + ', '
+            curr_string = str(value)
+        subtitle += sub_key + ':' + curr_string + ', '
 
     # Plot
-    plt.clf()
-    plt.xlabel(x_axis_label)
-    plt.ylabel(y_axis_label)
-    subtitle = '\n'.join(textwrap.wrap(subtitle, 115))
-    plt.title(subtitle, fontsize=8)
-    plt.suptitle(plot_title)
-
-    colors = iter(list('bgrcmyk')*6)
-
-    plots = {}
-    for zv in y_values:
-        # Compute mean and +/- diff values
-        y_mean = []
-        y_diff_plus = []
-        y_diff_minus = []
-        x_keys_sorted = sorted(y_values[zv].keys())
-
-        for key in x_keys_sorted:
-            mean = util.stats.mean(y_values[zv][key])
-            diff_plus = max(y_values[zv][key]) - mean
-            diff_minus = mean - min(y_values[zv][key])
-            y_mean.append(mean)
-            y_diff_plus.append(diff_plus)
-            y_diff_minus.append(diff_minus)
-
-        plots[zv] = plt.errorbar(x=x_keys_sorted,
-                                 y=y_mean,
-                                 yerr=[y_diff_minus,y_diff_plus],
-                                 fmt=fmt,
-                                 c=colors.next())
-
-    plt.legend(plots.values(),
-               [z_axis_key + ':' + str(k) for k in plots.keys()],
-               scatterpoints=1,
-               loc='best',
-               fontsize=8)
-    cur_xmin, cur_xmax, cur_ymin, cur_ymax = plt.axis()
-    new_xmin = cur_xmin if xmin == None else xmin
-    new_xmax = cur_xmax if xmax == None else xmax
-    new_ymin = cur_ymin if ymin == None else ymin
-    new_ymax = cur_ymax if ymax == None else ymax
-    plt.axis([new_xmin, new_xmax, new_ymin, new_ymax])
-    plt.grid()
-    plt.savefig(out_fig)
+    plot_options.subtitle = subtitle
+    util.plot_utils.plot_multi_errorbar(y_values, z_axis_key, plot_options)
 
 
-
-def plot_scatter_json(results_file, x_axis_key, y_axis_key,
-                      x_axis_label, y_axis_label,
-                      plot_title, plot_subtitle_keys, out_fig,
-                      xmin=None, xmax=None, ymin=None, ymax=None):
-    """
-    Draw a single scatter-plot over a set of samples from a JSON file.
+def plot_scatter_json(results_file, x_axis_key, y_axis_key, plot_subtitle_keys,
+                      plot_options):
+    """Draw a single scatter-plot over a set of samples from a JSON file.
 
     For each different x value, the function plots a point for every
     corresponding y values it finds.
@@ -353,42 +252,41 @@ def plot_scatter_json(results_file, x_axis_key, y_axis_key,
                        which is intended to serve as the x-axis key
     :param y_axis_key: some key from the result file with numeric type value,
                        which is intended to serve as the y-axis key
-    :param x_axis_label: description for the x-axis label
-    :param y_axis_label: description for the y-axis label
     :param plot_title: description for the plot title
     :param plot_subtitle_keys: list of keys from the result file which we would
                                like to print as key-value pairs in the plot
                                subtitle
-    :param out_fig: filename for the output file (png)
-    :param x_min: minimum limit for the x axis
-    :param x_max: maximum limit for the x axis
-    :param y_min: minimum limit for the y axis
-    :param y_max: maximum limit for the y axis
+    :param plot_options: object containing configuration parameters of the
+           produced plot.
+    :type results_file: str
+    :type x_axis_key: str
+    :type y_axis_key: str
+    :type z_axis_key: str
+    :type plot_type: str
+    :type plot_subtitle_keys: list<str>
+    :type plot_options: PlotOptions
     """
 
     # Dictionary that maps a x_axis_key value to one or more y_axis_key values
-    y_values = defaultdict(list)
-
-    with open(results_file, 'rb') as f:
-        lines = json.load(f)
-
-    for line in lines:
-        xv = line[x_axis_key]
-        yv = line[y_axis_key]
-        y_values[xv].append(yv)
+    lines, y_values = util.plot_utils.create_xy_dict_from_file(results_file,
+                                                               x_axis_key,
+                                                               y_axis_key)
 
     # Create plot title
     subtitle = ''
-    for sk in plot_subtitle_keys:
-        v = lines[0][sk]
+
+    for sub_key in plot_subtitle_keys:
+        value = lines[0][sub_key]
+
         # if key value is a list, convert it to a single
         # string consisting of its elements
-        if isinstance(v, list):
-            s = ' '.join(map(str, v))
+        if isinstance(value, list):
+            curr_string = ' '.join(map(str, value))
         else:
-            s = str(v)
-        subtitle += sk + ':' + s + ', '
+            curr_string = str(value)
+        subtitle += sub_key + ':' + curr_string + ', '
 
+    plot_options.subtitle = subtitle
     x_coords = []
     y_coords = []
     for key in y_values:
@@ -397,27 +295,11 @@ def plot_scatter_json(results_file, x_axis_key, y_axis_key,
             y_coords.append(val)
 
     # Plot
-    plt.clf()
-    plt.xlabel(x_axis_label)
-    plt.ylabel(y_axis_label)
-    subtitle = '\n'.join(textwrap.wrap(subtitle, 115))
-    plt.title(subtitle, fontsize=8)
-    plt.suptitle(plot_title)
-    plt.scatter(x=x_coords, y=y_coords)
-    cur_xmin, cur_xmax, cur_ymin, cur_ymax = plt.axis()
-    new_xmin = cur_xmin if xmin == None else xmin
-    new_xmax = cur_xmax if xmax == None else xmax
-    new_ymin = cur_ymin if ymin == None else ymin
-    new_ymax = cur_ymax if ymax == None else ymax
-    plt.axis([new_xmin, new_xmax, new_ymin, new_ymax])
-    plt.grid()
-    plt.savefig(out_fig)
+    util.plot_utils.plot_scatter(x_coords, y_coords, plot_options)
 
 
 def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
-                           x_axis_label, y_axis_label,
-                           plot_title, plot_subtitle_keys, out_fig,
-                           xmin=None, xmax=None, ymin=None, ymax=None):
+                           plot_subtitle_keys, plot_options):
     """
     Draw multiple scatter-plots over a set of samples from a JSON file.
     Each scatter-plot is determined by a specific value of the z_axis_key
@@ -448,139 +330,81 @@ def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
                        which is intended to serve as the y-axis key
     :param z_axis_key: some key from the result file with numeric type value,
                        which is intended to serve as the z-axis key
-    :param x_axis_label: description for the x-axis label
-    :param y_axis_label: description for the y-axis label
-    :param plot_title: description for the plot title
     :param plot_subtitle_keys: list of keys from the result file which we would
                                like to print as key-value pairs in the plot
                                subtitle
-    :param out_fig: filename for the output file (png)
-    :param x_min: minimum limit for the x axis
-    :param x_max: maximum limit for the x axis
-    :param y_min: minimum limit for the y axis
-    :param y_max: maximum limit for the y axis
+    :param plot_options: object containing configuration parameters of the
+                         produced plot.
+    :type results_file: str
+    :type x_axis_key: str
+    :type y_axis_key: str
+    :type z_axis_key: str
+    :type plot_type: str
+    :type plot_subtitle_keys: list<str>
+    :type plot_options: PlotOptions
     """
 
-    with open(results_file, 'rb') as f:
-        lines = json.load(f)
-
-    y_values = defaultdict(dict)
-
-    for line in lines:
-        xv = line[x_axis_key]
-        yv = line[y_axis_key]
-        zv = line[z_axis_key]
-
-        if zv not in y_values:
-            y_values[zv] = {}
-        if xv not in y_values[zv]:
-            y_values[zv][xv] = []
-        y_values[zv][xv].append(yv)
+    lines, y_values = util.plot_utils.create_xyz_dict_from_file(results_file,
+                                                                x_axis_key,
+                                                                y_axis_key,
+                                                                z_axis_key)
 
     # Create plot title
     subtitle = ''
-    for sk in plot_subtitle_keys:
-        v = lines[0][sk]
+
+    for sub_key in plot_subtitle_keys:
+        value = lines[0][sub_key]
+
         # if key value is a list, convert it to a single
         # string consisting of its elements
-        if isinstance(v, list):
-            s = ' '.join(map(str, v))
+        if isinstance(value, list):
+            curr_string = ' '.join(map(str, value))
         else:
-            s = str(v)
-        subtitle += sk + ':' + s + ', '
+            curr_string = str(value)
+        subtitle += sub_key + ':' + curr_string + ', '
 
+    plot_options.subtitle = subtitle
     # Plot
-    plt.clf()
-    plt.xlabel(x_axis_label)
-    plt.ylabel(y_axis_label)
-    subtitle = '\n'.join(textwrap.wrap(subtitle, 115))
-    plt.title(subtitle, fontsize=8)
-    plt.suptitle(plot_title)
+    util.plot_utils.plot_multi_scatter(y_values, z_axis_key, plot_options)
 
-    markers = iter(list('ov^<>sp8*.+xhHDd|')*3)
-    colors = iter(list('bgrcmyk')*6)
+# This is for self testing.
+def self_test():
+    """
+    Function used for self testing purposes
+    """
+    plot_options_arg = util.plot_utils.PlotOptions()
+    plot_options_arg.x_axis_label = 'Number of switches'
+    plot_options_arg.y_axis_label = 'Throughput (flows/sec)'
+    plot_options_arg.plot_title = 'Controller throughput'
+    plot_options_arg.out_fig = 'errorbar.png'
+    plot_options_arg.ymin = 0
 
-    plots = {}
-    for zv in y_values:
-        x_coords = []
-        y_coords = []
 
-        for key in y_values[zv].keys():
-            for val in y_values[zv][key]:
-                x_coords.append(key)
-                y_coords.append(val)
+    plot_subtitle_keys = ['java_opts', 'controller']
 
-        plots[zv] = plt.scatter(x=x_coords,
-                                y=y_coords,
-                                marker=markers.next(),
-                                c=colors.next())
+    plot_json('./sample_result_file.json', 'switches', 'throughput', None,
+              'errorbar', plot_subtitle_keys, plot_options_arg)
 
-    plt.legend(plots.values(),
-               [z_axis_key + ':' + str(k) for k in plots.keys()],
-               scatterpoints=1,
-               loc='best',
-               fontsize=8)
-    cur_xmin, cur_xmax, cur_ymin, cur_ymax = plt.axis()
-    new_xmin = cur_xmin if xmin == None else xmin
-    new_xmax = cur_xmax if xmax == None else xmax
-    new_ymin = cur_ymin if ymin == None else ymin
-    new_ymax = cur_ymax if ymax == None else ymax
-    plt.axis([new_xmin, new_xmax, new_ymin, new_ymax])
-    plt.grid()
-    plt.savefig(out_fig)
+    plot_options_arg.out_fig = 'errorbar_connected.png'
+    plot_json('./sample_result_file.json', 'switches', 'throughput', None,
+              'errorbar_connected', plot_subtitle_keys, plot_options_arg)
 
+    plot_options_arg.out_fig = 'scatter.png'
+    plot_json('./sample_result_file.json', 'switches', 'throughput', None,
+              'scatter', plot_subtitle_keys, plot_options_arg)
+
+    plot_options_arg.out_fig = 'multi_scatter.png'
+    plot_json('./sample_result_file.json', 'switches', 'throughput', 'hosts',
+              'multi_scatter', plot_subtitle_keys, plot_options_arg)
+
+    plot_options_arg.out_fig = 'multi_errorbar.png'
+    plot_json('./sample_result_file.json', 'switches', 'throughput', 'hosts',
+              'multi_errorbar', plot_subtitle_keys, plot_options_arg)
+
+    plot_options_arg.out_fig = 'multi_errorbar_connected.png'
+
+    plot_json('./sample_result_file.json', 'switches', 'throughput', 'hosts',
+              'multi_errorbar_connected', plot_subtitle_keys, plot_options_arg)
+# This is for self testing.
 if __name__ == '__main__':
-
-    plot_json('./sample_result_file.json',
-              'switches', 'throughput', None,
-              'Number of switches', 'Throughput (flows/sec)',
-              'errorbar',
-              'Controller throughput',
-              ['java_opts', 'controller'],
-              'errorbar.png',
-              None, None, 0, None)
-
-    plot_json('./sample_result_file.json',
-              'switches', 'throughput', None,
-              'Number of switches', 'Throughput (flows/sec)',
-              'errorbar_connected',
-              'Controller throughput',
-              ['java_opts', 'controller'],
-              'errorbar_connected.png',
-              None, None, 0, None)
-
-    plot_json('./sample_result_file.json',
-              'switches', 'throughput', None,
-              'Number of switches', 'Throughput (flows/sec)',
-              'scatter',
-              'Controller throughput',
-              ['java_opts', 'controller'],
-              'scatter.png',
-              None, None, 0, None)
-
-    plot_json('./sample_result_file.json',
-              'switches', 'throughput', 'hosts',
-              'Number of switches', 'Throughput (flows/sec)',
-              'multi_scatter',
-              'Controller throughput',
-              ['java_opts', 'controller'],
-              'multi_scatter.png',
-              None, None, 0, None)
-
-    plot_json('./sample_result_file.json',
-              'switches', 'throughput', 'hosts',
-              'Number of switches', 'Throughput (flows/sec)',
-              'multi_errorbar',
-              'Controller throughput',
-              ['java_opts', 'controller'],
-              'multi_errorbar.png',
-              None, None, 0, None)
-
-    plot_json('./sample_result_file.json',
-              'switches', 'throughput', 'hosts',
-              'Number of switches', 'Throughput (flows/sec)',
-              'multi_errorbar_connected',
-              'Controller throughput',
-              ['java_opts', 'controller'],
-              'multi_errorbar_connected.png',
-              None, None, 0, None)
+    self_test()

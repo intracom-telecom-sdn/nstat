@@ -9,33 +9,38 @@
 import logging
 import subprocess
 
+
 def check_output_streaming(cmd, prefix='', queue=None):
-    """
-    Redirect output to stderr, printing it whenever a new line
+    """ Redirect output to stderr, printing it whenever a new line
     is detected (bufsize=1 denotes line buffered output). This
     can be considered as "realtime" printing.
     Additionally, prints output by prepending it with a user-defined
     prefix. Furthermore, it optionally forwards output to a queue
     in order e.g. to be processed by a separate thread in real-time.
 
-    :param cmd: the command line list
-    :param prefix: the user defined prefix for output
-    :param queue: queue to forward output to
-    :returns: return code of command
+    :param cmd: the command line list.
+    :param prefix: the user defined prefix for output.
+    :param queue: queue to forward console output to.
+    :returns: return exit status of command.
+    :raises subprocess.CalledProcessError: If the exit status of the executed
+    command is not 0.
+    :rtype: str
+    :type cmd: list<str>
+    :type prefix: str
+    :type queue: multiprocessing.Queue
     """
 
-    p = subprocess.Popen(
-            cmd,
-            stdout = subprocess.PIPE,
-            stderr = subprocess.STDOUT,
-            bufsize = 1)
-    for line in iter(p.stdout.readline, b''):
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, bufsize=1,
+                            universal_newlines=True)
+
+    for line in iter(proc.stdout.readline, ''):
         if queue is not None:
             queue.put(line)
-        logging.debug(prefix  + ' ' + line.rstrip())
+        logging.debug('{0} {1}'.format(prefix, line.rstrip()))
 
-    p.wait()
-    if p.returncode != 0:
-        raise subprocess.CalledProcessError(p.returncode, cmd)
+    proc.wait()
+    if proc.returncode != 0:
+        raise subprocess.CalledProcessError(proc.returncode, cmd)
     else:
-        return p.returncode
+        return proc.returncode

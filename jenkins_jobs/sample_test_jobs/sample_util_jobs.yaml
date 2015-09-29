@@ -1,0 +1,132 @@
+# Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License v1.0 which accompanies this distribution,
+# and is available at http://www.eclipse.org/legal/epl-v10.html
+
+# ------------------------------------------------------------------------------
+# odlp_pydoc
+# odlp_unit_test
+# odlp_sonar
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# odlp_pydoc
+# ------------------------------------------------------------------------------
+- job-template:
+    name: odlp_pydoc-{branch}
+    description: 'Job generating the pydoc documentation of NSTAT project'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-util
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+           pwd
+           echo "Workspace:" $WORKSPACE
+           echo "Job name:" $JOB_NAME
+
+           PROJECT_NAME='NSTAT'
+           documentation_DIR='docs'
+
+           cd ..
+           mv $JOB_NAME/ $PROJECT_NAME
+           cd $PROJECT_NAME
+           pwd
+           export PYTHONPATH=$(pwd)/
+
+           mkdir $documentation_DIR
+
+           # Copying necessary "__init__.py" files where *.py code exists
+           # -------------------------------------------------------------------
+           touch stress_test/__init__.py
+           touch stress_test/__init__.py
+           touch stress_test/__init__.py
+           touch util/__init__.py
+           touch util/unittests/__init__.py
+           touch emulators/__init__.py
+           touch emulators/mininet/__init__.py
+           touch emulators/mininet/handlers/__init__.py
+
+           # Copy the 'conf.py' containing the VERSION/RELEASE/AUTHOR
+           # information to the right place
+           # -------------------------------------------------------------------
+           cp -r conf.py $documentation_DIR
+
+           # Generating the rst doctree and the html documentation
+           # -------------------------------------------------------------------
+           sphinx-apidoc -F -o $documentation_DIR $(pwd)
+           cd $documentation_DIR && make html
+           cd .. && cp -a $documentation_DIR/_build/html/. /opt/ODLP/docs/
+           cd .. && rm -rf $PROJECT_NAME
+
+    publishers:
+    - html-publisher:
+        dir: /opt/ODLP/docs/
+        files: "index.html"
+        name: ODLP-NSTAT-1.0.1-Documentation
+        keep-all: true
+        allow-missing: true
+    - email:
+        recipients: odlp1@intracom-telecom.com
+
+# ------------------------------------------------------------------------------
+# odlp_unit_test
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: odlp_unit_test-{branch}
+    description: 'Job runnning all unit-tests defined under util/unittests'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-util
+    triggers:
+      - timed:
+    builders:
+      - python: |
+           export PYTHONPATH=$WORKSPACE/
+           pwd
+           echo "Workspace:" $WORKSPACE
+           echo "Job name:" $JOB_NAME
+           cd $WORKSPACE
+           cd util/unittests
+           export TERM=xterm
+
+           python3.4 -m unittest discover -vv -s ./ -p '*_test.py'
+
+           cd $(dirname $WORKSPACE)
+           rm -rf $JOB_NAME
+
+# ------------------------------------------------------------------------------
+# odlp_sonar
+# ------------------------------------------------------------------------------
+- job-template:
+    name: odlp_sonar-{branch}
+    description: 'Executing static code analysis using SonarQube available at
+    http://<Sonar_IP>:<Sonar_port>/'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-util-sonar
+    wrappers:
+      - inject:
+          properties-content: PYTHONPATH=$WORKSPACE/
+    builders:
+      - sonar:
+          sonar-name: SonarRunner
+          properties: "sonar.projectKey=ODLP_Sonar\nsonar.projectName=ODLP_Sonar\nsonar.projectVersion=1.0\n\nsonar.language=py\nsonar.sources=util,stress_test,emulators/mininet"
+          jdk:
+
+# ------------------------------------------------------------------------------
+# job instances
+# ------------------------------------------------------------------------------
+
+- project:
+    name: odlp-util-jobs
+    description: 'Enter the job description here'
+    branch: develop_release_preparation_SONAR
+    jobs:
+        - 'odlp_pydoc-{branch}'
+        - 'odlp_unit_test-{branch}'
+        - 'odlp_sonar-{branch}'
+

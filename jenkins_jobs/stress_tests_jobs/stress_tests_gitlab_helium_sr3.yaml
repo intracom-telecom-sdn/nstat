@@ -1,0 +1,589 @@
+# Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License v1.0 which accompanies this distribution,
+# and is available at http://www.eclipse.org/legal/epl-v10.html
+
+# ------------------------------------------------------------------------------
+# helium_sr3_DS_sb_active_scalability_cbench.json
+# helium_sr3_DS_sb_active_scalability_mtcbench.json
+# helium_sr3_DS_sb_active_scalability_mtcbench_largescale.json
+# helium_sr3_DS_sb_active_stability_mtcbench_no_restart_16Switches.json
+# helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
+# helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches.json
+# helium_sr3_RPC_sb_active_scalability_cbench.json
+# helium_sr3_RPC_sb_active_scalability_mtcbench.json
+# helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_16Switches.json
+# helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_500Switches.json
+# helium_sr3_RPC_sb_active_stability_mtcbench_restart_16Switches_restart.json
+# helium_sr3_RPC_sb_idle_scalability_cbench.json
+# helium_sr3_RPC_sb_idle_scalability_mtcbench.json
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# helium_sr3_DS_sb_active_scalability_cbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_DS_sb_active_scalability_cbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # --------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_DS_sb_active_scalability_cbench"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_cbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+           /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_DS_sb_active_scalability_mtcbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_DS_sb_active_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_DS_sb_active_scalability_mtcbench"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_DS_sb_active_scalability_mtcbench_largescale
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_DS_sb_active_scalability_mtcbench_largescale-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_DS_sb_active_scalability_mtcbench_largescale"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_DS_sb_active_stability_mtcbench_no_restart_16Switches
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_DS_sb_active_stability_mtcbench_no_restart_16Switches-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_DS_sb_active_stability_mtcbench_no_restart_16Switches"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_RPC_sb_active_scalability_cbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_RPC_sb_active_scalability_cbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_RPC_sb_active_scalability_cbench"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_cbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_RPC_sb_active_scalability_mtcbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_RPC_sb_active_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_RPC_sb_active_scalability_mtcbench"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_16Switches
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_16Switches-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_16Switches"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_500Switches
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_500Switches-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_500Switches"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_RPC_sb_active_stability_mtcbench_restart_16Switches_restart
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_RPC_sb_active_stability_mtcbench_restart_16Switches_restart-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_RPC_sb_active_stability_mtcbench_restart_16Switches_restart"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_RPC_sb_idle_scalability_cbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_RPC_sb_idle_scalability_cbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_RPC_sb_idle_scalability_cbench"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_cbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# helium_sr3_RPC_sb_idle_scalability_mtcbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: helium_sr3_RPC_sb_idle_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: gitlab-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+
+          # storing the parent directory
+          # -------------------------------------------------------------------
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          CONFIG_FILENAME="helium_sr3_RPC_sb_idle_scalability_mtcbench"
+          OUTPUT_FILENAME=$CONFIG_FILENAME
+          COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/ \
+          --sb-generator-base-dir=$WORKSPACE/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+
+# ------------------------------------------------------------------------------
+# job instances
+# ------------------------------------------------------------------------------
+- project:
+    name: helium_sr3_odlp-stress-jenkins-jobs
+    description: 'Enter the job description here'
+    branch: 'develop'
+    jobs:
+        - 'helium_sr3_DS_sb_active_scalability_cbench-{branch}'
+        - 'helium_sr3_DS_sb_active_scalability_mtcbench-{branch}'
+        - 'helium_sr3_DS_sb_active_scalability_mtcbench_largescale-{branch}'
+        - 'helium_sr3_DS_sb_active_stability_mtcbench_no_restart_16Switches-{branch}'
+        - 'helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
+        - 'helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches-{branch}'
+        - 'helium_sr3_RPC_sb_active_scalability_cbench-{branch}'
+        - 'helium_sr3_RPC_sb_active_scalability_mtcbench-{branch}'
+        - 'helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_16Switches-{branch}'
+        - 'helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_500Switches-{branch}'
+        - 'helium_sr3_RPC_sb_active_stability_mtcbench_restart_16Switches_restart-{branch}'
+        - 'helium_sr3_RPC_sb_idle_scalability_cbench-{branch}'
+        - 'helium_sr3_RPC_sb_idle_scalability_mtcbench-{branch}'

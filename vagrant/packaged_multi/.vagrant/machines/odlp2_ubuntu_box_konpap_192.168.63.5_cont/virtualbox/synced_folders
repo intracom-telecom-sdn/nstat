@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/konpap/SW/odlp/vagrant/packaged_multi","disabled":false,"owner":"vagrant","group":"vagrant"}}}

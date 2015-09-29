@@ -1,0 +1,136 @@
+# Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License v1.0 which accompanies this distribution,
+# and is available at http://www.eclipse.org/legal/epl-v10.html
+
+# ------------------------------------------------------------------------------
+# gitlab-sample:
+#     functional_tests_gitlab.yaml
+# gitlab-stress:
+#     stress_tests_gitlab_lithium.yaml
+#     stress_tests_gitlab_helium_sr3.yaml
+#     stress_tests_gitlab_hydrogen.yaml
+# gitlab-util  :
+#     odlp_util_jobs.yaml
+# github-sample:
+#     functional_tests_github.yaml
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# defaults:gitlab-sample
+# ------------------------------------------------------------------------------
+
+- defaults:
+    name: gitlab-sample
+    project-type: freestyle
+    disabled: false
+    block-downstream: false
+    concurrent: false
+    node: test-server
+    scm:
+    - git:
+        url: git@<git_url>
+        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        branches: ['{branch}']
+    logrotate:
+       numToKeep: 30
+    publishers:
+    - html-publisher:
+        dir: /tmp/publisher/
+        files: "report.html"
+        name: NSTAT
+        keep-all: true
+        allow-missing: true
+    - email:
+        recipients: <name>@<domain>
+
+# ------------------------------------------------------------------------------
+# defaults:gitlab-stress
+# ------------------------------------------------------------------------------
+
+- defaults:
+    name: gitlab-stress
+    project-type: freestyle
+    disabled: false
+    block-downstream: false
+    concurrent: false
+    node: test-server
+    scm:
+    - git:
+        url: git@<git_url>
+        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        branches: ['{branch}']
+    logrotate:
+       numToKeep: 30
+    publishers:
+    - html-publisher:
+        dir: /tmp/publisher/
+        files: "report.html"
+        name: NSTAT
+        keep-all: true
+        allow-missing: true
+    - email:
+        recipients: <name>@<domain>
+
+# ------------------------------------------------------------------------------
+# defaults:gitlab-util
+# ------------------------------------------------------------------------------
+- defaults:
+    name: gitlab-util
+    project-type: freestyle
+    disabled: false
+    block-downstream: false
+    concurrent: false
+    node: test-server
+    scm:
+    - git:
+        url: git@<git_url>
+        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        branches: ['{branch}']
+    logrotate:
+       numToKeep: 30
+    publishers:
+    - email:
+        recipients: <name>@<domain>
+
+# ------------------------------------------------------------------------------
+# defaults:gitlab-util-sonar
+# ------------------------------------------------------------------------------
+- defaults:
+    name: gitlab-util-sonar
+    project-type: freestyle
+    disabled: false
+    block-downstream: false
+    concurrent: false
+    node: dev-server
+    auth-token: '666'
+    scm:
+    - git:
+        url: git@<git_url>
+        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        branches: ['{branch}']
+    logrotate:
+       numToKeep: 30
+    publishers:
+    - email:
+        recipients: <name>@<domain>
+
+# ------------------------------------------------------------------------------
+# defaults:github-sample
+# ------------------------------------------------------------------------------
+
+- defaults:
+    name: github-sample
+    project-type: freestyle
+    disabled: false
+    block-downstream: false
+    concurrent: false
+    node: test-server
+    scm:
+    - git:
+        url: http://github.com/intracom-telecom-sdn/nstat.git
+        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        branches: [master]
+    logrotate:
+       numToKeep: 30

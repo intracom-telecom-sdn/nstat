@@ -9,6 +9,6 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $SCRIPT_DIR
 
-L_ODL_INSTALL_DIR="distribution-karaf-0.2.3-Helium-SR3"
+ODL_INSTALL_DIR="distribution-karaf-0.2.3-Helium-SR3"
 
-rm -rf $L_ODL_INSTALL_DIR
+rm -rf $ODL_INSTALL_DIR

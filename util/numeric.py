@@ -6,22 +6,24 @@
 
 """ Numeric utilities """
 
-def tonum(s):
-    """
-    Casts a string to the appropriate numeric type, i.e. int or float
+def tonum(str2cast):
+    """Casts a string to the appropriate numeric type, i.e. int or float.
 
-    :param s: string to cast
-    :returns: the numeric value in the appropriate type or
-              "Impossible cast" string
+    :param str2cast: string to cast
+    :returns: the numeric value in the appropriate type or "Impossible cast"
+              string
+    :rtype: float
+    :type str
     """
+
     try:
-        i = int(s)
+        i = int(str2cast)
     except ValueError:
         try:
-            f = float(s)
+            floatstring = float(str2cast)
         except ValueError:
             return 'Impossible cast'
         else:
-            return f
+            return floatstring
     else:
         return i

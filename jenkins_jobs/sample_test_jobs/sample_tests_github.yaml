@@ -1,0 +1,233 @@
+# Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License v1.0 which accompanies this distribution,
+# and is available at http://www.eclipse.org/legal/epl-v10.html
+
+
+# ------------------------------------------------------------------------------
+# helium_sr3_nb_active_scalability_mininet.json
+# helium_sr3_RPC_sb_active_scalability_cbench.json
+# helium_sr3_RPC_sb_active_scalability_mtcbench.json
+# helium_sr3_RPC_sb_active_stability_mtcbench.json
+# helium_sr3_RPC_sb_idle_scalability_cbench.json
+# helium_sr3_RPC_sb_idle_scalability_mtcbench.json
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# sample_sb_idle_scalability_mtcbench_GITHUB
+# ------------------------------------------------------------------------------
+
+- job:
+    name: sample_sb_idle_scalability_mtcbench_GITHUB
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-sample
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/southbound/test_orchestrator.py \
+                  --test="idle" \
+                  --ctrl-base-dir=$WORKSPACE/ \
+                  --gen-base-dir=$WORKSPACE/ \
+                  --json-config=$WORKSPACE/stress_test/sample_test_confs/sb_idle_scalability_mtcbench.json \
+                  --json-output=$WORKSPACE/$JOB_NAME_results.json \
+                  --html-report=$WORKSPACE/report.html \
+                  --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          # copy results back to test-server
+          # --------------------------------------------------------------------
+          cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/sample_tests/
+
+          # cleanup the machine
+          # --------------------------------------------------------------------
+          cd $PARENT_DIRECTORY
+          rm -rf $JOB_NAME
+
+# ------------------------------------------------------------------------------
+# sample_sb_idle_scalability_cbench_GITHUB
+# ------------------------------------------------------------------------------
+- job:
+    name: sample_sb_idle_scalability_cbench_GITHUB
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-sample
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/southbound/test_orchestrator.py \
+                  --test="idle" \
+                  --ctrl-base-dir=$WORKSPACE/ \
+                  --gen-base-dir=$WORKSPACE/ \
+                  --json-config=$WORKSPACE/stress_test/sample_test_confs/sb_idle_scalability_cbench.json \
+                  --json-output=$WORKSPACE/$JOB_NAME_results.json \
+                  --html-report=$WORKSPACE/report.html \
+                  --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          # copy results back to test-server
+          # --------------------------------------------------------------------
+          cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/sample_tests/
+
+          # cleanup the machine
+          # --------------------------------------------------------------------
+          cd $PARENT_DIRECTORY
+          rm -rf $JOB_NAME
+
+# ------------------------------------------------------------------------------
+# sample_sb_active_stability_GITHUB
+# ------------------------------------------------------------------------------
+
+- job:
+    name: sample_sb_active_stability_GITHUB
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-sample
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/southbound/test_orchestrator.py \
+                 --test="active" \
+                 --ctrl-base-dir=$WORKSPACE/ \
+                 --gen-base-dir=$WORKSPACE/ \
+                 --json-config=$WORKSPACE/stress_test/sample_test_confs/sb_active_stability_mtcbench.json \
+                 --json-output=$WORKSPACE/$JOB_NAME_results.json \
+                 --html-report=$WORKSPACE/report.html \
+                 --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          # copy results back to test-server
+          # --------------------------------------------------------------------
+          cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/sample_tests/
+
+          # cleanup the machine
+          # --------------------------------------------------------------------
+          cd $PARENT_DIRECTORY
+          rm -rf $JOB_NAME
+
+# ------------------------------------------------------------------------------
+# sample_sb_active_scalability_mtcbench_GITHUB
+# ------------------------------------------------------------------------------
+
+- job:
+    name: sample_sb_active_scalability_mtcbench_GITHUB
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-sample
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/southbound/test_orchestrator.py \
+                 --test="active" \
+                 --ctrl-base-dir=$WORKSPACE/ \
+                 --gen-base-dir=$WORKSPACE/ \
+                 --json-config=$WORKSPACE/stress_test/sample_test_confs/sb_active_scalability_mtcbench.json \
+                 --json-output=$WORKSPACE/$JOB_NAME_results.json \
+                 --html-report=$WORKSPACE/report.html \
+                 --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          # copy results back to test-server
+          # --------------------------------------------------------------------
+          cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/sample_tests/
+
+          # cleanup the machine
+          # --------------------------------------------------------------------
+          cd $PARENT_DIRECTORY
+          rm -rf $JOB_NAME
+
+# ------------------------------------------------------------------------------
+# sample_sb_active_scalability_cbench_GITHUB
+# ------------------------------------------------------------------------------
+
+- job:
+    name: sample_sb_active_scalability_cbench_GITHUB
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-sample
+    builders:
+      - shell: |
+          pwd
+          echo "Workspace:" $WORKSPACE
+          echo "Job name:" $JOB_NAME
+          PARENT_DIRECTORY=$(dirname $WORKSPACE)
+          export PYTHONPATH=$WORKSPACE/
+          export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
+          echo "Starting new test with Build Number= "$BUILD_NUMBER
+          RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/southbound/test_orchestrator.py \
+                 --test="active" \
+                 --ctrl-base-dir=$WORKSPACE/ \
+                 --gen-base-dir=$WORKSPACE/ \
+                 --json-config=$WORKSPACE/stress_test/sample_test_confs/sb_active_scalability_cbench.json \
+                 --json-output=$WORKSPACE/$JOB_NAME_results.json \
+                 --html-report=$WORKSPACE/report.html \
+                 --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          # copy results back to test-server
+          # --------------------------------------------------------------------
+          cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/sample_tests/
+
+          # cleanup the machine
+          # --------------------------------------------------------------------
+          cd $PARENT_DIRECTORY
+          rm -rf $JOB_NAME
+
+# ------------------------------------------------------------------------------
+# job instances
+# ------------------------------------------------------------------------------
+
+- project:
+    name: odlp-nstat-functional-tests
+    branch: develop
+    jobs:
+        - 'sample_sb_idle_scalability_mtcbench_GITHUB'
+        - 'sample_sb_idle_scalability_cbench_GITHUB'
+        - 'sample_sb_active_stability_GITHUB'
+        - 'sample_sb_active_scalability_mtcbench_GITHUB'
+        - 'sample_sb_active_scalability_cbench_GITHUB'

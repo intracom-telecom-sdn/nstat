@@ -4,40 +4,51 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" statistics functions """
+""" Module that computes statistic properties given a list of samples """
 
 import math
 
-def mean(s):
-    """ Computes the mean of a number list
-    :param s: A list of float number
-    :returns: The mean of the float numbers in the list
-    """
-    return sum(s) * 1.0 / len(s)
+def mean(samples):
+    """Computes the mean of a number list
 
-def variance(s):
-    """ Computes the variance of a number list
-    Args:
-        s (list of float): A list of float number
-    Returns:
-        (float): The variance of the float numbers in the list
+    :param s: a list of float number, to calculate their mean.
+    :returns: the mean of the float numbers in the list
+    :rtype: float
+    :type samples: list<float>
     """
-    diffs = [x-mean(s) for x in s]
-    return sum([y**2 for y in diffs]) / len(s)
+    return sum(samples) * 1.0 / len(samples)
 
-def stddev(s):
-    """ Computes the standard deviation of a number list
-    :param s: A list of float number
-    :returns: The standard deviation of the float numbers in
-        the list
+
+def variance(samples):
+    """Computes the variance of a number list
+
+    :param s: a list of float numbers, to calculate their variance.
+    :returns: the variance of the float numbers in the list
+    :rtype: float
+    :type samples: list<float>
     """
-    return math.sqrt(variance(s))
+    diffs = [x - mean(samples) for x in samples]
+    return sum([y**2 for y in diffs]) / len(samples)
 
-def cv(s):
-    """ Computes the co-efficient of variation of a number list
-    :param s: A list of float number
-    :returns: The co-efficient of variation of the float numbers
-        in the list
+
+def stddev(samples):
+    """Computes the standard deviation of a number list.
+
+    :param s: a list of float numbers, to calculate their standard deviation.
+    :returns: the standard deviation of the float numbers in the list.
+    :rtype: float
+    :type samples: list<float>
     """
-    return stddev(s)/mean(s)
+    return math.sqrt(variance(samples))
 
+
+def coefvariance(samples):
+    """Computes the co-efficient of variation of a number list.
+
+    :param s: a list of float numbers, to calculate their coefficient.
+    :returns: the co-efficient of variation of the float numbers
+              in the list
+    :rtype: float
+    :type samples: list<float>
+    """
+    return stddev(samples) / mean(samples)

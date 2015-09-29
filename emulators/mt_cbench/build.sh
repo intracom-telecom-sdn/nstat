@@ -6,12 +6,11 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 echo "Building Cbench generator."
 echo "Building oflops/configure file"
-cd $SCRIPT_DIR/oflops
+cd $SCRIPT_DIR/oflops 
 ./boot.sh 
 ./configure --with-openflow-src-dir=../openflow/ 
 make

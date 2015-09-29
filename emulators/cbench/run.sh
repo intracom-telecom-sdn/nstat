@@ -37,7 +37,6 @@ echo -n "GENERATOR_WARMUP:$GENERATOR_WARMUP "
 echo -n "GENERATOR_MODE:$GENERATOR_MODE "
 echo ""
 
-
 if [ "$GENERATOR_MODE" == "Latency" ]
 then
     $SCRIPT_DIR/oflops/cbench/cbench \

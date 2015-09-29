@@ -6,22 +6,22 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-# If Helium SR3 zip exists in /opt, it extracts it in the 
-# current directory (the "fast" path). 
-# If it doesn't exist, it downloads it in /opt and them extracts it. 
+# If Helium SR3 zip exists in /opt, it extracts it in the
+# current directory (the "fast" path).
+# If it doesn't exist, it downloads it in /opt and them extracts it.
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $SCRIPT_DIR
 
-L_ODL_ZIP_FILE="distribution-karaf-0.2.3-Helium-SR3.zip"
-L_ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.2.3-Helium-SR3/"
+ODL_ZIP_FILE="distribution-karaf-0.2.3-Helium-SR3.zip"
+ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.2.3-Helium-SR3/"
 
-wget -nc "$L_ODL_NEXUS_LOCATION$L_ODL_ZIP_FILE" -P /opt/
+wget -nc "$ODL_NEXUS_LOCATION$ODL_ZIP_FILE" -P /opt/
 if [ $? -ne 0 ]; then
     exit 1
 fi
-    
-unzip -o /opt/$L_ODL_ZIP_FILE -d ./ 
+
+unzip -o /opt/$ODL_ZIP_FILE -d ./
 if [ $? -ne 0 ]; then
     exit 1
 fi
