@@ -143,18 +143,18 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_status_handler, cpid)
 
         # Run tests for all possible dimensions
-        for (mininet_hosts_per_switch,
-             controller_statistics_period_ms,
-             mininet_topology_type,
+        for (mininet_size,
              mininet_group_size,
              mininet_group_delay_ms,
-             mininet_size) in \
-             itertools.product(conf['mininet_hosts_per_switch'],
-                               conf['controller_statistics_period_ms'],
-                               conf['mininet_topology_type'],
+             mininet_hosts_per_switch,
+             mininet_topology_type,
+             controller_statistics_period_ms) in \
+             itertools.product(conf['mininet_size'],
                                conf['mininet_group_size'],
                                conf['mininet_group_delay_ms'],
-                               conf['mininet_size']):
+                               conf['mininet_hosts_per_switch'],
+                               conf['mininet_topology_type'],
+                               conf['controller_statistics_period_ms']):
 
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler, controller_statistics_period_ms)
