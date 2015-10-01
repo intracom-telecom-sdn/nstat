@@ -7,6 +7,8 @@
 # ignore PDF files
 # *.pdf
 
+# Ignore vagrant relevant hidden folders
+.vagrant/
 # ignore Eclipse PROJECT relevant files
 *.project
 # Object files
