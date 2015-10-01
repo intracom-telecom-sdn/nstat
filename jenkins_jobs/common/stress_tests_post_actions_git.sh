@@ -8,7 +8,7 @@
 
 # copy results back to test-server
 # ------------------------------------------------------------------------------
-cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/stress_tests/
+cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/stress_tests/
 
 # copy results under 'publisher' folder so that HTML publisher can
 # archive the results
