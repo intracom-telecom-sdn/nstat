@@ -59,7 +59,7 @@ Vagrant.configure(2) do |config|
         nstat_machine.vm.network :private_network, ip: nstat_vm_private_network_ip_vm
         nstat_machine.vm.provider :virtualbox do |vb|
             # Display the VirtualBox GUI when booting the machine
-            vb.gui = true
+            #vb.gui = true
 
             # Customize the amount of memory on the VM:
             vb.memory = nstat_vm_ram
