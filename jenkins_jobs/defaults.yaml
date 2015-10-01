@@ -31,7 +31,7 @@
     scm:
     - git:
         url: git@<git_url>
-        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        credentials-id: <provide with API token>
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
@@ -59,7 +59,7 @@
     scm:
     - git:
         url: git@<git_url>
-        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        credentials-id: <provide with API token>
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
@@ -86,7 +86,7 @@
     scm:
     - git:
         url: git@<git_url>
-        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        credentials-id: <provide with API token>
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
@@ -108,7 +108,7 @@
     scm:
     - git:
         url: git@<git_url>
-        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        credentials-id: <provide with API token>
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
@@ -130,7 +130,7 @@
     scm:
     - git:
         url: http://github.com/intracom-telecom-sdn/nstat.git
-        credentials-id: 303b0fef-995d-42df-9f82-a8b3a4047a55
+        credentials-id: <provide with API token>
         branches: [master]
     logrotate:
        numToKeep: 30
