@@ -69,7 +69,7 @@
         keep-all: true
         allow-missing: true
     - email:
-        recipients: odlp1@intracom-telecom.com
+        recipients: <name>@<domain>
 
 # ------------------------------------------------------------------------------
 # odlp_unit_test
