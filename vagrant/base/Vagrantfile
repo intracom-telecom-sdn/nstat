@@ -30,7 +30,7 @@ if RUNNING_ENV == 'intracom-internal'
     http_proxy = 'http://<IP_address>:<port_number>'
     puts 'intracom-internal RUNNING_ENV'
 elsif RUNNING_ENV == 'intracom-external'
-    http_proxy = 'http://10.124.32.12:80'
+    http_proxy = 'http://<IP_address>:<port_number>'
     puts 'intracom-external RUNNING_ENV'
 else
     http_proxy = ''
