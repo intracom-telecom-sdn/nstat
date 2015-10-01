@@ -275,7 +275,7 @@ table {
                                                      javascript_functions,
                                                      html_head_content)
 
-    # Generating results parameters table table
+    # Generating results parameters table
     for cfgt in report_spec.config_tables:
         table_data = json.loads(open(cfgt.source_json).read())
 
