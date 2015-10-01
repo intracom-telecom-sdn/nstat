@@ -1,4 +1,4 @@
-[![Code Climate](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/gpa.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat) [![Test Coverage](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/coverage.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat/coverage)
+[![Test Coverage](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/coverage.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat/coverage)
 
 # NSTAT: Network Stress-Test Automation Toolkit
 
