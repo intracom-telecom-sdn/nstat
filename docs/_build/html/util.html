@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>util Package &mdash; ODLP-NSTAT 1.0.1 documentation</title>
+    <title>util Package &mdash; NSTAT 1.1 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1.0.1',
+        VERSION:     '1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,9 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="ODLP-NSTAT 1.0.1 documentation" href="index.html" />
-    <link rel="next" title="unittests Package" href="util.unittests.html" />
-    <link rel="prev" title="stress_test Package" href="stress_test.html" /> 
+    <link rel="top" title="NSTAT 1.1 documentation" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -39,13 +37,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="util.unittests.html" title="unittests Package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="stress_test.html" title="stress_test Package"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">NSTAT 1.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -64,7 +56,7 @@
 <p>CPU-related utility functions</p>
 <dl class="function">
 <dt id="util.cpu.compute_cpu_shares">
-<tt class="descclassname">util.cpu.</tt><tt class="descname">compute_cpu_shares</tt><big>(</big><em>shares_list</em>, <em>num_cpus</em><big>)</big><a class="reference internal" href="_modules/util/cpu.html#compute_cpu_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.cpu.compute_cpu_shares" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.cpu.</tt><tt class="descname">compute_cpu_shares</tt><big>(</big><em>shares_list</em>, <em>num_cpus</em><big>)</big><a class="headerlink" href="#util.cpu.compute_cpu_shares" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes lists of non-overlapping CPUs lists based on a list
 of CPU shares. A CPU share is a value between 1 and 99 and corresponds to
 the percentage of total system CPUs that should be allocated for a
@@ -91,7 +83,7 @@ CPUs is returned.</p>
 <p>Extended subprocess functionality</p>
 <dl class="function">
 <dt id="util.customsubprocess.check_output_streaming">
-<tt class="descclassname">util.customsubprocess.</tt><tt class="descname">check_output_streaming</tt><big>(</big><em>cmd</em>, <em>prefix=''</em>, <em>queue=None</em><big>)</big><a class="reference internal" href="_modules/util/customsubprocess.html#check_output_streaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.customsubprocess.check_output_streaming" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.customsubprocess.</tt><tt class="descname">check_output_streaming</tt><big>(</big><em>cmd</em>, <em>prefix=''</em>, <em>queue=None</em><big>)</big><a class="headerlink" href="#util.customsubprocess.check_output_streaming" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redirect output to stderr, printing it whenever a new line
 is detected (bufsize=1 denotes line buffered output). This
 can be considered as &#8220;realtime&#8221; printing.
@@ -131,7 +123,7 @@ in order e.g. to be processed by a separate thread in real-time.</p>
 <p>file handling utilities</p>
 <dl class="function">
 <dt id="util.file_ops.check_filelist">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_filelist</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_filelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_filelist" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_filelist</tt><big>(</big><em>file_list</em><big>)</big><a class="headerlink" href="#util.file_ops.check_filelist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a list of files and checks if those files exist and if those
 files are executables (have execution right in their privileges). If
 something is wrong then an exception is raised</p>
@@ -147,7 +139,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.check_files_executables">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_executables</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_files_executables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_executables" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_executables</tt><big>(</big><em>file_list</em><big>)</big><a class="headerlink" href="#util.file_ops.check_files_executables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if all files in a list have exe permissions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -168,7 +160,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.check_files_exist">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_exist</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_files_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_exist" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_exist</tt><big>(</big><em>file_list</em><big>)</big><a class="headerlink" href="#util.file_ops.check_files_exist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if all files in a list exist.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -186,7 +178,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.file_exists">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">file_exists</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.file_exists" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">file_exists</tt><big>(</big><em>fpath</em><big>)</big><a class="headerlink" href="#util.file_ops.file_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if file exists in filesystem.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -204,7 +196,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.is_file_exe">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">is_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#is_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.is_file_exe" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">is_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="headerlink" href="#util.file_ops.is_file_exe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if a file is executable.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -222,7 +214,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.make_file_exe">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">make_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#make_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.make_file_exe" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">make_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="headerlink" href="#util.file_ops.make_file_exe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives executable rights to a file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -240,7 +232,7 @@ something is wrong then an exception is raised</p>
 <p>HTML generation utilities</p>
 <dl class="function">
 <dt id="util.html.generate_html_foot">
-<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_foot</tt><big>(</big><em>foot_content=''</em><big>)</big><a class="reference internal" href="_modules/util/html.html#generate_html_foot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_foot" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_foot</tt><big>(</big><em>foot_content=''</em><big>)</big><a class="headerlink" href="#util.html.generate_html_foot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the ending and the contents at the end of html page.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -256,7 +248,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.html.generate_html_head">
-<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_head</tt><big>(</big><em>css_style=''</em>, <em>javascript_functions=''</em>, <em>head_content=''</em><big>)</big><a class="reference internal" href="_modules/util/html.html#generate_html_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_head" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_head</tt><big>(</big><em>css_style=''</em>, <em>javascript_functions=''</em>, <em>head_content=''</em><big>)</big><a class="headerlink" href="#util.html.generate_html_head" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the head of an html file gets as input the
 styling of the page as a css string parameter and returns a string
 value, which is the html code of the header.</p>
@@ -285,7 +277,7 @@ page and everything else we want to appear at the top.
 
 <dl class="function">
 <dt id="util.html.get_ordered_index">
-<tt class="descclassname">util.html.</tt><tt class="descname">get_ordered_index</tt><big>(</big><em>field_value</em>, <em>map_dictionary</em><big>)</big><a class="reference internal" href="_modules/util/html.html#get_ordered_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.get_ordered_index" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.html.</tt><tt class="descname">get_ordered_index</tt><big>(</big><em>field_value</em>, <em>map_dictionary</em><big>)</big><a class="headerlink" href="#util.html.get_ordered_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the index of a key in map_dictionary, which is defined by the
 field_value. If no match is found None is returned</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -311,7 +303,7 @@ the ordering inside the map_dictionary
 
 <dl class="function">
 <dt id="util.html.isalistofdictionaries">
-<tt class="descclassname">util.html.</tt><tt class="descname">isalistofdictionaries</tt><big>(</big><em>lst</em><big>)</big><a class="reference internal" href="_modules/util/html.html#isalistofdictionaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.isalistofdictionaries" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.html.</tt><tt class="descname">isalistofdictionaries</tt><big>(</big><em>lst</em><big>)</big><a class="headerlink" href="#util.html.isalistofdictionaries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a list as argument and checks if all the
 elements of this list are dictionaries. If they are then it returns true,
 else it returns false. If the input argument type is not list then it
@@ -333,7 +325,7 @@ also returns false.</p>
 
 <dl class="function">
 <dt id="util.html.multi_dict_to_html">
-<tt class="descclassname">util.html.</tt><tt class="descname">multi_dict_to_html</tt><big>(</big><em>data</em>, <em>table_title=''</em>, <em>map_dictionary=None</em>, <em>row_ordering_key=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#multi_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.multi_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.html.</tt><tt class="descname">multi_dict_to_html</tt><big>(</big><em>data</em>, <em>table_title=''</em>, <em>map_dictionary=None</em>, <em>row_ordering_key=None</em><big>)</big><a class="headerlink" href="#util.html.multi_dict_to_html" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates html tables according to the input it gets from
 the input arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -360,7 +352,7 @@ dictionary and how their value will be translated in the HTML table.
 
 <dl class="function">
 <dt id="util.html.single_dict_table_data">
-<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_table_data</tt><big>(</big><em>data_values</em>, <em>td_style=None</em>, <em>td_class=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#single_dict_table_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_table_data" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_table_data</tt><big>(</big><em>data_values</em>, <em>td_style=None</em>, <em>td_class=None</em><big>)</big><a class="headerlink" href="#util.html.single_dict_table_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a &lt;td&gt; ... &lt;/td&gt; html element for the single_dict_to_html()
 type of tables, data columns. In case that the input data_values is a
 list of dictionaries, this function calls recursively
@@ -388,7 +380,7 @@ tables
 
 <dl class="function">
 <dt id="util.html.single_dict_to_html">
-<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_to_html</tt><big>(</big><em>data</em>, <em>key_title</em>, <em>data_title</em>, <em>table_title=''</em>, <em>map_dictionary=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#single_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_to_html</tt><big>(</big><em>data</em>, <em>key_title</em>, <em>data_title</em>, <em>table_title=''</em>, <em>map_dictionary=None</em><big>)</big><a class="headerlink" href="#util.html.single_dict_to_html" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates html tables according to the input it gets
 from the input arguments. The table generated is by row, which means that
 on each row the first element is the key value of the dictionary, the
@@ -429,7 +421,7 @@ input dictionary and how their value will be translated in the HTML table.
 <p>General network utilities</p>
 <dl class="function">
 <dt id="util.netutil.copy_directory_to_target">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">copy_directory_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_path</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#copy_directory_to_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.copy_directory_to_target" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">copy_directory_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_path</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="headerlink" href="#util.netutil.copy_directory_to_target" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy a local directory on a remote machine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -458,7 +450,7 @@ input dictionary and how their value will be translated in the HTML table.
 
 <dl class="function">
 <dt id="util.netutil.create_remote_directory">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">create_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#create_remote_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.create_remote_directory" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">create_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="headerlink" href="#util.netutil.create_remote_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens an ssh connection to a remote machine and creates a new directory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -479,7 +471,7 @@ input dictionary and how their value will be translated in the HTML table.
 
 <dl class="function">
 <dt id="util.netutil.isdir">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">isdir</tt><big>(</big><em>path</em>, <em>sftp</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#isdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.isdir" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">isdir</tt><big>(</big><em>path</em>, <em>sftp</em><big>)</big><a class="headerlink" href="#util.netutil.isdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if a given remote path is a directory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -503,7 +495,7 @@ input dictionary and how their value will be translated in the HTML table.
 
 <dl class="function">
 <dt id="util.netutil.make_remote_file_executable">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">make_remote_file_executable</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#make_remote_file_executable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.make_remote_file_executable" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">make_remote_file_executable</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="headerlink" href="#util.netutil.make_remote_file_executable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes the remote file executable.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -524,7 +516,7 @@ input dictionary and how their value will be translated in the HTML table.
 
 <dl class="function">
 <dt id="util.netutil.remove_remote_directory">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">remove_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#remove_remote_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.remove_remote_directory" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">remove_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>path</em>, <em>remote_port=22</em><big>)</big><a class="headerlink" href="#util.netutil.remove_remote_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes recursively remote directories (removes all files and
 other sub-directories).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -546,7 +538,7 @@ other sub-directories).</p>
 
 <dl class="function">
 <dt id="util.netutil.ssh_connect_or_return">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_connect_or_return</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>maxretries</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_connect_or_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_connect_or_return" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_connect_or_return</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>maxretries</em>, <em>remote_port=22</em><big>)</big><a class="headerlink" href="#util.netutil.ssh_connect_or_return" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens a connection and returns a connection object. If it fails to open
 a connection after a specified number of tries, it returns -1.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -573,7 +565,7 @@ a connection after a specified number of tries, it returns -1.</p>
 
 <dl class="function">
 <dt id="util.netutil.ssh_copy_file_to_target">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_copy_file_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_file</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_copy_file_to_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_copy_file_to_target" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_copy_file_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_file</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="headerlink" href="#util.netutil.ssh_copy_file_to_target" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies local file on a remote machine target.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -602,7 +594,7 @@ a connection after a specified number of tries, it returns -1.</p>
 
 <dl class="function">
 <dt id="util.netutil.ssh_delete_file_if_exists">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_delete_file_if_exists</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_delete_file_if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_delete_file_if_exists" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_delete_file_if_exists</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="headerlink" href="#util.netutil.ssh_delete_file_if_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deletes the file on e remote machine, if it exists</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -623,7 +615,7 @@ a connection after a specified number of tries, it returns -1.</p>
 
 <dl class="function">
 <dt id="util.netutil.ssh_run_command">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_run_command</tt><big>(</big><em>ssh_session</em>, <em>command_to_run</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_run_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_run_command" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_run_command</tt><big>(</big><em>ssh_session</em>, <em>command_to_run</em><big>)</big><a class="headerlink" href="#util.netutil.ssh_run_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the specified command on a remote machine</p>
 <p>:param ssh_session : SSH session provided by paramiko to run the command
 :param command_to_run: Command to execute
@@ -639,7 +631,7 @@ a connection after a specified number of tries, it returns -1.</p>
 <p>Numeric utilities</p>
 <dl class="function">
 <dt id="util.numeric.tonum">
-<tt class="descclassname">util.numeric.</tt><tt class="descname">tonum</tt><big>(</big><em>str2cast</em><big>)</big><a class="reference internal" href="_modules/util/numeric.html#tonum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.numeric.tonum" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.numeric.</tt><tt class="descname">tonum</tt><big>(</big><em>str2cast</em><big>)</big><a class="headerlink" href="#util.numeric.tonum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Casts a string to the appropriate numeric type, i.e. int or float.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -662,7 +654,7 @@ a connection after a specified number of tries, it returns -1.</p>
 <p>Methods that implement plotting functionality in NSTAT</p>
 <dl class="function">
 <dt id="util.plot_json.multiplot_errorbar_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_errorbar_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_json.multiplot_errorbar_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw multiple collection of errorbars over a set of samples from a
 JSON file.</p>
 <p>For each different z value do the following:
@@ -714,7 +706,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.multiplot_scatter_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_scatter_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_json.multiplot_scatter_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw multiple scatter-plots over a set of samples from a JSON file.
 Each scatter-plot is determined by a specific value of the z_axis_key</p>
 <p>For each different z value do the following:
@@ -766,7 +758,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.plot_errorbar_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_errorbar_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_json.plot_errorbar_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a single collection of errorbars over a set of samples from a
 JSON file.</p>
 <p>For each different x value, the function finds one or more
@@ -814,7 +806,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.plot_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_type</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_type</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_json.plot_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Acts as a wrapper method for plotting a set of samples from a
 JSON file. The method ends up calling specific methods for one of the
 following plot types: errorbar plots, scatter plots</p>
@@ -869,7 +861,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.plot_scatter_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_scatter_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_json.plot_scatter_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a single scatter-plot over a set of samples from a JSON file.</p>
 <p>For each different x value, the function plots a point for every
 corresponding y values it finds.
@@ -917,7 +909,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.self_test">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">self_test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#self_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.self_test" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">self_test</tt><big>(</big><big>)</big><a class="headerlink" href="#util.plot_json.self_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function used for self testing purposes</p>
 </dd></dl>
 
@@ -927,14 +919,14 @@ produced plot.
 <p>Module to facilitate plotting and promote code re-use</p>
 <dl class="class">
 <dt id="util.plot_utils.PlotOptions">
-<em class="property">class </em><tt class="descclassname">util.plot_utils.</tt><tt class="descname">PlotOptions</tt><a class="reference internal" href="_modules/util/plot_utils.html#PlotOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.PlotOptions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">util.plot_utils.</tt><tt class="descname">PlotOptions</tt><a class="headerlink" href="#util.plot_utils.PlotOptions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Contains the various plot options attributes.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.plot_utils.create_xy_dict_from_file">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xy_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#create_xy_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xy_dict_from_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xy_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em><big>)</big><a class="headerlink" href="#util.plot_utils.create_xy_dict_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a json file and returns the contents of the file as a
 dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -962,7 +954,7 @@ values defined by x_axis_key and y_axis_key.
 
 <dl class="function">
 <dt id="util.plot_utils.create_xyz_dict_from_file">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xyz_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#create_xyz_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xyz_dict_from_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xyz_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em><big>)</big><a class="headerlink" href="#util.plot_utils.create_xyz_dict_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a json file and returns the contents of the file as a
 dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys
 that in turn map to z_axis_keys</p>
@@ -994,7 +986,7 @@ values defined by x_axis_key and y_axis_key
 
 <dl class="function">
 <dt id="util.plot_utils.finish_plotting">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">finish_plotting</tt><big>(</big><em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#finish_plotting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.finish_plotting" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">finish_plotting</tt><big>(</big><em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_utils.finish_plotting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configures the plots axis and saves the figure to file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1010,7 +1002,7 @@ values defined by x_axis_key and y_axis_key
 
 <dl class="function">
 <dt id="util.plot_utils.plot_errorbar">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_utils.plot_errorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a single errorbar figure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1041,7 +1033,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_errorbar_helper">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar_helper</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar_helper" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar_helper</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_utils.plot_errorbar_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws a single errorbar.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1074,7 +1066,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_multi_errorbar">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_errorbar</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_errorbar" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_errorbar</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_utils.plot_multi_errorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a multiple errorbars figure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1097,7 +1089,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_multi_scatter">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_scatter</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_scatter" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_scatter</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_utils.plot_multi_scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a multiple scatter plots figure</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1120,7 +1112,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_scatter">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_utils.plot_scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a single scatter plot figure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1143,7 +1135,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_scatter_helper">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter_helper</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em>, <em>marker_arg='o'</em>, <em>color='b'</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter_helper" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter_helper</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em>, <em>marker_arg='o'</em>, <em>color='b'</em><big>)</big><a class="headerlink" href="#util.plot_utils.plot_scatter_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces a single scatter plot with a specific color.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1169,7 +1161,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.setup_plot">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">setup_plot</tt><big>(</big><em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#setup_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.setup_plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">setup_plot</tt><big>(</big><em>plot_options</em><big>)</big><a class="headerlink" href="#util.plot_utils.setup_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets axis labels, title and subtitle of a plot.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1189,7 +1181,7 @@ produced plot.
 <p>Process-related utilities</p>
 <dl class="function">
 <dt id="util.process.getpid_listeningonport">
-<tt class="descclassname">util.process.</tt><tt class="descname">getpid_listeningonport</tt><big>(</big><em>port</em><big>)</big><a class="reference internal" href="_modules/util/process.html#getpid_listeningonport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.getpid_listeningonport" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.process.</tt><tt class="descname">getpid_listeningonport</tt><big>(</big><em>port</em><big>)</big><a class="headerlink" href="#util.process.getpid_listeningonport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds if there is a running process listening for network
 connections on a specific port.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1210,7 +1202,7 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 
 <dl class="function">
 <dt id="util.process.is_process_running">
-<tt class="descclassname">util.process.</tt><tt class="descname">is_process_running</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/process.html#is_process_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.is_process_running" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.process.</tt><tt class="descname">is_process_running</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.process.is_process_running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds if a process is running, using its process ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1228,7 +1220,7 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 
 <dl class="function">
 <dt id="util.process.wait_until_process_finishes">
-<tt class="descclassname">util.process.</tt><tt class="descname">wait_until_process_finishes</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/process.html#wait_until_process_finishes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.wait_until_process_finishes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.process.</tt><tt class="descname">wait_until_process_finishes</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.process.wait_until_process_finishes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waits until the process with the specified ID finishes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1246,7 +1238,7 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 <p>Utilities for remote execution over SSH</p>
 <dl class="function">
 <dt id="util.remote.remote_exec">
-<tt class="descclassname">util.remote.</tt><tt class="descname">remote_exec</tt><big>(</big><em>cmd</em>, <em>transport</em>, <em>lines_queue=None</em><big>)</big><a class="reference internal" href="_modules/util/remote.html#remote_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.remote.remote_exec" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.remote.</tt><tt class="descname">remote_exec</tt><big>(</big><em>cmd</em>, <em>transport</em>, <em>lines_queue=None</em><big>)</big><a class="headerlink" href="#util.remote.remote_exec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remotely executes a shell command over SSH.</p>
 <p>Executes the command and combines the stdout and stderr into a single
 output stream. The stream is dynamically splitted at newline boundaries and
@@ -1279,7 +1271,7 @@ returned as a string, and the command exit status is returned.</p>
 <p>Module that computes statistic properties given a list of samples</p>
 <dl class="function">
 <dt id="util.stats.coefvariance">
-<tt class="descclassname">util.stats.</tt><tt class="descname">coefvariance</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#coefvariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.coefvariance" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.stats.</tt><tt class="descname">coefvariance</tt><big>(</big><em>samples</em><big>)</big><a class="headerlink" href="#util.stats.coefvariance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the co-efficient of variation of a number list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1298,7 +1290,7 @@ returned as a string, and the command exit status is returned.</p>
 
 <dl class="function">
 <dt id="util.stats.mean">
-<tt class="descclassname">util.stats.</tt><tt class="descname">mean</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.mean" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.stats.</tt><tt class="descname">mean</tt><big>(</big><em>samples</em><big>)</big><a class="headerlink" href="#util.stats.mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the mean of a number list</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1316,7 +1308,7 @@ returned as a string, and the command exit status is returned.</p>
 
 <dl class="function">
 <dt id="util.stats.stddev">
-<tt class="descclassname">util.stats.</tt><tt class="descname">stddev</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#stddev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.stddev" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.stats.</tt><tt class="descname">stddev</tt><big>(</big><em>samples</em><big>)</big><a class="headerlink" href="#util.stats.stddev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the standard deviation of a number list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1334,7 +1326,7 @@ returned as a string, and the command exit status is returned.</p>
 
 <dl class="function">
 <dt id="util.stats.variance">
-<tt class="descclassname">util.stats.</tt><tt class="descname">variance</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.variance" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.stats.</tt><tt class="descname">variance</tt><big>(</big><em>samples</em><big>)</big><a class="headerlink" href="#util.stats.variance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the variance of a number list</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1356,7 +1348,7 @@ returned as a string, and the command exit status is returned.</p>
 <p>Module with functions for getting system and process statistics</p>
 <dl class="function">
 <dt id="util.sysstats.get_java_options">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">get_java_options</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#get_java_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.get_java_options" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">get_java_options</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.get_java_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list with all java options of a process defined by its
 process ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1375,7 +1367,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cmdline">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cmdline</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cmdline" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cmdline</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.proc_cmdline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the command line of a process as a string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1393,7 +1385,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cpu_system_time">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_system_time</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_system_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_system_time" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_system_time</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.proc_cpu_system_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the CPU system time of a process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1411,7 +1403,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cpu_user_time">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_user_time</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_user_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_user_time" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_user_time</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.proc_cpu_user_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the CPU user time of a process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1429,7 +1421,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cwd">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cwd</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cwd" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cwd</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.proc_cwd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the process current working directory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1447,7 +1439,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.proc_num_fds">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_fds</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_num_fds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_fds" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_fds</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.proc_num_fds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of file descriptors opened by this process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1465,7 +1457,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.proc_num_threads">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_threads</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_num_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_threads" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_threads</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.proc_num_threads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of threads used by this process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1483,7 +1475,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.proc_vm_size">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_vm_size</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_vm_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_vm_size" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_vm_size</tt><big>(</big><em>pid</em><big>)</big><a class="headerlink" href="#util.sysstats.proc_vm_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the virtual memory size of a process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1501,7 +1493,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_free_memory_bytes">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_free_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_memory_bytes</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_free_memory_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system free memory in bytes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1517,7 +1509,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_free_ram_mb">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_ram_mb</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_free_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_ram_mb" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_ram_mb</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_free_ram_mb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system free memory in MB.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1533,7 +1525,7 @@ process ID.</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_iowait_time">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_iowait_time</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_iowait_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_iowait_time" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_iowait_time</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_iowait_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>For a given CPU, the I/O wait time is the time during which that CPU
 was idle (i.e. didn&#8217;t execute any tasks) and there was at least one
 outstanding disk I/O operation requested by a task scheduled on that
@@ -1552,7 +1544,7 @@ CPU (at the time it generated that I/O request).</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_load_average">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_load_average</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_load_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_load_average" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_load_average</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_load_average" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the system load average.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1568,7 +1560,7 @@ CPU (at the time it generated that I/O request).</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_nprocs">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_nprocs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_nprocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_nprocs" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_nprocs</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_nprocs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of CPUs in the system.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1584,7 +1576,7 @@ CPU (at the time it generated that I/O request).</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_total_memory_bytes">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_total_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_total_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_total_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_total_memory_bytes</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_total_memory_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system total memory in bytes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1600,7 +1592,7 @@ CPU (at the time it generated that I/O request).</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_used_memory_bytes">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_used_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_memory_bytes</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_used_memory_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system used memory in bytes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1616,7 +1608,7 @@ CPU (at the time it generated that I/O request).</p>
 
 <dl class="function">
 <dt id="util.sysstats.sys_used_ram_mb">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_ram_mb</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_used_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_ram_mb" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_ram_mb</tt><big>(</big><big>)</big><a class="headerlink" href="#util.sysstats.sys_used_ram_mb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system used memory in MB.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1682,12 +1674,6 @@ CPU (at the time it generated that I/O request).</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="stress_test.html"
-                        title="previous chapter">stress_test Package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="util.unittests.html"
-                        title="next chapter">unittests Package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/util.txt"
@@ -1719,17 +1705,11 @@ CPU (at the time it generated that I/O request).</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="util.unittests.html" title="unittests Package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="stress_test.html" title="stress_test Package"
-             >previous</a> |</li>
-        <li><a href="index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">NSTAT 1.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2015, INTRACOM TELECOM S.A..
+        &copy; Copyright 2015, NSTAT Team.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
