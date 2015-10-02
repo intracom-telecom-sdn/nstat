@@ -11,7 +11,7 @@
 # ------------------------------------------------------------------------------
 # VM configuration.
 # ------------------------------------------------------------------------------
-odlp2_vm_basebox = 'nstat_base_box'
+odlp2_vm_basebox = 'nstat_vm_base'
 user = ENV['USER']
 odlp2_vm_private_network_ip_host = '192.168.63.1'
 
@@ -42,11 +42,8 @@ if RUNNING_ENV == 'with-proxy'
     http_proxy = 'http://<IP_address>:<port_number>'
     puts 'with-proxy RUNNING_ENV'
 elsif RUNNING_ENV == 'no-proxy'
-    http_proxy = ''
     puts 'no-proxy RUNNING_ENV'
 else
-    http_proxy = ''
-    gitlab = ''
     puts 'Neutral RUNNING_ENV'
 end
 
