@@ -16,16 +16,16 @@ user = ENV['USER']
 odlp2_vm_private_network_ip_host = '192.168.63.1'
 
 # ------------------------------------------------------------------------------
-odlp2_vm_ram_vm_01 = '49152'
-odlp2_vm_cpus_vm_01 = '16'
+odlp2_vm_ram_vm_01 = '2048'
+odlp2_vm_cpus_vm_01 = '2'
 odlp2_vm_private_network_ip_vm_01 = '<IP_address>'
 odlp2_vm_hostname_vm_01 = 'vm01'
 uid_01 = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + odlp2_vm_private_network_ip_vm_01
 odlp2_vm_name_vm_01 = 'odlp2_ubuntu_box_'  + user + uid_01 + '_vm01'
 
 
-odlp2_vm_ram_vm_02 = '32768'
-odlp2_vm_cpus_vm_02 = '16'
+odlp2_vm_ram_vm_02 = '1024'
+odlp2_vm_cpus_vm_02 = '2'
 odlp2_vm_private_network_ip_vm_02 = '<IP_address>'
 odlp2_vm_hostname_vm_02 = 'vm02'
 uid_02 = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + odlp2_vm_private_network_ip_vm_02

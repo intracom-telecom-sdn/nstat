@@ -15,7 +15,7 @@
 # make a new nstat_vm_basebox based on 'ubuntu/trusty64'
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'ubuntu/trusty64'
-nstat_vm_ram = '8192'
+nstat_vm_ram = '2048'
 nstat_vm_cpus = '2'
 
 
