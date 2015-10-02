@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>emulators.mininet.mininet_custom_boot &mdash; ODLP-NSTAT 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="ODLP-NSTAT 1.0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for emulators.mininet.mininet_custom_boot</h1><div class="highlight"><pre>
+<span class="c">#! /usr/bin/python</span>
+
+<span class="c"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c">#</span>
+<span class="c"># This program and the accompanying materials are made available under the</span>
+<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;With this module re start the REST Mininet server, that manages a Mininet</span>
+<span class="sd">topology&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">bottle</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">LinearTopo</span> <span class="kn">import</span> <span class="n">LinearTopo</span>
+<span class="kn">from</span> <span class="nn">MeshTopo</span> <span class="kn">import</span> <span class="n">MeshTopo</span>
+<span class="kn">from</span> <span class="nn">DisconnectedTopo</span> <span class="kn">import</span> <span class="n">DisconnectedTopo</span>
+
+<span class="c"># We must define logging level separately because this module runs</span>
+<span class="c"># independently.</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<span class="n">MININET_TOPO</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="nd">@bottle.route</span><span class="p">(</span><span class="s">&#39;/init/controller/&lt;ip_address&gt;/port/&lt;port&gt;/topology/&lt;topo&gt;/size/&lt;size&gt;/group/&lt;group&gt;/delay/&lt;delay&gt;/hosts/&lt;hosts&gt;&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">ip_address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">topo</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">hosts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes a new topology object. The type of the new topology is</span>
+<span class="sd">    defined by the topo parameter.</span>
+
+<span class="sd">    :param ip_address: controller IP address</span>
+<span class="sd">    :param port: controller OF port number</span>
+<span class="sd">    :param topo: type of the topology we want to start (&quot;DisconnectedTopo&quot;,</span>
+<span class="sd">    &quot;LinearTopo&quot;, &quot;MeshTopo&quot;)</span>
+<span class="sd">    :param size: initial number of switches to boot the topology with</span>
+<span class="sd">    :param group: group addition size</span>
+<span class="sd">    :paran delay: group addition delay (in milliseconds)</span>
+<span class="sd">    :param hosts: number of hosts per switch.</span>
+<span class="sd">    :type ip_address: str</span>
+<span class="sd">    :type port: int</span>
+<span class="sd">    :type topo: str</span>
+<span class="sd">    :type size: int</span>
+<span class="sd">    :type group: int</span>
+<span class="sd">    :type delay: int</span>
+<span class="sd">    :param hosts: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">MININET_TOPO</span>
+    <span class="n">MININET_TOPO</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">topo</span><span class="p">)(</span><span class="n">ip_address</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">),</span>
+                              <span class="nb">int</span><span class="p">(</span><span class="n">delay</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">hosts</span><span class="p">))</span>
+    <span class="n">MININET_TOPO</span><span class="o">.</span><span class="n">init_topology</span><span class="p">()</span>
+</div>
+<span class="nd">@bottle.route</span><span class="p">(</span><span class="s">&#39;/start&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the start_topology() method of the current topology object to start the</span>
+<span class="sd">    switches of the topology.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MININET_TOPO</span><span class="o">.</span><span class="n">start_topology</span><span class="p">()</span>
+</div>
+<span class="nd">@bottle.route</span><span class="p">(</span><span class="s">&#39;/add_switches/&lt;num_switches&gt;&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="add_switches"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.add_switches">[docs]</a><span class="k">def</span> <span class="nf">add_switches</span><span class="p">(</span><span class="n">num_switches</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the add_switches() method of the current topology object to add</span>
+<span class="sd">    switches to the topology.</span>
+
+<span class="sd">    :param num_switches: the number of switches to add to the topology.</span>
+<span class="sd">    :type num_switches: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">MININET_TOPO</span>
+    <span class="n">MININET_TOPO</span><span class="o">.</span><span class="n">add_switches</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_switches</span><span class="p">))</span>
+</div>
+<span class="nd">@bottle.route</span><span class="p">(</span><span class="s">&#39;/remove_switches/&lt;num_switches&gt;&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="remove_switches"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.remove_switches">[docs]</a><span class="k">def</span> <span class="nf">remove_switches</span><span class="p">(</span><span class="n">num_switches</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the remove_switches() method of the current topology object to remove</span>
+<span class="sd">    switches from the topology.</span>
+
+<span class="sd">    :param num_switches: the number of switches to remove</span>
+<span class="sd">    :type num_switches: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">MININET_TOPO</span>
+    <span class="n">MININET_TOPO</span><span class="o">.</span><span class="n">remove_switches</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_switches</span><span class="p">))</span>
+
+</div>
+<span class="nd">@bottle.route</span><span class="p">(</span><span class="s">&#39;/get_switches&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="get_switches"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.get_switches">[docs]</a><span class="k">def</span> <span class="nf">get_switches</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the get_switches() method of the current topology object to query the</span>
+<span class="sd">    current number of switches.</span>
+
+<span class="sd">    :returns: number of switches of the topology</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">MININET_TOPO</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">MININET_TOPO</span><span class="o">.</span><span class="n">get_switches</span><span class="p">())</span>
+</div>
+<span class="nd">@bottle.route</span><span class="p">(</span><span class="s">&#39;/stop&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="stop"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.stop">[docs]</a><span class="k">def</span> <span class="nf">stop</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the stop_topology() method of the current topology object to terminate the</span>
+<span class="sd">    topology.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">MININET_TOPO</span>
+    <span class="n">MININET_TOPO</span><span class="o">.</span><span class="n">stop_topology</span><span class="p">()</span>
+</div>
+<span class="nd">@bottle.route</span><span class="p">(</span><span class="s">&#39;/ping_all&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ping_all"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.ping_all">[docs]</a><span class="k">def</span> <span class="nf">ping_all</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the ping_all() method of the current topology object to issue</span>
+<span class="sd">    all-to-all ping commands</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">global</span> <span class="n">MININET_TOPO</span>
+    <span class="n">MININET_TOPO</span><span class="o">.</span><span class="n">ping_all</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="rest_start"><a class="viewcode-back" href="../../../emulators.mininet.html#emulators.mininet.mininet_custom_boot.rest_start">[docs]</a><span class="k">def</span> <span class="nf">rest_start</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Starts Mininet REST server&quot;&quot;&quot;</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--rest-host&#39;</span><span class="p">,</span>
+                        <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s">&#39;rest_host&#39;</span><span class="p">,</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&#39;IP address to start Mininet REST server&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--rest-port&#39;</span><span class="p">,</span>
+                        <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s">&#39;rest_port&#39;</span><span class="p">,</span>
+                        <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&#39;Port number to start Mininet REST server&#39;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">bottle</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">rest_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">rest_port</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">rest_start</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, INTRACOM TELECOM S.A..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

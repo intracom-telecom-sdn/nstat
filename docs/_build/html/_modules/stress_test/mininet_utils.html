@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.mininet_utils &mdash; ODLP-NSTAT 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="ODLP-NSTAT 1.0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for stress_test.mininet_utils</h1><div class="highlight"><pre>
+<span class="c"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c">#</span>
+<span class="c"># This program and the accompanying materials are made available under the</span>
+<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Mininet-related utilities</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">util.customsubprocess</span>
+<span class="kn">import</span> <span class="nn">util.netutil</span>
+
+<div class="viewcode-block" id="start_mininet_server"><a class="viewcode-back" href="../../stress_test.html#stress_test.mininet_utils.start_mininet_server">[docs]</a><span class="k">def</span> <span class="nf">start_mininet_server</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span> <span class="n">mininet_server_remote_path</span><span class="p">,</span>
+                         <span class="n">mininet_rest_server_host</span><span class="p">,</span> <span class="n">mininet_rest_server_port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remotely boots a REST server on the Mininet node over an SSH connection</span>
+
+<span class="sd">    :param mininet_ssh_session: ssh session used to issue remote command</span>
+<span class="sd">    :param mininet_server_remote_path: path where mininet_custom_boot.py is</span>
+<span class="sd">    stored and used to start the mininet topology.</span>
+<span class="sd">    :param mininet_rest_server_host: hostname/IP the REST server should listen</span>
+<span class="sd">    to</span>
+<span class="sd">    :param mininet_rest_server_port: port the REST server should listen to</span>
+<span class="sd">    :type mininet_ssh_session: ssh connection object</span>
+<span class="sd">    :type mininet_server_remote_path: str</span>
+<span class="sd">    :type mininet_rest_server_host: str</span>
+<span class="sd">    :type mininet_rest_server_port: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">boot_command</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;sudo python {0} --rest-host {1} --rest-port {2}&#39;</span><span class="o">.</span>
+                    <span class="n">format</span><span class="p">(</span><span class="n">mininet_server_remote_path</span><span class="p">,</span> <span class="n">mininet_rest_server_host</span><span class="p">,</span>
+                           <span class="n">mininet_rest_server_port</span><span class="p">))</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span> <span class="n">boot_command</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;[start_mininet_server] Boot command: &#39;</span><span class="p">,</span>
+                                   <span class="n">boot_command</span><span class="p">))</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="init_mininet_topo"><a class="viewcode-back" href="../../stress_test.html#stress_test.mininet_utils.init_mininet_topo">[docs]</a><span class="k">def</span> <span class="nf">init_mininet_topo</span><span class="p">(</span><span class="n">mininet_init_topo_handler</span><span class="p">,</span> <span class="n">mininet_rest_server_host</span><span class="p">,</span>
+                       <span class="n">mininet_rest_server_port</span><span class="p">,</span> <span class="n">controller_ip</span><span class="p">,</span>
+                       <span class="n">controller_port</span><span class="p">,</span> <span class="n">mininet_topology_type</span><span class="p">,</span> <span class="n">mininet_size</span><span class="p">,</span>
+                       <span class="n">mininet_group_size</span><span class="p">,</span> <span class="n">mininet_group_delay_ms</span><span class="p">,</span>
+                       <span class="n">mininet_hosts_per_switch</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Locally calls the Mininet handler that remotely initializes a topology on</span>
+<span class="sd">    a remote Mininet node</span>
+
+<span class="sd">    :param mininet_init_topo_handler: full path of the handler to initialize </span>
+<span class="sd">    the mininet topology</span>
+<span class="sd">    :param mininet_rest_server_host: hostname/IP the REST server listens to</span>
+<span class="sd">    :param mininet_rest_server_port: port the REST server listens to</span>
+<span class="sd">    :param controller_ip: controller IP</span>
+<span class="sd">    :param controller_port: controller OpenFlow port</span>
+<span class="sd">    :param mininet_topology_type: Type of the network topology. It can have </span>
+<span class="sd">    one of the following values (DisconnectedTopo,LinearTopo or MeshTopo)</span>
+<span class="sd">    :param mininet_size: Size of the mininet tpology</span>
+<span class="sd">    :param mininet_group_size: Size of the mininet Group</span>
+<span class="sd">    :param mininet_group_delay_ms: Delay in which mininet groups are</span>
+<span class="sd">    initialized</span>
+<span class="sd">    :param mininet_hosts_per_switch: Number of Hosts each mininet switch is</span>
+<span class="sd">    attached to</span>
+<span class="sd">    :type mininet_init_topo_handler: str</span>
+<span class="sd">    :type mininet_rest_server_host: str</span>
+<span class="sd">    :type mininet_rest_server_port: int</span>
+<span class="sd">    :type controller_ip: str</span>
+<span class="sd">    :type controller_port: int</span>
+<span class="sd">    :type Topology: str</span>
+<span class="sd">    :type mininet_size: int</span>
+<span class="sd">    :type mininet_group_size: int</span>
+<span class="sd">    :type mininet_group_delay: int</span>
+<span class="sd">    :type mininet_hosts_per_switch: int</span>
+<span class="sd">    :type start_topo_command: list&lt;str&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">init_topo_command</span> <span class="o">=</span> <span class="p">[</span><span class="n">mininet_init_topo_handler</span><span class="p">,</span> <span class="n">mininet_rest_server_host</span><span class="p">,</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="n">mininet_rest_server_port</span><span class="p">),</span> <span class="n">controller_ip</span><span class="p">,</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="n">controller_port</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mininet_topology_type</span><span class="p">),</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="n">mininet_size</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">mininet_group_size</span><span class="p">),</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="n">mininet_group_delay_ms</span><span class="p">),</span>
+                          <span class="nb">str</span><span class="p">(</span><span class="n">mininet_hosts_per_switch</span><span class="p">)]</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">customsubprocess</span><span class="o">.</span><span class="n">check_output_streaming</span><span class="p">(</span><span class="n">init_topo_command</span><span class="p">,</span>
+        <span class="s">&#39;[init_mininet_topo] Topology type: {0}&#39;</span><span class="o">.</span>
+        <span class="n">format</span><span class="p">(</span><span class="n">mininet_topology_type</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="start_mininet_topo"><a class="viewcode-back" href="../../stress_test.html#stress_test.mininet_utils.start_mininet_topo">[docs]</a><span class="k">def</span> <span class="nf">start_mininet_topo</span><span class="p">(</span><span class="n">mininet_start_handler</span><span class="p">,</span> <span class="n">mininet_rest_server_host</span><span class="p">,</span>
+                      <span class="n">mininet_rest_server_port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Locally calls the Mininet handler that remotely starts an initialized</span>
+<span class="sd">    topology on a remote Mininet node</span>
+
+<span class="sd">    :param mininet_start_handler: full path of the handler to start the Mininet</span>
+<span class="sd">    topology</span>
+<span class="sd">    :param mininet_rest_server_host: hostname/IP the REST server listens to</span>
+<span class="sd">    :param mininet_rest_server_port: port the REST server listens to</span>
+<span class="sd">    :type mininet_start_handler: str</span>
+<span class="sd">    :type mininet_rest_server_host: str</span>
+<span class="sd">    :type mininet_rest_server_port: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">util</span><span class="o">.</span><span class="n">customsubprocess</span><span class="o">.</span><span class="n">check_output_streaming</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">mininet_start_handler</span><span class="p">,</span> <span class="n">mininet_rest_server_host</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">mininet_rest_server_port</span><span class="p">)],</span> <span class="s">&#39;[mininet_start_handler]&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="stop_mininet_topo"><a class="viewcode-back" href="../../stress_test.html#stress_test.mininet_utils.stop_mininet_topo">[docs]</a><span class="k">def</span> <span class="nf">stop_mininet_topo</span><span class="p">(</span><span class="n">mininet_stop_handler</span><span class="p">,</span> <span class="n">mininet_rest_server_host</span><span class="p">,</span>
+                      <span class="n">mininet_rest_server_port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Locally calls the Mininet handler that remotely stops a topology on a</span>
+<span class="sd">    remote Mininet node</span>
+
+<span class="sd">    :param mininet_stop_handler: full path of the handler to stop the Mininet</span>
+<span class="sd">    topology</span>
+<span class="sd">    :param mininet_rest_server_host: hostname/IP the REST server listens to</span>
+<span class="sd">    :param mininet_rest_server_port: port the REST server listens to</span>
+<span class="sd">    :type mininet_stop_handler: str</span>
+<span class="sd">    :type mininet_rest_server_host: str</span>
+<span class="sd">    :type mininet_rest_server_port: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">util</span><span class="o">.</span><span class="n">customsubprocess</span><span class="o">.</span><span class="n">check_output_streaming</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">mininet_stop_handler</span><span class="p">,</span> <span class="n">mininet_rest_server_host</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">mininet_rest_server_port</span><span class="p">)],</span> <span class="s">&#39;[mininet_stop_handler]&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="stop_mininet_server"><a class="viewcode-back" href="../../stress_test.html#stress_test.mininet_utils.stop_mininet_server">[docs]</a><span class="k">def</span> <span class="nf">stop_mininet_server</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span> <span class="n">mininet_rest_server_port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remotely stops the REST server on the Mininet node</span>
+
+<span class="sd">    :param mininet_ssh_session: ssh session used to issue remote command</span>
+<span class="sd">    :param mininet_rest_server_port: port the REST server listens to</span>
+<span class="sd">    :type test_type: ssh connection object</span>
+<span class="sd">    :type mininet_rest_server_port: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">get_pid_cmd</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;sudo netstat -antup --numeric-ports | grep &#39;:&quot;&quot;&quot;</span> <span class="o">+</span> \
+                  <span class="nb">str</span><span class="p">(</span><span class="n">mininet_rest_server_port</span><span class="p">)</span> <span class="o">+</span> \
+                  <span class="sd">&quot;&quot;&quot; &#39; | awk &#39;{print $NF}&#39; | awk -F &#39;/&#39; &#39;{print $1}&#39;&quot;&quot;&quot;</span>
+    <span class="n">cmd_in</span><span class="p">,</span> <span class="n">cmd_out</span><span class="p">,</span> <span class="n">cmd_err</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span>
+                                                            <span class="n">get_pid_cmd</span><span class="p">)</span>
+    <span class="n">mininet_server_pid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cmd_out</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">mininet_server_pid</span> <span class="o">=</span> <span class="n">mininet_server_pid</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span> <span class="s">&#39;sudo kill -9 {0}&#39;</span><span class="o">.</span>
+                                 <span class="n">format</span><span class="p">(</span><span class="n">mininet_server_pid</span><span class="p">))</span>
+    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span> <span class="s">&#39;sudo mn -c&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="delete_mininet_handlers"><a class="viewcode-back" href="../../stress_test.html#stress_test.mininet_utils.delete_mininet_handlers">[docs]</a><span class="k">def</span> <span class="nf">delete_mininet_handlers</span><span class="p">(</span><span class="n">mininet_ssh_server_ip</span><span class="p">,</span> <span class="n">mininet_user</span><span class="p">,</span> <span class="n">mininet_pass</span><span class="p">,</span>
+                            <span class="n">mininet_folder</span><span class="p">,</span> <span class="n">remote_port</span><span class="o">=</span><span class="mi">22</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans up Mininet handlers on the remote Mininet node</span>
+
+<span class="sd">    :param mininet_ssh_server_ip: IP address of the ssh server on the Mininet</span>
+<span class="sd">    node</span>
+<span class="sd">    :param mininet_user: username for the Mininet node</span>
+<span class="sd">    :param mininet_pass: password for the Mininet node</span>
+<span class="sd">    :param mininet_folder: folder with Mininet handlers</span>
+<span class="sd">    :param remote_port: port for mininet_ssh_server_ip</span>
+<span class="sd">    :type mininet_ssh_server_ip: str</span>
+<span class="sd">    :type mininet_user: str</span>
+<span class="sd">    :type mininet_pass: str</span>
+<span class="sd">    :type mininet_folder: str</span>
+<span class="sd">    :type remote_port: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">remove_remote_directory</span><span class="p">(</span><span class="n">mininet_ssh_server_ip</span><span class="p">,</span> <span class="n">mininet_user</span><span class="p">,</span>
+                                         <span class="n">mininet_pass</span><span class="p">,</span> <span class="n">mininet_folder</span><span class="p">,</span>
+                                         <span class="n">remote_port</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="copy_mininet_handlers"><a class="viewcode-back" href="../../stress_test.html#stress_test.mininet_utils.copy_mininet_handlers">[docs]</a><span class="k">def</span> <span class="nf">copy_mininet_handlers</span><span class="p">(</span><span class="n">mininet_ssh_server_ip</span><span class="p">,</span> <span class="n">mininet_user</span><span class="p">,</span> <span class="n">mininet_pass</span><span class="p">,</span>
+                          <span class="n">mininet_source</span><span class="p">,</span> <span class="n">mininet_target</span><span class="p">,</span> <span class="n">remote_port</span><span class="o">=</span><span class="mi">22</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copies Mininet handlers on the remote Mininet node</span>
+
+<span class="sd">    :param mininet_ssh_server_ip: IP address of the ssh server on the Mininet</span>
+<span class="sd">    node</span>
+<span class="sd">    :param mininet_user: username for the Mininet node</span>
+<span class="sd">    :param mininet_pass: password for the Mininet node</span>
+<span class="sd">    :param mininet_source: folder with Mininet handlers</span>
+<span class="sd">    :param mininet_target: folder where Mininet handlers will be copied</span>
+<span class="sd">    :param remote_port: port for mininet_ssh_server_ip</span>
+<span class="sd">    :type mininet_ssh_server_ip: str</span>
+<span class="sd">    :type mininet_user: str</span>
+<span class="sd">    :type mininet_pass: str</span>
+<span class="sd">    :type mininet_folder: str</span>
+<span class="sd">    :type remote_port: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">copy_directory_to_target</span><span class="p">(</span><span class="n">mininet_ssh_server_ip</span><span class="p">,</span> <span class="n">mininet_user</span><span class="p">,</span>
+                                          <span class="n">mininet_pass</span><span class="p">,</span> <span class="n">mininet_source</span><span class="p">,</span>
+                                          <span class="n">mininet_target</span><span class="p">,</span> <span class="n">remote_port</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, INTRACOM TELECOM S.A..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

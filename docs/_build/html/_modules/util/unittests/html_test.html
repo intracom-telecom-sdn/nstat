@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util.unittests.html_test &mdash; ODLP-NSTAT 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="ODLP-NSTAT 1.0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for util.unittests.html_test</h1><div class="highlight"><pre>
+<span class="c"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c">#</span>
+<span class="c"># This program and the accompanying materials are made available under the</span>
+<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;Unittest Module for util/html.py.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">util.html</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<div class="viewcode-block" id="HtmlGenerateHtmlFoot"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHtmlFoot">[docs]</a><span class="k">class</span> <span class="nc">HtmlGenerateHtmlFoot</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unittest class that tests the different functionalities of</span>
+<span class="sd">    generate_html_foot() method in module util/html.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HtmlGenerateHtmlFoot.setUp"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHtmlFoot.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the testing environment parameters for the</span>
+<span class="sd">        Unittest class htmlGenerateHtmlFoot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">foot_output</span> <span class="o">=</span> <span class="s">&#39;&lt;p&gt;testing&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">foot_input</span> <span class="o">=</span> <span class="s">&#39;&lt;p&gt;testing&lt;/p&gt;&#39;</span>
+</div>
+<div class="viewcode-block" id="HtmlGenerateHtmlFoot.test01_generate_html_foot"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHtmlFoot.test01_generate_html_foot">[docs]</a>    <span class="k">def</span> <span class="nf">test01_generate_html_foot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the generate_html_footl() method of util/html.py.</span>
+<span class="sd">        It checks the equality of the result of an input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertMultiLineEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foot_output</span><span class="p">,</span>
+                                  <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span>
+                                  <span class="n">generate_html_foot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">foot_input</span><span class="p">),</span>
+                                  <span class="s">&#39;Testing generate_foot output&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="HtmlGenerateHtmlFoot.tearDown"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHtmlFoot.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleans the testing environment parameters for the Unittest</span>
+<span class="sd">        class htmlGenerateHtmlFoot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">foot_output</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">foot_input</span>
+</div></div>
+<div class="viewcode-block" id="HtmlGenerateHead"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHead">[docs]</a><span class="k">class</span> <span class="nc">HtmlGenerateHead</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unittest class that tests the different functionalities of</span>
+<span class="sd">    generate_html_head() method in module util/html.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HtmlGenerateHead.setUp"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHead.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the testing environment parameters for for the</span>
+<span class="sd">        Unittest class htmlGenerateHead</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_output</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&#39;</span>
+                            <span class="s">&#39;&lt;title&gt;Southbound testing&lt;/title&gt;&#39;</span>
+                            <span class="s">&#39;&lt;meta http-equiv=&quot;Content-Type&quot; &#39;</span>
+                            <span class="s">&#39;content=&quot;text/html;charset=UTF-8&quot;&gt; &#39;</span>
+                            <span class="s">&#39;&lt;style&gt;&lt;!--- Here goes CSS --&gt;&lt;/style&gt;&#39;</span>
+                            <span class="s">&#39;&lt;!-- Here goes JavaScript --&gt;&lt;/head&gt;&lt;body&gt;&#39;</span>
+                            <span class="s">&#39;&lt;!-- Here goes Header content --&gt;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_input</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&lt;!--- Here goes CSS --&gt;&#39;</span><span class="p">,</span>
+                           <span class="s">&#39;&lt;!-- Here goes JavaScript --&gt;&#39;</span><span class="p">,</span>
+                           <span class="s">&#39;&lt;!-- Here goes Header content --&gt;&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="HtmlGenerateHead.test01_generate_html_head"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHead.test01_generate_html_head">[docs]</a>    <span class="k">def</span> <span class="nf">test01_generate_html_head</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the generate_html_headl() method of util/html.py.</span>
+<span class="sd">        It checks the equality of the result of an input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertMultiLineEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head_output</span><span class="p">,</span>
+                                  <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span>
+                                  <span class="n">generate_html_head</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">head_input</span><span class="p">),</span>
+                                  <span class="s">&#39;Testing generate_head output&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="HtmlGenerateHead.tearDown"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlGenerateHead.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleans the testing environment parameters for for the</span>
+<span class="sd">        Unittest class htmlGenerateHead</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_input</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_output</span>
+</div></div>
+<div class="viewcode-block" id="HtmlIsAListOfDictionaries"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlIsAListOfDictionaries">[docs]</a><span class="k">class</span> <span class="nc">HtmlIsAListOfDictionaries</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unittest class that tests the different functionalities of the</span>
+<span class="sd">    isalistofdictionaries() function in module util/html.py.</span>
+<span class="sd">    The investigated cases are the following</span>
+<span class="sd">    - Case that the input is a list of dictionaries</span>
+<span class="sd">    - Case that the input is a list that its elements are not dictionaries</span>
+<span class="sd">    - Case that the input is not a list at all</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="HtmlIsAListOfDictionaries.setUpClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlIsAListOfDictionaries.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cls</span><span class="o">.</span><span class="n">list_of_dictionaries</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;a&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;c&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">}]</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">not_list_of_dictionaries</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="s">&#39;This_is_just_noise&#39;</span>
+</div>
+<div class="viewcode-block" id="HtmlIsAListOfDictionaries.test01_isalistofdictionaries"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlIsAListOfDictionaries.test01_isalistofdictionaries">[docs]</a>    <span class="k">def</span> <span class="nf">test01_isalistofdictionaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the isalistofdictionaries() method of</span>
+<span class="sd">        util/html.py. It checks the equality of the result of an input.</span>
+<span class="sd">        - in this case is checked the result, when the provided input is a</span>
+<span class="sd">        list of dictionaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span>
+                        <span class="n">isalistofdictionaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_of_dictionaries</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s">&#39;Testing isalistofdictionaries output. &#39;</span>
+                         <span class="s">&#39;Assert true&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="HtmlIsAListOfDictionaries.test02_isalistofdictionaries"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlIsAListOfDictionaries.test02_isalistofdictionaries">[docs]</a>    <span class="k">def</span> <span class="nf">test02_isalistofdictionaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the isalistofdictionaries() method of</span>
+<span class="sd">        util/html.py. Checks the equality of the result of an input.</span>
+<span class="sd">        - in this case is checked the result, when the provided input is a</span>
+<span class="sd">        list that its elements are not dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span>
+                         <span class="n">isalistofdictionaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span>
+                                                   <span class="n">not_list_of_dictionaries</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&#39;Testing isalistofdictionaries output. &#39;</span>
+                          <span class="s">&#39;Assert false 1&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="HtmlIsAListOfDictionaries.test03_isalistofdictionaries"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlIsAListOfDictionaries.test03_isalistofdictionaries">[docs]</a>    <span class="k">def</span> <span class="nf">test03_isalistofdictionaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the isalistofdictionaries() method of</span>
+<span class="sd">        util/html.py. Checks the equality of the result of an input.</span>
+<span class="sd">        - in this case is checked the result, when the provided input is not</span>
+<span class="sd">        a list at all.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">isalistofdictionaries</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s">&#39;Testing isalistofdictionaries output. &#39;</span>
+                          <span class="s">&#39;Assert false 2&#39;</span><span class="p">))</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="HtmlIsAListOfDictionaries.tearDownClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlIsAListOfDictionaries.tearDownClass">[docs]</a>    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleans the testing environment parameters for Unittest</span>
+<span class="sd">        class</span>
+<span class="sd">        htmlIsAListOfDictionaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">list_of_dictionaries</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">not_list_of_dictionaries</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">noise</span>
+</div></div>
+<div class="viewcode-block" id="HtmlMultyDictToHtml"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlMultyDictToHtml">[docs]</a><span class="k">class</span> <span class="nc">HtmlMultyDictToHtml</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unittest class that tests the different functionalities of</span>
+<span class="sd">    multy_dict_to_html() function in module util/html.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="HtmlMultyDictToHtml.setUpClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlMultyDictToHtml.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the testing environment parameters for the</span>
+<span class="sd">        Unittest class htmlMultyDictToHtml.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_input</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&lt;table  &#39;</span>
+                                     <span class="s">&#39;class=&quot;tableWithFloatingHeader&quot;&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;thead&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; &#39;</span>
+                                     <span class="s">&#39;class=&quot;title&quot;&gt;Test Table&lt;/th&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;Throughput &#39;</span>
+                                     <span class="s">&#39;flowmods/sec&lt;/th&gt;&lt;th&gt;switches&lt;/th&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;300&lt;/td&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;td&gt;700&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;odd&quot;&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;td&gt;1000&lt;/td&gt;&lt;td&gt;800&lt;/td&gt;&lt;/tr&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;/tbody&gt;&lt;/table&gt;&#39;</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">data_fields</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">data_fields</span><span class="p">[</span><span class="s">&#39;result2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Throughput flowmods/sec&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">data_fields</span><span class="p">[</span><span class="s">&#39;result3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;switches&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_input</span><span class="o">.</span><span class="n">append</span><span class="p">(([{</span><span class="s">&#39;result1&#39;</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span> <span class="s">&#39;result2&#39;</span><span class="p">:</span><span class="mi">300</span><span class="p">,</span>
+                                       <span class="s">&#39;result3&#39;</span><span class="p">:</span><span class="mi">700</span><span class="p">},</span>
+                                      <span class="p">{</span><span class="s">&#39;result1&#39;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span> <span class="s">&#39;result2&#39;</span><span class="p">:</span><span class="mi">1000</span><span class="p">,</span>
+                                       <span class="s">&#39;result3&#39;</span><span class="p">:</span><span class="mi">800</span><span class="p">}],</span>
+                                     <span class="s">&#39;Test Table&#39;</span><span class="p">,</span>
+                                     <span class="n">cls</span><span class="o">.</span><span class="n">data_fields</span><span class="p">))</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&lt;table  &#39;</span>
+                                     <span class="s">&#39;class=&quot;tableWithFloatingHeader&quot;&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;thead&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;tr&gt;&lt;th&gt;result1&lt;/th&gt;&lt;th&gt;result2&lt;/th&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;th&gt;result3&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;tr&gt;&lt;td&gt;800&lt;/td&gt;&lt;td&gt;1000&lt;/td&gt;&lt;td&gt;90&#39;</span>
+                                     <span class="s">&#39;&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;odd&quot;&gt;&#39;</span>
+                                     <span class="s">&#39;&lt;td&gt;9800&lt;/td&gt;&lt;td&gt;1900&lt;/td&gt;&lt;td&gt;900&#39;</span>
+                                     <span class="s">&#39;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&#39;</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data1</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data1</span><span class="p">[</span><span class="s">&#39;result1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">800</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data1</span><span class="p">[</span><span class="s">&#39;result2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data1</span><span class="p">[</span><span class="s">&#39;result3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">90</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data2</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data2</span><span class="p">[</span><span class="s">&#39;result1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">9800</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data2</span><span class="p">[</span><span class="s">&#39;result2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1900</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">row_data2</span><span class="p">[</span><span class="s">&#39;result3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">900</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_input</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">cls</span><span class="o">.</span><span class="n">row_data1</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">row_data2</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="HtmlMultyDictToHtml.test01_multy_dict_to_html"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlMultyDictToHtml.test01_multy_dict_to_html">[docs]</a>    <span class="k">def</span> <span class="nf">test01_multy_dict_to_html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests the multy_dict_to_html() method of util/html.py.</span>
+<span class="sd">        It checks the equality of the result of an input.</span>
+<span class="sd">        - In this test case we are using only the compulsory arguments of the</span>
+<span class="sd">        method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span>\
+        <span class="n">assertMultiLineEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multy_dict_output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                             <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">multi_dict_to_html</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span>
+                                                          <span class="n">multy_dict_input</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                             <span class="p">(</span><span class="s">&#39;Testing multy_dict_to_&#39;</span>
+                              <span class="s">&#39;html_multiline output test 2&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="HtmlMultyDictToHtml.test02_multy_dict_to_html"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlMultyDictToHtml.test02_multy_dict_to_html">[docs]</a>    <span class="k">def</span> <span class="nf">test02_multy_dict_to_html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests the multy_dict_to_html() method of util/html.py.</span>
+<span class="sd">        It checks the equality of the result of an input. In this test case we</span>
+<span class="sd">        are using only the compulsory arguments of the method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span>\
+        <span class="n">assertMultiLineEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multy_dict_output</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                             <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">multi_dict_to_html</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span>
+                                                          <span class="n">multy_dict_input</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                             <span class="p">(</span><span class="s">&#39;Testing multy_dict&#39;</span>
+                              <span class="s">&#39;_to_html_multiline output test 2&#39;</span><span class="p">))</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="HtmlMultyDictToHtml.tearDownClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlMultyDictToHtml.tearDownClass">[docs]</a>    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleans the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_input</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">multy_dict_output</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">row_data1</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">row_data2</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">data_fields</span>
+</div></div>
+<div class="viewcode-block" id="HtmlSingleDictToHtml"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlSingleDictToHtml">[docs]</a><span class="k">class</span> <span class="nc">HtmlSingleDictToHtml</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unittest class to test the different functionalities of</span>
+<span class="sd">    single_dict_to_html() function in module util/html.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HtmlSingleDictToHtml.setUp"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlSingleDictToHtml.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that initializes the testing environment parameters for the</span>
+<span class="sd">        Unittest class htmlSingleDictToHtml</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_row</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_row</span><span class="p">[</span><span class="s">&#39;row_title1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Throughput flowmods/sec&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_row</span><span class="p">[</span><span class="s">&#39;row_title3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;switches&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">single_dict_output</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&lt;table  &#39;</span>
+                                   <span class="s">&#39;class=&quot;tableWithFloatingHeader&quot;&gt;&#39;</span>
+                                   <span class="s">&#39;&lt;thead&gt;&lt;tr&gt;&lt;th class=&quot;title&quot; colspan=2&quot;&gt;&#39;</span>
+                                   <span class="s">&#39;Test table&lt;/th&gt;&lt;/tr&gt;&#39;</span>
+                                   <span class="s">&#39;&lt;tr&gt;&lt;th&gt;Attributes&lt;/th&gt;&#39;</span>
+                                   <span class="s">&#39;&lt;th&gt;Values&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&#39;</span>
+                                   <span class="s">&#39;&lt;td style=&quot;font-weight:bold;&quot;&gt;&#39;</span>
+                                   <span class="s">&#39;Throughput flowmods/sec&lt;/td&gt;&lt;td&gt;12&lt;/td&gt;&#39;</span>
+                                   <span class="s">&#39;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">single_dict_input</span> <span class="o">=</span> <span class="p">({</span><span class="s">&#39;row_title1&#39;</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span> <span class="s">&#39;row_title2&#39;</span><span class="p">:</span><span class="mi">45</span><span class="p">},</span>
+                                  <span class="s">&#39;Attributes&#39;</span><span class="p">,</span> <span class="s">&#39;Values&#39;</span><span class="p">,</span>
+                                  <span class="s">&#39;Test table&#39;</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">data_row</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="HtmlSingleDictToHtml.test01_single_dict_to_html"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlSingleDictToHtml.test01_single_dict_to_html">[docs]</a>    <span class="k">def</span> <span class="nf">test01_single_dict_to_html</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that tests the single_dict_to_html() method of util/html.py</span>
+<span class="sd">        It checks the equality of the result of an input.</span>
+<span class="sd">        - In this test case we are testing all the features of the method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span>\
+        <span class="n">assertMultiLineEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">single_dict_output</span><span class="p">,</span>
+                             <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">single_dict_to_html</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span>
+                                                           <span class="n">single_dict_input</span><span class="p">),</span>
+                             <span class="p">(</span><span class="s">&#39;Testing single_dict&#39;</span>
+                              <span class="s">&#39;_to_html_multiline output&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="HtmlSingleDictToHtml.tearDown"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.HtmlSingleDictToHtml.tearDown">[docs]</a>    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that cleans the testing environment parameters for the Unittest</span>
+<span class="sd">        class htmlSingleDictToHtml.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_dict_output</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_dict_input</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_row</span>
+</div></div>
+<div class="viewcode-block" id="GetOrderedIndex"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.GetOrderedIndex">[docs]</a><span class="k">class</span> <span class="nc">GetOrderedIndex</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unittest class to test the different functionalities of</span>
+<span class="sd">    get_ordered_index() function in module util/html.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="GetOrderedIndex.setUpClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.GetOrderedIndex.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that initializes the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">map_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">map_dict</span><span class="p">[</span><span class="s">&#39;result2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Throughput flowmods/sec&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">map_dict</span><span class="p">[</span><span class="s">&#39;result3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;switches&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">map_dict</span><span class="p">[</span><span class="s">&#39;result4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;switches&#39;</span>
+</div>
+<div class="viewcode-block" id="GetOrderedIndex.test01_get_ordered_index"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.GetOrderedIndex.test01_get_ordered_index">[docs]</a>    <span class="k">def</span> <span class="nf">test01_get_ordered_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method that tests functionality of get_ordered_index() function</span>
+<span class="sd">        in case where it returns a valid index&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+                         <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">get_ordered_index</span><span class="p">(</span><span class="s">&#39;result3&#39;</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">map_dict</span><span class="p">),</span>
+                         <span class="s">&#39;Testing returned index when key exists.&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="GetOrderedIndex.test02_get_ordered_index"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.GetOrderedIndex.test02_get_ordered_index">[docs]</a>    <span class="k">def</span> <span class="nf">test02_get_ordered_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method that tests functionality of get_ordered_index() function</span>
+<span class="sd">        in case where it returns a invalid index (returns None)&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNone</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">get_ordered_index</span><span class="p">(</span><span class="s">&#39;result33&#39;</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">map_dict</span><span class="p">),</span>
+                          <span class="s">&#39;Testing returned index when key does not exist.&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="GetOrderedIndex.tearDownClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.GetOrderedIndex.tearDownClass">[docs]</a>    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that cleans the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">map_dict</span>
+</div></div>
+<div class="viewcode-block" id="SingleDictTableData"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.SingleDictTableData">[docs]</a><span class="k">class</span> <span class="nc">SingleDictTableData</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unittest class to test the different functionalities of</span>
+<span class="sd">    single_dict_table_data() function in module util/html.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SingleDictTableData.setUpClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.SingleDictTableData.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that initializes the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">input1</span> <span class="o">=</span> <span class="s">&#39;test data field&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">output1</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&lt;td style=&quot;font-size:bold;&quot; class=&quot;info&quot;&gt;test &#39;</span>
+                       <span class="s">&#39;data field&lt;/td&gt;&#39;</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">input2</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;title1&#39;</span><span class="p">:</span><span class="s">&#39;value1_1&#39;</span><span class="p">,</span> <span class="s">&#39;title2&#39;</span><span class="p">:</span><span class="s">&#39;value1_2&#39;</span><span class="p">},</span>
+                      <span class="p">{</span><span class="s">&#39;title1&#39;</span><span class="p">:</span><span class="s">&#39;value2_1&#39;</span><span class="p">,</span> <span class="s">&#39;title2&#39;</span><span class="p">:</span><span class="s">&#39;value2_2&#39;</span><span class="p">}]</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">output2</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;&lt;td style=&quot;font-size:bold;&quot; class=&quot;info&quot;&gt;&lt;table &#39;</span>
+                       <span class="s">&#39; class=&quot;tableWithFloatingHeader&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&#39;</span>
+                       <span class="s">&#39;&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&#39;</span>
+                       <span class="s">&#39;&lt;td&gt;value1_1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;odd&quot;&gt;&lt;td&gt;value1_2&#39;</span>
+                       <span class="s">&#39;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&#39;</span>
+                       <span class="s">&#39;&lt;table  class=&quot;tableWithFloatingHeader&quot;&gt;&lt;thead&gt;&#39;</span>
+                       <span class="s">&#39;&lt;tr&gt;&lt;th&gt;&lt;/th&gt;&lt;th&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&#39;</span>
+                       <span class="s">&#39;&lt;td&gt;value2_1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;odd&quot;&gt;&#39;</span>
+                       <span class="s">&#39;&lt;td&gt;value2_2&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/td&gt;&#39;</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">td_style</span> <span class="o">=</span> <span class="s">&#39;font-size:bold;&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">td_class</span> <span class="o">=</span> <span class="s">&#39;info&#39;</span>
+</div>
+<div class="viewcode-block" id="SingleDictTableData.test_01_singledicttabledata"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.SingleDictTableData.test_01_singledicttabledata">[docs]</a>    <span class="k">def</span> <span class="nf">test_01_singledicttabledata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that tests single_dict_table_data() when data_values parameter</span>
+<span class="sd">        is a string value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output1</span><span class="p">,</span>
+                         <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">single_dict_table_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input1</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">td_style</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">td_class</span><span class="p">),</span>
+                         <span class="s">&#39;Testing single_dict_table_data() &#39;</span>
+                         <span class="s">&#39;with a string input.&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SingleDictTableData.test_02_singledicttabledata"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.SingleDictTableData.test_02_singledicttabledata">[docs]</a>    <span class="k">def</span> <span class="nf">test_02_singledicttabledata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that tests single_dict_table_data() when data_values parameter</span>
+<span class="sd">        is a List of Dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output2</span><span class="p">,</span>
+                         <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">single_dict_table_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input2</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">td_style</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">td_class</span><span class="p">),</span>
+                         <span class="s">&#39;Testing single_dict_table_data() &#39;</span>
+                         <span class="s">&#39;with a List of Dictionaries.&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SingleDictTableData.tearDownClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.html_test.SingleDictTableData.tearDownClass">[docs]</a>    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that cleans the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">input1</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">input2</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">output1</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">output2</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">td_style</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">td_class</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">SUITE_HTMLGENERATE_HTMLFOOT</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">HtmlGenerateHtmlFoot</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_HTMLGENERATE_HTMLFOOT</span><span class="p">)</span>
+
+    <span class="n">SUITE_HTMLGENERATEDHEAD</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">HtmlGenerateHead</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_HTMLGENERATEDHEAD</span><span class="p">)</span>
+
+    <span class="n">SUITE_HTMLISALISTOFFICTIONARIES</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">HtmlIsAListOfDictionaries</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span>\
+    <span class="n">run</span><span class="p">(</span><span class="n">SUITE_HTMLISALISTOFFICTIONARIES</span><span class="p">)</span>
+
+    <span class="n">SUITE_HTMLMUTLTIDICTTOHTML</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">HtmlMultyDictToHtml</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_HTMLMUTLTIDICTTOHTML</span><span class="p">)</span>
+
+    <span class="n">SUITE_HTML_SINGLEDICTTOHTML</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">HtmlSingleDictToHtml</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_HTML_SINGLEDICTTOHTML</span><span class="p">)</span>
+
+    <span class="n">SUITE_GETORDEREDINDEX</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">GetOrderedIndex</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_GETORDEREDINDEX</span><span class="p">)</span>
+
+    <span class="n">SUITE_SINGLEDICTTABLEDATA</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">SingleDictTableData</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_SINGLEDICTTABLEDATA</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">ODLP-NSTAT 1.0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, INTRACOM TELECOM S.A..
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
