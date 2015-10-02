@@ -83,12 +83,12 @@ def stop_controller(controller_stop_handler, controller_status_handler, cpid):
     """
 
     if check_controller_status(controller_status_handler) == '1':
-        logging.debug('[stop_controller] Stopping controller.')
+        logging.info('[stop_controller] Stopping controller.')
         util.customsubprocess.check_output_streaming(
             [controller_stop_handler], '[controller_stop_handler]')
         util.process.wait_until_process_finishes(cpid)
     else:
-        logging.debug('[stop_controller] Controller already stopped.')
+        logging.info('[stop_controller] Controller already stopped.')
 
 
 def check_controller_status(controller_status_handler):
@@ -191,7 +191,7 @@ def wait_until_controller_listens(interval_ms, port):
     while time.time() < timeout:
         time.sleep(1)
         pid = util.process.getpid_listeningonport(port)
-        logging.debug('Returned pid listening on port {0}: {1}'.
+        logging.info('Returned pid listening on port {0}: {1}'.
                       format(port, pid))
 
         if pid > 0:
