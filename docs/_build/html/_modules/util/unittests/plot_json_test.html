@@ -1,0 +1,204 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util.unittests.plot_json_test &mdash; NSTAT 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="NSTAT 1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for util.unittests.plot_json_test</h1><div class="highlight"><pre>
+<span class="c"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c">#</span>
+<span class="c"># This program and the accompanying materials are made available under the</span>
+<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;Unittest Module for util/plot_json.py.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">util.plot_json</span>
+
+<div class="viewcode-block" id="PlotJsonKeyErrorTests"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.plot_json_test.PlotJsonKeyErrorTests">[docs]</a><span class="k">class</span> <span class="nc">PlotJsonKeyErrorTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unit test class that checks the case of KeyError for all functions in</span>
+<span class="sd">    module util/plot_json.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PlotJsonKeyErrorTests.test01_errorbar"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.plot_json_test.PlotJsonKeyErrorTests.test01_errorbar">[docs]</a>    <span class="k">def</span> <span class="nf">test01_errorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the errorbar() method of util/plot_json.py.</span>
+<span class="sd">        It checks the case of invalid json input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">util</span><span class="o">.</span>\
+            <span class="n">plot_json</span><span class="o">.</span><span class="n">plot_json</span><span class="p">((</span><span class="s">&#39;./sample_test_json/sample_&#39;</span>
+                                 <span class="s">&#39;result_file_with_error.json&#39;</span><span class="p">),</span> <span class="s">&#39;switches&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;throughput&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                                <span class="s">&#39;Number of switches&#39;</span><span class="p">,</span> <span class="s">&#39;Throughput (flows/sec)&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;errorbar&#39;</span><span class="p">,</span> <span class="s">&#39;Controller throughput&#39;</span><span class="p">,</span>
+                                <span class="p">[</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">],</span> <span class="s">&#39;errorbar.png&#39;</span><span class="p">,</span>
+                                <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PlotJsonKeyErrorTests.test02_errorbar_connected"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.plot_json_test.PlotJsonKeyErrorTests.test02_errorbar_connected">[docs]</a>    <span class="k">def</span> <span class="nf">test02_errorbar_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the errorbar_connected() method of</span>
+<span class="sd">        util/plot_json.py. It checks the case of invalid json input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">util</span><span class="o">.</span>\
+            <span class="n">plot_json</span><span class="o">.</span><span class="n">plot_json</span><span class="p">((</span><span class="s">&#39;./sample_test_json/sample_result_file_&#39;</span>
+                                 <span class="s">&#39;with_error.json&#39;</span><span class="p">),</span> <span class="s">&#39;switches&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;throughput&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                                <span class="s">&#39;Number of switches&#39;</span><span class="p">,</span> <span class="s">&#39;Throughput (flows/sec)&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;errorbar_connected&#39;</span><span class="p">,</span> <span class="s">&#39;Controller throughput&#39;</span><span class="p">,</span>
+                                <span class="p">[</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">],</span> <span class="s">&#39;errorbar.png&#39;</span><span class="p">,</span>
+                                <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                                <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PlotJsonKeyErrorTests.test03_scatter"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.plot_json_test.PlotJsonKeyErrorTests.test03_scatter">[docs]</a>    <span class="k">def</span> <span class="nf">test03_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks the scatter() method of util/plot_json.py.</span>
+<span class="sd">        It checks the case of invalid json input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">util</span><span class="o">.</span>\
+            <span class="n">plot_json</span><span class="o">.</span><span class="n">plot_json</span><span class="p">((</span><span class="s">&#39;./sample_test_json/sample_result_file&#39;</span>
+                                 <span class="s">&#39;_with_error.json&#39;</span><span class="p">),</span> <span class="s">&#39;switches&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;throughput&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                                <span class="s">&#39;Number of switches&#39;</span><span class="p">,</span> <span class="s">&#39;Throughput (flows/sec)&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;scatter&#39;</span><span class="p">,</span> <span class="s">&#39;Controller throughput&#39;</span><span class="p">,</span>
+                                <span class="p">[</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">],</span> <span class="s">&#39;errorbar.png&#39;</span><span class="p">,</span>
+                                <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PlotJsonKeyErrorTests.test04_multi_scatter"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.plot_json_test.PlotJsonKeyErrorTests.test04_multi_scatter">[docs]</a>    <span class="k">def</span> <span class="nf">test04_multi_scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks the multy_scatter() method of util/plot_json.py</span>
+<span class="sd">        It checks the case of invalid json input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">util</span><span class="o">.</span>\
+            <span class="n">plot_json</span><span class="o">.</span><span class="n">plot_json</span><span class="p">((</span><span class="s">&#39;./sample_test_json/sample_result_file_with_&#39;</span>
+                                 <span class="s">&#39;error.json&#39;</span><span class="p">),</span> <span class="s">&#39;switches&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;throughput&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                                <span class="s">&#39;Number of switches&#39;</span><span class="p">,</span> <span class="s">&#39;Throughput (flows/sec)&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;multi_scatter&#39;</span><span class="p">,</span> <span class="s">&#39;Controller throughput&#39;</span><span class="p">,</span>
+                                <span class="p">[</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">],</span> <span class="s">&#39;errorbar.png&#39;</span><span class="p">,</span>
+                                <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PlotJsonKeyErrorTests.test05_multi_errorbar"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.plot_json_test.PlotJsonKeyErrorTests.test05_multi_errorbar">[docs]</a>    <span class="k">def</span> <span class="nf">test05_multi_errorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks the multi_errorbar() function of util/plot_json.py.</span>
+<span class="sd">        It checks the case of invalid json input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">util</span><span class="o">.</span>\
+            <span class="n">plot_json</span><span class="o">.</span><span class="n">plot_json</span><span class="p">((</span><span class="s">&#39;./sample_test_json/sample_result_file_&#39;</span>
+                                 <span class="s">&#39;with_error.json&#39;</span><span class="p">),</span> <span class="s">&#39;switches&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;throughput&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                                <span class="s">&#39;Number of switches&#39;</span><span class="p">,</span> <span class="s">&#39;Throughput (flows/sec)&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;multi_errorbar&#39;</span><span class="p">,</span> <span class="s">&#39;Controller throughput&#39;</span><span class="p">,</span>
+                                <span class="p">[</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">],</span> <span class="s">&#39;errorbar.png&#39;</span><span class="p">,</span>
+                                <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PlotJsonKeyErrorTests.test06_multi_errorbar_connected"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.plot_json_test.PlotJsonKeyErrorTests.test06_multi_errorbar_connected">[docs]</a>    <span class="k">def</span> <span class="nf">test06_multi_errorbar_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that checks the multi_errorbar_connected() function of</span>
+<span class="sd">        util/plot_json.py. It checks the case of invalid json input.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="n">util</span><span class="o">.</span>\
+            <span class="n">plot_json</span><span class="o">.</span><span class="n">plot_json</span><span class="p">((</span><span class="s">&#39;./sample_test_json/sample_result_file&#39;</span>
+                                 <span class="s">&#39;_with_error.json&#39;</span><span class="p">),</span> <span class="s">&#39;switches&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;throughput&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
+                                <span class="s">&#39;Number of switches&#39;</span><span class="p">,</span> <span class="s">&#39;Throughput (flows/sec)&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;multi_errorbar_connected&#39;</span><span class="p">,</span>
+                                <span class="s">&#39;Controller throughput&#39;</span><span class="p">,</span>
+                                <span class="p">[</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">],</span> <span class="s">&#39;errorbar.png&#39;</span><span class="p">,</span>
+                                <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">SUITE_PLOTJSONKEYERRORTESTS</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span>\
+    <span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">PlotJsonKeyErrorTests</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_PLOTJSONKEYERRORTESTS</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, NSTAT Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

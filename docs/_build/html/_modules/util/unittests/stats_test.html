@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util.unittests.stats_test &mdash; NSTAT 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="NSTAT 1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for util.unittests.stats_test</h1><div class="highlight"><pre>
+<span class="c"># Copyright (c) 2015 Intracom util.stats.A. Telecom Solutionutil.stats.</span>
+<span class="c">#All rights reserved.</span>
+<span class="c">#</span>
+<span class="c"># This program and the accompanying materials are made available under the</span>
+<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;Unittest Module for util/statutil.stats.py.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">util.stats</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<div class="viewcode-block" id="StatsAllFunctionsTest"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.stats_test.StatsAllFunctionsTest">[docs]</a><span class="k">class</span> <span class="nc">StatsAllFunctionsTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Unittest that tests the different functionalities of stats Module</span>
+<span class="sd">    in util/statutil.stats.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="StatsAllFunctionsTest.setUpClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.stats_test.StatsAllFunctionsTest.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">l</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">l</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">variance</span> <span class="o">=</span> \
+        <span class="nb">sum</span><span class="p">([</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">cls</span><span class="o">.</span><span class="n">mean</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">l</span><span class="p">]])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">l</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">stddev</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">variance</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">coefvariance</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">stddev</span> <span class="o">/</span> <span class="n">cls</span><span class="o">.</span><span class="n">mean</span>
+</div>
+<div class="viewcode-block" id="StatsAllFunctionsTest.test01_mean"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.stats_test.StatsAllFunctionsTest.test01_mean">[docs]</a>    <span class="k">def</span> <span class="nf">test01_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks the mean() function of util/statutil.stats.py</span>
+<span class="sd">        module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">),</span>
+                         <span class="s">&#39;Testing mean&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="StatsAllFunctionsTest.test02_variance"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.stats_test.StatsAllFunctionsTest.test02_variance">[docs]</a>    <span class="k">def</span> <span class="nf">test02_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks the variance() function of util/statutil.stats.py</span>
+<span class="sd">        module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variance</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">variance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">),</span>
+                         <span class="s">&#39;Testing variance&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="StatsAllFunctionsTest.test03_stddev"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.stats_test.StatsAllFunctionsTest.test03_stddev">[docs]</a>    <span class="k">def</span> <span class="nf">test03_stddev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks the stddev() function of util/statutil.stats.py</span>
+<span class="sd">        module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stddev</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">stddev</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">),</span>
+                         <span class="s">&#39;Testing stddev&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="StatsAllFunctionsTest.test04_coefvariance"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.stats_test.StatsAllFunctionsTest.test04_coefvariance">[docs]</a>    <span class="k">def</span> <span class="nf">test04_coefvariance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks the cv() function of util/statutil.stats.py module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefvariance</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">coefvariance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">),</span>
+                         <span class="s">&#39;Testing coefvariance method&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="StatsAllFunctionsTest.tearDownClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.stats_test.StatsAllFunctionsTest.tearDownClass">[docs]</a>    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cleans the testing environment parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">l</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">mean</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">variance</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">stddev</span>
+        <span class="k">del</span> <span class="n">cls</span><span class="o">.</span><span class="n">coefvariance</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">SUITE_STATSALLFUNCTIONSTESTS</span> <span class="o">=</span> \
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span><span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">StatsAllFunctionsTest</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_STATSALLFUNCTIONSTESTS</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, NSTAT Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

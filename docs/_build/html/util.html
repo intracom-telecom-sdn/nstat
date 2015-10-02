@@ -1,0 +1,1716 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util Package &mdash; NSTAT 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NSTAT 1.1 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">NSTAT 1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="util-package">
+<h1>util Package<a class="headerlink" href="#util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><a class="reference internal" href="#module-util" title="util"><tt class="xref py py-mod docutils literal"><span class="pre">util</span></tt></a> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-util"></span></div>
+<div class="section" id="module-util.cpu">
+<span id="cpu-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">cpu</span></tt> Module<a class="headerlink" href="#module-util.cpu" title="Permalink to this headline">¶</a></h2>
+<p>CPU-related utility functions</p>
+<dl class="function">
+<dt id="util.cpu.compute_cpu_shares">
+<tt class="descclassname">util.cpu.</tt><tt class="descname">compute_cpu_shares</tt><big>(</big><em>shares_list</em>, <em>num_cpus</em><big>)</big><a class="reference internal" href="_modules/util/cpu.html#compute_cpu_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.cpu.compute_cpu_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes lists of non-overlapping CPUs lists based on a list
+of CPU shares. A CPU share is a value between 1 and 99 and corresponds to
+the percentage of total system CPUs that should be allocated for a
+process. When a share of 0 or 100 is specified, a list with all system
+CPUs is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shares_list</strong> &#8211; values with the CPU percentages</td>
+</tr>
+</tbody>
+</table>
+<p>for each process
+:returns: a tuple with the CPU lists for each process
+:raises ValueError: When input leads to an invalid CPU sharing.
+:rtype: tuple&lt;list&lt;int&gt;&gt;
+:type shares_list: list&lt;int&gt;</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.customsubprocess">
+<span id="customsubprocess-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">customsubprocess</span></tt> Module<a class="headerlink" href="#module-util.customsubprocess" title="Permalink to this headline">¶</a></h2>
+<p>Extended subprocess functionality</p>
+<dl class="function">
+<dt id="util.customsubprocess.check_output_streaming">
+<tt class="descclassname">util.customsubprocess.</tt><tt class="descname">check_output_streaming</tt><big>(</big><em>cmd</em>, <em>prefix=''</em>, <em>queue=None</em><big>)</big><a class="reference internal" href="_modules/util/customsubprocess.html#check_output_streaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.customsubprocess.check_output_streaming" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redirect output to stderr, printing it whenever a new line
+is detected (bufsize=1 denotes line buffered output). This
+can be considered as &#8220;realtime&#8221; printing.
+Additionally, prints output by prepending it with a user-defined
+prefix. Furthermore, it optionally forwards output to a queue
+in order e.g. to be processed by a separate thread in real-time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmd</strong> &#8211; the command line list.</li>
+<li><strong>prefix</strong> &#8211; the user defined prefix for output.</li>
+<li><strong>queue</strong> &#8211; queue to forward console output to.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">return exit status of command.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Raises subprocess.CalledProcessError:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the exit status of the executed</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>command is not 0.
+:rtype: str
+:type cmd: list&lt;str&gt;
+:type prefix: str
+:type queue: multiprocessing.Queue</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.file_ops">
+<span id="file-ops-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">file_ops</span></tt> Module<a class="headerlink" href="#module-util.file_ops" title="Permalink to this headline">¶</a></h2>
+<p>file handling utilities</p>
+<dl class="function">
+<dt id="util.file_ops.check_filelist">
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_filelist</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_filelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_filelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of files and checks if those files exist and if those
+files are executables (have execution right in their privileges). If
+something is wrong then an exception is raised</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> (<em>list&lt;str&gt;</em>) &#8211; A list of files</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.check_files_executables">
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_executables</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_files_executables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_executables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if all files in a list have exe permissions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> &#8211; list of filenames to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Raises Exception:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">When file in file_list does not exist or is not</td>
+</tr>
+</tbody>
+</table>
+<p>executable.
+:type file_list: list&lt;str&gt;
+:returns: list&lt;str&gt;
+:rtype: list&lt;str&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.check_files_exist">
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_exist</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_files_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if all files in a list exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> (<em>list&lt;str&gt;</em>) &#8211; list of filenames to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list&lt;str&gt;</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list&lt;str&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.file_exists">
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">file_exists</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if file exists in filesystem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fpath</strong> (<em>str</em>) &#8211; file path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.is_file_exe">
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">is_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#is_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.is_file_exe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a file is executable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fpath</strong> (<em>str</em>) &#8211; file path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.make_file_exe">
+<tt class="descclassname">util.file_ops.</tt><tt class="descname">make_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#make_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.make_file_exe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives executable rights to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fpath</strong> (<em>str</em>) &#8211; file path to handle</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.html">
+<span id="html-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">html</span></tt> Module<a class="headerlink" href="#module-util.html" title="Permalink to this headline">¶</a></h2>
+<p>HTML generation utilities</p>
+<dl class="function">
+<dt id="util.html.generate_html_foot">
+<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_foot</tt><big>(</big><em>foot_content=''</em><big>)</big><a class="reference internal" href="_modules/util/html.html#generate_html_foot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_foot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ending and the contents at the end of html page.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">HTML code of the page ending.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.generate_html_head">
+<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_head</tt><big>(</big><em>css_style=''</em>, <em>javascript_functions=''</em>, <em>head_content=''</em><big>)</big><a class="reference internal" href="_modules/util/html.html#generate_html_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_head" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the head of an html file gets as input the
+styling of the page as a css string parameter and returns a string
+value, which is the html code of the header.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>css_style</strong> &#8211; the css styling text of the html page we produce.</td>
+</tr>
+</tbody>
+</table>
+<p>this parameter must be given as a multiline string.
+:param parameters_dictionary: Parameters of the specific testing scenario
+:param javascript_functions: JavaScript functions for report.
+This parameter must be given as a multiline string.
+:param head_content: this is the html code that will appear at the top
+of the page, just after the &lt;body&gt; tag. We can place here the Title of the
+page and everything else we want to appear at the top.
+:returns: str (the html code of the Header of the html page.)
+:rtype: str
+:type css_style: str
+:type parameters_dictionary: str
+:type javascript_functions: str
+:type head_content: str</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.get_ordered_index">
+<tt class="descclassname">util.html.</tt><tt class="descname">get_ordered_index</tt><big>(</big><em>field_value</em>, <em>map_dictionary</em><big>)</big><a class="reference internal" href="_modules/util/html.html#get_ordered_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.get_ordered_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of a key in map_dictionary, which is defined by the
+field_value. If no match is found None is returned</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field_value</strong> &#8211; the value of the key we want to search for, inside</td>
+</tr>
+</tbody>
+</table>
+<p>the map_dictionary. This is a helper function called inside the
+single_dict_to_html() and multi_dict_to_html() to avoid repetitions of the
+same code blocks in these functions
+:param map_dictionary: An instance of OrderedDict which has mappings
+between keys and their values as they appear inside an html generated
+document.
+:returns: The index where the field_value should be placed, depending on
+the ordering inside the map_dictionary
+:rtype: int
+:type field_value: str
+:type map_dictionary: collections.OrderedDict</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.isalistofdictionaries">
+<tt class="descclassname">util.html.</tt><tt class="descname">isalistofdictionaries</tt><big>(</big><em>lst</em><big>)</big><a class="reference internal" href="_modules/util/html.html#isalistofdictionaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.isalistofdictionaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list as argument and checks if all the
+elements of this list are dictionaries. If they are then it returns true,
+else it returns false. If the input argument type is not list then it
+also returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lst</strong> &#8211; The list that we want to check its elements</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all the elements of the list are dictionaries</td>
+</tr>
+</tbody>
+</table>
+<p>False otherwise
+:rtype: bool
+:type lst: list&lt;dict&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.multi_dict_to_html">
+<tt class="descclassname">util.html.</tt><tt class="descname">multi_dict_to_html</tt><big>(</big><em>data</em>, <em>table_title=''</em>, <em>map_dictionary=None</em>, <em>row_ordering_key=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#multi_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.multi_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates html tables according to the input it gets from
+the input arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; This datastructure is a list that contains dictionaries of</td>
+</tr>
+</tbody>
+</table>
+<p>strings that contains the pair of field_name:value of all the data we want
+to convert to HTML table.
+:param table_title: An optional argument that contains the title of the
+table we want to generate.
+:param map_dictionary: data structure that contains the pair of
+field_name:value. It defines which fields will be kept from the data input
+dictionary and how their value will be translated in the HTML table.
+:returns: str
+:rtype: str
+:type data: list&lt;dict&gt;
+:type table_title: str
+:type map_dictionary: controller.OrderedDict</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.single_dict_table_data">
+<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_table_data</tt><big>(</big><em>data_values</em>, <em>td_style=None</em>, <em>td_class=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#single_dict_table_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_table_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a &lt;td&gt; ... &lt;/td&gt; html element for the single_dict_to_html()
+type of tables, data columns. In case that the input data_values is a
+list of dictionaries, this function calls recursively
+single_dict_to_html() and generates sub tables inside the &lt;td&gt; ... &lt;/td&gt;
+html element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_values</strong> &#8211; the data we want to place into a &lt;td&gt; ... &lt;/td&gt;</td>
+</tr>
+</tbody>
+</table>
+<p>html element.
+:param td_style: the styling code for the content of &lt;td&gt;...&lt;/td&gt; html
+element.
+:param cls: the class name attribute of the &lt;td&gt;...&lt;/td&gt; html element
+:returns: html code of a &lt;td&gt;  &lt;/td&gt; element for single_dict_to_html()
+tables
+:rtype: str
+:type style: str
+:type cls: str
+:type data_values: str or list&lt;dict&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.single_dict_to_html">
+<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_to_html</tt><big>(</big><em>data</em>, <em>key_title</em>, <em>data_title</em>, <em>table_title=''</em>, <em>map_dictionary=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#single_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates html tables according to the input it gets
+from the input arguments. The table generated is by row, which means that
+on each row the first element is the key value of the dictionary, the
+second element is the data value of the dictionary for the correspondent
+key. The columns are always 2 and their title are defined in the input
+arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; this data structure is a dictionary of strings that contains</td>
+</tr>
+</tbody>
+</table>
+<p>the pair of field_name:value for all the data we want to convert to HTML
+table.
+:param key_title: the title of the column, under which the dictionary key
+values will be placed.
+:param data_title: the title of the column, under which the dictionary data
+values will be placed.
+:param table_title: Optional argument. Contains the title of the table we
+want to generate
+:param map_dictionary: This data structure contains the pair of
+field_name:value. It defines which fields should be kept from the data
+input dictionary and how their value will be translated in the HTML table.
+:returns: str
+:rtype: str
+:type data: dict
+:type key_title: str
+:type data_title: str
+:type table_tytle:str
+:type map_dictionary: collections.OrderedDict</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.netutil">
+<span id="netutil-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">netutil</span></tt> Module<a class="headerlink" href="#module-util.netutil" title="Permalink to this headline">¶</a></h2>
+<p>General network utilities</p>
+<dl class="function">
+<dt id="util.netutil.copy_directory_to_target">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">copy_directory_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_path</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#copy_directory_to_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.copy_directory_to_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy a local directory on a remote machine.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ipaddr</strong> &#8211; IP adress of the remote machine</li>
+<li><strong>user</strong> &#8211; username of the remote user</li>
+<li><strong>passwd</strong> &#8211; password of the remote user</li>
+<li><strong>local_path</strong> &#8211; directory path from local machine to copy, full location</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>required
+:param remote_path: remote destination, full location required
+:param remote_port: port to perform sftp from
+:type ipaddr: str
+:type user: str
+:type passwd: str
+:type local_path: str
+:type remote_path: str
+:type remote_port: int</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.create_remote_directory">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">create_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#create_remote_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.create_remote_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens an ssh connection to a remote machine and creates a new directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
+<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
+<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
+<li><strong>remote_path</strong> (<em>str</em>) &#8211; maximum number of times to connect</li>
+<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.isdir">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">isdir</tt><big>(</big><em>path</em>, <em>sftp</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#isdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.isdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a given remote path is a directory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<em>str</em>) &#8211; A string with the full path we want to check</li>
+<li><strong>sftp</strong> (<em>paramiko.SSHClient</em>) &#8211; An sftp connection object (paramico)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if the given path is a directory false otherwise.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.make_remote_file_executable">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">make_remote_file_executable</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#make_remote_file_executable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.make_remote_file_executable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes the remote file executable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
+<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
+<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
+<li><strong>remote_file</strong> (<em>str</em>) &#8211; remote file to make executable</li>
+<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.remove_remote_directory">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">remove_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#remove_remote_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.remove_remote_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes recursively remote directories (removes all files and
+other sub-directories).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
+<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
+<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
+<li><strong>remote_file</strong> (<em>str</em>) &#8211; remote file to make executable</li>
+<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.ssh_connect_or_return">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_connect_or_return</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>maxretries</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_connect_or_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_connect_or_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens a connection and returns a connection object. If it fails to open
+a connection after a specified number of tries, it returns -1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
+<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
+<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
+<li><strong>maxretries</strong> (<em>int</em>) &#8211; maximum number of times to connect</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">an ssh connection handle or -1</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">paramiko.SSHClient (or -1 when failure)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.ssh_copy_file_to_target">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_copy_file_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_file</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_copy_file_to_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_copy_file_to_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies local file on a remote machine target.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ipaddr</strong> &#8211; Ip adress of the remote machine</li>
+<li><strong>user</strong> &#8211; username of the remote user</li>
+<li><strong>passwd</strong> &#8211; password of the remote user</li>
+<li><strong>local_file</strong> &#8211; file from local machine to copy,full location required</li>
+<li><strong>remote_file</strong> &#8211; remote destination, full location required</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>i.e /tmp/foo.txt
+:param remote_port: port to perform sftp from
+:type ipaddr: str
+:type user: str
+:type passwd: str
+:type local_file: str
+:type remote_file: str
+:type remote_port: int</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.ssh_delete_file_if_exists">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_delete_file_if_exists</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_delete_file_if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_delete_file_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the file on e remote machine, if it exists</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
+<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
+<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
+<li><strong>remote_file</strong> (<em>str</em>) &#8211; remote file to remove, full path must be used.</li>
+<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.ssh_run_command">
+<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_run_command</tt><big>(</big><em>ssh_session</em>, <em>command_to_run</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_run_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_run_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the specified command on a remote machine</p>
+<p>:param ssh_session : SSH session provided by paramiko to run the command
+:param command_to_run: Command to execute
+:returns: the output of the remotely executed command
+:rtype: tuple (stdin, stdout, stderr)
+:type ssh_session: paramiko.SSHClient
+:type command_to_run: str</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.numeric">
+<span id="numeric-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">numeric</span></tt> Module<a class="headerlink" href="#module-util.numeric" title="Permalink to this headline">¶</a></h2>
+<p>Numeric utilities</p>
+<dl class="function">
+<dt id="util.numeric.tonum">
+<tt class="descclassname">util.numeric.</tt><tt class="descname">tonum</tt><big>(</big><em>str2cast</em><big>)</big><a class="reference internal" href="_modules/util/numeric.html#tonum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.numeric.tonum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts a string to the appropriate numeric type, i.e. int or float.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str2cast</strong> &#8211; string to cast</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the numeric value in the appropriate type or &#8220;Impossible cast&#8221;</td>
+</tr>
+</tbody>
+</table>
+<p>string
+:rtype: float
+:type str</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.plot_json">
+<span id="plot-json-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">plot_json</span></tt> Module<a class="headerlink" href="#module-util.plot_json" title="Permalink to this headline">¶</a></h2>
+<p>Methods that implement plotting functionality in NSTAT</p>
+<dl class="function">
+<dt id="util.plot_json.multiplot_errorbar_json">
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_errorbar_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw multiple collection of errorbars over a set of samples from a
+JSON file.</p>
+<p>For each different z value do the following:
+for each different x value, the function finds one or more
+corresponding y values and plots an errorbar over them.</p>
+<p>The x and y values are determined by the x_axis_key and y_axis_key
+arguments.
+The z value is determined by the z_axis_key argument.</p>
+<p>Prerequisites:
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+{&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
+{&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
+...
+]</p>
+<ol class="arabic simple" start="2">
+<li>the values for x_axis_key, y_axis_key and z_axis_key must be numeric</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param z_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the z-axis key
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_json.multiplot_scatter_json">
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_scatter_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw multiple scatter-plots over a set of samples from a JSON file.
+Each scatter-plot is determined by a specific value of the z_axis_key</p>
+<p>For each different z value do the following:
+for each different x value, plot a point for every corresponding y
+value found.</p>
+<p>The x and y values are determined by the x_axis_key and y_axis_key
+arguments.
+The z value is determined by the z_axis_key argument.</p>
+<p>Prerequisites:
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+{&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
+{&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
+...
+]</p>
+<ol class="arabic simple" start="2">
+<li>the values for x_axis_key, y_axis_key and z_axis_key must be numeric</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param z_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the z-axis key
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_json.plot_errorbar_json">
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_errorbar_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a single collection of errorbars over a set of samples from a
+JSON file.</p>
+<p>For each different x value, the function finds one or more
+corresponding y values and plots an errorbar over them.
+The x and y values are determined by the x_axis_key and y_axis_key
+arguments.</p>
+<p>Prerequisites:
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+{&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
+{&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
+...
+]</p>
+<ol class="arabic simple" start="2">
+<li>the values for both the x_axis_key and y_axis_key must be numeric</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_json.plot_json">
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_type</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acts as a wrapper method for plotting a set of samples from a
+JSON file. The method ends up calling specific methods for one of the
+following plot types: errorbar plots, scatter plots</p>
+<p>Prerequisites:
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+{&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
+{&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
+...
+]</p>
+<ol class="arabic simple" start="2">
+<li>the values for both the x_axis_key and y_axis_key must be numeric</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param z_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the z-axis key
+:param plot_type: plot type, one of:
+- &#8216;errorbar
+- &#8216;errorbar_connected&#8217;
+- &#8216;scatter&#8217;
+- &#8216;multi_errorbar
+- &#8216;multi_errorbar_connected&#8217;
+- &#8216;multi_scatter&#8217;
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:raises ValueError: When we give an invalid plot_type.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_json.plot_scatter_json">
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_scatter_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a single scatter-plot over a set of samples from a JSON file.</p>
+<p>For each different x value, the function plots a point for every
+corresponding y values it finds.
+The x and y values are determined by the x_axis_key and y_axis_key
+arguments.</p>
+<p>Prerequisites:
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+{&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
+{&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
+...
+]</p>
+<ol class="arabic simple" start="2">
+<li>the values for both the x_axis_key and y_axis_key must be numeric</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param plot_title: description for the plot title
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_json.self_test">
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">self_test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#self_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.self_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function used for self testing purposes</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.plot_utils">
+<span id="plot-utils-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">plot_utils</span></tt> Module<a class="headerlink" href="#module-util.plot_utils" title="Permalink to this headline">¶</a></h2>
+<p>Module to facilitate plotting and promote code re-use</p>
+<dl class="class">
+<dt id="util.plot_utils.PlotOptions">
+<em class="property">class </em><tt class="descclassname">util.plot_utils.</tt><tt class="descname">PlotOptions</tt><a class="reference internal" href="_modules/util/plot_utils.html#PlotOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.PlotOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Contains the various plot options attributes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.create_xy_dict_from_file">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xy_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#create_xy_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xy_dict_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a json file and returns the contents of the file as a
+dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; filepath of json file that contains the results</li>
+<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>axis
+:param y_axis_key: field name from the result json that has the data for y
+axis
+:returns contents of results json files and x,y coordinations of the
+values defined by x_axis_key and y_axis_key.
+:rtype: tuple&lt;dictionary&gt;
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.create_xyz_dict_from_file">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xyz_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#create_xyz_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xyz_dict_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a json file and returns the contents of the file as a
+dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys
+that in turn map to z_axis_keys</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; filepath of json file that contains the results</li>
+<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>axis
+:param y_axis_key: field name from the result json that has the data for y
+axis
+:param z_axis_key: field name from the result json that has the data for z
+axis
+:returns contents of results json files and x,y coordinations of the
+values defined by x_axis_key and y_axis_key
+:rtype: tuple&lt;dict&gt;
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.finish_plotting">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">finish_plotting</tt><big>(</big><em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#finish_plotting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.finish_plotting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the plots axis and saves the figure to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> &#8211; object containing configuration parameters of the</td>
+</tr>
+</tbody>
+</table>
+<p>produced plot.
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.plot_errorbar">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a single errorbar figure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_keys_sorted</strong> &#8211; values of x axis.</li>
+<li><strong>y_mean</strong> &#8211; values of y mean (one value for each x_key)</li>
+<li><strong>y_diff_minus</strong> &#8211; values of y_diff_minus (one value for each x_key,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
+diff_minus at plot_json, plot_errorbar_json()
+:param y_diff_plus: values of y_diff_mplus (one value for each x_key,
+y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
+diff_plus at plot_json, plot_errorbar_json()
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type x_keys_sorted: list&lt;int&gt;
+:type y_mean: list&lt;float&gt;
+:type y_diff_minus: list&lt;float&gt;
+:type y_diff_plus: list&lt;float&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.plot_errorbar_helper">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar_helper</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar_helper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws a single errorbar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_keys_sorted</strong> &#8211; values of x axis</li>
+<li><strong>y_mean</strong> &#8211; values of y mean (one value for each x_key)</li>
+<li><strong>y_diff_minus</strong> &#8211; values of y_diff_minus (one value for each x_key,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
+diff_minus at plot_json, plot_errorbar_json()
+:param y_diff_plus: values of y_diff_mplus (one value for each x_key,
+y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
+diff_plus at plot_json, plot_errorbar_json()
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:returns: An errorbar plot.
+:rtype: depends on the input of [z_values]
+:type x_keys_sorted: list&lt;int&gt;
+:type y_mean: list&lt;float&gt;
+:type y_diff_minus: list&lt;float&gt;
+:type y_diff_plus: list&lt;float&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.plot_multi_errorbar">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_errorbar</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_errorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a multiple errorbars figure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>y_values</strong> &#8211; values of y axis.</li>
+<li><strong>z_axis_key</strong> &#8211; field names from results to be used for z axis.</li>
+<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>produced plot.
+:type y_values: list&lt;float&gt;
+:type z_axis_key: str
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.plot_multi_scatter">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_scatter</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a multiple scatter plots figure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>y_values</strong> &#8211; list&lt;float&gt;</li>
+<li><strong>z_axis_key</strong> &#8211; field names from results to be used for z axis.</li>
+<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>produced plot.
+:type y_values: list&lt;float&gt;
+:type z_axis_key: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.plot_scatter">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a single scatter plot figure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_coords</strong> &#8211; values of x axis.</li>
+<li><strong>y_coords</strong> &#8211; Values of y axis.</li>
+<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>produced plot.
+:type x_coor: list&lt;int&gt;
+:type y_coor: list&lt;int&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.plot_scatter_helper">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter_helper</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em>, <em>marker_arg='o'</em>, <em>color='b'</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter_helper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces a single scatter plot with a specific color.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_coords</strong> &#8211; values of x axis.</li>
+<li><strong>y_coords</strong> &#8211; Values of y axis.</li>
+<li><strong>marker_arg=&#8217;o&#8217;</strong> &#8211; Marker type of a point on the graph.</li>
+<li><strong>color</strong> (<em>str</em>) &#8211; The color of the markers.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A scatter plot.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib.pyplot.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_utils.setup_plot">
+<tt class="descclassname">util.plot_utils.</tt><tt class="descname">setup_plot</tt><big>(</big><em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#setup_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.setup_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets axis labels, title and subtitle of a plot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> &#8211; object containing configuration parameters of the</td>
+</tr>
+</tbody>
+</table>
+<p>produced plot.
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.process">
+<span id="process-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">process</span></tt> Module<a class="headerlink" href="#module-util.process" title="Permalink to this headline">¶</a></h2>
+<p>Process-related utilities</p>
+<dl class="function">
+<dt id="util.process.getpid_listeningonport">
+<tt class="descclassname">util.process.</tt><tt class="descname">getpid_listeningonport</tt><big>(</big><em>port</em><big>)</big><a class="reference internal" href="_modules/util/process.html#getpid_listeningonport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.getpid_listeningonport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds if there is a running process listening for network
+connections on a specific port.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port</strong> &#8211; the port number that we investigate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">-1, if no process is listening on port</td>
+</tr>
+</tbody>
+</table>
+<p>0, if some process is listening on port but we are not owner of
+it &lt;pid&gt; of the process listening on port and we are owner of it
+:rtype: int
+:type port: int</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.process.is_process_running">
+<tt class="descclassname">util.process.</tt><tt class="descname">is_process_running</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/process.html#is_process_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.is_process_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds if a process is running, using its process ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; The process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True, if the process is running False, otherwise</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.process.wait_until_process_finishes">
+<tt class="descclassname">util.process.</tt><tt class="descname">wait_until_process_finishes</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/process.html#wait_until_process_finishes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.wait_until_process_finishes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits until the process with the specified ID finishes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; process id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.remote">
+<span id="remote-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">remote</span></tt> Module<a class="headerlink" href="#module-util.remote" title="Permalink to this headline">¶</a></h2>
+<p>Utilities for remote execution over SSH</p>
+<dl class="function">
+<dt id="util.remote.remote_exec">
+<tt class="descclassname">util.remote.</tt><tt class="descname">remote_exec</tt><big>(</big><em>cmd</em>, <em>transport</em>, <em>lines_queue=None</em><big>)</big><a class="reference internal" href="_modules/util/remote.html#remote_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.remote.remote_exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remotely executes a shell command over SSH.</p>
+<p>Executes the command and combines the stdout and stderr into a single
+output stream. The stream is dynamically splitted at newline boundaries and
+lines are posted into a queue for online processing. The combined output is
+returned as a string, and the command exit status is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cmd</strong> &#8211; shell command</li>
+<li><strong>transport</strong> &#8211; SSH transport</li>
+<li><strong>lines_queue</strong> &#8211; message queue to post stdout/stderr data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:returns shell command exit status and shell command output
+:raises: paramiko.SSHException
+:rtype tuple(int,str)
+:type cmd: str
+:type transport: paramiko.Transport
+:type lines_queue: multiprocessing.Queue</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.stats">
+<span id="stats-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">stats</span></tt> Module<a class="headerlink" href="#module-util.stats" title="Permalink to this headline">¶</a></h2>
+<p>Module that computes statistic properties given a list of samples</p>
+<dl class="function">
+<dt id="util.stats.coefvariance">
+<tt class="descclassname">util.stats.</tt><tt class="descname">coefvariance</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#coefvariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.coefvariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the co-efficient of variation of a number list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their coefficient.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the co-efficient of variation of the float numbers</td>
+</tr>
+</tbody>
+</table>
+<p>in the list
+:rtype: float
+:type samples: list&lt;float&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.stats.mean">
+<tt class="descclassname">util.stats.</tt><tt class="descname">mean</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the mean of a number list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float number, to calculate their mean.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the mean of the float numbers in the list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.stats.stddev">
+<tt class="descclassname">util.stats.</tt><tt class="descname">stddev</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#stddev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.stddev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the standard deviation of a number list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their standard deviation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the standard deviation of the float numbers in the list.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.stats.variance">
+<tt class="descclassname">util.stats.</tt><tt class="descname">variance</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the variance of a number list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their variance.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the variance of the float numbers in the list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.sysstats">
+<span id="sysstats-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">sysstats</span></tt> Module<a class="headerlink" href="#module-util.sysstats" title="Permalink to this headline">¶</a></h2>
+<p>Module with functions for getting system and process statistics</p>
+<dl class="function">
+<dt id="util.sysstats.get_java_options">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">get_java_options</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#get_java_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.get_java_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with all java options of a process defined by its
+process ID.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; process id of the process we want to get the javaopts</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list with all java options</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list&lt;str&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.proc_cmdline">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cmdline</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cmdline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the command line of a process as a string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The command execution output</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.proc_cpu_system_time">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_system_time</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_system_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_system_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that returns the CPU system time of a process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the CPU system time of a process</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.proc_cpu_user_time">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_user_time</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_user_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_user_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that returns the CPU user time of a process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the CPU user time of a process</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.proc_cwd">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cwd</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cwd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that returns the process current working directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the full path of working directory</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.proc_num_fds">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_fds</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_num_fds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_fds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of file descriptors opened by this process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">total amount of open files for the specific process ID</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.proc_num_threads">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_threads</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_num_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_threads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of threads used by this process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the number of threads for the specific pid</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.proc_vm_size">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_vm_size</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_vm_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_vm_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that returns the virtual memory size of a process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the virtual memory size of a process</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_free_memory_bytes">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_free_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns system free memory in bytes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of free RAM memory in the system in bytes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_free_ram_mb">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_ram_mb</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_free_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_ram_mb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns system free memory in MB.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of free RAM memory in the system in MB.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_iowait_time">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_iowait_time</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_iowait_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_iowait_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>For a given CPU, the I/O wait time is the time during which that CPU
+was idle (i.e. didn&#8217;t execute any tasks) and there was at least one
+outstanding disk I/O operation requested by a task scheduled on that
+CPU (at the time it generated that I/O request).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the I/O wait time</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_load_average">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_load_average</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_load_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_load_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the system load average.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple of floats with the 1-,5- and 15-min load average</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple&lt;float&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_nprocs">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_nprocs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_nprocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_nprocs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of CPUs in the system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the number of CPUs in the system</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_total_memory_bytes">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_total_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_total_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_total_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns system total memory in bytes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">total system memory in bytes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_used_memory_bytes">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_used_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns system used memory in bytes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The amount of used RAM memory in the system in bytes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.sysstats.sys_used_ram_mb">
+<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_ram_mb</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_used_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_ram_mb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns system used memory in MB.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of used RAM memory in the system in MB.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="util.unittests.html">unittests Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.cpu_test"><tt class="docutils literal"><span class="pre">cpu_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#customsubprocess-test-module"><tt class="docutils literal"><span class="pre">customsubprocess_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.file_test"><tt class="docutils literal"><span class="pre">file_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.html_test"><tt class="docutils literal"><span class="pre">html_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.netutil_test"><tt class="docutils literal"><span class="pre">netutil_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.numeric_test"><tt class="docutils literal"><span class="pre">numeric_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.plot_json_test"><tt class="docutils literal"><span class="pre">plot_json_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.process_test"><tt class="docutils literal"><span class="pre">process_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.stats_test"><tt class="docutils literal"><span class="pre">stats_test</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.sysstats_test"><tt class="docutils literal"><span class="pre">sysstats_test</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">util Package</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">util</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-util.cpu"><tt class="docutils literal"><span class="pre">cpu</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.customsubprocess"><tt class="docutils literal"><span class="pre">customsubprocess</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.file_ops"><tt class="docutils literal"><span class="pre">file_ops</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.html"><tt class="docutils literal"><span class="pre">html</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.netutil"><tt class="docutils literal"><span class="pre">netutil</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.numeric"><tt class="docutils literal"><span class="pre">numeric</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.plot_json"><tt class="docutils literal"><span class="pre">plot_json</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.plot_utils"><tt class="docutils literal"><span class="pre">plot_utils</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.process"><tt class="docutils literal"><span class="pre">process</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.remote"><tt class="docutils literal"><span class="pre">remote</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.stats"><tt class="docutils literal"><span class="pre">stats</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-util.sysstats"><tt class="docutils literal"><span class="pre">sysstats</span></tt> Module</a></li>
+<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/util.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">NSTAT 1.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, NSTAT Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

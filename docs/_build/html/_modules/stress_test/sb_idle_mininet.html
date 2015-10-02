@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.sb_idle_mininet &mdash; NSTAT 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="NSTAT 1.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for stress_test.sb_idle_mininet</h1><div class="highlight"><pre>
+<span class="c"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c">#</span>
+<span class="c"># This program and the accompanying materials are made available under the</span>
+<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot; Idle Southbound Performance test &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">common</span>
+<span class="kn">import</span> <span class="nn">controller_utils</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">mininet_utils</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">report_spec</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">util.cpu</span>
+<span class="kn">import</span> <span class="nn">util.customsubprocess</span>
+<span class="kn">import</span> <span class="nn">util.file_ops</span>
+<span class="kn">import</span> <span class="nn">util.process</span>
+<span class="kn">import</span> <span class="nn">util.netutil</span>
+
+<div class="viewcode-block" id="sb_idle_mininet_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.sb_idle_mininet.sb_idle_mininet_run">[docs]</a><span class="k">def</span> <span class="nf">sb_idle_mininet_run</span><span class="p">(</span><span class="n">out_json</span><span class="p">,</span> <span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">mininet_base_dir</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span>
+                        <span class="n">output_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run test. This is the main function that is called from</span>
+<span class="sd">    nstat_orchestrator and performs the specific test.</span>
+
+<span class="sd">    :param out_json: the JSON output file</span>
+<span class="sd">    :param ctrl_base_dir: controller base directory</span>
+<span class="sd">    :param mininet_base_dir: mininet base directory</span>
+<span class="sd">    :param conf: JSON configuration dictionary</span>
+<span class="sd">    :param output_dir: directory to store output files</span>
+<span class="sd">    :type out_json: str</span>
+<span class="sd">    :type ctrl_base_dir: str</span>
+<span class="sd">    :type mininet_base_dir: str</span>
+<span class="sd">    :type conf: str</span>
+<span class="sd">    :type output_dir: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># Global variables read-write shared between monitor-main thread.</span>
+    <span class="n">cpid</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">test_type</span> <span class="o">=</span> <span class="s">&#39;[sb_idle_mininet]&#39;</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Initializing test parameters&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+    <span class="n">controller_build_handler</span> <span class="o">=</span> <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_build_handler&#39;</span><span class="p">]</span>
+    <span class="n">controller_start_handler</span> <span class="o">=</span> <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_start_handler&#39;</span><span class="p">]</span>
+    <span class="n">controller_status_handler</span> <span class="o">=</span> \
+        <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_status_handler&#39;</span><span class="p">]</span>
+    <span class="n">controller_stop_handler</span> <span class="o">=</span> <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_stop_handler&#39;</span><span class="p">]</span>
+    <span class="n">controller_clean_handler</span> <span class="o">=</span> <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_clean_handler&#39;</span><span class="p">]</span>
+    <span class="n">controller_statistics_handler</span> <span class="o">=</span> \
+        <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_statistics_handler&#39;</span><span class="p">]</span>
+    <span class="n">controller_logs_dir</span> <span class="o">=</span> <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_logs_dir&#39;</span><span class="p">]</span>
+    <span class="n">controller_ip</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_ip&#39;</span><span class="p">]</span>
+    <span class="n">controller_port</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_port&#39;</span><span class="p">]</span>
+    <span class="n">controller_restconf_port</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_restconf_port&#39;</span><span class="p">]</span>
+    <span class="n">controller_restconf_auth_token</span> <span class="o">=</span> <span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_restconf_user&#39;</span><span class="p">],</span>
+                                      <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_restconf_password&#39;</span><span class="p">])</span>
+    <span class="n">controller_rebuild</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_rebuild&#39;</span><span class="p">]</span>
+    <span class="n">controller_cpu_shares</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_cpu_shares&#39;</span><span class="p">]</span>
+    <span class="n">controller_cleanup</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_cleanup&#39;</span><span class="p">]</span>
+
+    <span class="n">mininet_boot_handler</span> <span class="o">=</span> <span class="n">mininet_base_dir</span> <span class="o">+</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_boot_handler&#39;</span><span class="p">]</span>
+    <span class="n">mininet_stop_switches_handler</span> <span class="o">=</span> <span class="n">mininet_base_dir</span> <span class="o">+</span> \
+        <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_stop_switches_handler&#39;</span><span class="p">]</span>
+    <span class="n">mininet_get_switches_handler</span> <span class="o">=</span> <span class="n">mininet_base_dir</span> <span class="o">+</span> \
+        <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_get_switches_handler&#39;</span><span class="p">]</span>
+    <span class="n">mininet_init_topo_handler</span> <span class="o">=</span> <span class="n">mininet_base_dir</span> <span class="o">+</span> \
+        <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_init_topo_handler&#39;</span><span class="p">]</span>
+    <span class="n">mininet_start_topo_handler</span> <span class="o">=</span> <span class="n">mininet_base_dir</span> <span class="o">+</span> \
+        <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_start_topo_handler&#39;</span><span class="p">]</span>
+    <span class="n">mininet_server_remote_path</span> <span class="o">=</span> \
+        <span class="s">&#39;/tmp/transfered_files/mininet/mininet_custom_boot.py&#39;</span>
+    <span class="n">mininet_ip</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_ip&#39;</span><span class="p">]</span>
+    <span class="n">mininet_ssh_port</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_ssh_port&#39;</span><span class="p">]</span>
+    <span class="n">mininet_server_rest_port</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_server_rest_port&#39;</span><span class="p">]</span>
+    <span class="n">mininet_username</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_username&#39;</span><span class="p">]</span>
+    <span class="n">mininet_password</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_password&#39;</span><span class="p">]</span>
+
+    <span class="c"># list of samples: each sample is a dictionary that contains</span>
+    <span class="c"># all information that describes a single measurement, i.e.:</span>
+    <span class="c">#    - the actual performance results</span>
+    <span class="c">#    - secondary runtime statistics</span>
+    <span class="c">#    - current values of test dimensions (dynamic)</span>
+    <span class="c">#    - test configuration options (static)</span>
+    <span class="n">total_samples</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Initiating session with Mininet VM.&#39;</span><span class="o">.</span>
+                     <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="n">mininet_ssh_session</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_connect_or_return</span><span class="p">(</span><span class="n">mininet_ip</span><span class="p">,</span>
+            <span class="n">mininet_username</span><span class="p">,</span> <span class="n">mininet_password</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">mininet_ssh_port</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s">&#39;{0} Create remote directory in Mininet for storing files.&#39;</span><span class="o">.</span>
+            <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">create_remote_directory</span><span class="p">(</span><span class="n">mininet_ip</span><span class="p">,</span> <span class="n">mininet_username</span><span class="p">,</span>
+            <span class="n">mininet_password</span><span class="p">,</span> <span class="s">&#39;/tmp/transfered_files/&#39;</span><span class="p">,</span>
+            <span class="n">mininet_ssh_port</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Copying handlers to Mininet VM&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="n">mininet_utils</span><span class="o">.</span><span class="n">copy_mininet_handlers</span><span class="p">(</span><span class="n">mininet_ip</span><span class="p">,</span> <span class="n">mininet_username</span><span class="p">,</span>
+                                            <span class="n">mininet_password</span><span class="p">,</span> <span class="n">mininet_base_dir</span><span class="p">,</span>
+                                            <span class="s">&#39;/tmp/transfered_files/&#39;</span><span class="p">,</span>
+                                            <span class="n">mininet_ssh_port</span><span class="p">)</span>
+
+        <span class="c"># Define CPU affinity for controller.</span>
+        <span class="c"># CPUs for generator are not used here.</span>
+        <span class="n">controller_cpus_str</span><span class="p">,</span> <span class="n">generator_cpus_str</span> <span class="o">=</span> \
+            <span class="n">common</span><span class="o">.</span><span class="n">create_cpu_shares</span><span class="p">(</span><span class="n">controller_cpu_shares</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c"># Before procceeding with the experiments check validity</span>
+        <span class="c"># of all handlers</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">check_filelist</span><span class="p">([</span><span class="n">controller_build_handler</span><span class="p">,</span>
+            <span class="n">controller_start_handler</span><span class="p">,</span> <span class="n">controller_status_handler</span><span class="p">,</span>
+            <span class="n">controller_stop_handler</span><span class="p">,</span> <span class="n">controller_clean_handler</span><span class="p">,</span>
+            <span class="n">controller_statistics_handler</span><span class="p">,</span> <span class="n">mininet_boot_handler</span><span class="p">,</span>
+            <span class="n">mininet_stop_switches_handler</span><span class="p">,</span> <span class="n">mininet_get_switches_handler</span><span class="p">,</span>
+            <span class="n">mininet_start_topo_handler</span><span class="p">,</span> <span class="n">mininet_init_topo_handler</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">controller_rebuild</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Building controller&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">controller_utils</span><span class="o">.</span><span class="n">rebuild_controller</span><span class="p">(</span><span class="n">controller_build_handler</span><span class="p">)</span>
+
+        <span class="n">controller_utils</span><span class="o">.</span><span class="n">check_for_active_controller</span><span class="p">(</span><span class="n">controller_port</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;JAVA_OPTS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s">&#39;java_opts&#39;</span><span class="p">])</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s">&#39;{0} Starting and stopping controller to generate xml files&#39;</span><span class="o">.</span>
+            <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="n">cpid</span> <span class="o">=</span> <span class="n">controller_utils</span><span class="o">.</span><span class="n">start_controller</span><span class="p">(</span><span class="n">controller_start_handler</span><span class="p">,</span>
+            <span class="n">controller_status_handler</span><span class="p">,</span> <span class="n">controller_port</span><span class="p">,</span> <span class="n">controller_cpus_str</span><span class="p">)</span>
+        <span class="c"># Controller status check is done inside start_controller() of the</span>
+        <span class="c"># controller_utils</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} OK, controller status is 1.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="n">controller_utils</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">controller_stop_handler</span><span class="p">,</span>
+            <span class="n">controller_status_handler</span><span class="p">,</span> <span class="n">cpid</span><span class="p">)</span>
+
+        <span class="c"># Run tests for all possible dimensions</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">mininet_size</span><span class="p">,</span>
+             <span class="n">mininet_group_size</span><span class="p">,</span>
+             <span class="n">mininet_group_delay_ms</span><span class="p">,</span>
+             <span class="n">mininet_hosts_per_switch</span><span class="p">,</span>
+             <span class="n">mininet_topology_type</span><span class="p">,</span>
+             <span class="n">controller_statistics_period_ms</span><span class="p">)</span> <span class="ow">in</span> \
+             <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_size&#39;</span><span class="p">],</span>
+                               <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_group_size&#39;</span><span class="p">],</span>
+                               <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_group_delay_ms&#39;</span><span class="p">],</span>
+                               <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_hosts_per_switch&#39;</span><span class="p">],</span>
+                               <span class="n">conf</span><span class="p">[</span><span class="s">&#39;mininet_topology_type&#39;</span><span class="p">],</span>
+                               <span class="n">conf</span><span class="p">[</span><span class="s">&#39;controller_statistics_period_ms&#39;</span><span class="p">]):</span>
+
+            <span class="n">controller_utils</span><span class="o">.</span><span class="n">controller_changestatsperiod</span><span class="p">(</span>
+                <span class="n">controller_statistics_handler</span><span class="p">,</span> <span class="n">controller_statistics_period_ms</span><span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Booting up Mininet REST server&#39;</span><span class="o">.</span>
+                          <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">mininet_utils</span><span class="o">.</span><span class="n">start_mininet_server</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span>
+                <span class="n">mininet_server_remote_path</span><span class="p">,</span> <span class="n">mininet_ip</span><span class="p">,</span>
+                <span class="n">mininet_server_rest_port</span><span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Starting controller&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">cpid</span> <span class="o">=</span> <span class="n">controller_utils</span><span class="o">.</span><span class="n">start_controller</span><span class="p">(</span><span class="n">controller_start_handler</span><span class="p">,</span>
+                <span class="n">controller_status_handler</span><span class="p">,</span> <span class="n">controller_port</span><span class="p">,</span>
+                <span class="n">controller_cpus_str</span><span class="p">)</span>
+            <span class="c"># Control of controller status</span>
+            <span class="c"># is done inside controller_utils.start_controller()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} OK, controller status is 1.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Creating queue&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">result_queue</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+
+            <span class="n">sleep_ms</span> <span class="o">=</span> \
+                <span class="nb">int</span><span class="p">(</span><span class="n">mininet_size</span><span class="o">/</span><span class="n">mininet_group_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">mininet_group_delay_ms</span>
+            <span class="n">total_mininet_hosts</span> <span class="o">=</span> <span class="n">mininet_hosts_per_switch</span> <span class="o">*</span> <span class="n">mininet_size</span>
+            <span class="c"># We want this value to be big, equivalent to the topology size.</span>
+            <span class="n">discovery_deadline_ms</span> <span class="o">=</span> \
+                <span class="p">(</span><span class="mi">7000</span> <span class="o">*</span> <span class="p">(</span><span class="n">mininet_size</span> <span class="o">+</span> <span class="n">total_mininet_hosts</span><span class="p">))</span> <span class="o">+</span> <span class="n">sleep_ms</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;{0} Initiating topology on REST server and start &#39;</span>
+                <span class="s">&#39;monitor thread to check for discovered switches &#39;</span>
+                <span class="s">&#39;on controller.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Initialize mininet topology.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">mininet_utils</span><span class="o">.</span><span class="n">init_mininet_topo</span><span class="p">(</span><span class="n">mininet_init_topo_handler</span><span class="p">,</span>
+                <span class="n">mininet_ip</span><span class="p">,</span> <span class="n">mininet_server_rest_port</span><span class="p">,</span> <span class="n">controller_ip</span><span class="p">,</span>
+                <span class="n">controller_port</span><span class="p">,</span> <span class="n">mininet_topology_type</span><span class="p">,</span> <span class="n">mininet_size</span><span class="p">,</span>
+                <span class="n">mininet_group_size</span><span class="p">,</span> <span class="n">mininet_group_delay_ms</span><span class="p">,</span>
+                <span class="n">mininet_hosts_per_switch</span><span class="p">)</span>
+
+            <span class="n">boot_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Start mininet topology.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">mininet_utils</span><span class="o">.</span><span class="n">start_mininet_topo</span><span class="p">(</span><span class="n">mininet_start_topo_handler</span><span class="p">,</span>
+                <span class="n">mininet_ip</span><span class="p">,</span> <span class="n">mininet_server_rest_port</span><span class="p">)</span>
+
+            <span class="c"># Parallel section</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Creating monitor thread&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">monitor_thread</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">common</span><span class="o">.</span><span class="n">poll_ds_thread</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">controller_ip</span><span class="p">,</span> <span class="n">controller_restconf_port</span><span class="p">,</span>
+                      <span class="n">controller_restconf_auth_token</span><span class="p">,</span> <span class="n">boot_start_time</span><span class="p">,</span>
+                      <span class="n">mininet_size</span><span class="p">,</span> <span class="n">discovery_deadline_ms</span><span class="p">,</span> <span class="n">result_queue</span><span class="p">))</span>
+            <span class="n">monitor_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">result_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Joining monitor thread&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">monitor_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+            <span class="n">statistics</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">sample_stats</span><span class="p">(</span><span class="n">cpid</span><span class="p">)</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;global_sample_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+            <span class="n">global_sample_id</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;mininet_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mininet_size</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;mininet_topology_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mininet_topology_type</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;mininet_hosts_per_switch&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">mininet_hosts_per_switch</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;mininet_group_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mininet_group_size</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;mininet_group_delay_ms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mininet_group_delay_ms</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;controller_statistics_period_ms&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">controller_statistics_period_ms</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;controller_ip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">controller_ip</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;controller_port&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">controller_port</span><span class="p">)</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;bootup_time_secs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">statistics</span><span class="p">[</span><span class="s">&#39;discovered_switches&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">total_samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">statistics</span><span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Stopping mininet topology.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">mininet_utils</span><span class="o">.</span><span class="n">stop_mininet_topo</span><span class="p">(</span><span class="n">mininet_stop_switches_handler</span><span class="p">,</span>
+                <span class="n">mininet_ip</span><span class="p">,</span> <span class="n">mininet_server_rest_port</span><span class="p">)</span>
+
+            <span class="n">controller_utils</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">controller_stop_handler</span><span class="p">,</span>
+                <span class="n">controller_status_handler</span><span class="p">,</span> <span class="n">cpid</span><span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;{0} Killing REST daemon in Mininet VM and existing topology.&#39;</span><span class="o">.</span>
+                <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">mininet_utils</span><span class="o">.</span><span class="n">stop_mininet_server</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span>
+                                              <span class="n">mininet_server_rest_port</span><span class="p">)</span>
+
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;{0} :::::::::: Exception :::::::::::&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;{0} Exception: {1}, {2}&#39;</span><span class="o">.</span>
+                      <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+
+        <span class="n">errors</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;{0} {1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Finalizing test&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Creating test output directory if not exist.&#39;</span><span class="o">.</span>
+                     <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">total_samples</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_json</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ojf</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">total_samples</span><span class="p">,</span> <span class="n">ojf</span><span class="p">)</span>
+            <span class="n">ojf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Stopping controller.&#39;</span><span class="o">.</span>
+                         <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">controller_utils</span><span class="o">.</span><span class="n">stop_controller</span><span class="p">(</span><span class="n">controller_stop_handler</span><span class="p">,</span>
+                <span class="n">controller_status_handler</span><span class="p">,</span> <span class="n">cpid</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">controller_logs_dir</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Collecting logs&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">controller_logs_dir</span><span class="p">,</span> <span class="n">output_dir</span> <span class="o">+</span> <span class="s">&#39;/log&#39;</span><span class="p">)</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">controller_logs_dir</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">controller_cleanup</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;{0} Cleaning controller&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">controller_utils</span><span class="o">.</span><span class="n">cleanup_controller</span><span class="p">(</span><span class="n">controller_clean_handler</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Tearing down any existend mininet topology.&#39;</span><span class="o">.</span>
+                          <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">mininet_utils</span><span class="o">.</span><span class="n">stop_mininet_topo</span><span class="p">(</span><span class="n">mininet_stop_switches_handler</span><span class="p">,</span>
+                <span class="n">mininet_ip</span><span class="p">,</span> <span class="n">mininet_server_rest_port</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s">&#39;{0} Killing REST daemon in Mininet VM and existing topology.&#39;</span><span class="o">.</span>
+                <span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">mininet_utils</span><span class="o">.</span><span class="n">stop_mininet_server</span><span class="p">(</span><span class="n">mininet_ssh_session</span><span class="p">,</span>
+                                              <span class="n">mininet_server_rest_port</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;{0} Delete handleres from Mininet VM&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="n">mininet_utils</span><span class="o">.</span><span class="n">delete_mininet_handlers</span><span class="p">(</span><span class="n">mininet_ip</span><span class="p">,</span> <span class="n">mininet_username</span><span class="p">,</span>
+            <span class="n">mininet_password</span><span class="p">,</span> <span class="s">&#39;/tmp/transfered_files/&#39;</span><span class="p">,</span>
+            <span class="n">mininet_ssh_port</span><span class="p">)</span>
+        <span class="n">mininet_ssh_session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="get_report_spec"><a class="viewcode-back" href="../../stress_test.html#stress_test.sb_idle_mininet.get_report_spec">[docs]</a><span class="k">def</span> <span class="nf">get_report_spec</span><span class="p">(</span><span class="n">test_type</span><span class="p">,</span> <span class="n">config_json</span><span class="p">,</span> <span class="n">results_json</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;It returns all the information that is needed for the generation of the</span>
+<span class="sd">    report for the specific test.</span>
+
+<span class="sd">    :param test_type: Describes the type of the specific test. This value</span>
+<span class="sd">    defines the Title of the html report.</span>
+<span class="sd">    :param config_json: this is the filepath to the configuration json file.</span>
+<span class="sd">    :param results_json: this is the filepath to the results json file.</span>
+<span class="sd">    :returns: A ReportSpec object that holds all the test report information</span>
+<span class="sd">    and is passed as input to the generate_html() function in the</span>
+<span class="sd">    html_generation.py, that is responsible for the report generation.</span>
+<span class="sd">    :rtype: ReportSpec</span>
+<span class="sd">    :type: test_type: str</span>
+<span class="sd">    :type: config_json: str</span>
+<span class="sd">    :type: results_json: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">report_spec_obj</span> <span class="o">=</span> <span class="n">report_spec</span><span class="o">.</span><span class="n">ReportSpec</span><span class="p">(</span><span class="n">config_json</span><span class="p">,</span> <span class="n">results_json</span><span class="p">,</span>
+        <span class="s">&#39;{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_type</span><span class="p">),</span> <span class="p">[</span><span class="n">report_spec</span><span class="o">.</span><span class="n">TableSpec</span><span class="p">(</span><span class="s">&#39;1d&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Test configuration parameters (detailed)&#39;</span><span class="p">,</span>
+            <span class="p">[(</span><span class="s">&#39;test_repeats&#39;</span><span class="p">,</span> <span class="s">&#39;Test repeats&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_name&#39;</span><span class="p">,</span> <span class="s">&#39;Controller name&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_build_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Controller build script&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_start_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Controller start script&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_stop_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Controller stop script&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_status_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Controller status script&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_clean_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Controller cleanup script&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_statistics_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Controller statistics script&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_ip&#39;</span><span class="p">,</span> <span class="s">&#39;Controller IP address&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_port&#39;</span><span class="p">,</span> <span class="s">&#39;Controller listening port&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_rebuild&#39;</span><span class="p">,</span> <span class="s">&#39;Controller rebuild between test repeats&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_logs_dir&#39;</span><span class="p">,</span> <span class="s">&#39;Controller log save directory&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_restconf_port&#39;</span><span class="p">,</span> <span class="s">&#39;Controller restconf port&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_boot_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet boot handler&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_stop_switches_handler&#39;</span><span class="p">,</span>
+              <span class="s">&#39;Mininet stop switches handler&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_get_switches_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet get switches handler&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_init_topo_handler&#39;</span><span class="p">,</span>
+              <span class="s">&#39;Mininet initialize topology handler&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_start_topo_handler&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet start topology handler&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_ip&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet ip address&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_server_rest_port&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet port&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_size&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet network size&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_topology_type&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet topology type&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_hosts_per_switch&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet hosts per switch&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;JVM options&#39;</span><span class="p">)],</span> <span class="n">config_json</span><span class="p">)],</span>
+        <span class="p">[</span><span class="n">report_spec</span><span class="o">.</span><span class="n">TableSpec</span><span class="p">(</span><span class="s">&#39;2d&#39;</span><span class="p">,</span> <span class="s">&#39;Test results&#39;</span><span class="p">,</span>
+            <span class="p">[(</span><span class="s">&#39;global_sample_id&#39;</span><span class="p">,</span> <span class="s">&#39;Sample ID&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;timestamp&#39;</span><span class="p">,</span> <span class="s">&#39;Sample timestamp (seconds)&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;date&#39;</span><span class="p">,</span> <span class="s">&#39;Sample timestamp (date)&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;bootup_time_secs&#39;</span><span class="p">,</span> <span class="s">&#39;Time to discover switches (seconds)&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;discovered_switches&#39;</span><span class="p">,</span> <span class="s">&#39;Discovered switches&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_size&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet Size&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_topology_type&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet Topology Type&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_hosts_per_switch&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet Hosts per Switch&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_group_size&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet Group Size&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;mininet_group_delay_ms&#39;</span><span class="p">,</span> <span class="s">&#39;Mininet Group Delay (ms)&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_ip&#39;</span><span class="p">,</span> <span class="s">&#39;Controller IP&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_port&#39;</span><span class="p">,</span> <span class="s">&#39;Controller port&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_java_xopts&#39;</span><span class="p">,</span> <span class="s">&#39;Java options&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;one_minute_load&#39;</span><span class="p">,</span> <span class="s">&#39;One minute load&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;five_minute_load&#39;</span><span class="p">,</span> <span class="s">&#39;five minutes load&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;fifteen_minute_load&#39;</span><span class="p">,</span> <span class="s">&#39;fifteen minutes load&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;used_memory_bytes&#39;</span><span class="p">,</span> <span class="s">&#39;System used memory (Bytes)&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;total_memory_bytes&#39;</span><span class="p">,</span> <span class="s">&#39;Total system memory&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_cpu_system_time&#39;</span><span class="p">,</span> <span class="s">&#39;Controller CPU system time&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_cpu_user_time&#39;</span><span class="p">,</span> <span class="s">&#39;Controller CPU user time&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_num_threads&#39;</span><span class="p">,</span> <span class="s">&#39;Controller threads&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_num_fds&#39;</span><span class="p">,</span> <span class="s">&#39;Controller num of fds&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s">&#39;controller_statistics_period_ms&#39;</span><span class="p">,</span>
+              <span class="s">&#39;Controller Statistics Period (ms)&#39;</span><span class="p">)],</span> <span class="n">results_json</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">report_spec_obj</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, NSTAT Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

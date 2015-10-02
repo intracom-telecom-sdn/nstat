@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util.unittests.process_test &mdash; NSTAT 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="NSTAT 1.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for util.unittests.process_test</h1><div class="highlight"><pre>
+<span class="c"># Copyright (c) 2015 Intracom socket_obj.A. Telecom Solutions.</span>
+<span class="c">#All rights reserved.</span>
+<span class="c">#</span>
+<span class="c"># This program and the accompanying materials are made available under the</span>
+<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;Unittest Module for util/process.py.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">util.process</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="n">LOGGER</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+<span class="n">STREAM_HANDLER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+<span class="n">LOGGER</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">STREAM_HANDLER</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="server_init"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.server_init">[docs]</a><span class="k">def</span> <span class="nf">server_init</span><span class="p">(</span><span class="n">listen_port</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The helper method start a server process that listens to a predefined</span>
+<span class="sd">    port</span>
+
+<span class="sd">    :param listen_port: The port number where the server process is listening</span>
+<span class="sd">    :returns A socket object that will be passed inside the server process</span>
+<span class="sd">    (see function server_thread()).</span>
+<span class="sd">    :rtype: socket.socket()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c"># Create a socket object</span>
+        <span class="n">socket_obj</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span>
+        <span class="c"># Get local machine name</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span>
+        <span class="c"># Reserve a port for your service.</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">listen_port</span>
+        <span class="c"># Bind to the port</span>
+        <span class="n">socket_obj</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="c"># Now wait for client connection.</span>
+        <span class="n">socket_obj</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">socket_obj</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not start a listening server on &#39;</span>
+                                 <span class="s">&#39;port {0} exiting...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">listen_port</span><span class="p">))</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="server_thread"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.server_thread">[docs]</a><span class="k">def</span> <span class="nf">server_thread</span><span class="p">(</span><span class="n">socket_obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Runs as a separate child process. It takes as argument a</span>
+<span class="sd">    socket object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Establish connection with client.</span>
+    <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">socket_obj</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Got connection from &#39;</span>
+                             <span class="s">&#39;{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">addr</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ProcessTestAllFunctions"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions">[docs]</a><span class="k">class</span> <span class="nc">ProcessTestAllFunctions</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This Unittest class tests the different functionalities of the module</span>
+<span class="sd">    util/process.py.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ProcessTestAllFunctions.setUpClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes the testing environment parameters. Starts</span>
+<span class="sd">        the server process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">LISTEN_PORT</span> <span class="o">=</span> <span class="mi">65535</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">SERVER_PID</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">invalid_port</span> <span class="o">=</span> <span class="s">&#39;this is not a port&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">invalid_process</span> <span class="o">=</span> <span class="s">&#39;this is not a process&#39;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">port_not_owned</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="c"># Initialize and start server process that mocks the controller</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">server_init</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">LISTEN_PORT</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">srv</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">server_thread</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">s</span><span class="p">,))</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">srv</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c"># Finding an not owned port</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s">&#39;netstat -tulpn --numeric-ports&#39;</span><span class="p">,</span>
+                                            <span class="n">shell</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                            <span class="n">universal_newlines</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span>\
+                                            <span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">if_condition1</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span>
+                <span class="n">if_condition2</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;*&#39;</span>
+                <span class="n">if_condition3</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">port_not_owned</span> <span class="o">==</span> <span class="s">&#39;&#39;</span>
+                <span class="k">if</span> <span class="n">if_condition1</span> <span class="ow">and</span> <span class="n">if_condition2</span> <span class="ow">and</span> <span class="n">if_condition3</span><span class="p">:</span>
+                    <span class="n">cls</span><span class="o">.</span><span class="n">port_not_owned</span> <span class="o">=</span> \
+                    <span class="nb">str</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">port_not_owned</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Could not find a process that belongs &#39;</span>
+                                     <span class="s">&#39;to another user. Will exit...&#39;</span><span class="p">)</span>
+            <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">SERVER_PID</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;SERVER PID: </span><span class="si">%d</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">SERVER_PID</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;NOT OWNED PORT: </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">port_not_owned</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProcessTestAllFunctions.test01_getpid_listeningonport"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.test01_getpid_listeningonport">[docs]</a>    <span class="k">def</span> <span class="nf">test01_getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the getpid_listeningonport() function of</span>
+<span class="sd">        util/process.py module. Checks the equality between the known process</span>
+<span class="sd">        id of the initializes server, with the one returned from the function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SERVER_PID</span><span class="p">,</span>
+                         <span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span>\
+                         <span class="n">getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LISTEN_PORT</span><span class="p">),</span>
+                         <span class="s">&#39;Testing the returned PID&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProcessTestAllFunctions.test02_getpid_listeningonport"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.test02_getpid_listeningonport">[docs]</a>    <span class="k">def</span> <span class="nf">test02_getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the getpid_listeningonport() function of</span>
+<span class="sd">        util/process.py module. In this scenario we check the result in case</span>
+<span class="sd">        we give as input to the function, a port number on which a process</span>
+<span class="sd">        that the user not owns is listening.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+                         <span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span>\
+                         <span class="n">getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port_not_owned</span><span class="p">),</span>
+                         <span class="s">&#39;Testing when port is not owned&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProcessTestAllFunctions.test03_getpid_listeningonport"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.test03_getpid_listeningonport">[docs]</a>    <span class="k">def</span> <span class="nf">test03_getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the getpid_listeningonport() function of</span>
+<span class="sd">        util/process.py module. In this scenario we check the result in case</span>
+<span class="sd">        we give as input to the function something that is not a port number.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                         <span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span>\
+                         <span class="n">getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">invalid_process</span><span class="p">),</span>
+                         <span class="s">&#39;Testing with an invalid port &#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ProcessTestAllFunctions.test01_is_process_running"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.test01_is_process_running">[docs]</a>    <span class="k">def</span> <span class="nf">test01_is_process_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the is_process_running() function of</span>
+<span class="sd">        util/process.py module. In this scenario we check the result in case</span>
+<span class="sd">        we give as input to the function a valid process id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">is_process_running</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SERVER_PID</span><span class="p">),</span>
+                        <span class="s">&#39;Testing true case for a valid process id&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProcessTestAllFunctions.test02_is_process_running"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.test02_is_process_running">[docs]</a>    <span class="k">def</span> <span class="nf">test02_is_process_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the is_process_running() function of</span>
+<span class="sd">        util/process.py module. In this scenario we check the result in case</span>
+<span class="sd">        we give as input to the function a invalid process id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">is_process_running</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">invalid_process</span><span class="p">),</span>
+                         <span class="s">&#39;Testing false case for invalid process id&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProcessTestAllFunctions.test03_is_process_running"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.test03_is_process_running">[docs]</a>    <span class="k">def</span> <span class="nf">test03_is_process_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks the is_process_running() function of</span>
+<span class="sd">        util/process.py module. In this scenario we check the result in case</span>
+<span class="sd">        we give as input to the function a invalid process id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">is_process_running</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+                         <span class="s">&#39;Testing most privileged process id 1&#39;</span><span class="p">)</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ProcessTestAllFunctions.tearDownClass"><a class="viewcode-back" href="../../../util.unittests.html#util.unittests.process_test.ProcessTestAllFunctions.tearDownClass">[docs]</a>    <span class="k">def</span> <span class="nf">tearDownClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleans the testing environment parameters. Stops the</span>
+<span class="sd">        server process we started</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cls</span><span class="o">.</span><span class="n">srv</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+</div></div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">SUITE_PROCESSTESTALLFUNCTIONS</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">TestLoader</span><span class="p">()</span><span class="o">.</span>\
+    <span class="n">loadTestsFromTestCase</span><span class="p">(</span><span class="n">ProcessTestAllFunctions</span><span class="p">)</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">TextTestRunner</span><span class="p">(</span><span class="n">verbosity</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">SUITE_PROCESSTESTALLFUNCTIONS</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, NSTAT Team.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
