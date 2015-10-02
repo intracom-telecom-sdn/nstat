@@ -34,7 +34,7 @@ odlp2_vm_name_vm_02 = 'odlp2_ubuntu_box_'  + user + uid_02 + '_vm02'
 
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'with-proxy'
+RUNNING_ENV = 'no-proxy'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ if RUNNING_ENV == 'with-proxy'
     http_proxy = 'http://<IP_address>:<port_number>'
     puts 'with-proxy RUNNING_ENV'
 elsif RUNNING_ENV == 'no-proxy'
-    http_proxy = 'http://<IP_address>:<port_number>'
+    http_proxy = ''
     puts 'no-proxy RUNNING_ENV'
 else
     http_proxy = ''

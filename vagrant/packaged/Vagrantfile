@@ -22,7 +22,7 @@ nstat_vm_private_network_ip_vm = '192.168.63.5'
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'with-proxy'
+RUNNING_ENV = 'no-proxy'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ if RUNNING_ENV == 'with-proxy'
     #http_proxy = 'http://<IP_address>:<port_number>'
     http_proxy = 'http://172.28.40.9:3128'
 elsif RUNNING_ENV == 'no-proxy'
-    http_proxy = 'http://<IP_address>:<port_number>'
+    http_proxy = ''
     puts 'no-proxy RUNNING_ENV'
 else
     http_proxy = ''
