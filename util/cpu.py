@@ -18,7 +18,7 @@ def compute_cpu_shares(shares_list, num_cpus):
     CPUs is returned.
 
     :param shares_list: values with the CPU percentages
-                        for each process
+    for each process
     :returns: a tuple with the CPU lists for each process
     :raises ValueError: When input leads to an invalid CPU sharing.
     :rtype: tuple<list<int>>

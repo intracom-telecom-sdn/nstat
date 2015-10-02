@@ -64,6 +64,7 @@ def sys_free_memory_bytes():
     :returns: the amount of free RAM memory in the system in bytes
     :rtype: int
     """
+
     cmd = 'cat /proc/meminfo | grep MemFree | awk \'{{print $2}}\''
     out = str(subprocess.check_output(cmd, shell=True).
               decode(sys.stdout.encoding)).strip()

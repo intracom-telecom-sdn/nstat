@@ -19,7 +19,7 @@ class DisconnectedTopo(CustomBootedTopo):
         
         :param switch: the newly added switch
         :param startflag: not used since no link with a newly added switch
-                          takes place
+        takes place
         :type switch: mininet.node.OVSSwitch
         :type startflag: bool
         """

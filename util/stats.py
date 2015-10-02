@@ -16,6 +16,7 @@ def mean(samples):
     :rtype: float
     :type samples: list<float>
     """
+
     return sum(samples) * 1.0 / len(samples)
 
 
@@ -27,6 +28,7 @@ def variance(samples):
     :rtype: float
     :type samples: list<float>
     """
+
     diffs = [x - mean(samples) for x in samples]
     return sum([y**2 for y in diffs]) / len(samples)
 
@@ -39,6 +41,7 @@ def stddev(samples):
     :rtype: float
     :type samples: list<float>
     """
+
     return math.sqrt(variance(samples))
 
 
@@ -47,8 +50,9 @@ def coefvariance(samples):
 
     :param s: a list of float numbers, to calculate their coefficient.
     :returns: the co-efficient of variation of the float numbers
-              in the list
+    in the list
     :rtype: float
     :type samples: list<float>
     """
+
     return stddev(samples) / mean(samples)

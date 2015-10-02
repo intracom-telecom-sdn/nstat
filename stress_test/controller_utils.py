@@ -32,7 +32,7 @@ def start_controller(controller_start_handler, controller_status_handler,
     :param controller_status_handler: filepath to the controller status handler
     :param controller_port: controller port number to listen for SB connections
     :param controller_cpus_str: controller CPU share as a strin containing
-                                the values of shares, separated with coma
+    the values of shares, separated with coma
     :returns: controller's process ID
     :raises Exception: When controller fails to start.
     :rtype: int
@@ -109,7 +109,7 @@ def controller_changestatsperiod(controller_statistics_handler,
     """Wrapper to the controller statistics handler
 
     :param controller_statistics_handler: filepath to the controller statistics
-                                          handler
+    handler
     :param stat_period_ms: statistics period value to set (in milliseconds)
     :type controller_statistics_handler: str
     :type curr_stat_period: int
@@ -134,7 +134,7 @@ def restart_controller(controller_stop_handler, controller_start_handler,
     :param controller_port: controller port number to listen for SB connections
     :param old_cpid: PID of already running controller process
     :param controller_cpus_str: controller CPU share as a strin containing
-                                the values of shares, separated with comma
+    the values of shares, separated with comma
     :returns: controller process ID
     :rtype: int
     :type controller_start: str

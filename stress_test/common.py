@@ -28,7 +28,7 @@ def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
     :param controller_ip: controller IP address
     :param controller_restconf_port: controller restconf port
     :param auth_token: tuple with controller restconf user and password
-                       (controller_restconf_user, controller_restconf_password)
+    (controller_restconf_user, controller_restconf_password)
     :returns: number of switches found, 0 if none exists and -1 in case of
     error.
     :rtype: int
@@ -57,7 +57,7 @@ def check_ds_hosts(controller_ip, controller_restconf_port, auth_token):
     :param controller_ip: controller IP address
     :param controller_restconf_port: controller restconf port
     :param auth_token: tuple with controller restconf user and password
-                       (controller_restconf_user, controller_restconf_password)
+    (controller_restconf_user, controller_restconf_password)
     :returns: number of hosts found, 0 if none exists and -1 in case of
     error.
     :rtype: int
@@ -86,9 +86,8 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
     :param controller_ip: controller IP address
     :param controller_restconf_port: controller restconf port
     :param auth_token: tuple with controller restconf user and password
-                       (controller_restconf_user, controller_restconf_password)
-    :returns: number of links found, 0 if none exists and -1 in case of
-    error.
+    (controller_restconf_user, controller_restconf_password)
+    :returns: number of links found, 0 if none exists and -1 in case of error.
     :rtype: int
     :type controller_ip: str
     :type controller_restconf_port: int
@@ -118,12 +117,11 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :param controller_ip: controller IP address
     :param controller_restconf_port: controller restconf port
     :param auth_token: tuple with controller restconf user and controller
-                       restconf password (controller_restconf_user,
-                       controller_restconf_password)
+    restconf password (controller_restconf_user, controller_restconf_password)
     :param boot_start_time: The time we begin starting topology switches
     :param expected_switches: switches expected to find in the DS
     :param discovery_deadline_ms: deadline (in ms) at which the thread
-                                  should discover switches (in milliseconds)
+    should discover switches (in milliseconds)
     :param queuecomm: queue for communicating with the main context
     :type controller_ip: str
     :type controller_restconf_port: int
@@ -213,9 +211,9 @@ def create_cpu_shares(controller_cpu_shares, generator_cpu_shares):
     generator CPU shares as a comma separated values.
 
     :param controller_cpu_shares: Percentage of CPU resources to be used by
-                                  controller.
+    controller.
     :param generator_cpu_shares: Percentage of CPU resources to be used by
-                                 generator.
+    generator.
     :type controller_cpu_shares: int
     :type generator_cpu_shares: int
     """

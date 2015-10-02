@@ -77,7 +77,7 @@ def distribute_workload(nnodes, nflows, opqueues, operation, node_names):
     IP of the flow created by a template.
 
     :param nnodes: number of nodes (switches) to generate operations for
-                   Flows will be added to nodes [0, n-1]
+    Flows will be added to nodes [0, n-1]
     :param nflows: total number of flows to distribute
     :param opqueues: workers operation queues
     :param operation: operation to perform (Add or Remove)
@@ -240,8 +240,7 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
     :param auth_token: RESTconf authorization token (username/password tuple)
 
     :returns: Returns a float number containing the time in which
-              expected_flows were discovered otherwise containing -1.0 on
-              failure.
+    expected_flows were discovered otherwise containing -1.0 on failure.
     :rtype: float
     :type expected_flows: int
     :type ctrl_ip: str
@@ -282,17 +281,17 @@ def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     """Function executed by flow master thread.
 
     :param mqueue: queue where the flow master thread returns results to the
-                   main context
+    main context
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
     :param nnodes: number of nodes (switches) to generate operations for.
-                   Flows will be added to nodes [0, n-1]
+    Flows will be added to nodes [0, n-1]
     :param nflows: total number of flows to distribute
     :param nworkers: number of worker threads to create
     :param flow_template: template from which flows are created
     :param op_delay_ms: delay between thread operations (in milliseconds)
     :param delete_flag: whether to delete or not the added flows as part of the
-                        test
+    test
     :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
     :param auth_token: RESTconf authorization token (username/password tuple)
     :type mqueue: multiprocessing.Queue
@@ -380,20 +379,19 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
 
     :param expected_switches: expected Mininet switches
     :param mininet_group_size: group size at which switches where added in a
-                               Mininet topo
+    Mininet topo
     :param mininet_group_delay_ms: delay between group additions
     (in milliseconds)
     :param mininet_get_switches_handler: Mininet handler used to query the
-                                         current number of switches in a
-                                         Mininet topology
+    current number of switches in a Mininet topology
     :param mininet_ip: Mininet node IP
     :param mininet_rest_server_port: port of the Mininet node REST server
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
     :param auth_token: RESTconf authorization token (username/password tuple)
     :param num_tries: maximum number of tries until the method identifies that
-           number of discovered switches of the Mininet topology is equal to the
-           number of expected Mininet switches
+    number of discovered switches of the Mininet topology is equal to the
+    number of expected Mininet switches
     :raises Exception: If we reach max number of tries and either the
     controller has not seen the topology or the topology has failed to start.
     :type expected_switches: int

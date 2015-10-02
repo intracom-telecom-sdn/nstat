@@ -27,6 +27,7 @@ def ssh_connect_or_return(ipaddr, user, passwd, maxretries, remote_port=22):
     :type passwd: str
     :type maxretries: int
     """
+
     retries = 1
 
     while retries <= maxretries:
@@ -68,7 +69,7 @@ def ssh_copy_file_to_target(ipaddr, user, passwd, local_file, remote_file,
     :param passwd: password of the remote user
     :param local_file: file from local machine to copy,full location required
     :param remote_file: remote destination, full location required
-                        i.e /tmp/foo.txt
+    i.e /tmp/foo.txt
     :param remote_port: port to perform sftp from
     :type ipaddr: str
     :type user: str
@@ -77,6 +78,7 @@ def ssh_copy_file_to_target(ipaddr, user, passwd, local_file, remote_file,
     :type remote_file: str
     :type remote_port: int
     """
+
     transport_layer = paramiko.Transport((ipaddr, remote_port))
     transport_layer.connect(username=user, password=passwd)
     sftp = paramiko.SFTPClient.from_transport(transport_layer)
@@ -93,7 +95,7 @@ def copy_directory_to_target(ipaddr, user, passwd, local_path, remote_path,
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param local_path: directory path from local machine to copy, full location
-           required
+    required
     :param remote_path: remote destination, full location required
     :param remote_port: port to perform sftp from
     :type ipaddr: str
@@ -103,6 +105,7 @@ def copy_directory_to_target(ipaddr, user, passwd, local_path, remote_path,
     :type remote_path: str
     :type remote_port: int
     """
+
     #  recursively upload a full directory
     if local_path.endswith('/'):
         local_path = local_path[:-1]
@@ -190,6 +193,7 @@ def isdir(path, sftp):
     :type path: str
     :type sftp: paramiko.SSHClient
     """
+
     try:
         return stat.S_ISDIR(sftp.stat(path).st_mode)
     except IOError:

@@ -20,7 +20,7 @@ def get_switches():
 
     1. IP address of the Mininet REST server
     2. Port number of the Mininet REST server
-    
+
     It returns on the console standard output the current number of switches
     of the topology
     """

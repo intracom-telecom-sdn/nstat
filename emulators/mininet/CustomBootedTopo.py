@@ -32,7 +32,7 @@ class CustomBootedTopo(object):
         :param switches: the number of switches of the topology
         :param group_size: the number of switches in each addition group
         :param group_delay_ms: the delay between each addition group
-                               (in milliseconds)
+        (in milliseconds)
         :param hosts_per_switch: number of hosts per switch.
         :type controller_ip: str
         :type controller_port: int
@@ -111,8 +111,7 @@ class CustomBootedTopo(object):
 
         :param: switches_to_add: number of switches to be added
         :param: startflg: if True the newly added switch is started so that its
-                          link with the rest of the switches within the 
-                          topology becomes active.
+        link with the rest of the switches within the topology becomes active.
         :type: switches_to_add: int
         :type: startflg: bool
         """
@@ -145,7 +144,7 @@ class CustomBootedTopo(object):
         are also updated when a switch is removed.
 
         :param: switches_to_remove: the number of switches to remove from the
-                                    topology
+        topology
         :type: switches_to_remove: int
         """
 

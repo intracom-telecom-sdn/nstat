@@ -15,7 +15,7 @@ def rebuild_generator(generator_build_handler):
     """Rebuilds the generator.
 
     :param generator_build_handler: filepath to the handler that builds the
-                                    generator
+    generator
     :type generator_build_handler: str
     """
 
@@ -38,14 +38,14 @@ def run_generator(generator_run_handler, generator_cpus, controller_ip,
     :param switches: number of total switches
     :param thr_delay_ms: delay between thread creation (in milliseconds)
     :param traf_delay_ms: delay between last thread creation and traffic
-                          transmission (in milliseconds)
+    transmission (in milliseconds)
     :param ms_per_test: test duration of a single generator loop
     :param internal_repeats: number of generator loops
     :param hosts: number of simulated hoss
     :param warmup: initial loops to be considered as 'warmup'
     :param mode: generator mode
     :param data_queue: data queue where generator output is posted line by line
-                       the generator process will run.
+    the generator process will run.
     :type generator_run_handler: str
     :type generator_cpus: str
     :type controller_ip: str
@@ -98,7 +98,7 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
     :param switches: number of total switches
     :param thr_delay: delay between thread creation
     :param traf_delay: delay between last thread creation and traffic
-                       transmission
+    transmission
     :param ms_per_test: test duration of a single generator loop
     :param internal_repeats: number of generator loops
     :param hosts: number of simulated hoss

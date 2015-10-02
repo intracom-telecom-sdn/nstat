@@ -33,7 +33,7 @@ def init(ip_address, port, topo, size, group, delay, hosts):
     :param ip_address: controller IP address
     :param port: controller OF port number
     :param topo: type of the topology we want to start ("DisconnectedTopo",
-                 "LinearTopo", "MeshTopo")
+    "LinearTopo", "MeshTopo")
     :param size: initial number of switches to boot the topology with
     :param group: group addition size
     :paran delay: group addition delay (in milliseconds)

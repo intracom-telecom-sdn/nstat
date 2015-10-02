@@ -17,7 +17,7 @@ import sys
 def mininet_start_main():
     """ 
     Command line arguments:
-    
+
     1. IP Address of the Mininet REST server
     2. Port number of the Mininet REST server
     """

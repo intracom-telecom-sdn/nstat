@@ -18,8 +18,8 @@ def getpid_listeningonport(port):
 
     :param port: the port number that we investigate.
     :returns: -1, if no process is listening on port
-               0, if some process is listening on port but we are not owner of
-               it <pid> of the process listening on port and we are owner of it
+    0, if some process is listening on port but we are not owner of
+    it <pid> of the process listening on port and we are owner of it
     :rtype: int
     :type port: int
     """

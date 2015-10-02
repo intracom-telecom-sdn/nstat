@@ -57,8 +57,8 @@ def isalistofdictionaries(lst):
     also returns false.
 
     :param lst: The list that we want to check its elements
-    :returns:  True: if all the elements of the list are dictionaries
-                     False: otherwise
+    :returns:  True if all the elements of the list are dictionaries
+    False otherwise
     :rtype: bool
     :type lst: list<dict>
     """

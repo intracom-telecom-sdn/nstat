@@ -30,7 +30,7 @@ class FlowProcessor(object):
     def __init__(self, flow_template, url_template, auth_token):
         """
         :param flow_template: template of the actual json call representing
-                              a flow
+        a flow
         :param url_template: template for the url used for each flow
         :param auth_token: restconf authorization token (username/password tuple)
         :type flow_template: str
@@ -53,7 +53,7 @@ class FlowProcessor(object):
         :param flow_id: ID of the flow to add
         :param node_id: ID of the node to which we will add the flow
         :param ip_dest: IP address to populate the destination IP field of the
-                        flow template
+        flow template
         :returns: status code for the http call issued
         :rtype: int
         :type flow_id: int
@@ -100,7 +100,7 @@ class FlowExplorer(object):
         :param controller_ip: controller IP address
         :param restconf_port: controller RESTconf port number
         :param datastore: type datastore elements to retrieve from operational
-                          datastore.
+        datastore.
         :param auth_token: restconf authorization token (username/password tuple)
         :type controller_ip: str
         :type restconf_port: int

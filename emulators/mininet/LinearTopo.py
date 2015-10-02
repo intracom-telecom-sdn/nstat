@@ -20,7 +20,7 @@ class LinearTopo(CustomBootedTopo):
 
         :param switch: the newly added switch
         :param startflag: controls whether the newly added switch will become
-                          active in the existing topology
+        active in the existing topology
         :type switch: mininet.node.OVSSwitch 
         :type startflag: bool
         """

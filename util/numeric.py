@@ -11,7 +11,7 @@ def tonum(str2cast):
 
     :param str2cast: string to cast
     :returns: the numeric value in the appropriate type or "Impossible cast"
-              string
+    string
     :rtype: float
     :type str
     """

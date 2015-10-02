@@ -36,7 +36,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
     """ Function executed by the monitor thread
 
     :param data_queue: data queue where monitor receives generator output line
-                       by line
+    by line
     :param result_queue: result queue used by monitor to send result to main
     :param conf: test configuration
     :param cpid: controller PID
@@ -51,8 +51,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
     (in milliseconds)
     :param generator_simulated_hosts: number of simulated hosts
     :param controller_statistics_period_ms: Interval that controller sends
-                                            statistics flow requests to the
-                                            switches (in milliseconds)
+    statistics flow requests to the switches (in milliseconds)
     :type data_queue: multiprocessing.Queue
     :type result_queue: multiprocessing.Queue
     :type conf: dict
