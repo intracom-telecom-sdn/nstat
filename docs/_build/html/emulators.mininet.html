@@ -78,16 +78,13 @@ group.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">switches_to_add: number of switches to be added</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Param :</th><td class="field-body">startflg: if True the newly added switch is started so that its
-link with the rest of the switches within the 
-topology becomes active.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Type :</th><td class="field-body">switches_to_add: int</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Type :</th><td class="field-body">startflg: bool</td>
+<tr class="field-even field"><th class="field-name">Param :</th><td class="field-body">startflg: if True the newly added switch is started so that its</td>
 </tr>
 </tbody>
 </table>
+<p>link with the rest of the switches within the topology becomes active.
+:type: switches_to_add: int
+:type: startflg: bool</p>
 </dd></dl>
 
 <dl class="method">
@@ -128,13 +125,12 @@ are also updated when a switch is removed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">switches_to_remove: the number of switches to remove from the
-topology</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Type :</th><td class="field-body">switches_to_remove: int</td>
+<tr class="field-odd field"><th class="field-name">Param :</th><td class="field-body">switches_to_remove: the number of switches to remove from the</td>
 </tr>
 </tbody>
 </table>
+<p>topology
+:type: switches_to_remove: int</p>
 </dd></dl>
 
 <dl class="method">
@@ -269,23 +265,27 @@ defined by the topo parameter.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ip_address</strong> (<em>str</em>) &#8211; controller IP address</li>
-<li><strong>port</strong> (<em>int</em>) &#8211; controller OF port number</li>
-<li><strong>topo</strong> (<em>str</em>) &#8211; type of the topology we want to start (&#8220;DisconnectedTopo&#8221;,
-&#8220;LinearTopo&#8221;, &#8220;MeshTopo&#8221;)</li>
-<li><strong>size</strong> (<em>int</em>) &#8211; initial number of switches to boot the topology with</li>
-<li><strong>group</strong> (<em>int</em>) &#8211; group addition size</li>
-<li><strong>hosts</strong> &#8211; number of hosts per switch.</li>
-<li><strong>hosts</strong> &#8211; int</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip_address</strong> &#8211; controller IP address</li>
+<li><strong>port</strong> &#8211; controller OF port number</li>
+<li><strong>topo</strong> &#8211; type of the topology we want to start (&#8220;DisconnectedTopo&#8221;,</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Paran delay:</th><td class="field-body"><p class="first last">group addition delay (in milliseconds)</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>&#8220;LinearTopo&#8221;, &#8220;MeshTopo&#8221;)
+:param size: initial number of switches to boot the topology with
+:param group: group addition size
+:paran delay: group addition delay (in milliseconds)
+:param hosts: number of hosts per switch.
+:type ip_address: str
+:type port: int
+:type topo: str
+:type size: int
+:type group: int
+:type delay: int
+:param hosts: int</p>
 </dd></dl>
 
 <dl class="function">

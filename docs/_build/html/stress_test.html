@@ -67,20 +67,18 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>controller_ip</strong> &#8211; controller IP address</li>
 <li><strong>controller_restconf_port</strong> &#8211; controller restconf port</li>
-<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and password
-(controller_restconf_user, controller_restconf_password)</li>
+<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and password</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">number of hosts found, 0 if none exists and -1 in case of</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>error.
+<p>(controller_restconf_user, controller_restconf_password)
+:returns: number of hosts found, 0 if none exists and -1 in case of
+error.
 :rtype: int
 :type controller_ip: str
 :type controller_restconf_port: int
@@ -95,20 +93,17 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>controller_ip</strong> &#8211; controller IP address</li>
 <li><strong>controller_restconf_port</strong> &#8211; controller restconf port</li>
-<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and password
-(controller_restconf_user, controller_restconf_password)</li>
+<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and password</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">number of links found, 0 if none exists and -1 in case of</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>error.
+<p>(controller_restconf_user, controller_restconf_password)
+:returns: number of links found, 0 if none exists and -1 in case of error.
 :rtype: int
 :type controller_ip: str
 :type controller_restconf_port: int
@@ -123,20 +118,18 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>controller_ip</strong> &#8211; controller IP address</li>
 <li><strong>controller_restconf_port</strong> &#8211; controller restconf port</li>
-<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and password
-(controller_restconf_user, controller_restconf_password)</li>
+<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and password</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">number of switches found, 0 if none exists and -1 in case of</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>error.
+<p>(controller_restconf_user, controller_restconf_password)
+:returns: number of switches found, 0 if none exists and -1 in case of
+error.
 :rtype: int
 :type controller_ip: str
 :type controller_restconf_port: int
@@ -152,16 +145,15 @@ generator CPU shares as a comma separated values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>controller_cpu_shares</strong> (<em>int</em>) &#8211; Percentage of CPU resources to be used by
-controller.</li>
-<li><strong>generator_cpu_shares</strong> (<em>int</em>) &#8211; Percentage of CPU resources to be used by
-generator.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_cpu_shares</strong> &#8211; Percentage of CPU resources to be used by</td>
 </tr>
 </tbody>
 </table>
+<p>controller.
+:param generator_cpu_shares: Percentage of CPU resources to be used by
+generator.
+:type controller_cpu_shares: int
+:type generator_cpu_shares: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -173,21 +165,27 @@ generator.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>controller_ip</strong> (<em>str</em>) &#8211; controller IP address</li>
-<li><strong>controller_restconf_port</strong> (<em>int</em>) &#8211; controller restconf port</li>
-<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and controller
-restconf password (controller_restconf_user,
-controller_restconf_password)</li>
-<li><strong>boot_start_time</strong> (<em>int</em>) &#8211; The time we begin starting topology switches</li>
-<li><strong>expected_switches</strong> (<em>int</em>) &#8211; switches expected to find in the DS</li>
-<li><strong>discovery_deadline_ms</strong> (<em>float</em>) &#8211; deadline (in ms) at which the thread
-should discover switches (in milliseconds)</li>
-<li><strong>queuecomm</strong> (<em>multiprocessing.Queue</em>) &#8211; queue for communicating with the main context</li>
+<li><strong>controller_ip</strong> &#8211; controller IP address</li>
+<li><strong>controller_restconf_port</strong> &#8211; controller restconf port</li>
+<li><strong>auth_token</strong> &#8211; tuple with controller restconf user and controller</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>restconf password (controller_restconf_user, controller_restconf_password)
+:param boot_start_time: The time we begin starting topology switches
+:param expected_switches: switches expected to find in the DS
+:param discovery_deadline_ms: deadline (in ms) at which the thread
+should discover switches (in milliseconds)
+:param queuecomm: queue for communicating with the main context
+:type controller_ip: str
+:type controller_restconf_port: int
+:type controller_restconf_auth_token: tuple&lt;str&gt;
+:type boot_start_time: int
+:type expected_switches: int
+:type discovery_deadline_ms: float
+:type queuecomm: multiprocessing.Queue</p>
 </dd></dl>
 
 <dl class="function">
@@ -269,15 +267,14 @@ should discover switches (in milliseconds)</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>controller_statistics_handler</strong> (<em>str</em>) &#8211; filepath to the controller statistics
-handler</li>
-<li><strong>stat_period_ms</strong> &#8211; statistics period value to set (in milliseconds)</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controller_statistics_handler</strong> &#8211; filepath to the controller statistics</td>
 </tr>
 </tbody>
 </table>
+<p>handler
+:param stat_period_ms: statistics period value to set (in milliseconds)
+:type controller_statistics_handler: str
+:type curr_stat_period: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -302,25 +299,27 @@ handler</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>controller_start</strong> (<em>str</em>) &#8211; filepath to the controller start handler</li>
-<li><strong>controller_status</strong> (<em>str</em>) &#8211; filepath to the controller status handler</li>
-<li><strong>controller_stop</strong> (<em>str</em>) &#8211; filepath to the controller stop handler</li>
-<li><strong>controller_port</strong> (<em>int</em>) &#8211; controller port number to listen for SB connections</li>
-<li><strong>old_cpid</strong> (<em>int</em>) &#8211; PID of already running controller process</li>
-<li><strong>controller_cpus_str</strong> (<em>str</em>) &#8211; controller CPU share as a strin containing
-the values of shares, separated with comma</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>controller_start</strong> &#8211; filepath to the controller start handler</li>
+<li><strong>controller_status</strong> &#8211; filepath to the controller status handler</li>
+<li><strong>controller_stop</strong> &#8211; filepath to the controller stop handler</li>
+<li><strong>controller_port</strong> &#8211; controller port number to listen for SB connections</li>
+<li><strong>old_cpid</strong> &#8211; PID of already running controller process</li>
+<li><strong>controller_cpus_str</strong> &#8211; controller CPU share as a strin containing</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">controller process ID</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>the values of shares, separated with comma
+:returns: controller process ID
+:rtype: int
+:type controller_start: str
+:type controller_status: str
+:type controller_stop: str
+:type controller_port: int
+:type old_cpid: int
+:type controller_cpus_str: str</p>
 </dd></dl>
 
 <dl class="function">
@@ -331,27 +330,24 @@ the values of shares, separated with comma</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>controller_start_handler</strong> (<em>str</em>) &#8211; filepath to the controller start handler</li>
-<li><strong>controller_status_handler</strong> (<em>str</em>) &#8211; filepath to the controller status handler</li>
-<li><strong>controller_port</strong> (<em>int</em>) &#8211; controller port number to listen for SB connections</li>
-<li><strong>controller_cpus_str</strong> (<em>str</em>) &#8211; controller CPU share as a strin containing
-the values of shares, separated with coma</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>controller_start_handler</strong> &#8211; filepath to the controller start handler</li>
+<li><strong>controller_status_handler</strong> &#8211; filepath to the controller status handler</li>
+<li><strong>controller_port</strong> &#8211; controller port number to listen for SB connections</li>
+<li><strong>controller_cpus_str</strong> &#8211; controller CPU share as a strin containing</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">controller&#8217;s process ID</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Raises Exception:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first">When controller fails to start.</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>the values of shares, separated with coma
+:returns: controller&#8217;s process ID
+:raises Exception: When controller fails to start.
+:rtype: int
+:type controller_start_handler: str
+:type controller_status_handler: str
+:type controller_port: int
+:type controller_cpus_str: str</p>
 </dd></dl>
 
 <dl class="function">
@@ -456,22 +452,21 @@ for all the nodes of the topology</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>flow_id</strong> (<em>int</em>) &#8211; ID of the flow to add</li>
-<li><strong>node_id</strong> (<em>int</em>) &#8211; ID of the node to which we will add the flow</li>
-<li><strong>ip_dest</strong> (<em>str</em>) &#8211; IP address to populate the destination IP field of the
-flow template</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>flow_id</strong> &#8211; ID of the flow to add</li>
+<li><strong>node_id</strong> &#8211; ID of the node to which we will add the flow</li>
+<li><strong>ip_dest</strong> &#8211; IP address to populate the destination IP field of the</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">status code for the http call issued</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>flow template
+:returns: status code for the http call issued
+:rtype: int
+:type flow_id: int
+:type node_id: int
+:type ip_dest: str</p>
 </dd></dl>
 
 <dl class="method">
@@ -529,27 +524,42 @@ flow template</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>generator_run_handler</strong> (<em>str</em>) &#8211; generator run handler</li>
-<li><strong>generator_cpus</strong> (<em>str</em>) &#8211; Cpu ids we assign to generator thread</li>
-<li><strong>controller_ip</strong> (<em>str</em>) &#8211; controller IP</li>
-<li><strong>controller_port</strong> (<em>int</em>) &#8211; controller port</li>
-<li><strong>threads</strong> (<em>int</em>) &#8211; number of generator threads</li>
-<li><strong>sw_per_thread</strong> (<em>int</em>) &#8211; number of switches per thread</li>
-<li><strong>switches</strong> (<em>int</em>) &#8211; number of total switches</li>
+<li><strong>generator_run_handler</strong> &#8211; generator run handler</li>
+<li><strong>generator_cpus</strong> &#8211; Cpu ids we assign to generator thread</li>
+<li><strong>controller_ip</strong> &#8211; controller IP</li>
+<li><strong>controller_port</strong> &#8211; controller port</li>
+<li><strong>threads</strong> &#8211; number of generator threads</li>
+<li><strong>sw_per_thread</strong> &#8211; number of switches per thread</li>
+<li><strong>switches</strong> &#8211; number of total switches</li>
 <li><strong>thr_delay</strong> &#8211; delay between thread creation</li>
-<li><strong>traf_delay</strong> &#8211; delay between last thread creation and traffic
-transmission</li>
-<li><strong>ms_per_test</strong> (<em>int</em>) &#8211; test duration of a single generator loop</li>
-<li><strong>internal_repeats</strong> (<em>int</em>) &#8211; number of generator loops</li>
-<li><strong>hosts</strong> (<em>int</em>) &#8211; number of simulated hoss</li>
-<li><strong>warmup</strong> (<em>int</em>) &#8211; initial loops to be considered as &#8216;warmup&#8217;</li>
-<li><strong>mode</strong> (<em>int</em>) &#8211; generator mode</li>
-<li><strong>data_queue</strong> (<em>multiprocessing.Queue</em>) &#8211; data queue where generator output is posted line by line</li>
+<li><strong>traf_delay</strong> &#8211; delay between last thread creation and traffic</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>transmission
+:param ms_per_test: test duration of a single generator loop
+:param internal_repeats: number of generator loops
+:param hosts: number of simulated hoss
+:param warmup: initial loops to be considered as &#8216;warmup&#8217;
+:param mode: generator mode
+:param data_queue: data queue where generator output is posted line by line
+:type generator_run_handler: str
+:type generator_cpus: str
+:type controller_ip: str
+:type controller_port: int
+:type threads: int
+:type sw_per_thread: int
+:type switches: int
+:type thr_delay_ms: int
+:type traf_delay_ms: int
+:type ms_per_test: int
+:type internal_repeats: int
+:type hosts: int
+:type warmup: int
+:type mode: int
+:type data_queue: multiprocessing.Queue</p>
 </dd></dl>
 
 <dl class="function">
@@ -560,11 +570,12 @@ transmission</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>generator_build_handler</strong> (<em>str</em>) &#8211; filepath to the handler that builds the
-generator</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>generator_build_handler</strong> &#8211; filepath to the handler that builds the</td>
 </tr>
 </tbody>
 </table>
+<p>generator
+:type generator_build_handler: str</p>
 </dd></dl>
 
 <dl class="function">
@@ -576,28 +587,43 @@ generator</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>generator_run_handler</strong> (<em>str</em>) &#8211; generator run handler</li>
-<li><strong>generator_cpus</strong> (<em>str</em>) &#8211; cpu ids we assign to generator (comma separated)</li>
-<li><strong>controller_ip</strong> (<em>str</em>) &#8211; controller IP for OpenFlow connection</li>
-<li><strong>controller_port</strong> (<em>int</em>) &#8211; controller port for OpenFlow connection</li>
-<li><strong>threads</strong> (<em>int</em>) &#8211; number of generator threads</li>
-<li><strong>sw_per_thread</strong> (<em>int</em>) &#8211; number of switches per thread</li>
-<li><strong>switches</strong> (<em>int</em>) &#8211; number of total switches</li>
-<li><strong>thr_delay_ms</strong> (<em>int</em>) &#8211; delay between thread creation (in milliseconds)</li>
-<li><strong>traf_delay_ms</strong> (<em>int</em>) &#8211; delay between last thread creation and traffic
-transmission (in milliseconds)</li>
-<li><strong>ms_per_test</strong> (<em>int</em>) &#8211; test duration of a single generator loop</li>
-<li><strong>internal_repeats</strong> (<em>int</em>) &#8211; number of generator loops</li>
-<li><strong>hosts</strong> (<em>int</em>) &#8211; number of simulated hoss</li>
-<li><strong>warmup</strong> (<em>int</em>) &#8211; initial loops to be considered as &#8216;warmup&#8217;</li>
-<li><strong>mode</strong> (<em>int</em>) &#8211; generator mode</li>
-<li><strong>data_queue</strong> (<em>multiprocessing.Queue</em>) &#8211; data queue where generator output is posted line by line
-the generator process will run.</li>
+<li><strong>generator_run_handler</strong> &#8211; generator run handler</li>
+<li><strong>generator_cpus</strong> &#8211; cpu ids we assign to generator (comma separated)</li>
+<li><strong>controller_ip</strong> &#8211; controller IP for OpenFlow connection</li>
+<li><strong>controller_port</strong> &#8211; controller port for OpenFlow connection</li>
+<li><strong>threads</strong> &#8211; number of generator threads</li>
+<li><strong>sw_per_thread</strong> &#8211; number of switches per thread</li>
+<li><strong>switches</strong> &#8211; number of total switches</li>
+<li><strong>thr_delay_ms</strong> &#8211; delay between thread creation (in milliseconds)</li>
+<li><strong>traf_delay_ms</strong> &#8211; delay between last thread creation and traffic</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>transmission (in milliseconds)
+:param ms_per_test: test duration of a single generator loop
+:param internal_repeats: number of generator loops
+:param hosts: number of simulated hoss
+:param warmup: initial loops to be considered as &#8216;warmup&#8217;
+:param mode: generator mode
+:param data_queue: data queue where generator output is posted line by line
+the generator process will run.
+:type generator_run_handler: str
+:type generator_cpus: str
+:type controller_ip: str
+:type controller_port: int
+:type threads: int
+:type sw_per_thread: int
+:type switches: int
+:type thr_delay_ms: int
+:type traf_delay_ms: int
+:type ms_per_test: int
+:type internal_repeats: int
+:type hosts: int
+:type warmup: int
+:type mode: int
+:type data_queue: multiprocessing.Queue</p>
 </dd></dl>
 
 </div>
@@ -640,19 +666,21 @@ the generator process will run.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mininet_ssh_server_ip</strong> (<em>str</em>) &#8211; IP address of the ssh server on the Mininet
-node</li>
-<li><strong>mininet_user</strong> (<em>str</em>) &#8211; username for the Mininet node</li>
-<li><strong>mininet_pass</strong> (<em>str</em>) &#8211; password for the Mininet node</li>
-<li><strong>mininet_source</strong> &#8211; folder with Mininet handlers</li>
-<li><strong>mininet_target</strong> &#8211; folder where Mininet handlers will be copied</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port for mininet_ssh_server_ip</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mininet_ssh_server_ip</strong> &#8211; IP address of the ssh server on the Mininet</td>
 </tr>
 </tbody>
 </table>
+<p>node
+:param mininet_user: username for the Mininet node
+:param mininet_pass: password for the Mininet node
+:param mininet_source: folder with Mininet handlers
+:param mininet_target: folder where Mininet handlers will be copied
+:param remote_port: port for mininet_ssh_server_ip
+:type mininet_ssh_server_ip: str
+:type mininet_user: str
+:type mininet_pass: str
+:type mininet_folder: str
+:type remote_port: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -663,18 +691,20 @@ node</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mininet_ssh_server_ip</strong> (<em>str</em>) &#8211; IP address of the ssh server on the Mininet
-node</li>
-<li><strong>mininet_user</strong> (<em>str</em>) &#8211; username for the Mininet node</li>
-<li><strong>mininet_pass</strong> (<em>str</em>) &#8211; password for the Mininet node</li>
-<li><strong>mininet_folder</strong> (<em>str</em>) &#8211; folder with Mininet handlers</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port for mininet_ssh_server_ip</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mininet_ssh_server_ip</strong> &#8211; IP address of the ssh server on the Mininet</td>
 </tr>
 </tbody>
 </table>
+<p>node
+:param mininet_user: username for the Mininet node
+:param mininet_pass: password for the Mininet node
+:param mininet_folder: folder with Mininet handlers
+:param remote_port: port for mininet_ssh_server_ip
+:type mininet_ssh_server_ip: str
+:type mininet_user: str
+:type mininet_pass: str
+:type mininet_folder: str
+:type remote_port: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -686,34 +716,34 @@ a remote Mininet node</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mininet_init_topo_handler</strong> &#8211; full path of the handler to initialize 
-the mininet topology</li>
-<li><strong>mininet_rest_server_host</strong> &#8211; hostname/IP the REST server listens to</li>
-<li><strong>mininet_rest_server_port</strong> &#8211; port the REST server listens to</li>
-<li><strong>controller_ip</strong> &#8211; controller IP</li>
-<li><strong>controller_port</strong> &#8211; controller OpenFlow port</li>
-<li><strong>mininet_topology_type</strong> &#8211; Type of the network topology. It can have</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mininet_init_topo_handler</strong> &#8211; full path of the handler to initialize</td>
 </tr>
 </tbody>
 </table>
-<p>one of the following values (DisconnectedTopo,LinearTopo or MeshTopo)
+<p>the mininet topology
+:param mininet_rest_server_host: hostname/IP the REST server listens to
+:param mininet_rest_server_port: port the REST server listens to
+:param controller_ip: controller IP
+:param controller_port: controller OpenFlow port
+:param mininet_topology_type: Type of the network topology. It can have 
+one of the following values (DisconnectedTopo,LinearTopo or MeshTopo)
 :param mininet_size: Size of the mininet tpology
 :param mininet_group_size: Size of the mininet Group
-:param mininet_group_delay_ms: Delay in which mininet groups are</p>
-<blockquote>
-<div>initialized</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mininet_hosts_per_switch</strong> (<em>int</em>) &#8211; Number of Hosts each mininet switch is
-attached to</td>
-</tr>
-</tbody>
-</table>
+:param mininet_group_delay_ms: Delay in which mininet groups are
+initialized
+:param mininet_hosts_per_switch: Number of Hosts each mininet switch is
+attached to
+:type mininet_init_topo_handler: str
+:type mininet_rest_server_host: str
+:type mininet_rest_server_port: int
+:type controller_ip: str
+:type controller_port: int
+:type Topology: str
+:type mininet_size: int
+:type mininet_group_size: int
+:type mininet_group_delay: int
+:type mininet_hosts_per_switch: int
+:type start_topo_command: list&lt;str&gt;</p>
 </dd></dl>
 
 <dl class="function">
@@ -725,17 +755,21 @@ attached to</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mininet_ssh_session</strong> (<em>ssh connection object</em>) &#8211; ssh session used to issue remote command</li>
-<li><strong>mininet_server_remote_path</strong> (<em>str</em>) &#8211; path where mininet_custom_boot.py is
-stored and used to start the mininet topology.</li>
-<li><strong>mininet_rest_server_host</strong> (<em>str</em>) &#8211; hostname/IP the REST server should listen
-to</li>
-<li><strong>mininet_rest_server_port</strong> (<em>int</em>) &#8211; port the REST server should listen to</li>
+<li><strong>mininet_ssh_session</strong> &#8211; ssh session used to issue remote command</li>
+<li><strong>mininet_server_remote_path</strong> &#8211; path where mininet_custom_boot.py is</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>stored and used to start the mininet topology.
+:param mininet_rest_server_host: hostname/IP the REST server should listen
+to
+:param mininet_rest_server_port: port the REST server should listen to
+:type mininet_ssh_session: ssh connection object
+:type mininet_server_remote_path: str
+:type mininet_rest_server_host: str
+:type mininet_rest_server_port: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -747,16 +781,16 @@ topology on a remote Mininet node</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mininet_start_handler</strong> (<em>str</em>) &#8211; full path of the handler to start the Mininet
-topology</li>
-<li><strong>mininet_rest_server_host</strong> (<em>str</em>) &#8211; hostname/IP the REST server listens to</li>
-<li><strong>mininet_rest_server_port</strong> (<em>int</em>) &#8211; port the REST server listens to</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mininet_start_handler</strong> &#8211; full path of the handler to start the Mininet</td>
 </tr>
 </tbody>
 </table>
+<p>topology
+:param mininet_rest_server_host: hostname/IP the REST server listens to
+:param mininet_rest_server_port: port the REST server listens to
+:type mininet_start_handler: str
+:type mininet_rest_server_host: str
+:type mininet_rest_server_port: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -786,16 +820,16 @@ remote Mininet node</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mininet_stop_handler</strong> (<em>str</em>) &#8211; full path of the handler to stop the Mininet
-topology</li>
-<li><strong>mininet_rest_server_host</strong> (<em>str</em>) &#8211; hostname/IP the REST server listens to</li>
-<li><strong>mininet_rest_server_port</strong> (<em>int</em>) &#8211; port the REST server listens to</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mininet_stop_handler</strong> &#8211; full path of the handler to stop the Mininet</td>
 </tr>
 </tbody>
 </table>
+<p>topology
+:param mininet_rest_server_host: hostname/IP the REST server listens to
+:param mininet_rest_server_port: port the REST server listens to
+:type mininet_stop_handler: str
+:type mininet_rest_server_host: str
+:type mininet_rest_server_port: int</p>
 </dd></dl>
 
 </div>

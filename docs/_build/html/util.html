@@ -74,18 +74,15 @@ CPUs is returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shares_list</strong> (<em>list&lt;int&gt;</em>) &#8211; values with the CPU percentages
-for each process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple with the CPU lists for each process</td>
-</tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Raises ValueError:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">When input leads to an invalid CPU sharing.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple&lt;list&lt;int&gt;&gt;</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shares_list</strong> &#8211; values with the CPU percentages</td>
 </tr>
 </tbody>
 </table>
+<p>for each process
+:returns: a tuple with the CPU lists for each process
+:raises ValueError: When input leads to an invalid CPU sharing.
+:rtype: tuple&lt;list&lt;int&gt;&gt;
+:type shares_list: list&lt;int&gt;</p>
 </dd></dl>
 
 </div>
@@ -323,15 +320,15 @@ also returns false.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lst</strong> (<em>list&lt;dict&gt;</em>) &#8211; The list that we want to check its elements</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lst</strong> &#8211; The list that we want to check its elements</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True: if all the elements of the list are dictionaries
-False: otherwise</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all the elements of the list are dictionaries</td>
 </tr>
 </tbody>
 </table>
+<p>False otherwise
+:rtype: bool
+:type lst: list&lt;dict&gt;</p>
 </dd></dl>
 
 <dl class="function">
@@ -439,18 +436,24 @@ input dictionary and how their value will be translated in the HTML table.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> (<em>str</em>) &#8211; IP adress of the remote machine</li>
-<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
-<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
-<li><strong>local_path</strong> (<em>str</em>) &#8211; directory path from local machine to copy, full location
-required</li>
-<li><strong>remote_path</strong> (<em>str</em>) &#8211; remote destination, full location required</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
+<li><strong>ipaddr</strong> &#8211; IP adress of the remote machine</li>
+<li><strong>user</strong> &#8211; username of the remote user</li>
+<li><strong>passwd</strong> &#8211; password of the remote user</li>
+<li><strong>local_path</strong> &#8211; directory path from local machine to copy, full location</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>required
+:param remote_path: remote destination, full location required
+:param remote_port: port to perform sftp from
+:type ipaddr: str
+:type user: str
+:type passwd: str
+:type local_path: str
+:type remote_path: str
+:type remote_port: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -577,18 +580,24 @@ a connection after a specified number of tries, it returns -1.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
-<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
-<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
-<li><strong>local_file</strong> (<em>str</em>) &#8211; file from local machine to copy,full location required</li>
-<li><strong>remote_file</strong> (<em>str</em>) &#8211; remote destination, full location required
-i.e /tmp/foo.txt</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
+<li><strong>ipaddr</strong> &#8211; Ip adress of the remote machine</li>
+<li><strong>user</strong> &#8211; username of the remote user</li>
+<li><strong>passwd</strong> &#8211; password of the remote user</li>
+<li><strong>local_file</strong> &#8211; file from local machine to copy,full location required</li>
+<li><strong>remote_file</strong> &#8211; remote destination, full location required</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>i.e /tmp/foo.txt
+:param remote_port: port to perform sftp from
+:type ipaddr: str
+:type user: str
+:type passwd: str
+:type local_file: str
+:type remote_file: str
+:type remote_port: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -638,14 +647,13 @@ i.e /tmp/foo.txt</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str2cast</strong> &#8211; string to cast</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the numeric value in the appropriate type or &#8220;Impossible cast&#8221;
-string</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the numeric value in the appropriate type or &#8220;Impossible cast&#8221;</td>
 </tr>
 </tbody>
 </table>
-<p>:type str</p>
+<p>string
+:rtype: float
+:type str</p>
 </dd></dl>
 
 </div>
@@ -657,26 +665,20 @@ string</td>
 <tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_errorbar_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw multiple collection of errorbars over a set of samples from a
 JSON file.</p>
-<dl class="docutils">
-<dt>For each different z value do the following:</dt>
-<dd>for each different x value, the function finds one or more
-corresponding y values and plots an errorbar over them.</dd>
-</dl>
+<p>For each different z value do the following:
+for each different x value, the function finds one or more
+corresponding y values and plots an errorbar over them.</p>
 <p>The x and y values are determined by the x_axis_key and y_axis_key
 arguments.
 The z value is determined by the z_axis_key argument.</p>
 <p>Prerequisites:
-1. the result JSON file must have the following format:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>[</dt>
-<dd>{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
 {&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
 {&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
-...</dd>
-</dl>
-<p>]</p>
-</div></blockquote>
+...
+]</p>
 <ol class="arabic simple" start="2">
 <li>the values for x_axis_key, y_axis_key and z_axis_key must be numeric</li>
 </ol>
@@ -685,23 +687,29 @@ The z value is determined by the z_axis_key argument.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>results_file</strong> (<em>str</em>) &#8211; results file to plot samples from</li>
-<li><strong>x_axis_key</strong> (<em>str</em>) &#8211; some key from the results file with numeric type value,
-which is intended to serve as the x-axis key</li>
-<li><strong>y_axis_key</strong> (<em>str</em>) &#8211; some key from the result file with numeric type value,
-which is intended to serve as the y-axis key</li>
-<li><strong>z_axis_key</strong> (<em>str</em>) &#8211; some key from the result file with numeric type value,
-which is intended to serve as the z-axis key</li>
-<li><strong>plot_subtitle_keys</strong> (<em>list&lt;str&gt;</em>) &#8211; list of keys from the result file which we would
-like to print as key-value pairs in the plot
-subtitle</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param z_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the z-axis key
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -709,26 +717,20 @@ produced plot.</li>
 <tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_scatter_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw multiple scatter-plots over a set of samples from a JSON file.
 Each scatter-plot is determined by a specific value of the z_axis_key</p>
-<dl class="docutils">
-<dt>For each different z value do the following:</dt>
-<dd>for each different x value, plot a point for every corresponding y
-value found.</dd>
-</dl>
+<p>For each different z value do the following:
+for each different x value, plot a point for every corresponding y
+value found.</p>
 <p>The x and y values are determined by the x_axis_key and y_axis_key
 arguments.
 The z value is determined by the z_axis_key argument.</p>
 <p>Prerequisites:
-1. the result JSON file must have the following format:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>[</dt>
-<dd>{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
 {&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
 {&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
-...</dd>
-</dl>
-<p>]</p>
-</div></blockquote>
+...
+]</p>
 <ol class="arabic simple" start="2">
 <li>the values for x_axis_key, y_axis_key and z_axis_key must be numeric</li>
 </ol>
@@ -737,23 +739,29 @@ The z value is determined by the z_axis_key argument.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>results_file</strong> (<em>str</em>) &#8211; results file to plot samples from</li>
-<li><strong>x_axis_key</strong> (<em>str</em>) &#8211; some key from the results file with numeric type value,
-which is intended to serve as the x-axis key</li>
-<li><strong>y_axis_key</strong> (<em>str</em>) &#8211; some key from the result file with numeric type value,
-which is intended to serve as the y-axis key</li>
-<li><strong>z_axis_key</strong> (<em>str</em>) &#8211; some key from the result file with numeric type value,
-which is intended to serve as the z-axis key</li>
-<li><strong>plot_subtitle_keys</strong> (<em>list&lt;str&gt;</em>) &#8211; list of keys from the result file which we would
-like to print as key-value pairs in the plot
-subtitle</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param z_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the z-axis key
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -766,60 +774,13 @@ corresponding y values and plots an errorbar over them.
 The x and y values are determined by the x_axis_key and y_axis_key
 arguments.</p>
 <p>Prerequisites:
-1. the result JSON file must have the following format:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>[</dt>
-<dd>{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
 {&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
 {&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
-...</dd>
-</dl>
-<p>]</p>
-</div></blockquote>
-<ol class="arabic simple" start="2">
-<li>the values for both the x_axis_key and y_axis_key must be numeric</li>
-</ol>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>results_file</strong> (<em>str</em>) &#8211; results file to plot samples from</li>
-<li><strong>x_axis_key</strong> (<em>str</em>) &#8211; some key from the results file with numeric type value,
-which is intended to serve as the x-axis key</li>
-<li><strong>y_axis_key</strong> (<em>str</em>) &#8211; some key from the result file with numeric type value,
-which is intended to serve as the y-axis key</li>
-<li><strong>plot_subtitle_keys</strong> (<em>list&lt;str&gt;</em>) &#8211; list of keys from the result file which we would
-like to print as key-value pairs in the plot
-subtitle</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="util.plot_json.plot_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_type</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Acts as a wrapper method for plotting a set of samples from a
-JSON file. The method ends up calling specific methods for one of the
-following plot types: errorbar plots, scatter plots</p>
-<p>Prerequisites:
-1. the result JSON file must have the following format:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>[</dt>
-<dd>{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
-{&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
-{&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
-...</dd>
-</dl>
-<p>]</p>
-</div></blockquote>
+...
+]</p>
 <ol class="arabic simple" start="2">
 <li>the values for both the x_axis_key and y_axis_key must be numeric</li>
 </ol>
@@ -829,29 +790,73 @@ following plot types: errorbar plots, scatter plots</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>results_file</strong> &#8211; results file to plot samples from</li>
-<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,
-which is intended to serve as the x-axis key</li>
-<li><strong>y_axis_key</strong> &#8211; some key from the result file with numeric type value,
-which is intended to serve as the y-axis key</li>
-<li><strong>z_axis_key</strong> &#8211; some key from the result file with numeric type value,
-which is intended to serve as the z-axis key</li>
-<li><strong>plot_type</strong> &#8211; plot type, one of:
-&#8216;errorbar,
-&#8216;errorbar_connected&#8217;,
-&#8216;scatter&#8217;,
-&#8216;multi_errorbar,
-&#8216;multi_errorbar_connected&#8217;,
-&#8216;multi_scatter&#8217;</li>
-<li><strong>plot_subtitle_keys</strong> &#8211; list of keys from the result file which we would
-like to print as key-value pairs in the plot
-subtitle</li>
-<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>produced plot.
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.plot_json.plot_json">
+<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_type</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acts as a wrapper method for plotting a set of samples from a
+JSON file. The method ends up calling specific methods for one of the
+following plot types: errorbar plots, scatter plots</p>
+<p>Prerequisites:
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+{&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
+{&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
+...
+]</p>
+<ol class="arabic simple" start="2">
+<li>the values for both the x_axis_key and y_axis_key must be numeric</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param z_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the z-axis key
+:param plot_type: plot type, one of:
+- &#8216;errorbar
+- &#8216;errorbar_connected&#8217;
+- &#8216;scatter&#8217;
+- &#8216;multi_errorbar
+- &#8216;multi_errorbar_connected&#8217;
+- &#8216;multi_scatter&#8217;
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
 :raises ValueError: When we give an invalid plot_type.
 :type results_file: str
 :type x_axis_key: str
@@ -871,17 +876,13 @@ corresponding y values it finds.
 The x and y values are determined by the x_axis_key and y_axis_key
 arguments.</p>
 <p>Prerequisites:
-1. the result JSON file must have the following format:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>[</dt>
-<dd>{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
+1. the result JSON file must have the following format:
+[
+{&#8220;k1&#8221;: v1, &#8220;k2&#8221;: v2, ... },      # 1st line (sample)
 {&#8220;k1&#8221;: v3, &#8220;k2&#8221;: v4, ... },      # 2nd line (sample)
 {&#8220;k1&#8221;: v5, &#8220;k2&#8221;: v6, ... },      # ...
-...</dd>
-</dl>
-<p>]</p>
-</div></blockquote>
+...
+]</p>
 <ol class="arabic simple" start="2">
 <li>the values for both the x_axis_key and y_axis_key must be numeric</li>
 </ol>
@@ -890,22 +891,28 @@ arguments.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>results_file</strong> (<em>str</em>) &#8211; results file to plot samples from</li>
-<li><strong>x_axis_key</strong> (<em>str</em>) &#8211; some key from the results file with numeric type value,
-which is intended to serve as the x-axis key</li>
-<li><strong>y_axis_key</strong> (<em>str</em>) &#8211; some key from the result file with numeric type value,
-which is intended to serve as the y-axis key</li>
-<li><strong>plot_title</strong> &#8211; description for the plot title</li>
-<li><strong>plot_subtitle_keys</strong> (<em>list&lt;str&gt;</em>) &#8211; list of keys from the result file which we would
-like to print as key-value pairs in the plot
-subtitle</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
+<li><strong>results_file</strong> &#8211; results file to plot samples from</li>
+<li><strong>x_axis_key</strong> &#8211; some key from the results file with numeric type value,</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>which is intended to serve as the x-axis key
+:param y_axis_key: some key from the result file with numeric type value,
+which is intended to serve as the y-axis key
+:param plot_title: description for the plot title
+:param plot_subtitle_keys: list of keys from the result file which we would
+like to print as key-value pairs in the plot subtitle
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str
+:type plot_type: str
+:type plot_subtitle_keys: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -936,27 +943,21 @@ dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>results_file</strong> &#8211; filepath of json file that contains the results</li>
-<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x
-axis</li>
-<li><strong>y_axis_key</strong> &#8211; field name from the result json that has the data for y
-axis</li>
+<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>:returns contents of results json files and x,y coordinations of the</dt>
-<dd>values defined by x_axis_key and y_axis_key.</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple&lt;dictionary&gt;</td>
-</tr>
-</tbody>
-</table>
+<p>axis
+:param y_axis_key: field name from the result json that has the data for y
+axis
+:returns contents of results json files and x,y coordinations of the
+values defined by x_axis_key and y_axis_key.
+:rtype: tuple&lt;dictionary&gt;
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str</p>
 </dd></dl>
 
 <dl class="function">
@@ -971,29 +972,24 @@ that in turn map to z_axis_keys</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>results_file</strong> &#8211; filepath of json file that contains the results</li>
-<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x
-axis</li>
-<li><strong>y_axis_key</strong> &#8211; field name from the result json that has the data for y
-axis</li>
-<li><strong>z_axis_key</strong> &#8211; field name from the result json that has the data for z
-axis</li>
+<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>:returns contents of results json files and x,y coordinations of the</dt>
-<dd>values defined by x_axis_key and y_axis_key</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple&lt;dict&gt;</td>
-</tr>
-</tbody>
-</table>
+<p>axis
+:param y_axis_key: field name from the result json that has the data for y
+axis
+:param z_axis_key: field name from the result json that has the data for z
+axis
+:returns contents of results json files and x,y coordinations of the
+values defined by x_axis_key and y_axis_key
+:rtype: tuple&lt;dict&gt;
+:type results_file: str
+:type x_axis_key: str
+:type y_axis_key: str
+:type z_axis_key: str</p>
 </dd></dl>
 
 <dl class="function">
@@ -1004,11 +1000,12 @@ axis</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> &#8211; object containing configuration parameters of the</td>
 </tr>
 </tbody>
 </table>
+<p>produced plot.
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -1020,21 +1017,26 @@ produced plot.</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x_keys_sorted</strong> (<em>list&lt;int&gt;</em>) &#8211; values of x axis.</li>
-<li><strong>y_mean</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y mean (one value for each x_key)</li>
-<li><strong>y_diff_minus</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y_diff_minus (one value for each x_key,
-y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
-diff_minus at plot_json, plot_errorbar_json()</li>
-<li><strong>y_diff_plus</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y_diff_mplus (one value for each x_key,
-y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
-diff_plus at plot_json, plot_errorbar_json()</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
+<li><strong>x_keys_sorted</strong> &#8211; values of x axis.</li>
+<li><strong>y_mean</strong> &#8211; values of y mean (one value for each x_key)</li>
+<li><strong>y_diff_minus</strong> &#8211; values of y_diff_minus (one value for each x_key,</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
+diff_minus at plot_json, plot_errorbar_json()
+:param y_diff_plus: values of y_diff_mplus (one value for each x_key,
+y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
+diff_plus at plot_json, plot_errorbar_json()
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:type x_keys_sorted: list&lt;int&gt;
+:type y_mean: list&lt;float&gt;
+:type y_diff_minus: list&lt;float&gt;
+:type y_diff_plus: list&lt;float&gt;
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -1045,28 +1047,29 @@ produced plot.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x_keys_sorted</strong> (<em>list&lt;int&gt;</em>) &#8211; values of x axis</li>
-<li><strong>y_mean</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y mean (one value for each x_key)</li>
-<li><strong>y_diff_minus</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y_diff_minus (one value for each x_key,
-y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
-diff_minus at plot_json, plot_errorbar_json()</li>
-<li><strong>y_diff_plus</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y_diff_mplus (one value for each x_key,
-y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
-diff_plus at plot_json, plot_errorbar_json()</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_keys_sorted</strong> &#8211; values of x axis</li>
+<li><strong>y_mean</strong> &#8211; values of y mean (one value for each x_key)</li>
+<li><strong>y_diff_minus</strong> &#8211; values of y_diff_minus (one value for each x_key,</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An errorbar plot.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">depends on the input of [z_values]</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p>y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
+diff_minus at plot_json, plot_errorbar_json()
+:param y_diff_plus: values of y_diff_mplus (one value for each x_key,
+y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
+diff_plus at plot_json, plot_errorbar_json()
+:param plot_options: object containing configuration parameters of the
+produced plot.
+:returns: An errorbar plot.
+:rtype: depends on the input of [z_values]
+:type x_keys_sorted: list&lt;int&gt;
+:type y_mean: list&lt;float&gt;
+:type y_diff_minus: list&lt;float&gt;
+:type y_diff_plus: list&lt;float&gt;
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -1078,15 +1081,18 @@ produced plot.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>y_values</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y axis.</li>
-<li><strong>z_axis_key</strong> (<em>str</em>) &#8211; field names from results to be used for z axis.</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
+<li><strong>y_values</strong> &#8211; values of y axis.</li>
+<li><strong>z_axis_key</strong> &#8211; field names from results to be used for z axis.</li>
+<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>produced plot.
+:type y_values: list&lt;float&gt;
+:type z_axis_key: str
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -1098,15 +1104,18 @@ produced plot.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>y_values</strong> (<em>list&lt;float&gt;</em>) &#8211; list&lt;float&gt;</li>
-<li><strong>z_axis_key</strong> (<em>list&lt;str&gt;</em>) &#8211; field names from results to be used for z axis.</li>
-<li><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</li>
+<li><strong>y_values</strong> &#8211; list&lt;float&gt;</li>
+<li><strong>z_axis_key</strong> &#8211; field names from results to be used for z axis.</li>
+<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>produced plot.
+:type y_values: list&lt;float&gt;
+:type z_axis_key: list&lt;str&gt;
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -1166,11 +1175,12 @@ produced plot.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> (<em>PlotOptions</em>) &#8211; object containing configuration parameters of the
-produced plot.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> &#8211; object containing configuration parameters of the</td>
 </tr>
 </tbody>
 </table>
+<p>produced plot.
+:type plot_options: PlotOptions</p>
 </dd></dl>
 
 </div>
@@ -1186,16 +1196,16 @@ connections on a specific port.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port</strong> (<em>int</em>) &#8211; the port number that we investigate.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port</strong> &#8211; the port number that we investigate.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">-1, if no process is listening on port
-0, if some process is listening on port but we are not owner of
-it &lt;pid&gt; of the process listening on port and we are owner of it</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">-1, if no process is listening on port</td>
 </tr>
 </tbody>
 </table>
+<p>0, if some process is listening on port but we are not owner of
+it &lt;pid&gt; of the process listening on port and we are owner of it
+:rtype: int
+:type port: int</p>
 </dd></dl>
 
 <dl class="function">
@@ -1277,13 +1287,13 @@ returned as a string, and the command exit status is returned.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their coefficient.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the co-efficient of variation of the float numbers
-in the list</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the co-efficient of variation of the float numbers</td>
 </tr>
 </tbody>
 </table>
+<p>in the list
+:rtype: float
+:type samples: list&lt;float&gt;</p>
 </dd></dl>
 
 <dl class="function">

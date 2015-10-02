@@ -97,7 +97,7 @@
     <span class="sd">&quot;&quot;&quot;Sets axis labels, title and subtitle of a plot.</span>
 
 <span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">           produced plot.</span>
+<span class="sd">    produced plot.</span>
 <span class="sd">    :type plot_options: PlotOptions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -118,7 +118,7 @@
     <span class="sd">&quot;&quot;&quot;Configures the plots axis and saves the figure to file</span>
 
 <span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">           produced plot.</span>
+<span class="sd">    produced plot.</span>
 <span class="sd">    :type plot_options: PlotOptions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -139,13 +139,13 @@
 <span class="sd">    :param x_keys_sorted: values of x axis</span>
 <span class="sd">    :param y_mean: values of y mean (one value for each x_key)</span>
 <span class="sd">    :param y_diff_minus: values of y_diff_minus (one value for each x_key,</span>
-<span class="sd">           y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of</span>
-<span class="sd">           diff_minus at plot_json, plot_errorbar_json()</span>
+<span class="sd">    y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of</span>
+<span class="sd">    diff_minus at plot_json, plot_errorbar_json()</span>
 <span class="sd">    :param y_diff_plus: values of y_diff_mplus (one value for each x_key,</span>
-<span class="sd">           y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of</span>
-<span class="sd">           diff_plus at plot_json, plot_errorbar_json()</span>
+<span class="sd">    y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of</span>
+<span class="sd">    diff_plus at plot_json, plot_errorbar_json()</span>
 <span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">           produced plot.</span>
+<span class="sd">    produced plot.</span>
 <span class="sd">    :returns: An errorbar plot.</span>
 <span class="sd">    :rtype: depends on the input of [z_values]</span>
 <span class="sd">    :type x_keys_sorted: list&lt;int&gt;</span>
@@ -171,13 +171,13 @@
 <span class="sd">    :param x_keys_sorted: values of x axis.</span>
 <span class="sd">    :param y_mean: values of y mean (one value for each x_key)</span>
 <span class="sd">    :param y_diff_minus: values of y_diff_minus (one value for each x_key,</span>
-<span class="sd">           y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of</span>
-<span class="sd">           diff_minus at plot_json, plot_errorbar_json()</span>
+<span class="sd">    y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of</span>
+<span class="sd">    diff_minus at plot_json, plot_errorbar_json()</span>
 <span class="sd">    :param y_diff_plus: values of y_diff_mplus (one value for each x_key,</span>
-<span class="sd">           y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of</span>
-<span class="sd">           diff_plus at plot_json, plot_errorbar_json()</span>
+<span class="sd">    y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of</span>
+<span class="sd">    diff_plus at plot_json, plot_errorbar_json()</span>
 <span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">           produced plot.</span>
+<span class="sd">    produced plot.</span>
 <span class="sd">    :type x_keys_sorted: list&lt;int&gt;</span>
 <span class="sd">    :type y_mean: list&lt;float&gt;</span>
 <span class="sd">    :type y_diff_minus: list&lt;float&gt;</span>
@@ -197,7 +197,7 @@
 <span class="sd">    :param y_values: values of y axis.</span>
 <span class="sd">    :param z_axis_key: field names from results to be used for z axis.</span>
 <span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">           produced plot.</span>
+<span class="sd">    produced plot.</span>
 <span class="sd">    :type y_values: list&lt;float&gt;</span>
 <span class="sd">    :type z_axis_key: str</span>
 <span class="sd">    :type plot_options: PlotOptions</span>
@@ -283,7 +283,7 @@
 <span class="sd">    :param y_values: list&lt;float&gt;</span>
 <span class="sd">    :param z_axis_key: field names from results to be used for z axis.</span>
 <span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">           produced plot.</span>
+<span class="sd">    produced plot.</span>
 <span class="sd">    :type y_values: list&lt;float&gt;</span>
 <span class="sd">    :type z_axis_key: list&lt;str&gt;</span>
 <span class="sd">    :type plot_options: PlotOptions</span>
@@ -318,11 +318,11 @@
 
 <span class="sd">    :param results_file: filepath of json file that contains the results</span>
 <span class="sd">    :param x_axis_key: field name from the result json that has the data for x</span>
-<span class="sd">           axis</span>
+<span class="sd">    axis</span>
 <span class="sd">    :param y_axis_key: field name from the result json that has the data for y</span>
-<span class="sd">           axis</span>
+<span class="sd">    axis</span>
 <span class="sd">    :returns contents of results json files and x,y coordinations of the</span>
-<span class="sd">             values defined by x_axis_key and y_axis_key.</span>
+<span class="sd">    values defined by x_axis_key and y_axis_key.</span>
 <span class="sd">    :rtype: tuple&lt;dictionary&gt;</span>
 <span class="sd">    :type results_file: str</span>
 <span class="sd">    :type x_axis_key: str</span>
@@ -351,13 +351,13 @@
 
 <span class="sd">    :param results_file: filepath of json file that contains the results</span>
 <span class="sd">    :param x_axis_key: field name from the result json that has the data for x</span>
-<span class="sd">                       axis</span>
+<span class="sd">    axis</span>
 <span class="sd">    :param y_axis_key: field name from the result json that has the data for y</span>
-<span class="sd">                       axis</span>
+<span class="sd">    axis</span>
 <span class="sd">    :param z_axis_key: field name from the result json that has the data for z</span>
-<span class="sd">                       axis</span>
+<span class="sd">    axis</span>
 <span class="sd">    :returns contents of results json files and x,y coordinations of the</span>
-<span class="sd">             values defined by x_axis_key and y_axis_key</span>
+<span class="sd">    values defined by x_axis_key and y_axis_key</span>
 <span class="sd">    :rtype: tuple&lt;dict&gt;</span>
 <span class="sd">    :type results_file: str</span>
 <span class="sd">    :type x_axis_key: str</span>

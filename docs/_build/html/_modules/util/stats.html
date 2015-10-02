@@ -67,6 +67,7 @@
 <span class="sd">    :rtype: float</span>
 <span class="sd">    :type samples: list&lt;float&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
 
 </div>
@@ -78,6 +79,7 @@
 <span class="sd">    :rtype: float</span>
 <span class="sd">    :type samples: list&lt;float&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">diffs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">]</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">diffs</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
 
@@ -90,6 +92,7 @@
 <span class="sd">    :rtype: float</span>
 <span class="sd">    :type samples: list&lt;float&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">(</span><span class="n">samples</span><span class="p">))</span>
 
 </div>
@@ -98,10 +101,11 @@
 
 <span class="sd">    :param s: a list of float numbers, to calculate their coefficient.</span>
 <span class="sd">    :returns: the co-efficient of variation of the float numbers</span>
-<span class="sd">              in the list</span>
+<span class="sd">    in the list</span>
 <span class="sd">    :rtype: float</span>
 <span class="sd">    :type samples: list&lt;float&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">return</span> <span class="n">stddev</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span></div>
 </pre></div>
 

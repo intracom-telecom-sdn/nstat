@@ -79,7 +79,7 @@
 <span class="sd">    :param controller_ip: controller IP address</span>
 <span class="sd">    :param controller_restconf_port: controller restconf port</span>
 <span class="sd">    :param auth_token: tuple with controller restconf user and password</span>
-<span class="sd">                       (controller_restconf_user, controller_restconf_password)</span>
+<span class="sd">    (controller_restconf_user, controller_restconf_password)</span>
 <span class="sd">    :returns: number of switches found, 0 if none exists and -1 in case of</span>
 <span class="sd">    error.</span>
 <span class="sd">    :rtype: int</span>
@@ -108,7 +108,7 @@
 <span class="sd">    :param controller_ip: controller IP address</span>
 <span class="sd">    :param controller_restconf_port: controller restconf port</span>
 <span class="sd">    :param auth_token: tuple with controller restconf user and password</span>
-<span class="sd">                       (controller_restconf_user, controller_restconf_password)</span>
+<span class="sd">    (controller_restconf_user, controller_restconf_password)</span>
 <span class="sd">    :returns: number of hosts found, 0 if none exists and -1 in case of</span>
 <span class="sd">    error.</span>
 <span class="sd">    :rtype: int</span>
@@ -137,9 +137,8 @@
 <span class="sd">    :param controller_ip: controller IP address</span>
 <span class="sd">    :param controller_restconf_port: controller restconf port</span>
 <span class="sd">    :param auth_token: tuple with controller restconf user and password</span>
-<span class="sd">                       (controller_restconf_user, controller_restconf_password)</span>
-<span class="sd">    :returns: number of links found, 0 if none exists and -1 in case of</span>
-<span class="sd">    error.</span>
+<span class="sd">    (controller_restconf_user, controller_restconf_password)</span>
+<span class="sd">    :returns: number of links found, 0 if none exists and -1 in case of error.</span>
 <span class="sd">    :rtype: int</span>
 <span class="sd">    :type controller_ip: str</span>
 <span class="sd">    :type controller_restconf_port: int</span>
@@ -169,12 +168,11 @@
 <span class="sd">    :param controller_ip: controller IP address</span>
 <span class="sd">    :param controller_restconf_port: controller restconf port</span>
 <span class="sd">    :param auth_token: tuple with controller restconf user and controller</span>
-<span class="sd">                       restconf password (controller_restconf_user,</span>
-<span class="sd">                       controller_restconf_password)</span>
+<span class="sd">    restconf password (controller_restconf_user, controller_restconf_password)</span>
 <span class="sd">    :param boot_start_time: The time we begin starting topology switches</span>
 <span class="sd">    :param expected_switches: switches expected to find in the DS</span>
 <span class="sd">    :param discovery_deadline_ms: deadline (in ms) at which the thread</span>
-<span class="sd">                                  should discover switches (in milliseconds)</span>
+<span class="sd">    should discover switches (in milliseconds)</span>
 <span class="sd">    :param queuecomm: queue for communicating with the main context</span>
 <span class="sd">    :type controller_ip: str</span>
 <span class="sd">    :type controller_restconf_port: int</span>
@@ -264,9 +262,9 @@
 <span class="sd">    generator CPU shares as a comma separated values.</span>
 
 <span class="sd">    :param controller_cpu_shares: Percentage of CPU resources to be used by</span>
-<span class="sd">                                  controller.</span>
+<span class="sd">    controller.</span>
 <span class="sd">    :param generator_cpu_shares: Percentage of CPU resources to be used by</span>
-<span class="sd">                                 generator.</span>
+<span class="sd">    generator.</span>
 <span class="sd">    :type controller_cpu_shares: int</span>
 <span class="sd">    :type generator_cpu_shares: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>

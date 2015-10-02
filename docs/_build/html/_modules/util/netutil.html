@@ -78,6 +78,7 @@
 <span class="sd">    :type passwd: str</span>
 <span class="sd">    :type maxretries: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">retries</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">while</span> <span class="n">retries</span> <span class="o">&lt;=</span> <span class="n">maxretries</span><span class="p">:</span>
@@ -119,7 +120,7 @@
 <span class="sd">    :param passwd: password of the remote user</span>
 <span class="sd">    :param local_file: file from local machine to copy,full location required</span>
 <span class="sd">    :param remote_file: remote destination, full location required</span>
-<span class="sd">                        i.e /tmp/foo.txt</span>
+<span class="sd">    i.e /tmp/foo.txt</span>
 <span class="sd">    :param remote_port: port to perform sftp from</span>
 <span class="sd">    :type ipaddr: str</span>
 <span class="sd">    :type user: str</span>
@@ -128,6 +129,7 @@
 <span class="sd">    :type remote_file: str</span>
 <span class="sd">    :type remote_port: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">transport_layer</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">Transport</span><span class="p">((</span><span class="n">ipaddr</span><span class="p">,</span> <span class="n">remote_port</span><span class="p">))</span>
     <span class="n">transport_layer</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">passwd</span><span class="p">)</span>
     <span class="n">sftp</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SFTPClient</span><span class="o">.</span><span class="n">from_transport</span><span class="p">(</span><span class="n">transport_layer</span><span class="p">)</span>
@@ -144,7 +146,7 @@
 <span class="sd">    :param user: username of the remote user</span>
 <span class="sd">    :param passwd: password of the remote user</span>
 <span class="sd">    :param local_path: directory path from local machine to copy, full location</span>
-<span class="sd">           required</span>
+<span class="sd">    required</span>
 <span class="sd">    :param remote_path: remote destination, full location required</span>
 <span class="sd">    :param remote_port: port to perform sftp from</span>
 <span class="sd">    :type ipaddr: str</span>
@@ -154,6 +156,7 @@
 <span class="sd">    :type remote_path: str</span>
 <span class="sd">    :type remote_port: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c">#  recursively upload a full directory</span>
     <span class="k">if</span> <span class="n">local_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">):</span>
         <span class="n">local_path</span> <span class="o">=</span> <span class="n">local_path</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -241,6 +244,7 @@
 <span class="sd">    :type path: str</span>
 <span class="sd">    :type sftp: paramiko.SSHClient</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_ISDIR</span><span class="p">(</span><span class="n">sftp</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
