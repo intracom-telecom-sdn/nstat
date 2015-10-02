@@ -1,3 +1,4 @@
+# -*- mode: ruby -*-
 # vi: set ft=ruby :
 
 # Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
@@ -11,25 +12,26 @@
 # VM configuration.
 # ------------------------------------------------------------------------------
 
-
-# RUNNING_ENV options: 'intracom-internal', 'intracom-external'
-# ------------------------------------------------------------------------------
-RUNNING_ENV = 'intracom-internal'
-
-# make a new nstat_vm_basebox based on 'ubuntu/trusty64'
+# make a new nstat_vm_basebox based on 'nstat_base_box'
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_base_box'
 nstat_vm_ram = '512'
 nstat_vm_cpus = '1'
 nstat_vm_private_network_ip_vm = '192.168.63.5'
 
+# ------------------------------------------------------------------------------
+# RUNNING_ENV options: 'with-proxy', 'no-proxy'
+# ------------------------------------------------------------------------------
+RUNNING_ENV = 'with-proxy'
 
-if RUNNING_ENV == 'intracom-internal'
+# configure proxy settings
+# ------------------------------------------------------------------------------
+if RUNNING_ENV == 'with-proxy'
+    #http_proxy = 'http://<IP_address>:<port_number>'
+    http_proxy = 'http://172.28.40.9:3128'
+elsif RUNNING_ENV == 'no-proxy'
     http_proxy = 'http://<IP_address>:<port_number>'
-    puts 'intracom-internal RUNNING_ENV'
-elsif RUNNING_ENV == 'intracom-external'
-    http_proxy = 'http://<IP_address>:<port_number>'
-    puts 'intracom-external RUNNING_ENV'
+    puts 'no-proxy RUNNING_ENV'
 else
     http_proxy = ''
     puts 'Neutral RUNNING_ENV'
@@ -59,7 +61,7 @@ Vagrant.configure(2) do |config|
         nstat_machine.vm.network :private_network, ip: nstat_vm_private_network_ip_vm
         nstat_machine.vm.provider :virtualbox do |vb|
             # Display the VirtualBox GUI when booting the machine
-            #vb.gui = true
+            # vb.gui = true
 
             # Customize the amount of memory on the VM:
             vb.memory = nstat_vm_ram
@@ -72,6 +74,9 @@ Vagrant.configure(2) do |config|
         end
 
     end
+
+
+
 
 
 end

@@ -1,3 +1,4 @@
+# -*- mode: ruby -*-
 # vi: set ft=ruby :
 
 # Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
@@ -7,9 +8,9 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 
-#
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'intracom-internal'
+# VM configuration.
+# ------------------------------------------------------------------------------
 odlp2_vm_basebox = 'nstat_base_box'
 user = ENV['USER']
 odlp2_vm_private_network_ip_host = '192.168.63.1'
@@ -22,7 +23,7 @@ odlp2_vm_hostname_vm_01 = 'vm01'
 uid_01 = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + odlp2_vm_private_network_ip_vm_01
 odlp2_vm_name_vm_01 = 'odlp2_ubuntu_box_'  + user + uid_01 + '_vm01'
 
-# ------------------------------------------------------------------------------
+
 odlp2_vm_ram_vm_02 = '32768'
 odlp2_vm_cpus_vm_02 = '16'
 odlp2_vm_private_network_ip_vm_02 = '<IP_address>'
@@ -31,21 +32,24 @@ uid_02 = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + odlp
 odlp2_vm_name_vm_02 = 'odlp2_ubuntu_box_'  + user + uid_02 + '_vm02'
 # ------------------------------------------------------------------------------
 
-if RUNNING_ENV == 'intracom-internal'
-    http_proxy = 'http://<IP_address>:<Port_number>'
-    gitlab = '<IP_address>'
-    puts 'intracom-internal RUNNING_ENV'
-elsif RUNNING_ENV == 'intracom-external'
-    http_proxy = 'http://<IP_address>:<Port_number>'
-    gitlab = '<IP_address>'
-    puts 'intracom-external RUNNING_ENV'
+# RUNNING_ENV options: 'with-proxy', 'no-proxy'
+# ------------------------------------------------------------------------------
+RUNNING_ENV = 'with-proxy'
+
+# configure proxy settings
+# ------------------------------------------------------------------------------
+if RUNNING_ENV == 'with-proxy'
+    http_proxy = 'http://<IP_address>:<port_number>'
+    puts 'with-proxy RUNNING_ENV'
+elsif RUNNING_ENV == 'no-proxy'
+    http_proxy = 'http://<IP_address>:<port_number>'
+    puts 'no-proxy RUNNING_ENV'
 else
     http_proxy = ''
     gitlab = ''
     puts 'Neutral RUNNING_ENV'
 end
 
-# ------------------------------------------------------------------------------
 
 Vagrant.configure(2) do |config|
 
