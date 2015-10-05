@@ -22,6 +22,9 @@ import re
 import json
 import logging
 
+# Change requests logging level to WARNING
+logging.getLogger("requests").setLevel(logging.WARNING)
+
 class FlowProcessor(object):
     """
     Helper object used to add and remove flows based on predefined templates.

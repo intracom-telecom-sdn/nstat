@@ -49,7 +49,7 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
     node_names = []
     session = requests.Session()
     while True:
-        logging.info(
+        logging.debug(
             '[flow_master_thread] Trying to fetch node names from datastore')
         request = session.get(url_request, headers=getheaders, stream=False,
                               auth=auth_token)
@@ -327,15 +327,15 @@ def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     logging.debug('[flow_master_thread] Distributing workload')
     distribute_workload(nnodes, nflows, opqueues, 'A', node_names)
 
-    logging.info('[flow_master_thread] Starting workers')
+    logging.debug('[flow_master_thread] Starting workers')
     t_start = time.time()
     for worker_thread in wthr:
         worker_thread.start()
 
-    logging.info('[flow_master_thread] Joining workers')
+    logging.debug('[flow_master_thread] Joining workers')
     failed_flow_ops += join_workers(opqueues, resqueues, wthr)
 
-    logging.info('[flow_master_thread] Initiate flow polling')
+    logging.debug('[flow_master_thread] Initiate flow polling')
     addition_time = poll_flows(nflows, ctrl_ip, ctrl_port,
                                discovery_deadline_ms, t_start, auth_token)
 
@@ -350,15 +350,15 @@ def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
         logging.debug('[flow_master_thread] Distributing workload')
         distribute_workload(nnodes, nflows, opqueues, 'D', node_names)
 
-        logging.info('[flow_master_thread] Starting workers')
+        logging.debug('[flow_master_thread] Starting workers')
         t_start = time.time()
         for worker_thread in wthr:
             worker_thread.start()
 
-        logging.info('[flow_master_thread] Joining workers')
+        logging.debug('[flow_master_thread] Joining workers')
         failed_flow_ops += join_workers(opqueues, resqueues, wthr)
 
-        logging.info('[flow_master_thread] Initiate flow polling')
+        logging.debug('[flow_master_thread] Initiate flow polling')
         deletion_time = poll_flows(0, ctrl_ip, ctrl_port, discovery_deadline_ms,
                                    t_start, auth_token)
         results.append(deletion_time)
@@ -411,7 +411,7 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     ds_switches = 0
     tries = 0
     while tries < num_tries:
-        logging.debug('[mininet_topo_check_booted] Check if topology is up.')
+        logging.info('[mininet_topo_check_booted] Check if topology is up.')
 
         # Here we sleep in order to give time to the controller to discover
         # topology through the LLDP protocol.
@@ -425,12 +425,12 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
                  str(mininet_rest_server_port)],
                 '[mininet_get_switches_handler]', queue=outq)
             discovered_switches = int(outq.get().strip())
-            logging.debug('[mininet_topo_check_booted] Discovered {0} switches'
+            logging.info('[mininet_topo_check_booted] Discovered {0} switches'
                           ' at the Mininet side'.format(discovered_switches))
 
             ds_switches = common.check_ds_switches(ctrl_ip, ctrl_port,
                                                    auth_token)
-            logging.debug('[mininet_topo_check_booted] Discovered {0} switches'
+            logging.info('[mininet_topo_check_booted] Discovered {0} switches'
                           ' at the controller side'.format(ds_switches))
             if discovered_switches == expected_switches and \
                 ds_switches == expected_switches and expected_switches != 0:
@@ -626,7 +626,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler, controller_statistics_period_ms)
 
-            logging.debug('{0} Booting up Mininet REST server.'.
+            logging.info('{0} Booting up Mininet REST server.'.
                           format(test_type))
             mininet_utils.start_mininet_server(mn_session,
                 mininet_server_remote_path, mininet_ip,
@@ -643,7 +643,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             # The queue where flowmaster will return its results.
             mqueue = multiprocessing.Queue()
-            logging.debug(
+            logging.info(
                 '{0} Initializing topology on REST server.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_ip, mininet_rest_server_port, controller_ip,
@@ -651,7 +651,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
-            logging.debug('{0} Starting mininet topology.'.format(test_type))
+            logging.info('{0} Starting mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_start_topo_handler,
                 mininet_ip, mininet_rest_server_port)
 
@@ -664,7 +664,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             flow_discovery_deadline_ms = 120000
 
             # Parallel section
-            logging.debug('{0} Creating flow master thread'.format(test_type))
+            logging.info('{0} Creating flow master thread'.format(test_type))
             flowmaster_thread = multiprocessing.Process(
                                     target=flow_master_thread,
                                     args=(mqueue, controller_ip,
@@ -678,7 +678,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             flowmaster_thread.start()
             res = mqueue.get(block=True)
-            logging.debug('{0} Joining flow master thread.'.format(test_type))
+            logging.info('{0} Joining flow master thread.'.format(test_type))
             flowmaster_thread.join()
 
             # Getting results
@@ -757,7 +757,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             shutil.rmtree(controller_logs_dir)
 
         try:
-            logging.debug('{0} Tearing down any existend mininet topology.'.
+            logging.info('{0} Tearing down any existend mininet topology.'.
                           format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_ip, mininet_rest_server_port)
@@ -765,14 +765,14 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             pass
 
         try:
-            logging.debug('{0} Killing REST daemon in Mininet VM.'.
+            logging.info('{0} Killing REST daemon in Mininet VM.'.
                           format(test_type))
             mininet_utils.stop_mininet_server(mn_session,
                                               mininet_rest_server_port)
         except:
             pass
 
-        logging.debug('{0} Delete handleres from Mininet VM.'.
+        logging.info('{0} Delete handleres from Mininet VM.'.
                       format(test_type))
         mininet_utils.delete_mininet_handlers(mininet_ip, mininet_username,
                                     mininet_password,

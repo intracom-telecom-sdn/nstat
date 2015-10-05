@@ -278,12 +278,12 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             generator_switches.value = \
                 generator_threads.value * generator_switches_per_thread.value
 
-            logging.debug('{0} Creating data and control queues'.
+            logging.info('{0} Creating data and control queues'.
                           format(test_type))
             data_queue = multiprocessing.Queue()
             result_queue = multiprocessing.Queue()
 
-            logging.debug('{0} Creating monitor thread'.format(test_type))
+            logging.info('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=monitor, args=(data_queue, result_queue, conf,
                                       cpid, global_sample_id, repeat_id,
@@ -295,7 +295,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       generator_simulated_hosts,
                                       controller_statistics_period_ms))
 
-            logging.debug('{0} Creating generator thread'.format(test_type))
+            logging.info('{0} Creating generator thread'.format(test_type))
             generator_thread = multiprocessing.Process(
                 target=generator_utils.generator_thread,
                 args=(generator_run_handler, generator_cpus_str, controller_ip,
@@ -313,9 +313,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             generator_thread.start()
             samples = result_queue.get(block=True)
             total_samples = total_samples + samples
-            logging.debug('{0} Joining monitor thread'.format(test_type))
+            logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
-            logging.debug('{0} Joining generator thread'.format(test_type))
+            logging.info('{0} Joining generator thread'.format(test_type))
             generator_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,
