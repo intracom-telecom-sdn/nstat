@@ -161,7 +161,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       controller_restconf_auth_token, sleep_ms,
                       generator_switches, discovery_deadline_ms, result_queue))
 
-            logging.debug('{0} Creating generator thread'.format(test_type))
+            logging.info('{0} Creating generator thread'.format(test_type))
             generator_thread = multiprocessing.Process(
                 target=generator_utils.generator_thread,
                 args=(generator_run_handler, generator_cpus_str, controller_ip,
@@ -178,13 +178,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             monitor_thread.start()
             generator_thread.start()
             res = result_queue.get(block=True)
-            logging.debug('{0} Joining monitor thread'.format(test_type))
+            logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
             # After the monitor thread joins, we no longer need the generator
             # because the actual test has been completed and we have the
             # results. That is why we do not wait generator thread to return
             # and we stop it with a termination signal.
-            logging.debug('{0} Terminating generator thread'.format(test_type))
+            logging.info('{0} Terminating generator thread'.format(test_type))
             generator_thread.terminate()
             # It is important to join() the process after terminating it in
             # order to give the background machinery time to update the status

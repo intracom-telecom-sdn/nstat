@@ -133,17 +133,17 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     """
 
     discovery_deadline = float(discovery_deadline_ms)/1000
-    logging.debug('[poll_ds_thread] Monitor thread started')
+    logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time
 
-    logging.debug('[poll_ds_thread] Starting discovery')
+    logging.info('[poll_ds_thread] Starting discovery')
     t_discovery_start = time.time()
     discovered_switches = 0
 
     while True:
 
         if (time.time() - t_discovery_start) > discovery_deadline:
-            logging.debug(
+            logging.info(
                 '[poll_ds_thread] Deadline of {0} seconds passed, discovered '
                 '{1} switches.'.format(discovery_deadline,
                                        discovered_switches))

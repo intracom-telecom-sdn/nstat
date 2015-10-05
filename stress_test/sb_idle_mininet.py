@@ -159,7 +159,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler, controller_statistics_period_ms)
 
-            logging.debug('{0} Booting up Mininet REST server'.
+            logging.info('{0} Booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_session,
                 mininet_server_remote_path, mininet_ip,
@@ -183,11 +183,11 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             discovery_deadline_ms = \
                 (7000 * (mininet_size + total_mininet_hosts)) + sleep_ms
 
-            logging.debug(
+            logging.info(
                 '{0} Initiating topology on REST server and start '
                 'monitor thread to check for discovered switches '
                 'on controller.'.format(test_type))
-            logging.debug('{0} Initialize mininet topology.'.format(test_type))
+            logging.info('{0} Initialize mininet topology.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_ip, mininet_server_rest_port, controller_ip,
                 controller_port, mininet_topology_type, mininet_size,
@@ -200,7 +200,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 mininet_ip, mininet_server_rest_port)
 
             # Parallel section
-            logging.debug('{0} Creating monitor thread'.format(test_type))
+            logging.info('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_ip, controller_restconf_port,
@@ -208,7 +208,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                       mininet_size, discovery_deadline_ms, result_queue))
             monitor_thread.start()
             res = result_queue.get(block=True)
-            logging.debug('{0} Joining monitor thread'.format(test_type))
+            logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
 
             statistics = common.sample_stats(cpid)
@@ -228,14 +228,14 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['discovered_switches'] = res[2]
             total_samples.append(statistics)
 
-            logging.debug('{0} Stopping mininet topology.'.format(test_type))
+            logging.info('{0} Stopping mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_ip, mininet_server_rest_port)
 
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid)
 
-            logging.debug(
+            logging.info(
                 '{0} Killing REST daemon in Mininet VM and existing topology.'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_session,
@@ -283,7 +283,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_utils.cleanup_controller(controller_clean_handler)
 
         try:
-            logging.debug('{0} Tearing down any existend mininet topology.'.
+            logging.info('{0} Tearing down any existend mininet topology.'.
                           format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_ip, mininet_server_rest_port)
@@ -291,7 +291,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             pass
 
         try:
-            logging.debug(
+            logging.info(
                 '{0} Killing REST daemon in Mininet VM and existing topology.'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_session,
@@ -299,7 +299,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         except:
             pass
 
-        logging.debug('{0} Delete handleres from Mininet VM'.format(test_type))
+        logging.info('{0} Delete handleres from Mininet VM'.format(test_type))
         mininet_utils.delete_mininet_handlers(mininet_ip, mininet_username,
             mininet_password, '/tmp/transfered_files/',
             mininet_ssh_port)

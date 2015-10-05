@@ -89,19 +89,40 @@ def main():
                         dest='output_dir',
                         action='store',
                         help='Output directory to store produced files')
+    parser.add_argument('--logging-level',
+                        type=str,
+                        dest='logging_level',
+                        action='store',
+                        default='DEBUG',
+                        help="Setting the level of the logging messages."
+                             "Can have one of the following values:\n"
+                             "INFO\n"
+                             "DEBUG\n"
+                             "ERROR")
 
     args = parser.parse_args()
 
     logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
-    logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
+    if args.logging_level == 'INFO':
+        logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                         format=logging_format)
+    elif args.logging_level == 'ERROR':
+        logging.basicConfig(level=logging.ERROR, stream=sys.stdout,
+                        format=logging_format)
+    else:
+        logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
+                        format=logging_format)
+
     if args.log_file:
         open(args.log_file, 'a').close()
         file_logging_handler = logging.FileHandler(filename=args.log_file,
                                                    mode='w')
-        file_logging_handler.setLevel(level=logging.DEBUG)
-        file_logging_handler.setFormatter(logging.Formatter(logging_format))
-        logging.getLogger().addHandler(file_logging_handler)
+        if args.logging_level == 'INFO':
+            file_logging_handler.setLevel(level=logging.INFO)
+        elif args.logging_level == 'ERROR':
+            file_logging_handler.setLevel(level=logging.ERROR)
+        else:
+            file_logging_handler.setLevel(level=logging.DEBUG)
 
     # 01. parse configuration options from JSON
     logging.info('[nstat_orchestrator] Parsing test configuration')

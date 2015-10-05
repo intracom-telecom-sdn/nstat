@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# . documentation build configuration file, created by
-# sphinx-quickstart on Wed Jun  3 11:05:18 2015.
+# NSTAT documentation build configuration file, created by
+# sphinx-quickstart on Fri Oct  2 17:05:12 2015.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -12,12 +12,6 @@
 # serve to show the default.
 
 import sys, os
-
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if on_rtd:
-    html_theme = 'default'
-else:
-    html_theme = 'nature'
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -47,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'NSTAT'
-copyright = u'2015, INTRACOM TELECOM S.A.'
+copyright = u'2015, NSTAT Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -97,7 +91,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# html_theme = 'default'
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -170,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'doc'
+htmlhelp_basename = 'NSTATdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -189,8 +183,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', '.tex', u'. Documentation',
-   u'Author', 'manual'),
+  ('index', 'NSTAT.tex', u'NSTAT Documentation',
+   u'NSTAT Team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -219,8 +213,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', '', u'. Documentation',
-     [u'Author'], 1)
+    ('index', 'nstat', u'NSTAT Documentation',
+     [u'NSTAT Team'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -233,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', '', u'. Documentation',
-   u'Author', '', 'One line description of project.',
+  ('index', 'NSTAT', u'NSTAT Documentation',
+   u'NSTAT Team', 'NSTAT', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -246,46 +240,3 @@ texinfo_documents = [
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
 #texinfo_show_urls = 'footnote'
-
-
-# -- Options for Epub output ---------------------------------------------------
-
-# Bibliographic Dublin Core info.
-epub_title = u'.'
-epub_author = u'Author'
-epub_publisher = u'Author'
-epub_copyright = u'2015, Author'
-
-# The language of the text. It defaults to the language option
-# or en if the language is not set.
-#epub_language = ''
-
-# The scheme of the identifier. Typical schemes are ISBN or URL.
-#epub_scheme = ''
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#epub_identifier = ''
-
-# A unique identification for the text.
-#epub_uid = ''
-
-# A tuple containing the cover image and cover page html template filenames.
-#epub_cover = ()
-
-# HTML files that should be inserted before the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-#epub_pre_files = []
-
-# HTML files shat should be inserted after the pages created by sphinx.
-# The format is a list of tuples containing the path and title.
-#epub_post_files = []
-
-# A list of files that should not be packed into the epub file.
-#epub_exclude_files = []
-
-# The depth of the table of contents in toc.ncx.
-#epub_tocdepth = 3
-
-# Allow duplicate toc entries.
-#epub_tocdup = True

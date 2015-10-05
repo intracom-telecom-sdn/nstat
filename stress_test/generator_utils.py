@@ -122,7 +122,7 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
     :type data_queue: multiprocessing.Queue
     """
 
-    logging.debug('[generator_thread] Generator thread started')
+    logging.info('[generator_thread] Generator thread started')
 
     try:
         run_generator(generator_run_handler, generator_cpus, controller_ip,
@@ -133,7 +133,7 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
         # generator ended, enqueue termination message
         if data_queue is not None:
             data_queue.put(succ_msg, block=True)
-        logging.debug('[generator_thread] Generator thread ended successfully')
+        logging.info('[generator_thread] Generator thread ended successfully')
     except subprocess.CalledProcessError as err:
         if data_queue is not None:
             data_queue.put(fail_msg, block=True)

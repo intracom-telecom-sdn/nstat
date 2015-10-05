@@ -30,10 +30,8 @@ if RUNNING_ENV == 'with-proxy'
     http_proxy = 'http://<IP_address>:<port_number>'
     puts 'with-proxy RUNNING_ENV'
 elsif RUNNING_ENV == 'no-proxy'
-    http_proxy = ''
     puts 'no-proxy RUNNING_ENV'
 else
-    http_proxy = ''
     puts 'Neutral RUNNING_ENV'
 end
 
@@ -55,7 +53,7 @@ Vagrant.configure(2) do |config|
 
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
 
-    config.vm.define 'nstat_base_box' do |nstat_machine|
+    config.vm.define 'nstat_vm_base' do |nstat_machine|
 
       nstat_machine.vm.box = nstat_vm_basebox
         nstat_machine.vm.provider :virtualbox do |vb|

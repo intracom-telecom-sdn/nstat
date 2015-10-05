@@ -34,7 +34,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
                     format(mininet_server_remote_path, mininet_rest_server_host,
                            mininet_rest_server_port))
     util.netutil.ssh_run_command(mininet_ssh_session, boot_command)
-    logging.debug('{0} {1}'.format('[start_mininet_server] Boot command: ',
+    logging.info('{0} {1}'.format('[start_mininet_server] Boot command: ',
                                    boot_command))
     time.sleep(10)
 
