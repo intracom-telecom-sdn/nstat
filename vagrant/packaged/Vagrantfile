@@ -27,8 +27,7 @@ RUNNING_ENV = 'no-proxy'
 # configure proxy settings
 # ------------------------------------------------------------------------------
 if RUNNING_ENV == 'with-proxy'
-    #http_proxy = 'http://<IP_address>:<port_number>'
-    http_proxy = 'http://172.28.40.9:3128'
+    http_proxy = 'http://<IP_address>:<port_number>'
 elsif RUNNING_ENV == 'no-proxy'
     http_proxy = ''
     puts 'no-proxy RUNNING_ENV'
