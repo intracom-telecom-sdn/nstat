@@ -22,8 +22,6 @@ import re
 import json
 import logging
 
-# Change requests logging level to WARNING
-logging.getLogger("requests").setLevel(logging.WARNING)
 
 class FlowProcessor(object):
     """
@@ -64,6 +62,8 @@ class FlowProcessor(object):
         :type ip_dest: str
         """
 
+        # Disable logging during performing requests
+        logging.disable(logging.CRITICAL)
         flow_data = self.flow_template % (flow_id, 'TestFlow-%d' % flow_id,
                                           65000, str(flow_id), 65000, ip_dest)
         flow_url = self.url_template % (node_id, flow_id)
@@ -71,6 +71,8 @@ class FlowProcessor(object):
         request = self.session.put(flow_url, data=flow_data,
                                    headers=self.putheaders, stream=False,
                                    auth=self.auth_token)
+        # Enable logging after performing requests
+        logging.disable(logging.NOTSET)
         return request.status_code
 
     def remove_flow(self, flow_id, node_id):
@@ -85,10 +87,13 @@ class FlowProcessor(object):
         :type node_id: int
         """
 
+        # Disable logging during performing requests
+        logging.disable(logging.CRITICAL)
         flow_url = self.url_template % (node_id, flow_id)
         request = self.session.delete(flow_url, headers=self.getheaders,
                                       auth=self.auth_token)
-
+        # Enable logging after performing requests
+        logging.disable(logging.NOTSET)
         return request.status_code
 
 
@@ -131,12 +136,16 @@ class FlowExplorer(object):
         self.table_stats_unavailable = 0
         self.table_stats_fails = []
 
+        # Disable logging during performing requests
+        logging.disable(logging.CRITICAL)
         s = requests.Session()
         req = s.get(self.inventory_stats_url,
                     headers=self.getheaders,
                     stream=False,
                     auth=self.auth_token)
         str_response = req.content.decode('utf-8')
+        # Enable logging after performing requests
+        logging.disable(logging.NOTSET)
 
         if req.status_code == 200:
             try:

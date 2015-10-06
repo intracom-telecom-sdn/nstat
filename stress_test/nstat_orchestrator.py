@@ -97,7 +97,7 @@ def main():
                         help="Setting the level of the logging messages."
                              "Can have one of the following values:\n"
                              "INFO\n"
-                             "DEBUG\n"
+                             "DEBUG (default)\n"
                              "ERROR")
 
     args = parser.parse_args()
