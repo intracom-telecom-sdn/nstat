@@ -65,25 +65,8 @@ pip3 install paramiko
 #-------------------------------------------------------------------------------
 lsb_release -a
 
-# Install MININET
-#-------------------------------------------------------------------------------
-#apt-get update && apt-get install -y \
-#mininet
-
-#service openvswitch-controller stop
-#update-rc.d openvswitch-controller disable
-
-# Testing MININET installation
-#-------------------------------------------------------------------------------
-#echo 'testing MININET installation/functionality'
-#mn --test pingall
-
 # Giving write access to ./opt (default directory where controller build
-# handler downloads Opendaylight from official repository)
+# handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
-
-# Configure open-vswitch environment
-#-------------------------------------------------------------------------------
-#sudo ovs-appctl vlog/set ANY:ANY:off
