@@ -40,7 +40,13 @@ else
     exit 1
 fi
 
+# Remove data folder to have a fresh installation of desired features
 rm -rf data > /dev/null 2>&1
+
+if [ -d journal ]; then
+    rm -rf journal/* > /dev/null 2>&1
+    echo "Cleanup contents of journal folder"
+fi
 
 echo "Starting ODL controller"
 cd bin
