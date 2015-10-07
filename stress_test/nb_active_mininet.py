@@ -334,6 +334,9 @@ def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
 
     logging.debug('[flow_master_thread] Joining workers')
     failed_flow_ops += join_workers(opqueues, resqueues, wthr)
+    t_stop = time.time()
+    nb_transmission_interval = t_stop - t_start
+    results.append(nb_transmission_interval)
 
     logging.debug('[flow_master_thread] Initiate flow polling')
     addition_time = poll_flows(nflows, ctrl_ip, ctrl_port,
@@ -357,6 +360,9 @@ def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
 
         logging.debug('[flow_master_thread] Joining workers')
         failed_flow_ops += join_workers(opqueues, resqueues, wthr)
+        t_stop = time.time()
+        nb_transmission_interval = t_stop - t_start
+        results.append(nb_transmission_interval)
 
         logging.debug('[flow_master_thread] Initiate flow polling')
         deletion_time = poll_flows(0, ctrl_ip, ctrl_port, discovery_deadline_ms,
@@ -661,7 +667,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                       mininet_rest_server_port, controller_ip,
                                       controller_restconf_port, auth_token)
 
-            flow_discovery_deadline_ms = 120000
+            flow_discovery_deadline_ms = 240000
 
             # Parallel section
             logging.info('{0} Creating flow master thread'.format(test_type))
@@ -700,8 +706,10 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['flow_operation_delay_ms'] = flow_operations_delay_ms
             statistics['flow_workers'] = flow_workers
             statistics['add_flows_time'] = res[0]
+            statistics['add_flows_transmission_time'] = res[1]
             if flow_delete_flag:
-                statistics['delete_flows_time'] = res[1]
+                statistics['delete_flows_transmission_time'] = res[-3]
+                statistics['delete_flows_time'] = res[-2]
             statistics['failed_flow_operations'] = res[-1]
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)
@@ -833,7 +841,11 @@ def get_report_spec(test_type, config_json, results_json):
              ('date', 'Sample timestamp (date)'),
              ('total_flows', 'Total flow operations'),
              ('failed_flow_operations', 'Total failed flow operations'),
+             ('add_flows_transmission_time',
+              'NB flow addition Restcalls time (seconds)'),
              ('add_flows_time', 'Add flows time (seconds)'),
+             ('delete_flows_transmission_time',
+              'NB flow deletions Restcalls time (seconds)'),
              ('delete_flows_time', 'Delete flows time (seconds)'),
              ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
              ('flow_workers', 'Flow workers'),
