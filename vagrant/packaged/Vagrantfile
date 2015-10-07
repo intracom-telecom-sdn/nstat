@@ -12,7 +12,7 @@
 # VM configuration.
 # ------------------------------------------------------------------------------
 
-# make a new nstat_vm_basebox based on 'nstat_base_box'
+# make a new nstat_vm_basebox based on 'nstat_vm_base'
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
 nstat_vm_ram = '2048'

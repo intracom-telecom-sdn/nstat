@@ -13,6 +13,8 @@
 # ------------------------------------------------------------------------------
 
 # make a new nstat_vm_basebox based on 'ubuntu/trusty64'
+# https://atlas.hashicorp.com/ubuntu (latest version)
+# vagrant box update (for updating to the latest official box)
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'ubuntu/trusty64'
 nstat_vm_ram = '2048'
