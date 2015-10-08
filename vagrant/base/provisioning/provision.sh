@@ -20,7 +20,7 @@ net-tools
 
 # build tools
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 snmp \
 snmpd \
 libpcap-dev \
@@ -32,14 +32,14 @@ libconfig-dev
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 openssh-client \
 openssh-server \
 openjdk-7-jdk
 
 # Python installation
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 python \
 python3.4 \
 python-pip \
@@ -47,7 +47,7 @@ python3-pip
 
 # Install Python libraries
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 python3-bottle \
 python3-requests \
 python3-matplotlib \
@@ -60,30 +60,12 @@ python-bottle
 easy_install3 pip
 pip3 install paramiko
 
-
 # Display distribution release version
 #-------------------------------------------------------------------------------
 lsb_release -a
 
-# Install MININET
-#-------------------------------------------------------------------------------
-#apt-get update && apt-get install -y \
-#mininet
-
-#service openvswitch-controller stop
-#update-rc.d openvswitch-controller disable
-
-# Testing MININET installation
-#-------------------------------------------------------------------------------
-#echo 'testing MININET installation/functionality'
-#mn --test pingall
-
 # Giving write access to ./opt (default directory where controller build
-# handler downloads Opendaylight from official repository)
+# handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
-
-# Configure open-vswitch environment
-#-------------------------------------------------------------------------------
-#sudo ovs-appctl vlog/set ANY:ANY:off
