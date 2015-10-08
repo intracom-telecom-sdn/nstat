@@ -705,8 +705,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_statistics_period_ms
             statistics['flow_operation_delay_ms'] = flow_operations_delay_ms
             statistics['flow_workers'] = flow_workers
-            statistics['add_flows_time'] = res[0]
-            statistics['add_flows_transmission_time'] = res[1]
+            statistics['add_flows_transmission_time'] = res[0]
+            statistics['add_flows_time'] = res[1]
             if flow_delete_flag:
                 statistics['delete_flows_transmission_time'] = res[-3]
                 statistics['delete_flows_time'] = res[-2]
