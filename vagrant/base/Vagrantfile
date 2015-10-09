@@ -17,40 +17,44 @@
 # vagrant box update (for updating to the latest official box)
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'ubuntu/trusty64'
-nstat_vm_ram = '2048'
+nstat_vm_ram = '4096'
 nstat_vm_cpus = '2'
-
 
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'no-proxy'
+RUNNING_ENV = 'with-proxy'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
 if RUNNING_ENV == 'with-proxy'
-    http_proxy = 'http://<IP_address>:<port_number>'
-    puts 'with-proxy RUNNING_ENV'
+  http_proxy = 'http:/<IP_address>:<port_number>'
+  puts '--------------------------------------------------------'
+  puts 'running: with-proxy RUNNING_ENV'
+  if !Vagrant.has_plugin?('vagrant-proxyconf')
+    abort("          -vagrant-proxyconf plugin missing.
+          -install it manually by typing:
+--------------------------------------------------------
+          vagrant plugin install vagrant-proxyconf
+--------------------------------------------------------")
+  end
 elsif RUNNING_ENV == 'no-proxy'
-    puts 'no-proxy RUNNING_ENV'
+    puts '--------------------------------------------------------'
+    puts 'running: with no-proxy RUNNING_ENV'
 else
-    puts 'Neutral RUNNING_ENV'
+    puts 'RUNNING_ENV not set'
 end
 
 
 Vagrant.configure(2) do |config|
 
-  config.ssh.username = 'vagrant'
-  config.ssh.password = 'vagrant'
+    config.ssh.username = 'vagrant'
+    config.ssh.password = 'vagrant'
 
-    if !http_proxy.eql?''
-        if Vagrant.has_plugin?('vagrant-proxyconf')
-            config.proxy.http = http_proxy
-            config.proxy.https = http_proxy
-            config.proxy.no_proxy = 'localhost,127.0.0.1'
-        else
-            abort("vagrant-proxyconf plugin missing. Exiting.")
-        end
+    if RUNNING_ENV == 'with-proxy'
+        config.proxy.http = http_proxy
+        config.proxy.https = http_proxy
+        config.proxy.no_proxy = 'localhost,127.0.0.1'
     end
 
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
