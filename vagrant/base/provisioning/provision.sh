@@ -20,7 +20,7 @@ net-tools
 
 # build tools
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 snmp \
 snmpd \
 libpcap-dev \
@@ -32,14 +32,14 @@ libconfig-dev
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 openssh-client \
 openssh-server \
 openjdk-7-jdk
 
 # Python installation
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 python \
 python3.4 \
 python-pip \
@@ -47,7 +47,7 @@ python3-pip
 
 # Install Python libraries
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+apt-get install -y \
 python3-bottle \
 python3-requests \
 python3-matplotlib \
@@ -59,7 +59,6 @@ python-bottle
 #-------------------------------------------------------------------------------
 easy_install3 pip
 pip3 install paramiko
-
 
 # Display distribution release version
 #-------------------------------------------------------------------------------
