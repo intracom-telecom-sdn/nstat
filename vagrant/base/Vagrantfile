@@ -17,13 +17,13 @@
 # vagrant box update (for updating to the latest official box)
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'ubuntu/trusty64'
-nstat_vm_ram = '4096'
+nstat_vm_ram = '8192'
 nstat_vm_cpus = '2'
 
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'with-proxy'
+RUNNING_ENV = 'no-proxy'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ user = ENV['USER']
 odlp2_vm_private_network_ip_host = '192.168.63.1'
 
 # ------------------------------------------------------------------------------
-odlp2_vm_ram_vm_01 = '4096'
+odlp2_vm_ram_vm_01 = '8192'
 odlp2_vm_cpus_vm_01 = '2'
 odlp2_vm_private_network_ip_vm_01 = '<IP_address>'
 odlp2_vm_hostname_vm_01 = 'vm01'
@@ -24,7 +24,7 @@ uid_01 = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + odlp
 odlp2_vm_name_vm_01 = 'odlp2_ubuntu_box_'  + user + uid_01 + '_vm01'
 
 
-odlp2_vm_ram_vm_02 = '4096'
+odlp2_vm_ram_vm_02 = '8192'
 odlp2_vm_cpus_vm_02 = '2'
 odlp2_vm_private_network_ip_vm_02 = '<IP_address>'
 odlp2_vm_hostname_vm_02 = 'vm02'
@@ -33,7 +33,7 @@ odlp2_vm_name_vm_02 = 'odlp2_ubuntu_box_'  + user + uid_02 + '_vm02'
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'with-proxy'
+RUNNING_ENV = 'no-proxy'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
