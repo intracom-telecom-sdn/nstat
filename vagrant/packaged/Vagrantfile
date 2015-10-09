@@ -15,7 +15,7 @@
 # make a new nstat_vm_basebox based on 'nstat_vm_base'
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-nstat_vm_ram = '2048'
+nstat_vm_ram = '4096'
 nstat_vm_cpus = '2'
 nstat_vm_private_network_ip_vm = '192.168.63.15'
 

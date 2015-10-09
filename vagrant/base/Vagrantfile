@@ -17,7 +17,7 @@
 # vagrant box update (for updating to the latest official box)
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'ubuntu/trusty64'
-nstat_vm_ram = '2048'
+nstat_vm_ram = '4096'
 nstat_vm_cpus = '2'
 
 # ------------------------------------------------------------------------------
