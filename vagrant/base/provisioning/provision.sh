@@ -4,6 +4,8 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 # ------------------------------------------------------------------------------
+# Display distribution release version
+#-------------------------------------------------------------------------------
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
@@ -59,10 +61,6 @@ python-bottle
 #-------------------------------------------------------------------------------
 easy_install3 pip
 pip3 install paramiko
-
-# Display distribution release version
-#-------------------------------------------------------------------------------
-lsb_release -a
 
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)

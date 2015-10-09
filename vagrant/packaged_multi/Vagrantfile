@@ -31,36 +31,40 @@ odlp2_vm_hostname_vm_02 = 'vm02'
 uid_02 = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + odlp2_vm_private_network_ip_vm_02
 odlp2_vm_name_vm_02 = 'odlp2_ubuntu_box_'  + user + uid_02 + '_vm02'
 # ------------------------------------------------------------------------------
-
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'no-proxy'
+RUNNING_ENV = 'with-proxy'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
 if RUNNING_ENV == 'with-proxy'
-    http_proxy = 'http://<IP_address>:<port_number>'
-    puts 'with-proxy RUNNING_ENV'
+    http_proxy = 'http://172.28.40.9:3128'
+    puts '--------------------------------------------------------'
+    puts 'running: with-proxy RUNNING_ENV'
+     if !Vagrant.has_plugin?('vagrant-proxyconf')
+         abort("                -vagrant-proxyconf plugin missing.
+                -install it manually by typing:
+--------------------------------------------------------
+                vagrant plugin install vagrant-proxyconf
+--------------------------------------------------------")
+     end
 elsif RUNNING_ENV == 'no-proxy'
-    puts 'no-proxy RUNNING_ENV'
+    puts '--------------------------------------------------------'
+    puts 'running: no-proxy RUNNING_ENV'
 else
-    puts 'Neutral RUNNING_ENV'
+    puts 'RUNNING_ENV not set'
 end
 
 
 Vagrant.configure(2) do |config|
 
-    config.ssh.username = 'vagrant'
-    config.ssh.password = 'vagrant'
+  config.ssh.username = 'vagrant'
+  config.ssh.password = 'vagrant'
 
-    if !http_proxy.eql?''
-        if Vagrant.has_plugin?('vagrant-proxyconf')
-            config.proxy.http = http_proxy
-            config.proxy.https = http_proxy
-            config.proxy.no_proxy = 'localhost,127.0.0.1,'+gitlab+','+odlp2_vm_private_network_ip_vm_01+','+odlp2_vm_private_network_ip_vm_02+','+odlp2_vm_private_network_ip_host
-        else
-            abort("vagrant-proxyconf plugin missing. Exiting.")
-        end
+    if RUNNING_ENV == 'with-proxy'
+        config.proxy.http = http_proxy
+        config.proxy.https = http_proxy
+        config.proxy.no_proxy = 'localhost,127.0.0.1,'+gitlab+','+odlp2_vm_private_network_ip_vm_01+','+odlp2_vm_private_network_ip_vm_02+','+odlp2_vm_private_network_ip_host
     end
 
     #TODO: change rsync to nfs
