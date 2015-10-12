@@ -67,3 +67,5 @@ pip3 install paramiko
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
+
+echo "sudo ifconfig eth2 192.168.64.15 netmask 255.255.255.0 up" >> ~/.bashrc
