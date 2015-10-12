@@ -9,4 +9,4 @@
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
-echo "sudo ifconfig eth2 192.168.64.xx netmask 255.255.255.0 up" >> ~/.bashrc
+sudo ifconfig eth2 192.168.64.xx netmask 255.255.255.0 up
