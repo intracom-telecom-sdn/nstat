@@ -16,12 +16,11 @@ branches:
     - develop_release_1.1
 install:
   - sudo apt-get update
-  - sudo apt-get install -y snmp snmpd libpcap-dev autoconf make automake libtool libconfig-dev
+  - sudo apt-get install -y snmp snmpd libpcap-dev autoconf make automake libtool libconfig-dev python3-matplotlib
   - sudo apt-get install -y openssh-client openssh-server openjdk-7-jdk
   - sudo pip install requests
   - sudo pip install paramiko
   - sudo pip install bottle
-  - sudo pip install matplotlib
   - sudo pip install lxml
 script: ./run_tests.sh
 notifications:
