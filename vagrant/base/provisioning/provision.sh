@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
 #
 # This program and the accompanying materials are made available under the
@@ -9,53 +11,55 @@
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
+
+
 apt-get update && apt-get install -y \
-build-essential \
-python-dev \
-python-setuptools \
-python3.4-dev \
-python3-setuptools \
-git \
-unzip \
-wget \
-net-tools
+    git \
+    unzip \
+    wget \
+    net-tools
 
 # build tools
 #-------------------------------------------------------------------------------
 apt-get install -y \
-snmp \
-snmpd \
-libpcap-dev \
-autoconf \
-make \
-automake \
-libtool \
-libconfig-dev
+    snmp \
+    snmpd \
+    libpcap-dev \
+    autoconf \
+    make \
+    automake \
+    libtool \
+    libconfig-dev
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
 apt-get install -y \
-openssh-client \
-openssh-server \
-openjdk-7-jdk
+    openssh-client \
+    openssh-server \
+    openjdk-7-jdk
 
 # Python installation
 #-------------------------------------------------------------------------------
 apt-get install -y \
-python \
-python3.4 \
-python-pip \
-python3-pip
+    build-essential \
+    python-dev \
+    python-setuptools \
+    python3.4-dev \
+    python3-setuptools \
+    python \
+    python3.4 \
+    python-pip \
+    python3-pip
 
 # Install Python libraries
 #-------------------------------------------------------------------------------
 apt-get install -y \
-python3-bottle \
-python3-requests \
-python3-matplotlib \
-python3-lxml \
-python-lxml \
-python-bottle
+    python3-bottle \
+    python3-requests \
+    python3-matplotlib \
+    python3-lxml \
+    python-lxml \
+    python-bottle
 
 # Install NSTAT necessary python3.4 tools
 #-------------------------------------------------------------------------------

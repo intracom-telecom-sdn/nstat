@@ -1,8 +1,8 @@
 sudo: required
 dist: trusty
-branches:
-  only:
-    - develop_release_1.1
-install: 
-  - sudo apt-get update && apt-get install -y build-essential python-dev python-setuptools python3.4-dev python3-setuptools git unzip wget net-tools
-script: ./run_tests.sh
+language: bash
+before_script:
+    - sudo bash ./vagrant/base/provisioning/provision.sh
+script:
+    - echo "running a functional test"
+    - bash ./run_tests.sh
