@@ -1,6 +1,8 @@
 sudo: required
 dist: trusty
 language: bash
+jdk:
+  - openjdk7
 before_script:
     - sudo bash ./vagrant/base/provisioning/provision.sh
 script:
