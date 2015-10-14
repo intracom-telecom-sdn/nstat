@@ -23,6 +23,7 @@ apt-get update && apt-get install -y \
 #-------------------------------------------------------------------------------
 apt-get install -y \
     snmp \
+    libsnmp-dev \
     snmpd \
     libpcap-dev \
     autoconf \
