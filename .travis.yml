@@ -5,10 +5,6 @@ python:
   - 3.4
 branches:
   only:
-    - master
     - develop_release_1.1
-install: ./vagrant/base/provisioning/provision.sh
+install: sudo ./vagrant/base/provisioning/provision.sh
 script: ./run_tests.sh
-notifications:
-  email:
-    - nstat@intracom-telecom.com
