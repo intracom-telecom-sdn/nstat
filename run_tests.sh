@@ -1,23 +1,5 @@
 #!/bin/bash
 
-# build tools
-#-------------------------------------------------------------------------------
-apt-get install -y \
-snmp \
-snmpd \
-libpcap-dev \
-autoconf \
-make \
-automake \
-libtool \
-libconfig-dev
-
-# ssh service & java installation
-#-------------------------------------------------------------------------------
-apt-get install -y \
-openssh-client \
-openssh-server \
-openjdk-7-jdk
 
 JOB_NAME="sb_active_scalability_mtcbench"
 export RESULTS_DIR=$WORKSPACE/$JOB_NAME

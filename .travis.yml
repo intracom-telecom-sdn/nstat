@@ -1,3 +1,5 @@
+sudo: required
+dist: trusty
 language: python
 python:
   - "3.4"
@@ -10,4 +12,7 @@ install:
   - pip install matplotlib
   - pip install lxml
   - pip install paramiko
+  - apt-get update
+  - apt-get install -y snmp snmpd libpcap-dev autoconf make automake libtool libconfig-dev
+  - apt-get install -y openssh-client openssh-server openjdk-7-jdk
 script: ./run_tests.sh
