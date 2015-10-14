@@ -1,0 +1,9 @@
+language: python
+python:
+  - "3.4"
+install:
+  - pip install bottle
+  - pip install requests
+  - pip install matplotlib
+  - pip install lxml
+script: ./run_tests.sh
