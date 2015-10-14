@@ -9,4 +9,5 @@ install:
   - pip install requests
   - pip install matplotlib
   - pip install lxml
+  - pip install paramiko
 script: ./run_tests.sh
