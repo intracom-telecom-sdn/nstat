@@ -8,7 +8,7 @@ branches:
     - develop_release_1.1
 install:
   - sudo apt-get update
-  - sudo apt-get install -y python3-bottle python3-requests python3-matplotlib python3-lxml python-lxml python-bottle
+  - sudo apt-get install -y python3-bottle python3-requests python3-matplotlib python3-lxml python-lxml python-bottle python-requests python-matplotlib
   - sudo apt-get install -y snmp snmpd libpcap-dev autoconf make automake libtool libconfig-dev
   - sudo apt-get install -y openssh-client openssh-server openjdk-7-jdk
 script: ./run_tests.sh
