@@ -62,10 +62,15 @@ python-bottle
 easy_install3 pip
 pip3 install paramiko
 
+# Install Mininet
+#-------------------------------------------------------------------------------
+git clone https://github.com/mininet/mininet.git
+cd mininet
+git checkout -b 2.2.1 2.2.1
+./util/install.sh -vnf3
+
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
-
-echo "sudo ifconfig eth2 192.168.64.15 netmask 255.255.255.0 up" >> ~/.bashrc
