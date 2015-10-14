@@ -1,6 +1,7 @@
 #!/bin/bash
 
 
+
 JOB_NAME="sb_active_scalability_mtcbench"
 export RESULTS_DIR=$WORKSPACE/$JOB_NAME
 
