@@ -1,0 +1,8 @@
+languages:
+  Ruby: true
+  JavaScript: false
+  Python: true
+  PHP: false
+exclude_paths:
+- docs/*
+- jenkins_jobs/*
