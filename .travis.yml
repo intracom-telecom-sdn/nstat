@@ -14,8 +14,7 @@ install:
   - sudo apt-get install -y openssh-client openssh-server openjdk-7-jdk
   - sudo pip install requests --upgrade
   - sudo pip3 install requests --upgrade
-  - sudo pip install bottle --upgrade
-  - sudo pip3 bottle --upgrade
   - sudo pip install paramiko --upgrade
   - sudo pip3 install paramiko --upgrade
+  - sudo pip install bottle --upgrade
 script: ./run_tests.sh
