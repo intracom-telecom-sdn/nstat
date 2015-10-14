@@ -17,7 +17,6 @@
 nstat_vm_basebox = 'nstat_vm_base'
 nstat_vm_ram = '8192'
 nstat_vm_cpus = '2'
-nstat_vm_private_network_ip_vm = '192.168.63.15'
 nstat_vm_bridge_interface_name = '<name_of_host_interface_to_bridge>'
 nstat_vm_hostname = 'VM1'
 # ------------------------------------------------------------------------------
@@ -63,7 +62,6 @@ Vagrant.configure(2) do |config|
   config.vm.define 'nstat_vm_packaged' do |nstat_machine|
 
     nstat_machine.vm.box = nstat_vm_basebox
-      nstat_machine.vm.network :private_network, ip: nstat_vm_private_network_ip_vm
       nstat_machine.vm.network :public_network, bridge: nstat_vm_bridge_interface_name
       nstat_machine.vm.hostname = nstat_vm_hostname
       nstat_machine.vm.provider :virtualbox do |vb|
@@ -82,7 +80,7 @@ Vagrant.configure(2) do |config|
 # ------------------------------------------------------------------------------
 # Provisioning actions
 # ------------------------------------------------------------------------------
-  config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth2 192.168.64.15 netmask 255.255.255.0 up'
+  config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth1 192.168.64.15 netmask 255.255.255.0 up'
 
 
 
