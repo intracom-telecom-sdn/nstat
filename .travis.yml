@@ -7,12 +7,8 @@ branches:
   only:
     - develop_release_1.1
 install:
-  - pip install bottle
-  - pip install requests
-  - pip install matplotlib
-  - pip install lxml
-  - pip install paramiko
   - apt-get update
+  - apt-get install -y python3-bottle python3-requests python3-matplotlib python3-lxml python-lxml python-bottle
   - apt-get install -y snmp snmpd libpcap-dev autoconf make automake libtool libconfig-dev
   - apt-get install -y openssh-client openssh-server openjdk-7-jdk
 script: ./run_tests.sh
