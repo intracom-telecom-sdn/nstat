@@ -1,7 +1,6 @@
 sudo: required
 dist: trusty
 language: bash
-language: java
   jdk:
     - openjdk7
 before_install:
