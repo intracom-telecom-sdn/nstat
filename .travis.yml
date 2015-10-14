@@ -1,16 +1,18 @@
 sudo: required
+language: python
+python:
+  - 2.7
+  - 3.4
 branches:
   only:
     - develop_release_1.1
 install:
   - sudo apt-get update
-  - sudo apt-get install -y python python3.4 python-pip python3-pip
-  - sudo apt-get install -y python3-bottle python3-requests python3-matplotlib python3-lxml python-lxml python-bottle python-requests python-matplotlib
   - sudo apt-get install -y snmp snmpd libpcap-dev autoconf make automake libtool libconfig-dev
   - sudo apt-get install -y openssh-client openssh-server openjdk-7-jdk
-  - sudo pip install requests --upgrade
-  - sudo pip3 install requests --upgrade
-  - sudo pip install paramiko --upgrade
-  - sudo pip3 install paramiko --upgrade
-  - sudo pip install bottle --upgrade
+  - sudo pip install requests
+  - sudo pip install paramiko
+  - sudo pip install bottle
+  - sudo pip install matplotlib
+  - sudo pip install lxml
 script: ./run_tests.sh
