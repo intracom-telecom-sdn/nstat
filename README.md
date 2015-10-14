@@ -1,4 +1,5 @@
 [![Code Climate](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/gpa.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat)
+[![Build Status](https://travis-ci.org/intracom-telecom-sdn/nstat.svg?branch=develop_release_1.1)](https://travis-ci.org/intracom-telecom-sdn/nstat)
 
 # NSTAT: Network Stress-Test Automation Toolkit
 
