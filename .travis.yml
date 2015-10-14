@@ -1,13 +1,16 @@
 sudo: required
 dist: trusty
-language: bash
-jdk:
-  - openjdk7
+language: java
+  jdk:
+    - openjdk7
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install openjdk-7-jdk
+  - sudo apt-get install openjdk-7-jdk openjdk-7-jre
+instal:
+  - echo "Doing install actions"
 before_script:
   - sudo bash ./vagrant/base/provisioning/provision.sh
+
 script:
   - echo "running a functional test"
   - bash ./run_tests.sh
