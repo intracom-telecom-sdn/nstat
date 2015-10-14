@@ -1,8 +1,5 @@
 sudo: required
 dist: trusty
-language: python
-python:
-  - "3.4"
 branches:
   only:
     - develop_release_1.1
