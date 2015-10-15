@@ -1,6 +1,8 @@
 sudo: required
 dist: trusty
 language: python
+python:
+  - 3.4
 jdk:
   - openjdk7
 before_script:
@@ -13,6 +15,7 @@ before_script:
   - sudo pip2 install requests --upgrade
   - sudo pip3 install requests --upgrade
   - sudo pip install requests --upgrade  
+  - sudo pip install coveralls
 script:
   - echo "Running Unittests"
   - cd util/unittests
