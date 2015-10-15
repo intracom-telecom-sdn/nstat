@@ -20,11 +20,11 @@ script:
   - echo "Running Unittests"
   - cd util/unittests
   - coverage erase
-  - coverage -a run stats_test.py
-  - coverage -a run cpu_test.py
-  - coverage -a run customsubprocess_test.py 
-  - coverage -a run numeric_test.py
-  - coverage -a run process_test.py
+  - coverage run --parallel-mode stats_test.py
+  - coverage run --parallel-mode cpu_test.py
+  - coverage run --parallel-mode customsubprocess_test.py 
+  - coverage run --parallel-mode numeric_test.py
+  - coverage run --parallel-mode process_test.py
   - coverage combine
 after_success:
   coveralls
