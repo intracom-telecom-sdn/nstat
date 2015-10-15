@@ -14,5 +14,5 @@ before_script:
   - sudo pip3 install requests --upgrade
   - sudo pip install requests --upgrade  
 script:
-  - echo "running a functional test"
-  - bash ./run_tests.sh
+  - echo "Running Unittests"
+  - bash ./run_unittests.sh
