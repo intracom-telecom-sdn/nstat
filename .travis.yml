@@ -1,8 +1,30 @@
 sudo: required
 dist: trusty
-language: bash
+language: python
+python:
+  - 3.4
+jdk:
+  - openjdk7
 before_script:
-    - sudo bash ./vagrant/base/provisioning/provision.sh
+  - sudo apt-get update -qq
+  - sudo apt-get install openjdk-7-jdk openjdk-7-jre
+  - sudo bash ./vagrant/base/provisioning/provision.sh
+  - sudo pip3 install paramiko
+  - sudo pip2 install paramiko
+  - sudo pip2 install bottle
+  - sudo pip2 install requests --upgrade
+  - sudo pip3 install requests --upgrade
+  - sudo pip install requests --upgrade  
+  - sudo pip install coveralls
 script:
-    - echo "running a functional test"
-    - bash ./run_tests.sh
+  - echo "Running Unittests"
+  - cd util/unittests
+  - coverage erase
+  - coverage run --parallel-mode stats_test.py
+  - coverage run --parallel-mode cpu_test.py
+  - coverage run --parallel-mode customsubprocess_test.py 
+  - coverage run --parallel-mode numeric_test.py
+  - coverage run --parallel-mode process_test.py
+  - coverage combine
+after_success:
+  coveralls

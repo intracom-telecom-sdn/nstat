@@ -23,6 +23,7 @@ apt-get update && apt-get install -y \
 #-------------------------------------------------------------------------------
 apt-get install -y \
     snmp \
+    libsnmp-dev \
     snmpd \
     libpcap-dev \
     autoconf \
@@ -36,7 +37,8 @@ apt-get install -y \
 apt-get install -y \
     openssh-client \
     openssh-server \
-    openjdk-7-jdk
+    openjdk-7-jdk \
+    openjdk-7-jre
 
 # Python installation
 #-------------------------------------------------------------------------------
