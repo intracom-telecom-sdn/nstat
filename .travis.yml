@@ -7,8 +7,12 @@ before_script:
   - sudo apt-get update -qq
   - sudo apt-get install openjdk-7-jdk openjdk-7-jre
   - sudo bash ./vagrant/base/provisioning/provision.sh
+  - sudo pip3 install paramiko
+  - sudo pip2 install paramiko
+  - sudo pip2 install bottle
+  - sudo pip2 install requests --upgrade
   - sudo pip3 install requests --upgrade
-  - sudo pip install requests --upgrade
+  - sudo pip install requests --upgrade  
 script:
   - echo "running a functional test"
   - bash ./run_tests.sh
