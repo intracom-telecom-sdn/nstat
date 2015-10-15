@@ -158,16 +158,14 @@ class HtmlMultyDictToHtml(unittest.TestCase):
 
         cls.multy_dict_output = []
         cls.multy_dict_input = []
-        cls.multy_dict_output.append('<table  '
-                                     'class="tableWithFloatingHeader">'
+        cls.multy_dict_output.append('<table class="tableWithFloatingHeader">'
                                      '<thead><tr><th colspan="2" '
-                                     'class="title">Test Table</th>'
-                                     '</tr><tr><th>Throughput '
-                                     'flowmods/sec</th><th>switches</th>'
-                                     '</tr></thead><tbody><tr><td>300</td>'
-                                     '<td>700</td></tr><tr class="odd">'
-                                     '<td>1000</td><td>800</td></tr>'
-                                     '</tbody></table>')
+                                     'class="table-title">Test Table</th></tr>'
+                                     '<tr><th>Throughput flowmods/sec</th>'
+                                     '<th>switches</th></tr></thead><tbody>'
+                                     '<tr><td>300</td><td>700</td></tr>'
+                                     '<tr class="odd"><td>1000</td>'
+                                     '<td>800</td></tr></tbody></table>')
         cls.data_fields = collections.OrderedDict()
         cls.data_fields['result2'] = 'Throughput flowmods/sec'
         cls.data_fields['result3'] = 'switches'
@@ -177,15 +175,13 @@ class HtmlMultyDictToHtml(unittest.TestCase):
                                        'result3':800}],
                                      'Test Table',
                                      cls.data_fields))
-        cls.multy_dict_output.append('<table  '
-                                     'class="tableWithFloatingHeader">'
-                                     '<thead>'
-                                     '<tr><th>result1</th><th>result2</th>'
-                                     '<th>result3</th></tr></thead><tbody>'
-                                     '<tr><td>800</td><td>1000</td><td>90'
-                                     '</td></tr><tr class="odd">'
-                                     '<td>9800</td><td>1900</td><td>900'
-                                     '</td></tr></tbody></table>')
+        cls.multy_dict_output.append('<table class="tableWithFloatingHeader">'
+                                     '<thead><tr><th>result1</th><th>result2'
+                                     '</th><th>result3</th></tr></thead>'
+                                     '<tbody><tr><td>800</td><td>1000</td>'
+                                     '<td>90</td></tr><tr class="odd">'
+                                     '<td>9800</td><td>1900</td><td>900</td>'
+                                     '</tr></tbody></table>')
         cls.row_data1 = collections.OrderedDict()
         cls.row_data1['result1'] = 800
         cls.row_data1['result2'] = 1000
@@ -202,7 +198,6 @@ class HtmlMultyDictToHtml(unittest.TestCase):
         - In this test case we are using only the compulsory arguments of the
         method
         """
-
         self.\
         assertMultiLineEqual(self.multy_dict_output[0],
                              util.html.multi_dict_to_html(*self.
@@ -215,7 +210,6 @@ class HtmlMultyDictToHtml(unittest.TestCase):
         It checks the equality of the result of an input. In this test case we
         are using only the compulsory arguments of the method
         """
-
         self.\
         assertMultiLineEqual(self.multy_dict_output[1],
                              util.html.multi_dict_to_html(self.
@@ -310,7 +304,7 @@ class GetOrderedIndex(unittest.TestCase):
     def test02_get_ordered_index(self):
         """Method that tests functionality of get_ordered_index() function
         in case where it returns a invalid index (returns None)"""
-        self.assertIsNone(util.html.get_ordered_index('result33',
+        self.assertEqual(-1, util.html.get_ordered_index('result33',
                                                       self.map_dict),
                           'Testing returned index when key does not exist.')
 
@@ -334,16 +328,16 @@ class SingleDictTableData(unittest.TestCase):
         cls.input1 = 'test data field'
         cls.output1 = ('<td style="font-size:bold;" class="info">test '
                        'data field</td>')
-        cls.input2 = [{'title1':'value1_1', 'title2':'value1_2'},
-                      {'title1':'value2_1', 'title2':'value2_2'}]
-        cls.output2 = ('<td style="font-size:bold;" class="info"><table '
-                       ' class="tableWithFloatingHeader"><thead><tr><th>'
-                       '</th><th></th></tr></thead><tbody><tr>'
-                       '<td>value1_1</td></tr><tr class="odd"><td>value1_2'
-                       '</td></tr></tbody></table>'
-                       '<table  class="tableWithFloatingHeader"><thead>'
+        cls.input2 = [{'title1':'value1_1', 'title2':'value1_1'},
+                      {'title1':'value2_2', 'title2':'value2_2'}]
+        cls.output2 = ('<td style="font-size:bold;" class="info">'
+                       '<table class="tableWithFloatingHeader"><thead>'
                        '<tr><th></th><th></th></tr></thead><tbody><tr>'
-                       '<td>value2_1</td></tr><tr class="odd">'
+                       '<td>value1_1</td></tr><tr class="odd">'
+                       '<td>value1_1</td></tr></tbody>'
+                       '</table><table class="tableWithFloatingHeader"><thead>'
+                       '<tr><th></th><th></th></tr></thead><tbody><tr>'
+                       '<td>value2_2</td></tr><tr class="odd">'
                        '<td>value2_2</td></tr></tbody></table></td>')
         cls.td_style = 'font-size:bold;'
         cls.td_class = 'info'
@@ -353,6 +347,7 @@ class SingleDictTableData(unittest.TestCase):
         Method that tests single_dict_table_data() when data_values parameter
         is a string value.
         """
+        
         self.assertEqual(self.output1,
                          util.html.single_dict_table_data(self.input1,
                                                           self.td_style,
@@ -365,6 +360,7 @@ class SingleDictTableData(unittest.TestCase):
         Method that tests single_dict_table_data() when data_values parameter
         is a List of Dictionaries.
         """
+
         self.assertEqual(self.output2,
                          util.html.single_dict_table_data(self.input2,
                                                           self.td_style,

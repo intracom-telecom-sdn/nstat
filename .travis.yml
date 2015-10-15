@@ -15,7 +15,7 @@ before_script:
   - sudo pip2 install requests --upgrade
   - sudo pip3 install requests --upgrade
   - sudo pip install requests --upgrade  
-  - sudo pip install coveralls
+  - sudo pip3 install coveralls
 script:
   - echo "Running Unittests"
   - cd util/unittests
@@ -24,6 +24,10 @@ script:
   - coverage run --parallel-mode cpu_test.py
   - coverage run --parallel-mode customsubprocess_test.py 
   - coverage run --parallel-mode numeric_test.py
+  - coverage run --parallel-mode process_test.py
+  - coverage run --parallel-mode file_test.py
+  - coverage run --parallel-mode sysstats_test.py
+  - coverage run --parallel-mode html_test.py
   - coverage run --parallel-mode process_test.py
   - coverage combine
 after_success:
