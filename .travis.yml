@@ -1,6 +1,6 @@
 sudo: required
 dist: trusty
-language: bash
+language: python
 jdk:
   - openjdk7
 before_script:
@@ -15,4 +15,7 @@ before_script:
   - sudo pip install requests --upgrade  
 script:
   - echo "Running Unittests"
-  - bash ./run_unittests.sh
+  - cd util/unittests
+  - coverage run stats_test.py
+after_success:
+  coveralls
