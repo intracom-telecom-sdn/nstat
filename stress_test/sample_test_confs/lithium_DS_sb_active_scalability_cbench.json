@@ -23,7 +23,7 @@
 "generator_name":"Cbench",
 "generator_simulated_hosts":[100],
 "generator_threads":[1],
-"generator_switches_per_thread":[50,100,200,400],
+"generator_switches_per_thread":[50,100],
 "generator_thread_creation_delay_ms":[0],
 "generator_delay_before_traffic_ms":[0],
 "generator_mode":"Latency",
