@@ -564,7 +564,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     try:
         logging.info(
             '{0} Initiating SSH session with Mininet node.'.format(test_type))
-        mn_session = util.netutil.ssh_connect_or_return(mininet_ip,
+        mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_ip,
                                                         mininet_username,
                                                         mininet_password, 10,
                                                         mininet_ssh_port)
@@ -634,7 +634,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             logging.info('{0} Booting up Mininet REST server.'.
                           format(test_type))
-            mininet_utils.start_mininet_server(mn_session,
+            mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_ip,
                 mininet_rest_server_port)
 
@@ -724,7 +724,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             logging.debug('{0} Killing REST daemon in Mininet VM.'.
                           format(test_type))
-            mininet_utils.stop_mininet_server(mn_session,
+            mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_rest_server_port)
 
     except:
@@ -775,7 +775,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         try:
             logging.info('{0} Killing REST daemon in Mininet VM.'.
                           format(test_type))
-            mininet_utils.stop_mininet_server(mn_session,
+            mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_rest_server_port)
         except:
             pass
@@ -785,7 +785,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         mininet_utils.delete_mininet_handlers(mininet_ip, mininet_username,
                                     mininet_password,
                                     '/tmp/transfered_files/', mininet_ssh_port)
-        mn_session.close()
+        mininet_ssh_client.close()
 
 
 def get_report_spec(test_type, config_json, results_json):

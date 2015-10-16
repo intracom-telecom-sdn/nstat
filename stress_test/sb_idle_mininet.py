@@ -93,7 +93,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     try:
         logging.info('{0} Initiating session with Mininet VM.'.
                      format(test_type))
-        mininet_ssh_session = util.netutil.ssh_connect_or_return(mininet_ip,
+        mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_ip,
             mininet_username, mininet_password, 10, mininet_ssh_port)
 
         logging.info(
@@ -161,7 +161,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             logging.info('{0} Booting up Mininet REST server'.
                           format(test_type))
-            mininet_utils.start_mininet_server(mininet_ssh_session,
+            mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_ip,
                 mininet_server_rest_port)
 
@@ -238,7 +238,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info(
                 '{0} Killing REST daemon in Mininet VM and existing topology.'.
                 format(test_type))
-            mininet_utils.stop_mininet_server(mininet_ssh_session,
+            mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_server_rest_port)
 
     except:
@@ -294,7 +294,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info(
                 '{0} Killing REST daemon in Mininet VM and existing topology.'.
                 format(test_type))
-            mininet_utils.stop_mininet_server(mininet_ssh_session,
+            mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_server_rest_port)
         except:
             pass
@@ -303,7 +303,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         mininet_utils.delete_mininet_handlers(mininet_ip, mininet_username,
             mininet_password, '/tmp/transfered_files/',
             mininet_ssh_port)
-        mininet_ssh_session.close()
+        mininet_ssh_client.close()
 
 
 def get_report_spec(test_type, config_json, results_json):
