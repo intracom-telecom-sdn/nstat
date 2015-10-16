@@ -12,5 +12,5 @@ languages:
   Python: true
   PHP: false
 exclude_paths:
-- docs/*
-- jenkins_jobs/*
+- "docs/*"
+- "jenkins_jobs/*"
