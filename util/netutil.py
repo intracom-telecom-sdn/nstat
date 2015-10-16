@@ -9,6 +9,7 @@
 import logging
 import os
 import paramiko
+import select
 import stat
 import time
 
@@ -233,10 +234,10 @@ def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
     transport_layer.close()
 
 
-def ssh_run_command(ssh_session, command_to_run):
+def ssh_run_command(ssh_client, command_to_run):
     """Runs the specified command on a remote machine
 
-    :param ssh_session : SSH session provided by paramiko to run the command
+    :param ssh_client : SSH client provided by paramiko to run the command
     :param command_to_run: Command to execute
     :returns: the output of the remotely executed command
     :rtype: tuple (stdin, stdout, stderr)
@@ -244,12 +245,22 @@ def ssh_run_command(ssh_session, command_to_run):
     :type command_to_run: str
     """
 
-    return ssh_session.exec_command(command_to_run)
-    #stdin, stdout, stderr = ssh_session.exec_command(command_to_run)
-    #if ssh_session.recv_exit_status() == 0:
-    #    return (stdin, stdout, stderr)
-    #else:
-    #    raise RuntimeError('[ssh_run_command] SSH command fail to execute.')
+    return ssh_client.exec_command(command_to_run)
+# The following lines are commended. They will be tested in a future user story
+#    bufferSize = 64 * 1024
+#    channel = ssh_client.get_transport().open_session()
+#    channel.exec_command(command_to_run)
+#    while True:
+#        if channel.exit_status_ready():
+#            break
+#        rl, wl, xl = select.select([channel], [], [], 0.0)
+#        # If the above line do not work try the following one
+#        # rl, wl, xl = select.select([channel.fileno()], [], [], 0.0)
+#        if len(rl) > 0:
+#            if channel.recv_ready():
+#                print(channel.recv(bufferSize))
+#            if channel.recv_stderr_ready():
+#                print(channel.recv_stderr(bufferSize))
 
 
 def ssh_delete_file_if_exists(ipaddr, user, passwd, remote_file,
