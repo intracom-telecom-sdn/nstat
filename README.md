@@ -1,6 +1,7 @@
 [![Code Climate](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/gpa.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat)
-[![Build Status](https://travis-ci.org/intracom-telecom-sdn/nstat.svg?branch=develop_release_1.1)](https://travis-ci.org/intracom-telecom-sdn/nstat)
-[![Coverage Status](https://coveralls.io/repos/intracom-telecom-sdn/nstat/badge.svg?branch=develop_release_1.1&service=github)](https://coveralls.io/github/intracom-telecom-sdn/nstat?branch=develop_release_1.1)
+[![Build Status](https://travis-ci.org/intracom-telecom-sdn/nstat.svg?branch=master)](https://travis-ci.org/intracom-telecom-sdn/nstat)
+[![Coverage Status](https://coveralls.io/repos/intracom-telecom-sdn/nstat/badge.svg?branch=master&service=github)](https://coveralls.io/github/intracom-telecom-sdn/nstat?branch=master)
+
 
 # NSTAT: Network Stress-Test Automation Toolkit
 

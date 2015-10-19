@@ -23,16 +23,16 @@ script:
   - echo "Running Unittests"
   - cd util/unittests
   - coverage erase
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode stats_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode cpu_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode customsubprocess_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode numeric_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode process_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode file_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode sysstats_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode html_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode process_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode $WORKSPACE/stress_test/nstat_orchestrator.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode stats_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode cpu_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode customsubprocess_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode numeric_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode process_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode file_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode sysstats_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode html_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode process_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode ../stress_test/nstat_orchestrator.py
   - coverage combine
 after_success:
   coveralls
