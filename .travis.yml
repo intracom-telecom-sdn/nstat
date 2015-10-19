@@ -17,21 +17,21 @@ before_script:
   - sudo pip2 install bottle
   - sudo pip2 install requests --upgrade
   - sudo pip3 install requests --upgrade
-  - sudo pip install requests --upgrade  
+  - sudo pip install requests --upgrade
   - sudo pip3 install coveralls
 script:
   - echo "Running Unittests"
   - cd util/unittests
   - coverage erase
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode stats_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode cpu_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode customsubprocess_test.py 
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode numeric_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode process_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode file_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode sysstats_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode html_test.py
-  - coverage run --omit='/usr/local/lib/python3.4/' --source=$WORKSPACE --parallel-mode process_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode stats_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode cpu_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode customsubprocess_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode numeric_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode process_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode file_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode sysstats_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode html_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include=$WORKSPACE/*.py --parallel-mode process_test.py
   - coverage combine
 after_success:
   coveralls
