@@ -14,15 +14,15 @@ Key features in brief:
 - [Fully automated, end-to-end testing](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT#work-flow) with exhaustive test cases
 - Easy and rich [configuration system](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT#configuration-keys)
 - [Scalable traffic generation](https://github.com/intracom-telecom-sdn/nstat/wiki/MT-Cbench),
-  able to emulate networks in the order of [thousands of switches](https://github.com/intracom-telecom-sdn/NSTAT/wiki/odl_scalability_results_lithium)
+  able to emulate networks in the order of [thousands of switches](https://github.com/intracom-telecom-sdn/NSTAT/wiki/OpenDaylight-scalability-results-lithium)
 - Unification of different stress tests, see below:
   * SouthBound idle switch scalability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-idle-scalability-cbench),
-  [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-idle-scalability-mtcbench) and [Mininet](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-idle-scalability-mininet))
-  * SouthBound active switch scalability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-active-scalability-cbench)
+  [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-idle-scalability-mtcbench) and [Mininet](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-Mininet-switches))
+  * SouthBound active switch scalability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-Cbench-switches)
   and [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-active-scalability-mtcbench))
   * SouthBound active switch stability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-active-stability-cbench)
-  and [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-active-stability-mtcbench))
-  * [Northbound flow scalablity](https://github.com/intracom-telecom-sdn/nstat/wiki/Northbound-active-scalability-mininet)
+  and [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-MT-Cbench-switches))
+  * [Northbound flow scalablity](https://github.com/intracom-telecom-sdn/nstat/wiki/Flow-scalability-test-with-idle-Mininet-switches)
 - Comprehensive reporting and configurable plotting
 
 For a detailed features listing have a look at the [features](https://github.com/intracom-telecom-sdn/nstat/wiki/Features) page.
@@ -52,8 +52,8 @@ page.
 
 - [6/29/2015]: Performance Stress Tests Report for **OpenDaylight Lithium Release**: [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.0.pdf).
 
-- We provide indicative experimental results from [switch  scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-scalability-results)
-and [stability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-stability-results)
+- We provide indicative experimental results from [switch  scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/OpenDaylight-scalability-results-lithium)
+and [stability](https://github.com/intracom-telecom-sdn/nstat/wiki/OpenDaylight-stability-results-lithium)
 test cases with OpenDaylight controller. The [CPU shares](https://github.com/intracom-telecom-sdn/nstat/wiki/Cpu-shares) page
 shows the performance effect of allocating different CPU partitions
 to test components.
@@ -71,3 +71,6 @@ Plans and ideas for next releases are provided in the [future releases](https://
 For issues regarding NSTAT, please use the [issue tracking](https://github.com/intracom-telecom-sdn/nstat/issues) section.
 
 For any other questions and feedback, contact us at [nstat-support@intracom-telecom.com](mailto:nstat-support@intracom-telecom.com).
+
+
+
