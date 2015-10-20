@@ -20,9 +20,9 @@
 # 13. lithium_RPC_sb_active_stability_mtcbench_restart_16Switches_restart.json
 # 14. lithium_RPC_sb_idle_scalability_cbench.json
 # 15. lithium_RPC_sb_idle_scalability_mtcbench.json
-# 16. lithium_sb_idle_scalability_mininet_odlp2_DisconnectedTopo.json
-# 17. lithium_sb_idle_scalability_mininet_odlp2_LinearTopo.json
-# 18. lithium_sb_idle_scalability_mininet_odlp2_MeshTopo.json
+# 16. lithium_sb_idle_scalability_mininet_DisconnectedTopo.json
+# 17. lithium_sb_idle_scalability_mininet_LinearTopo.json
+# 18. lithium_sb_idle_scalability_mininet_MeshTopo.json
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -491,11 +491,11 @@
 
 
 # ------------------------------------------------------------------------------
-# lithium_sb_idle_scalability_mininet_odlp2_DisconnectedTopo
+# lithium_sb_idle_scalability_mininet_DisconnectedTopo
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: lithium_sb_idle_scalability_mininet_odlp2_DisconnectedTopo-{branch}
+    name: lithium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -504,7 +504,7 @@
       - timed:
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_odlp2_DisconnectedTopo"
+          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_DisconnectedTopo"
 
           source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
 
@@ -522,11 +522,11 @@
           /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
 
 # ------------------------------------------------------------------------------
-# lithium_sb_idle_scalability_mininet_odlp2_LinearTopo
+# lithium_sb_idle_scalability_mininet_LinearTopo
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: lithium_sb_idle_scalability_mininet_odlp2_LinearTopo-{branch}
+    name: lithium_sb_idle_scalability_mininet_LinearTopo-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -535,7 +535,7 @@
       - timed:
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_odlp2_LinearTopo"
+          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_LinearTopo"
 
           source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
 
@@ -552,11 +552,11 @@
 
           /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
 # ------------------------------------------------------------------------------
-# lithium_sb_idle_scalability_mininet_odlp2_MeshTopo
+# lithium_sb_idle_scalability_mininet_MeshTopo
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: lithium_sb_idle_scalability_mininet_odlp2_MeshTopo-{branch}
+    name: lithium_sb_idle_scalability_mininet_MeshTopo-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -565,7 +565,7 @@
       - timed:
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_odlp2_MeshTopo"
+          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_MeshTopo"
 
           source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
 
@@ -587,7 +587,7 @@
 # ------------------------------------------------------------------------------
 
 - project:
-    name: lithium_odlp-stress-jenkins-jobs
+    name: lithium_nstat-stress-jenkins-jobs
     description: 'Enter the job description here'
     branch: 'develop_ST_idle_scala'
     jobs:
@@ -606,6 +606,6 @@
         - 'lithium_RPC_sb_active_stability_mtcbench_restart_16Switches_restart-{branch}'
         - 'lithium_RPC_sb_idle_scalability_cbench-{branch}'
         - 'lithium_RPC_sb_idle_scalability_mtcbench-{branch}'
-        - 'lithium_sb_idle_scalability_mininet_odlp2_DisconnectedTopo-{branch}'
-        - 'lithium_sb_idle_scalability_mininet_odlp2_LinearTopo-{branch}'
-        - 'lithium_sb_idle_scalability_mininet_odlp2_MeshTopo-{branch}'
+        - 'lithium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}'
+        - 'lithium_sb_idle_scalability_mininet_LinearTopo-{branch}'
+        - 'lithium_sb_idle_scalability_mininet_MeshTopo-{branch}'

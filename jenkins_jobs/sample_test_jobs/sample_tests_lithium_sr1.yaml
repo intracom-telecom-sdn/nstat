@@ -39,7 +39,7 @@
                  Controllers datastore operation is active"
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -82,7 +82,7 @@
                  Controllers datastore operation is active"
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -118,7 +118,7 @@
                  operation is active."
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -156,7 +156,7 @@
                  Controllers datastore operation is active."
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -189,7 +189,7 @@
                  since simple Cbench is used."
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -223,7 +223,7 @@
                  threads and therefore gradually since MtCench is used."
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -261,7 +261,7 @@
                  controller reacts under heavy flow operations."
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -300,7 +300,7 @@
                  shot) cbench starts to generate traffic and througput is\n
                  measured. The test is stopped."
     block-downstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -340,7 +340,7 @@
                  througput ismeasured. The test is stopped."
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -376,7 +376,7 @@
                   NOT active"
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -412,7 +412,7 @@
                  operation is NOT active"
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -445,7 +445,7 @@
                  since simple Cbench is used."
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -476,7 +476,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -508,7 +508,7 @@
     description: An idle mininet network is booted.
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -539,7 +539,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-sample
+    defaults: github-sample
     triggers:
       - timed:
     builders:
@@ -566,7 +566,7 @@
 # ------------------------------------------------------------------------------
 
 - project:
-    name: sample_odlp-jenkins-jobs
+    name: sample_nstat-jenkins-jobs
     branch: develop_release_preparation_SONAR
     jobs:
         - 'sample_lithium_DS_sb_active_scalability_cbench-{branch}'

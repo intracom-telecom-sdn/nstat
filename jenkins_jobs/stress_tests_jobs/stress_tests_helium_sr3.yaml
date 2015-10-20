@@ -28,7 +28,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -70,7 +70,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -112,7 +112,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -154,7 +154,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -196,7 +196,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -238,7 +238,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -280,7 +280,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -322,7 +322,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -364,7 +364,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -406,7 +406,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -448,7 +448,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -490,7 +490,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -532,7 +532,7 @@
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
-    defaults: gitlab-stress
+    defaults: github-stress
     triggers:
       - timed:
     builders:
@@ -570,7 +570,7 @@
 # job instances
 # ------------------------------------------------------------------------------
 - project:
-    name: helium_sr3_odlp-stress-jenkins-jobs
+    name: helium_sr3_nstat-stress-jenkins-jobs
     description: 'Enter the job description here'
     branch: 'develop'
     jobs:
