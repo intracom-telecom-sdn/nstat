@@ -32,6 +32,7 @@ script:
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode sysstats_test.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode html_test.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode process_test.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode ../../stress_test/nstat_orchestrator.py --help
   - coverage combine
 after_success:
   coveralls
