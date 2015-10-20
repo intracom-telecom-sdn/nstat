@@ -6,8 +6,8 @@
 
 # ------------------------------------------------------------------------------
 # github-stress:
-#     stress_tests_gitlab_lithium.yaml
-#     stress_tests_gitlab_helium_sr3.yaml
+#     stress_tests_lithium_sr1.yaml
+#     stress_tests_helium_sr3.yaml
 # ------------------------------------------------------------------------------
 
 
