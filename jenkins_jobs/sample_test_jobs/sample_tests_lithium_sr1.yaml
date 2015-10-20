@@ -275,7 +275,7 @@
           python3.4 ./stress_test/nstat_orchestrator.py \
           	      --test="nb_active_scalability_mininet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/emulators/mininet/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
