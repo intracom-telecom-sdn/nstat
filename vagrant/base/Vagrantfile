@@ -37,7 +37,7 @@ if RUNNING_ENV == 'with-proxy'
 --------------------------------------------------------
           vagrant plugin install vagrant-proxyconf
 --------------------------------------------------------
-          rerun: vagrant up")
+          re-run: vagrant up")
   end
 elsif RUNNING_ENV == 'no-proxy'
     puts '--------------------------------------------------------'
