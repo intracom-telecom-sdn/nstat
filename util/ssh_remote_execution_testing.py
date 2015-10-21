@@ -7,7 +7,7 @@ import time
 
 import queue
 
-def ssh_run_command(ssh_client, command_to_run, lines_queue=None):
+def ssh_run_command(ssh_client, command_to_run, lines_queue=None, print_flag=False):
     """Runs the specified command on a remote machine
 
     :param ssh_client : SSH client provided by paramiko to run the command
@@ -30,13 +30,15 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None):
         channel.exec_command(command_to_run)
     except SSHException:
         return 1
-
+    channel_output = ''
     while not channel.exit_status_ready():
         try:
             data = ''
             data = channel.recv(bufferSize).decode('utf-8')
             while data:
-                print(data)
+                channel_output += data
+                if print_flag:
+                    print(data)
                 if lines_queue is not None:
                     for line in data.splitlines():
                         lines_queue.put(line)
@@ -57,7 +59,7 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None):
     
     channel_exit_status = channel.recv_exit_status()
     channel.close()
-    return channel_exit_status
+    return (channel_exit_status, channel_output)
 
 
 if __name__ == '__main__':
@@ -71,8 +73,9 @@ if __name__ == '__main__':
     ssh_client.connect(hostname='127.0.0.1', port=22,
                         username='jenkins', password='jenkins')
     cmd = 'ls -la'
-    ssh_run_command(ssh_client, cmd)
-
+    exit_status, output = ssh_run_command(ssh_client, cmd)
+    print('PRINTING RETURNED OUTPUT: \n'+output)
+    exit(0)
     cmd = '''echo "This is on stderr" >&2 '''
     ssh_run_command(ssh_client, cmd)
 
