@@ -22,15 +22,14 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None):
 
     channel = ssh_client.get_transport().open_session()
     bufferSize = 4*1024
-    # We currently do not use channel_timeout
     channel_timeout = 300 
     channel.setblocking(1)
     channel.set_combine_stderr(True)
-    #channel.settimeout(channel_timeout)
+    channel.settimeout(channel_timeout)
     try:
         channel.exec_command(command_to_run)
     except SSHException:
-        raise Exception('SSH connection error on remote execution.')
+        return 1
 
     while not channel.exit_status_ready():
         try:
@@ -43,7 +42,7 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None):
                         lines_queue.put(line)
                 data = channel.recv(bufferSize).decode('utf-8')
 
-        except  socket.timeout:
+        except socket.timeout:
             # Replace print with logging.error
             print('  ===ERROR=== Socket timeout exception caught')
             return 1
@@ -54,7 +53,7 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None):
         except Exception:
             # Replace print with logging.error
             print('  ===ERROR=== General exception caught')
-            break
+            return 1
     
     channel_exit_status = channel.recv_exit_status()
     channel.close()
