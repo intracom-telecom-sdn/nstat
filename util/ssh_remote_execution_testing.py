@@ -1,7 +1,6 @@
 import logging
 import os
 import paramiko
-import select
 import socket
 import stat
 import sys
@@ -27,34 +26,22 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None):
     # We currently do not use channel_timeout
     channel_timeout = 300 
     channel.setblocking(1)
-    channel.settimeout(channel_timeout)
+    channel.set_combine_stderr(True)
+    #channel.settimeout(channel_timeout)
     channel.exec_command(command_to_run)
     while not channel.exit_status_ready():
         try:
             data = ''
-            read_list, write_list , exception_list = select.select([channel], [], [], float(0))
-            #read_list, write_list , exception_list = select.select([channel.fileno()], [], [], float(0))
-
-            if read_list is not None and len(read_list) > 0:
-                if channel.recv_ready():
+            if channel.recv_ready():
+                data = channel.recv(bufferSize).decode(sys.stdout.encoding).strip()
+                while data:
+                    if lines_queue == None:
+                        print(data)
+                    else:
+                        for line in data.splitlines():
+                            lines_queue.put(line)
                     data = channel.recv(bufferSize).decode(sys.stdout.encoding).strip()
-                    while data:
-                        if lines_queue == None:
-                            print(data)
-                        else:
-                            for line in data.splitlines():
-                                lines_queue.put(line)
-                        data = channel.recv(bufferSize).decode(sys.stdout.encoding).strip()
-                data=''
-                if channel.recv_stderr_ready():
-                    data = channel.recv_stderr(bufferSize).decode(sys.stderr.encoding).strip()
-                    while data:
-                        if lines_queue == None:
-                            print(data)
-                        else:
-                            for line in data.splitlines():
-                                lines_queue.put(line)
-                        data = channel.recv_stderr(bufferSize).decode(sys.stderr.encoding).strip()
+
         except  socket.timeout:
             # Replace print with logging.error
             print('  ===ERROR=== Socket timeout exception caught')
