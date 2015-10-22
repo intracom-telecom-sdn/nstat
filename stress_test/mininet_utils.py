@@ -33,7 +33,9 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
     boot_command = ('sudo python {0} --rest-host {1} --rest-port {2}'.
                     format(mininet_server_remote_path, mininet_rest_server_host,
                            mininet_rest_server_port))
-    util.netutil.ssh_run_command(mininet_ssh_session, boot_command)
+    util.netutil.ssh_run_command(mininet_ssh_session, boot_command, 
+                                 prefix='[start_mininet_server]', 
+                                 lines_queue=None, print_flag=False)
     logging.info('{0} {1}'.format('[start_mininet_server] Boot command: ',
                                    boot_command))
     time.sleep(10)
@@ -138,13 +140,18 @@ def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
     get_pid_cmd = """sudo netstat -antup --numeric-ports | grep ':""" + \
                   str(mininet_rest_server_port) + \
                   """ ' | awk '{print $NF}' | awk -F '/' '{print $1}'"""
-    cmd_in, cmd_out, cmd_err = util.netutil.ssh_run_command(mininet_ssh_session,
-                                                            get_pid_cmd)
-    mininet_server_pid = str(cmd_out.read().decode()).strip()
+
+    cmd_exit_status, cmd_output = util.netutil.ssh_run_command(
+        mininet_ssh_session, get_pid_cmd, prefix='[stop_mininet_server]',
+        lines_queue=None, print_flag=False)
+
+    mininet_server_pid = cmd_output.strip()
     mininet_server_pid = mininet_server_pid.strip('-')
-    util.netutil.ssh_run_command(mininet_ssh_session, 'sudo kill -9 {0}'.
-                                 format(mininet_server_pid))
-    util.netutil.ssh_run_command(mininet_ssh_session, 'sudo mn -c')
+    util.netutil.ssh_run_command(mininet_ssh_session,
+        'sudo kill -9 {0}'.format(mininet_server_pid),
+        prefix='[stop_mininet_server]', lines_queue=None, print_flag=False)
+    util.netutil.ssh_run_command(mininet_ssh_session, 'sudo mn -c',
+        prefix='[stop_mininet_server]', lines_queue=None, print_flag=False)
 
 
 def delete_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,

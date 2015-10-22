@@ -247,7 +247,8 @@ def ssh_run_command_old(ssh_client, command_to_run):
     return ssh_client.exec_command(command_to_run)
 
 
-def ssh_run_command(ssh_client, command_to_run, lines_queue=None, print_flag=False):
+def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
+                    print_flag=False):
     """Runs the specified command on a remote machine
 
     :param ssh_client : SSH client provided by paramiko to run the command
@@ -281,18 +282,19 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None, print_flag=Fal
             while data:
                 channel_output += data
                 if print_flag:
-                    logging.debug('[netutil] {0}'.format(data))
+                    logging.debug('{0} {1}'.format(prefix, data))
                 if lines_queue is not None:
                     for line in data.splitlines():
                         lines_queue.put(line)
                 data = channel.recv(bufferSize).decode('utf-8')
 
         except socket.timeout:
-            logging.error('[netutil] Socket timeout exception caught')
+            logging.error('{0} Socket timeout exception caught'.format(prefix))
             return 1
         except UnicodeDecodeError:
             # Replace print with logging.error
-            logging.error('[netutil] Decode of received data exception caught')
+            logging.error('{0} Decode of received data exception caught'.
+                          format(prefix))
             return 1
 
     channel_exit_status = channel.recv_exit_status()
