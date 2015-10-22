@@ -276,27 +276,26 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     except SSHException:
         return 1
     channel_output = ''
-    while not channel.exit_status_ready():
-        try:
-            data = ''
+    try:
+        data = ''
+        data = channel.recv(bufferSize).decode('utf-8')
+        while data:
+            channel_output += data
+            if print_flag:
+                print('{0} {1}'.format(prefix, data))
+            if lines_queue is not None:
+                for line in data.splitlines():
+                    lines_queue.put(line)
             data = channel.recv(bufferSize).decode('utf-8')
-            while data:
-                channel_output += data
-                if print_flag:
-                    logging.debug('{0} {1}'.format(prefix, data))
-                if lines_queue is not None:
-                    for line in data.splitlines():
-                        lines_queue.put(line)
-                data = channel.recv(bufferSize).decode('utf-8')
 
-        except socket.timeout:
-            logging.error('{0} Socket timeout exception caught'.format(prefix))
-            return 1
-        except UnicodeDecodeError:
-            # Replace print with logging.error
-            logging.error('{0} Decode of received data exception caught'.
-                          format(prefix))
-            return 1
+    except socket.timeout:
+        print('{0} Socket timeout exception caught'.format(prefix))
+        return 1
+    except UnicodeDecodeError:
+        # Replace print with logging.error
+        print('{0} Decode of received data exception caught'.
+                      format(prefix))
+        return 1
 
     channel_exit_status = channel.recv_exit_status()
     channel.close()
