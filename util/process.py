@@ -10,9 +10,10 @@ import logging
 import subprocess
 import sys
 import time
+import util.netutil
 
 
-def getpid_listeningonport(port):
+def getpid_listeningonport(port, ssh_client=None):
     """Finds if there is a running process listening for network
     connections on a specific port.
 
@@ -24,23 +25,27 @@ def getpid_listeningonport(port):
     :type port: int
     """
 
-    out = ''
+    cmd_output = ''
     try:
-        out = subprocess.check_output(
-            'netstat -tulpn --numeric-ports | grep \":{0} \"'.format(port),
-            shell=True, universal_newlines=True)
+        if ssh_client is not None:
+            cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
+                'netstat -tulpn --numeric-ports | grep \":{0} \"'.format(port))
+        else:
+            cmd_output = subprocess.check_output(
+                'netstat -tulpn --numeric-ports | grep \":{0} \"'.format(port),
+                shell=True, universal_newlines=True)
     finally:
-        if out == '':
+        if cmd_output == '':
             return -1
         else:
-            proc = out.split()[-1]
+            proc = cmd_output.split()[-1]
             # process exists but we are not owner
             if proc == '-':
                 return 0
             else:
-                return int(out.split()[-1].split('/')[0].strip())
+                return int(cmd_output.split()[-1].split('/')[0].strip())
 
-def is_process_running(pid):
+def is_process_running(pid, ssh_client=None):
     """Finds if a process is running, using its process ID.
 
     :param pid: The process ID of the target process
@@ -49,27 +54,32 @@ def is_process_running(pid):
     :type pid: int
     """
 
-    out = '-1'
+    cmd_output = '-1'
     try:
         cmd = 'kill -s 0 {0}'.format(pid)
-        p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                             close_fds=True)
-        out = p.stdout.read().decode(sys.stdout.encoding).strip()
+        if ssh_client is not None:
+            cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
+                                                                  cmd)
+        else:
+            p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                close_fds=True)
+            cmd_output = p.stdout.read().decode(sys.stdout.encoding)
+        cmd_output.strip()
     except subprocess.CalledProcessError as exc:
-        out = exc.output
+        cmd_output = exc.output
     finally:
-        if out == '' or 'permitted' in out.split():
+        if cmd_output == '' or 'permitted' in cmd_output.split():
             return True
         else:
             return False
 
-def wait_until_process_finishes(pid):
+def wait_until_process_finishes(pid, ssh_client=None):
     """Waits until the process with the specified ID finishes
 
     :param pid: process id
     :type pid: int
     """
 
-    while is_process_running(pid):
+    while is_process_running(pid, ssh_client):
         time.sleep(1)
