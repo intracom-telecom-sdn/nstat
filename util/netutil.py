@@ -10,6 +10,7 @@ import logging
 import os
 import paramiko
 import select
+import socket
 import stat
 import time
 

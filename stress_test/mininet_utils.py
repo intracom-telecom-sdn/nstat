@@ -35,7 +35,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
                            mininet_rest_server_port))
     util.netutil.ssh_run_command(mininet_ssh_session, boot_command, 
                                  prefix='[start_mininet_server]', 
-                                 lines_queue=None, print_flag=False)
+                                 lines_queue=None, print_flag=True)
     logging.info('{0} {1}'.format('[start_mininet_server] Boot command: ',
                                    boot_command))
     time.sleep(10)
@@ -149,9 +149,9 @@ def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
     mininet_server_pid = mininet_server_pid.strip('-')
     util.netutil.ssh_run_command(mininet_ssh_session,
         'sudo kill -9 {0}'.format(mininet_server_pid),
-        prefix='[stop_mininet_server]', lines_queue=None, print_flag=False)
+        prefix='[stop_mininet_server]', lines_queue=None, print_flag=True)
     util.netutil.ssh_run_command(mininet_ssh_session, 'sudo mn -c',
-        prefix='[stop_mininet_server]', lines_queue=None, print_flag=False)
+        prefix='[stop_mininet_server]', lines_queue=None, print_flag=True)
 
 
 def delete_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,

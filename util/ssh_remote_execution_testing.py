@@ -72,14 +72,14 @@ if __name__ == '__main__':
     ssh_client.connect(hostname='127.0.0.1', port=22,
                         username='jenkins', password='jenkins')
     cmd = 'ls -la'
-    exit_status, output = ssh_run_command(ssh_client, cmd)
+    exit_status, output = ssh_run_command(ssh_client, cmd, '[Functional_test] ', None, True)
     print('PRINTING RETURNED OUTPUT: \n'+output)
-    exit(0)
+
     cmd = '''echo "This is on stderr" >&2 '''
-    ssh_run_command(ssh_client, cmd)
+    ssh_run_command(ssh_client, cmd, '[Functional_test] ', None, True)
 
     cmd = 'echo $HOME'
-    ssh_run_command(ssh_client, cmd)
+    ssh_run_command(ssh_client, cmd, '[Functional_test] ', None, True)
 
     cmd = 'exit 2'
     print('ERROR NUMBER RETURNED: {0}'.format(ssh_run_command(ssh_client, cmd)))
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     testing_queue = queue.Queue()
     cmd = 'ls -1'
     print('   === USING QUEUE to buffer results')
-    ssh_run_command(ssh_client, cmd, testing_queue)
+    ssh_run_command(ssh_client, cmd, '[Functional_test] ', testing_queue, False)
     print('   === Printing queue buffered results after execution:')
     while not testing_queue.empty():
         print(testing_queue.get())
