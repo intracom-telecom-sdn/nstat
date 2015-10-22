@@ -233,10 +233,9 @@ def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
     sftp.close()
     transport_layer.close()
 
-
-def ssh_run_command(ssh_client, command_to_run):
+# TODO - To be removed
+def ssh_run_command_old(ssh_client, command_to_run):
     """Runs the specified command on a remote machine
-
     :param ssh_client : SSH client provided by paramiko to run the command
     :param command_to_run: Command to execute
     :returns: the output of the remotely executed command
@@ -246,21 +245,60 @@ def ssh_run_command(ssh_client, command_to_run):
     """
 
     return ssh_client.exec_command(command_to_run)
-# The following lines are commended. They will be tested in a future user story
-#    bufferSize = 64 * 1024
-#    channel = ssh_client.get_transport().open_session()
-#    channel.exec_command(command_to_run)
-#    while True:
-#        if channel.exit_status_ready():
-#            break
-#        rl, wl, xl = select.select([channel], [], [], 0.0)
-#        # If the above line do not work try the following one
-#        # rl, wl, xl = select.select([channel.fileno()], [], [], 0.0)
-#        if len(rl) > 0:
-#            if channel.recv_ready():
-#                print(channel.recv(bufferSize))
-#            if channel.recv_stderr_ready():
-#                print(channel.recv_stderr(bufferSize))
+
+
+def ssh_run_command(ssh_client, command_to_run, lines_queue=None, print_flag=False):
+    """Runs the specified command on a remote machine
+
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :param command_to_run: Command to execute
+    :param lines_queue: Queue datastructure to buffer the result of execution
+    :param print_flag: Flag that defines if the output of the command will be
+    printed on screen
+    :returns: the exit code of the command to be executed remotely and the
+    combined stdout - stderr of the executed command
+    :rtype: tuple<int, str>
+    :type ssh_session: paramiko.SSHClient
+    :type command_to_run: str
+    :type lines_queue: queue<str>
+    """
+
+    channel = ssh_client.get_transport().open_session()
+    bufferSize = 4*1024
+    channel_timeout = 300 
+    channel.setblocking(1)
+    channel.set_combine_stderr(True)
+    channel.settimeout(channel_timeout)
+    try:
+        channel.exec_command(command_to_run)
+    except SSHException:
+        return 1
+    channel_output = ''
+    while not channel.exit_status_ready():
+        try:
+            data = ''
+            data = channel.recv(bufferSize).decode('utf-8')
+            while data:
+                channel_output += data
+                if print_flag:
+                    logging.debug('[netutil] {0}'.format(data))
+                if lines_queue is not None:
+                    for line in data.splitlines():
+                        lines_queue.put(line)
+                data = channel.recv(bufferSize).decode('utf-8')
+
+        except socket.timeout:
+            logging.error('[netutil] Socket timeout exception caught')
+            return 1
+        except UnicodeDecodeError:
+            # Replace print with logging.error
+            logging.error('[netutil] Decode of received data exception caught')
+            return 1
+
+    channel_exit_status = channel.recv_exit_status()
+    channel.close()
+    return (channel_exit_status, channel_output)
+
 
 
 def ssh_delete_file_if_exists(ipaddr, user, passwd, remote_file,

@@ -13,11 +13,14 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None, print_flag=Fal
     :param ssh_client : SSH client provided by paramiko to run the command
     :param command_to_run: Command to execute
     :param lines_queue: Queue datastructure to buffer the result of execution
-    :returns: the exit code of the command to be executed remotely
-    :rtype: int
+    :param print_flag: Flag that defines if the output of the command will be
+    printed on screen
+    :returns: the exit code of the command to be executed remotely and the
+    combined stdout - stderr of the executed command
+    :rtype: tuple<int, str>
     :type ssh_session: paramiko.SSHClient
     :type command_to_run: str
-    :type lines_queue: <queue>
+    :type lines_queue: queue<str>
     """
 
     channel = ssh_client.get_transport().open_session()
@@ -52,11 +55,7 @@ def ssh_run_command(ssh_client, command_to_run, lines_queue=None, print_flag=Fal
             # Replace print with logging.error
             print('  ===ERROR=== Decode of received data exception caught')
             return 1
-        except Exception:
-            # Replace print with logging.error
-            print('  ===ERROR=== General exception caught')
-            return 1
-    
+
     channel_exit_status = channel.recv_exit_status()
     channel.close()
     return (channel_exit_status, channel_output)
