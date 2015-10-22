@@ -88,7 +88,7 @@ class NetUtilTest(unittest.TestCase):
         del self.remotemachineusername
 
     def test01_ssh_connect_or_return(self):
-        """Testing how ssh_connect_or_return when entering a 'wrong'
+        """Testing ssh_connect_or_return when entering a 'wrong'
         remotemachineip
         """
         tst01_username = self.remotemachineusername
@@ -112,7 +112,7 @@ class NetUtilTest(unittest.TestCase):
                                                            tst01_password,
                                                            tst01_maxtries))
     def test02_ssh_connect_or_return(self):
-        """Testing how ssh_connect_or_return when entering a 'wrong'
+        """Testing ssh_connect_or_return when entering a 'wrong'
         remotemachineusername
         """
         tst02_username = self.remotemachineusername
@@ -136,7 +136,7 @@ class NetUtilTest(unittest.TestCase):
                                               tst02_password,
                                               tst02_maxtries))
     def test03_ssh_copy_file_to_target(self):
-        """Testing how ssh_copy_file_to_target
+        """Testing ssh_copy_file_to_target
         """
         # connect to remote machine
         tst03_username = self.remotemachineusername
@@ -183,8 +183,75 @@ class NetUtilTest(unittest.TestCase):
         #util.netutil.ssh_run_command(ssh_session, command)
         #logging.debug('{0} {1}'.format(test_type, command))
         # check if file exists on the remote vm
+    def test03_ssh_copy_file_to_target(self):
+        """Testing ssh_copy_file_to_target
+        """
+        pass
 
+    def test04_copy_directory_to_target(self):
+        """Testing copy_directory_to_target
+        """
+        pass
 
+    def test05_make_remote_file_executable(self):
+        """Testing make_remote_file_executable
+        """
+        pass
+
+    def test06_make_remote_file_executable(self):
+        """Testing make_remote_file_executable
+        """
+        pass
+
+    def test07_copy_directory_to_target(self):
+        """Testing copy_directory_to_target
+        """
+        pass
+
+    def test08_copy_directory_to_target(self):
+        """Testing copy_directory_to_target
+        """
+        pass
+    def test09_create_remote_directory(self):
+        """Testing create_remote_directory
+        """
+        pass
+    def test10_create_remote_directory(self):
+        """Testing create_remote_directory
+        """
+        pass
+    def testxx_isdir(self):
+        """Testing isdir
+        """
+        pass
+    def testxx_isdir(self):
+        """Testing isdir
+        """
+        pass
+    def testxx_remove_remote_directory(self):
+        """Testing how ssh_copy_file_to_target
+        """
+        pass
+    def testxx_remove_remote_directory(self):
+        """Testing how ssh_copy_file_to_target
+        """
+        pass
+    def testxx_ssh_run_command(self):
+        """Testing how ssh_copy_file_to_target
+        """
+        pass
+    def testxx_ssh_run_command(self):
+        """Testing how ssh_copy_file_to_target
+        """
+        pass
+    def testxx_ssh_delete_file_if_exists(self):
+        """Testing how ssh_copy_file_to_target
+        """
+        pass
+    def testxx_ssh_delete_file_if_exists(self):
+        """Testing how ssh_copy_file_to_target
+        """
+        pass
 if __name__ == '__main__':
     SUITE_NETUTILTEST = unittest.TestLoader().loadTestsFromTestCase(NetUtilTest)
     unittest.TextTestRunner(verbosity=2).run(SUITE_NETUTILTEST)
