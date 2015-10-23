@@ -22,7 +22,7 @@ def ssh_connect_or_return(ipaddr, user, passwd, maxretries, remote_port=22):
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param maxretries: maximum number of times to connect
-    :returns: an ssh connection handle or -1
+    :returns: an ssh connection handle or -1 on failure
     :rtype: paramiko.SSHClient (or -1 when failure)
     :type ipaddr: str
     :type user: str
@@ -241,7 +241,7 @@ def ssh_run_command_old(ssh_client, command_to_run):
     :param command_to_run: Command to execute
     :returns: the output of the remotely executed command
     :rtype: tuple (stdin, stdout, stderr)
-    :type ssh_session: paramiko.SSHClient
+    :type ssh_client: paramiko.SSHClient
     :type command_to_run: str
     """
 
@@ -262,7 +262,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     :returns: the exit code of the command to be executed remotely and the
     combined stdout - stderr of the executed command
     :rtype: tuple<int, str>
-    :type ssh_session: paramiko.SSHClient
+    :type ssh_client: paramiko.SSHClient
     :type command_to_run: str
     :type lines_queue: queue<str>
     :type print_flag: bool

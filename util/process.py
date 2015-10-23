@@ -18,11 +18,13 @@ def getpid_listeningonport(port, ssh_client=None):
     connections on a specific port.
 
     :param port: the port number that we investigate.
+    :param ssh_client : SSH client provided by paramiko to run the command
     :returns: -1, if no process is listening on port
     0, if some process is listening on port but we are not owner of
     it <pid> of the process listening on port and we are owner of it
     :rtype: int
     :type port: int
+    :type ssh_client: paramiko.SSHClient
     """
 
     cmd_output = ''
@@ -49,9 +51,11 @@ def is_process_running(pid, ssh_client=None):
     """Finds if a process is running, using its process ID.
 
     :param pid: The process ID of the target process
+    :param ssh_client : SSH client provided by paramiko to run the command
     :returns: True, if the process is running False, otherwise
     :rtype: bool
     :type pid: int
+    :type ssh_client: paramiko.SSHClient
     """
 
     cmd_output = '-1'
@@ -78,7 +82,9 @@ def wait_until_process_finishes(pid, ssh_client=None):
     """Waits until the process with the specified ID finishes
 
     :param pid: process id
+    :param ssh_client : SSH client provided by paramiko to run the command
     :type pid: int
+    :type ssh_client: paramiko.SSHClient
     """
 
     while is_process_running(pid, ssh_client):
