@@ -46,6 +46,7 @@ class NetUtilTest(unittest.TestCase):
         cls.sleeptime = 2
 
         cls.remotemachineip = '127.0.0.1'
+        cls.remotemachineport = 22
         cls.remotemachineusername = 'jenkins'
         cls.remotemachinepassword = 'jenkins'
         cls.remotemachinefilename = 'foofile.txt'
@@ -121,20 +122,31 @@ class NetUtilTest(unittest.TestCase):
                           self.remotemachineusername, password_new,
                           self.maxretries))
 
-    def test_04_isdir(self):
-        """Testing ssh_connect_or_return() when entering a 'wrong' remote password
+    def test04_isdir(self):
+        """Testing isdir() when checking for an existing remote directory
         """
-        transport_layer = paramiko.Transport((self.remotemachineip, 22))
+        transport_layer = paramiko.Transport((self.remotemachineip,
+                                              self.remotemachineport))
         transport_layer.connect(username=self.remotemachineusername,
                                 password=self.remotemachinepassword)
-        sftp_connection = paramiko.SFTPClient.from_transport(transport_layer)
-        self.assertTrue(util.netutil.isdir(self.remotemachinepath,
-                                           sftp_connection))
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+        #util.netutil.isdir(self.remotemachinepath, sftp)
+        self.assertTrue(util.netutil.isdir(self.remotemachinepath, sftp))
+        sftp.close()
         transport_layer.close()
 
-        del transport_layer
-
-
+    def test05_isdir(self):
+        """Testing isdir() when checking for a non existing remote directory
+        """
+        transport_layer = paramiko.Transport((self.remotemachineip,
+                                              self.remotemachineport))
+        transport_layer.connect(username=self.remotemachineusername,
+                                password=self.remotemachinepassword)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+        #util.netutil.isdir(self.remotemachinepath, sftp)
+        self.assertFalse(util.netutil.isdir(self.remotemachinepath_false, sftp))
+        sftp.close()
+        transport_layer.close()
 
     @classmethod
     def tearDownClass(cls):

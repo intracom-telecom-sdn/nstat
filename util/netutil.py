@@ -155,7 +155,6 @@ def make_remote_file_executable(ipaddr, user, passwd, remote_file,
     sftp.close()
     transport_layer.close()
 
-
 def create_remote_directory(ipaddr, user, passwd, remote_path, remote_port=22):
     """Opens an ssh connection to a remote machine and creates a new directory.
 
@@ -193,7 +192,7 @@ def isdir(path, sftp):
     :returns: True if the given path is a directory false otherwise.
     :rtype: bool
     :type path: str
-    :type sftp: paramiko.SSHClient
+    :type sftp: paramiko.SFTPClient
     """
 
     try:
