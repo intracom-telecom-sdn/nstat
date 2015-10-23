@@ -100,7 +100,7 @@ class MemoryUtilsTest(unittest.TestCase):
         var = util.sysstats.sys_total_memory_bytes(self.ssh_client)
         self.assertTrue((var > 0) and isinstance(var, int),
                         'Testing using ssh_client')
-    
+
     @classmethod
     def tearDownClass(cls):
         """Cleans up the environment after testing.
@@ -312,19 +312,36 @@ class ProcessThreadAndFDsTests(unittest.TestCase):
 class SysLoadAverageTest(unittest.TestCase):
     """Unittests for CPU load related functions in util/sysstats.py"""
 
+    @classmethod
+    def setUpClass(cls):
+        """Creates the initial environment to run testcases of this class.
+        """
+        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP,
+            SSH_UNAME, SSH_PWD, 10, 22)
+
     def test01_sys_load_average(self):
         """Test functionality of sysstats.sys_load_average function
         """
 
         self.assertTrue(all(isinstance(sysload, float)
-                            for sysload in util.sysstats.sys_load_average()))
+                            for sysload in util.sysstats.sys_load_average()),
+                         'Testing without using ssh_client')
+        self.assertTrue(all(isinstance(sysload, float)
+            for sysload in util.sysstats.sys_load_average(self.ssh_client)),
+            'Testing using ssh_client')
+
+    @classmethod
+    def tearDownClass(cls):
+        """Cleans up the environment after testing.
+        """
+        cls.ssh_client.close()
 
 if __name__ == '__main__':
 
     SUITE_MEMORYUTILSTEST = unittest.TestLoader().\
     loadTestsFromTestCase(MemoryUtilsTest)
     unittest.TextTestRunner(verbosity=2).run(SUITE_MEMORYUTILSTEST)
-    
+
     SUITE_PROCIOTEST = unittest.TestLoader().\
     loadTestsFromTestCase(ProcIOTEst)
     unittest.TextTestRunner(verbosity=2).run(SUITE_PROCIOTEST)
