@@ -233,19 +233,6 @@ def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
     sftp.close()
     transport_layer.close()
 
-# TODO - To be removed
-def ssh_run_command_old(ssh_client, command_to_run):
-    """Runs the specified command on a remote machine
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :param command_to_run: Command to execute
-    :returns: the output of the remotely executed command
-    :rtype: tuple (stdin, stdout, stderr)
-    :type ssh_client: paramiko.SSHClient
-    :type command_to_run: str
-    """
-
-    return ssh_client.exec_command(command_to_run)
-
 
 def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
                     print_flag=True, block_flag=True):
