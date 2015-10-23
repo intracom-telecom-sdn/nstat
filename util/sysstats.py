@@ -27,8 +27,7 @@ def sys_used_ram_mb(ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    return int(cmd_output.strip())
 
 def sys_nprocs(ssh_client=None):
     """Returns the number of CPUs in the system.
@@ -44,8 +43,7 @@ def sys_nprocs(ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    return int(cmd_output.strip())
 
 
 def sys_free_ram_mb(ssh_client=None):
@@ -63,8 +61,7 @@ def sys_free_ram_mb(ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    return int(cmd_output.strip())
 
 
 def sys_used_memory_bytes(ssh_client=None):
@@ -94,8 +91,7 @@ def sys_free_memory_bytes(ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    return int(cmd_output.strip())
 
 
 def sys_total_memory_bytes(ssh_client=None):
@@ -113,8 +109,7 @@ def sys_total_memory_bytes(ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    return int(cmd_output.strip())
 
 
 def sys_iowait_time(ssh_client=None):
@@ -135,8 +130,7 @@ def sys_iowait_time(ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return float(cmd_output)
+    return float(cmd_output.strip())
 
 
 def proc_cmdline(pid, ssh_client=None):
@@ -156,8 +150,7 @@ def proc_cmdline(pid, ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return cmd_output
+    return cmd_output.strip().replace('\x00', '')
 
 
 def proc_cwd(pid, ssh_client=None):
@@ -173,7 +166,6 @@ def proc_cwd(pid, ssh_client=None):
 
     cmd1 = "cd /proc/{0}/cwd".format(pid)
     cmd2 = "pwd"
-
     if ssh_client is not None:
         util.netutil.ssh_run_command(ssh_client, cmd1)
         cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd2)
@@ -181,9 +173,7 @@ def proc_cwd(pid, ssh_client=None):
         subprocess.check_output(cmd1, shell=True)
         cmd_output = str(subprocess.check_output(cmd2, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return cmd_output
-
+    return cmd_output.strip()
 
 
 def proc_cpu_system_time(pid, ssh_client=None):
@@ -289,8 +279,8 @@ def proc_num_threads(pid, ssh_client=None):
     else:
         cmd_output = str(subprocess.check_output(cmd, shell=True).
                          decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    cmd_output
+    return int(cmd_output.strip())
 
 
 def sys_load_average(ssh_client=None):
