@@ -15,10 +15,10 @@
 # make a new nstat_vm_basebox based on 'nstat_vm_base'
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-nstat_vm_ram = '8192'
+nstat_vm_ram = '512'
 nstat_vm_cpus = '2'
-nstat_vm_bridge_interface_name = '<name_of_host_interface_to_bridge>'
-nstat_vm_hostname = 'VM1'
+nstat_vm_bridge_interface_name = 'em1'
+nstat_vm_hostname = 'nstatvm01'
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
