@@ -188,7 +188,7 @@ def isdir(path, sftp):
     """Checks if a given remote path is a directory
 
     :param path: A string with the full path we want to check
-    :param sftp: An sftp connection object (paramico)
+    :param sftp: An sftp connection object (paramiko)
     :returns: True if the given path is a directory false otherwise.
     :rtype: bool
     :type path: str
@@ -266,7 +266,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
 
     channel = ssh_client.get_transport().open_session()
     bufferSize = 4*1024
-    channel_timeout = 300 
+    channel_timeout = 300
     channel.setblocking(1)
     channel.set_combine_stderr(True)
     channel.settimeout(channel_timeout)
