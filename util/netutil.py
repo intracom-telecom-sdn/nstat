@@ -277,7 +277,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
         while data:
             channel_output += data
             if print_flag:
-                logging.debug('{0} {1}'.format(prefix, data).rstrip())
+                logging.debug('{0} {1}'.format(prefix, data).strip())
             if lines_queue is not None:
                 for line in data.splitlines():
                     lines_queue.put(line)

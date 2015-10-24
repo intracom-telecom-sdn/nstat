@@ -12,6 +12,25 @@ import sys
 import util.netutil
 
 
+def command_exec_wrapper(cmd, ssh_client=None):
+    """Executes a command either locally or remotely and returns the result
+
+    :param cmd: the command to be executed
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :returns: The commands execution result as string
+    :rtype: str
+    :type cmd: str
+    :type ssh_client: paramiko.SSHClient
+    """
+
+    if ssh_client is not None:
+        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
+    else:
+        cmd_output = str(subprocess.check_output(cmd, shell=True).
+                         decode(sys.stdout.encoding))
+    return cmd_output
+
+
 def sys_used_ram_mb(ssh_client=None):
     """Returns system used memory in MB.
 
@@ -22,13 +41,8 @@ def sys_used_ram_mb(ssh_client=None):
     """
 
     cmd = 'free -m | awk \'/^Mem:/{print $3}\''
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip())
 
 def sys_nprocs(ssh_client=None):
     """Returns the number of CPUs in the system.
@@ -39,13 +53,8 @@ def sys_nprocs(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
     cmd = 'cat /proc/cpuinfo | grep processor | wc -l'
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip())
 
 
 def sys_free_ram_mb(ssh_client=None):
@@ -58,13 +67,8 @@ def sys_free_ram_mb(ssh_client=None):
     """
 
     cmd = 'free -m | awk \'/^Mem:/{print $4}\''
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip())
 
 
 def sys_used_memory_bytes(ssh_client=None):
@@ -89,13 +93,8 @@ def sys_free_memory_bytes(ssh_client=None):
     """
 
     cmd = 'cat /proc/meminfo | grep MemFree | awk \'{{print $2}}\''
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip())
 
 
 def sys_total_memory_bytes(ssh_client=None):
@@ -108,13 +107,8 @@ def sys_total_memory_bytes(ssh_client=None):
     """
 
     cmd = 'cat /proc/meminfo | grep MemTotal | awk \'{{print $2}}\''
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip())
 
 
 def sys_iowait_time(ssh_client=None):
@@ -130,13 +124,8 @@ def sys_iowait_time(ssh_client=None):
     """
 
     cmd = 'cat /proc/stat | awk \'NR==1 {{print $6}}\''
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return float(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return float(cmd_output.strip())
 
 
 def proc_cmdline(pid, ssh_client=None):
@@ -151,13 +140,8 @@ def proc_cmdline(pid, ssh_client=None):
     """
 
     cmd = "cat /proc/{0}/cmdline".format(pid)
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return cmd_output
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return cmd_output.strip().replace('\x00', '')
 
 
 def proc_cwd(pid, ssh_client=None):
@@ -173,17 +157,9 @@ def proc_cwd(pid, ssh_client=None):
 
     cmd1 = "cd /proc/{0}/cwd".format(pid)
     cmd2 = "pwd"
-
-    if ssh_client is not None:
-        util.netutil.ssh_run_command(ssh_client, cmd1)
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd2)
-    else:
-        subprocess.check_output(cmd1, shell=True)
-        cmd_output = str(subprocess.check_output(cmd2, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return cmd_output
-
+    command_exec_wrapper(cmd1, ssh_client)
+    cmd_output = command_exec_wrapper(cmd2, ssh_client)
+    return cmd_output.strip()
 
 
 def proc_cpu_system_time(pid, ssh_client=None):
@@ -198,13 +174,8 @@ def proc_cpu_system_time(pid, ssh_client=None):
     """
 
     cmd = 'cat /proc/{0}/stat | awk \' {{ print $15 }} \''.format(pid)
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-              decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return float(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return float(cmd_output.strip())
 
 
 def proc_cpu_user_time(pid, ssh_client=None):
@@ -219,13 +190,8 @@ def proc_cpu_user_time(pid, ssh_client=None):
     """
 
     cmd = 'cat /proc/{0}/stat | awk \'{{print $14}}\''.format(pid)
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-              decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return float(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return float(cmd_output.strip())
 
 
 def proc_vm_size(pid, ssh_client=None):
@@ -241,13 +207,8 @@ def proc_vm_size(pid, ssh_client=None):
 
     cmd = ('cat /proc/{0}/status |grep VmSize | awk \'{{print $2}}\''.
            format(pid))
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-              decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)*1024
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip())*1024
 
 
 def proc_num_fds(pid, ssh_client=None):
@@ -262,13 +223,8 @@ def proc_num_fds(pid, ssh_client=None):
     """
 
     cmd = 'ls -la /proc/{0}/fd | wc -l'.format(pid)
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-              decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output) - 3
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip()) - 3
 
 
 def proc_num_threads(pid, ssh_client=None):
@@ -284,13 +240,8 @@ def proc_num_threads(pid, ssh_client=None):
 
     cmd = ('cat /proc/{0}/status |grep Threads | awk \'{{print $2}}\''.
            format(pid))
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    return int(cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    return int(cmd_output.strip())
 
 
 def sys_load_average(ssh_client=None):
@@ -303,13 +254,8 @@ def sys_load_average(ssh_client=None):
     """
 
     cmd = 'uptime'
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    matches = re.search(r'load average: (.+), (.+), (.+)', cmd_output)
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    matches = re.search(r'load average: (.+), (.+), (.+)', cmd_output.strip())
     return (float(matches.group(1)),
             float(matches.group(2)),
             float(matches.group(3)))
@@ -327,12 +273,7 @@ def get_java_options(pid, ssh_client=None):
     """
 
     cmd = 'ps -ef | grep \' {0} \''.format(pid)
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    cmd_output.strip()
-    java_options = [o for o in cmd_output.split() if o.startswith('-X')]
+    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    java_options = [o for o in cmd_output.strip().split() if o.startswith('-X')]
     return java_options
 

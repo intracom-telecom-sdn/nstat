@@ -28,14 +28,15 @@ def getpid_listeningonport(port, ssh_client=None):
     """
 
     cmd_output = ''
+    cmd = 'netstat -tulpn --numeric-ports  2>&1 | grep \"LISTEN\" | grep \":{0} \"'.format(port)
     try:
         if ssh_client is not None:
             cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-                'netstat -tulpn --numeric-ports | grep \":{0} \"'.format(port))
+                cmd)
         else:
-            cmd_output = subprocess.check_output(
-                'netstat -tulpn --numeric-ports | grep \":{0} \"'.format(port),
-                shell=True, universal_newlines=True)
+            cmd_output = subprocess.check_output(cmd, shell=True,
+                                                 universal_newlines=True)
+        cmd_output = cmd_output.strip()
     finally:
         if cmd_output == '':
             return -1
@@ -46,6 +47,7 @@ def getpid_listeningonport(port, ssh_client=None):
                 return 0
             else:
                 return int(cmd_output.split()[-1].split('/')[0].strip())
+
 
 def is_process_running(pid, ssh_client=None):
     """Finds if a process is running, using its process ID.
@@ -59,8 +61,8 @@ def is_process_running(pid, ssh_client=None):
     """
 
     cmd_output = '-1'
+    cmd = 'kill -s 0 {0}'.format(pid)
     try:
-        cmd = 'kill -s 0 {0}'.format(pid)
         if ssh_client is not None:
             cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
                                                                   cmd)
