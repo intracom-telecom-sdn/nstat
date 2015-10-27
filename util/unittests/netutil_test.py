@@ -8,6 +8,7 @@
 
 import logging
 import os
+import paramiko
 import random
 import socket
 import string
@@ -31,7 +32,8 @@ class NetUtilTest(unittest.TestCase):
     make_remote_file_executable, ssh_run_command
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """Prepares the setup environment for testing methods
         ssh_connect_or_return, copy_to_target, make_remote_file_executable,
         ssh_run_command. The method assumes that a VM of certain ip,
@@ -39,150 +41,124 @@ class NetUtilTest(unittest.TestCase):
         and a string with a location on the remote vm (need for the
         copy_to_target, make_remote_file_executable).
         """
-        self.retries = 1
-        self.maxretries = 1
-        self.sleeptime = 2
+        cls.retries = 1
+        cls.maxretries = 1
+        cls.sleeptime = 2
 
-        self.remotemachineip = '192.168.122.113'
-        self.remotemachineusername = 'mininet'
-        self.remotemachinepassword = 'mininet'
-        self.remotemachinefilename = 'foofile.txt'
-        commandtorun = "touch" + " " + self.remotemachinefilename
+        cls.remotemachineip = '127.0.0.1'
+        cls.remotemachineport = 22
+        cls.remotemachineusername = 'jenkins'
+        cls.remotemachinepassword = 'jenkins'
+        cls.remotemachinefilename = 'foofile.txt'
+        cls.remotemachinepath = '/tmp'
+        cls.remotemachinepath_false = '/test'
+        commandtorun = "touch" + " " + cls.remotemachinefilename
         subprocess.check_output(commandtorun, shell=True)
 
         while True:
-            logging.info('[setup-NetUtilTest] Trying to connect to %s (%i/%i)',
-                         self.remotemachineip,
-                         self.retries,
-                         self.maxretries)
-            response = os.system("ping -c 1 " + self.remotemachineip)
+            logging.info('[setup-netutil-test] Trying to connect to %s (%i/%i)',
+                         cls.remotemachineip, cls.retries, cls.maxretries)
+            response = os.system("ping -c 1 " + cls.remotemachineip)
 
             if response == 0:
-                logging.info('[setup-NetUtilTest] remote machine: %s is UP',
-                             self.remotemachineip)
+                logging.info('[setup-netutil-test] remote machine: %s is up',
+                             cls.remotemachineip)
                 break
             else:
-                logging.info('[setup-NetUtilTest] remote machine: %s, is '
-                             'DOWN (%i/%i)',
-                             self.remotemachineip,
-                             self.retries,
-                             self.maxretries)
-                self.retries += 1
-                time.sleep(self.sleeptime)
+                logging.info('[setup-netutil-test] remote machine: %s, is '
+                             'DOWN (%i/%i)', cls.remotemachineip, cls.retries,
+                             cls.maxretries)
+                cls.retries += 1
+                time.sleep(cls.sleeptime)
 
-            if self.retries > self.maxretries:
-                logging.info('[setup-NetUtilTest] could not reach remote '
+            if cls.retries > cls.maxretries:
+                logging.info('[setup-netutil-test] could not reach remote '
                              'machine: test cannot continue')
                 return -1
 
+    def test01_ssh_connect_or_return(self):
+        """Testing ssh_connect_or_return() when entering a 'wrong' remote ip
+        """
+        logging.info('[netutil-test] remote address: {0} '.
+                     format(self.remotemachineip))
+        ipaddress_int = struct.unpack("!I",
+                              socket.inet_aton(self.remotemachineip))[0]
+        ipaddress_int += 1
+        ipaddress_new = '192.168.64.15'
+        logging.info('[netutil-test] remote address (altered): {0} '.
+                     format(ipaddress_new))
+        self.assertIsNone(util.netutil.ssh_connect_or_return(
+                          ipaddress_new, self.remotemachineusername,
+                          self.remotemachinepassword, self.maxretries))
 
-    def tearDown(self):
+    def test02_ssh_connect_or_return(self):
+        """Testing ssh_connect_or_return() when entering a 'wrong' remote username
+        """
+        logging.info('[netutil-test] remote address: {0} '.
+                     format(self.remotemachineip))
+        logging.info('[netutil-test] remote user name: {0} '.
+                     format(self.remotemachineusername))
+
+        sizeofnewusername = 6
+        chars = string.ascii_uppercase + string.digits
+        username_new = ''.join(random.choice(chars)
+                                     for _ in range(sizeofnewusername))
+        logging.info('[netutil-test] remote username new: {0} '.
+                     format(username_new))
+        self.assertIsNone(util.netutil.ssh_connect_or_return(self.remotemachineip,
+                          username_new, self.remotemachinepassword,
+                          self.maxretries))
+
+    def test03_ssh_connect_or_return(self):
+        """Testing ssh_connect_or_return() when entering a 'wrong' remote password
+        """
+        chars = string.ascii_uppercase + string.digits
+        sizeofnewpassword = 6
+        password_new = ''.join(random.choice(chars)
+                                     for _ in range(sizeofnewpassword))
+        logging.info('[netutil-test] remote password new: {0} '.
+                     format(password_new))
+        self.assertIsNone(util.netutil.ssh_connect_or_return(self.remotemachineip,
+                          self.remotemachineusername, password_new,
+                          self.maxretries))
+
+    def test04_isdir(self):
+        """Testing isdir() when checking for an existing remote directory
+        """
+        transport_layer = paramiko.Transport((self.remotemachineip,
+                                              self.remotemachineport))
+        transport_layer.connect(username=self.remotemachineusername,
+                                password=self.remotemachinepassword)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+        #util.netutil.isdir(self.remotemachinepath, sftp)
+        self.assertTrue(util.netutil.isdir(self.remotemachinepath, sftp))
+        sftp.close()
+        transport_layer.close()
+
+    def test05_isdir(self):
+        """Testing isdir() when checking for a non existing remote directory
+        """
+        transport_layer = paramiko.Transport((self.remotemachineip,
+                                              self.remotemachineport))
+        transport_layer.connect(username=self.remotemachineusername,
+                                password=self.remotemachinepassword)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+        #util.netutil.isdir(self.remotemachinepath, sftp)
+        self.assertFalse(util.netutil.isdir(self.remotemachinepath_false, sftp))
+        sftp.close()
+        transport_layer.close()
+
+    @classmethod
+    def tearDownClass(cls):
         """Kills the environment prepared at method: setUp
         """
-        commandtorun = "rm -rf" + " " + self.remotemachinefilename
-        subprocess.check_output(commandtorun, shell=True)
+        commandtorun = "rm -rf" + " " + cls.remotemachinefilename
+        #subprocess.check_output(commandtorun, shell=True)
 
-        del self.remotemachinefilename
-        del self.remotemachineip
-        del self.remotemachinepassword
-        del self.remotemachineusername
-
-    def test01_ssh_connect_or_return(self):
-        """Testing how ssh_connect_or_return when entering a 'wrong'
-        remotemachineip
-        """
-        tst01_username = self.remotemachineusername
-        tst01_password = self.remotemachinepassword
-        tst01_maxtries = self.maxretries
-        tst01_ipaddress = self.remotemachineip
-        logging.info('[netutil-test] remote address: {0} '.
-                     format(tst01_ipaddress))
-        tst01_ipaddress_int = struct.unpack("!I",
-                                            socket.
-                                            inet_aton(tst01_ipaddress))[0]
-        tst01_ipaddress_int += 1
-        tst01_ipaddress_new = socket.inet_ntoa(struct.pack("!I",
-                                                           tst01_ipaddress_int))
-        logging.info('[netutil-test] remote address (altered): {0} '.
-                     format(tst01_ipaddress_new))
-        #print('setup environment address:', format(tst01_ipaddress))
-        #print('new wrong environment address:', format(tst01_ipaddress_new))
-        self.assertTrue(util.netutil.ssh_connect_or_return(tst01_ipaddress_new,
-                                                           tst01_username,
-                                                           tst01_password,
-                                                           tst01_maxtries))
-    def test02_ssh_connect_or_return(self):
-        """Testing how ssh_connect_or_return when entering a 'wrong'
-        remotemachineusername
-        """
-        tst02_username = self.remotemachineusername
-        tst02_password = self.remotemachinepassword
-        tst02_maxtries = self.maxretries
-        tst02_ipaddress = self.remotemachineip
-        logging.info('[netutil-test] remote address: {0} '.
-                     format(tst02_ipaddress))
-        logging.info('[netutil-test] remote user name: {0} '.
-                     format(tst02_username))
-        #generate random username and check connectivity
-        sizeofusernamenew = 6
-        chars = string.ascii_uppercase + string.digits
-        tst02_username_new = ''.join(random.choice(chars)
-                                     for _ in range(sizeofusernamenew))
-        logging.info('[netutil-test] remote username new: {0} '.
-                     format(tst02_username_new))
-        self.assertTrue(util.netutil.
-                        ssh_connect_or_return(tst02_ipaddress,
-                                              tst02_username_new,
-                                              tst02_password,
-                                              tst02_maxtries))
-    def test03_ssh_copy_file_to_target(self):
-        """Testing how ssh_copy_file_to_target
-        """
-        # connect to remote machine
-        tst03_username = self.remotemachineusername
-        tst03_password = self.remotemachinepassword
-        tst03_maxtries = self.maxretries
-        tst03_ipaddress = self.remotemachineip
-
-        # create locally the file to be copied
-        file_name = 'foo1.txt'
-        subprocess.check_output(["touch", file_name])
-        local_file_path = os.getcwd() + '/' + file_name
-        remote_file_path = '/tmp/' + file_name
-        logging.info('[netutil-test] file created {0} '.
-                     format(local_file_path))
-        logging.info('[netutil-test] local file path {0} '.
-                     format(local_file_path))
-        logging.info('[netutil-test] local file path {0} '.
-                     format(remote_file_path))
-
-        # open a session with the remote VM
-        ssh_session = util.netutil.ssh_connect_or_return(tst03_ipaddress,
-                                                         tst03_username,
-                                                         tst03_password,
-                                                         tst03_maxtries)
-        # returns a tuple with (stdin, stdout, stderr)
-        (stdin, stdout, stderr) = util.netutil.ssh_run_command(ssh_session,
-                                                               'ls')
-        logging.info('[netutil-test] stdin: {0} - stdout: {1} - stderr: {2}'.
-                     format(stdin, stdout, stderr))
-
-        util.netutil.ssh_copy_file_to_target(tst03_ipaddress,
-                                             tst03_username,
-                                             tst03_password,
-                                             local_file_path,
-                                             remote_file_path,
-                                             remote_port=22)
-        util.netutil.ssh_delete_file_if_exists(tst03_ipaddress,
-                                               tst03_username,
-                                               tst03_password,
-                                               remote_file_path,
-                                               remote_port=22)
-
-        # use ssh_copy_file_to_target to copy a new file created in the setup method
-        #util.netutil.ssh_run_command(ssh_session, command)
-        #logging.debug('{0} {1}'.format(test_type, command))
-        # check if file exists on the remote vm
+        del cls.remotemachinefilename
+        del cls.remotemachineip
+        del cls.remotemachinepassword
+        del cls.remotemachineusername
 
 
 if __name__ == '__main__':
