@@ -3,6 +3,7 @@
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
+from shutil import copyfile
 
 """Unittest Module for util/netutil.py."""
 
@@ -10,6 +11,7 @@ import logging
 import os
 import paramiko
 import random
+import shutil
 import socket
 import string
 import struct
@@ -53,9 +55,17 @@ class NetUtilTest(unittest.TestCase):
         cls.remotemachinefilenamefalse = 'foofile.mp3'
         cls.remotemachinepath = '/tmp'
         cls.remotemachinepath_false = '/test'
-        commandtorun = "touch" + " " + cls.remotemachinefilename
-        subprocess.check_output(commandtorun, shell=True)
+        cls.localmachinefolder = os.getcwd() + '/' + 'fooDir'
+        cls.remotemachinefolder = cls.remotemachinepath + '/' + 'fooDir'
 
+
+
+        createfilecommand = "touch" + " " + cls.remotemachinefilename
+        subprocess.check_output(createfilecommand, shell=True)
+
+        if not os.path.isdir(cls.localmachinefolder):
+            os.mkdir(cls.localmachinefolder)
+        exit
         while True:
             logging.info('[setup-netutil-test] Trying to connect to %s (%i/%i)',
                          cls.remotemachineip, cls.retries, cls.maxretries)
@@ -131,7 +141,7 @@ class NetUtilTest(unittest.TestCase):
         transport_layer.connect(username=self.remotemachineusername,
                                 password=self.remotemachinepassword)
         sftp = paramiko.SFTPClient.from_transport(transport_layer)
-        #util.netutil.isdir(self.remotemachinepath, sftp)
+
         self.assertTrue(util.netutil.isdir(self.remotemachinepath, sftp))
         sftp.close()
         transport_layer.close()
@@ -144,7 +154,7 @@ class NetUtilTest(unittest.TestCase):
         transport_layer.connect(username=self.remotemachineusername,
                                 password=self.remotemachinepassword)
         sftp = paramiko.SFTPClient.from_transport(transport_layer)
-        #util.netutil.isdir(self.remotemachinepath, sftp)
+
         self.assertFalse(util.netutil.isdir(self.remotemachinepath_false, sftp))
         sftp.close()
         transport_layer.close()
@@ -160,7 +170,7 @@ class NetUtilTest(unittest.TestCase):
 
         util.netutil.ssh_copy_file_to_target(self.remotemachineip,
         self.remotemachineusername, self.remotemachinepassword, local_file_path,
-        remote_file_path, remote_port=22)
+        remote_file_path, self.remotemachineport)
 
         transport_layer = paramiko.Transport((self.remotemachineip,
                                               self.remotemachineport))
@@ -189,7 +199,7 @@ class NetUtilTest(unittest.TestCase):
 
         util.netutil.ssh_copy_file_to_target(self.remotemachineip,
         self.remotemachineusername, self.remotemachinepassword, local_file_path,
-        remote_file_path, remote_port=22)
+        remote_file_path, self.remotemachineport)
 
         transport_layer = paramiko.Transport((self.remotemachineip,
                                               self.remotemachineport))
@@ -204,18 +214,37 @@ class NetUtilTest(unittest.TestCase):
         transport_layer.close()
 
     def test08_copy_directory_to_target(self):
-        """Testing copy_directory_to_target(). Copying a local directory to
-        remote target and checking for its existence"""
+        """Testing copy_directory_to_target(). Copying a local empty directory
+        to remote target and checking for its existence"""
+        print(self.localmachinefolder)
+        print(self.remotemachinefolder)
 
-        pass
+        util.netutil.copy_directory_to_target(self.remotemachineip,
+        self.remotemachineusername, self.remotemachinepassword,
+        self.localmachinefolder + '/', self.remotemachinefolder + '/',
+        self.remotemachineport)
 
-    def test09_make_remote_file_executable(self):
+    def test09_copy_directory_to_target(self):
+        """Testing copy_directory_to_target(). Copying a local NON empty
+        directory to remote target and checking for its existence"""
+        local_file_path = os.getcwd() + '/' + self.remotemachinefilename
+        new_file_path = self.localmachinefolder + '/' + \
+                        self.remotemachinefilename
+        shutil.copy2(local_file_path, new_file_path)
+
+        util.netutil.copy_directory_to_target(self.remotemachineip,
+        self.remotemachineusername, self.remotemachinepassword,
+        self.localmachinefolder, self.remotemachinefolder,
+        self.remotemachineport)
+
+
+    def test10_make_remote_file_executable(self):
         """Testing make_remote_file_executable(). Copying a local file to
         remote target, making it executable, testing if became executable"""
 
         pass
 
-    def test10_create_remote_directory(self):
+    def test11_create_remote_directory(self):
         """Testing create_remote_directory(). Creating a directory on the
         remote target, and using isdir to check for its existence"""
 
@@ -241,10 +270,13 @@ class NetUtilTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Kills the environment prepared at method: setUp
+        """Kills the environment prepared at setUpClass
         """
-        commandtorun = "rm -rf" + " " + cls.remotemachinefilename
-        #subprocess.check_output(commandtorun, shell=True)
+        removefilecommand = "rm -rf" + " " + cls.remotemachinefilename
+        subprocess.check_output(removefilecommand, shell=True)
+
+        #removefoldercommand = "rm -rf" + " " + cls.localmachinefolder
+        #subprocess.check_output(removefoldercommand, shell=True)
 
         del cls.remotemachinefilename
         del cls.remotemachineip
