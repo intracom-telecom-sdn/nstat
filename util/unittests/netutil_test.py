@@ -50,6 +50,7 @@ class NetUtilTest(unittest.TestCase):
         cls.remotemachineusername = 'jenkins'
         cls.remotemachinepassword = 'jenkins'
         cls.remotemachinefilename = 'foofile.txt'
+        cls.remotemachinefilenamefalse = 'foofile.mp3'
         cls.remotemachinepath = '/tmp'
         cls.remotemachinepath_false = '/test'
         commandtorun = "touch" + " " + cls.remotemachinefilename
@@ -147,6 +148,61 @@ class NetUtilTest(unittest.TestCase):
         self.assertFalse(util.netutil.isdir(self.remotemachinepath_false, sftp))
         sftp.close()
         transport_layer.close()
+
+    def test06_ssh_copy_file_to_target(self):
+        """Testing ssh_copy_file_to_target(). Copying a local file to remote
+        target and checking for its existence
+        """
+        local_file_path = os.getcwd() + '/' + self.remotemachinefilename
+        remote_file_path = self.remotemachinepath  + '/' + \
+                           self.remotemachinefilename
+
+
+        util.netutil.ssh_copy_file_to_target(self.remotemachineip,
+        self.remotemachineusername, self.remotemachinepassword, local_file_path,
+        remote_file_path, remote_port=22)
+
+        transport_layer = paramiko.Transport((self.remotemachineip,
+                                              self.remotemachineport))
+        transport_layer.connect(username=self.remotemachineusername,
+                                password=self.remotemachinepassword)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+
+        # sftp.stat
+        file_status = sftp.stat(remote_file_path)
+
+        self.assertTrue(file_status)
+        sftp.close()
+        transport_layer.close()
+
+    def test07_ssh_copy_file_to_target(self):
+        """Testing ssh_copy_file_to_target(). Copying a local file to remote
+        target (remotemachinefilename) and checking for the existence of a non
+        existing file (remotemachinefilenamefalse). sftp.stat is expected to
+        throw an exception
+        """
+        local_file_path = os.getcwd() + '/' + self.remotemachinefilename
+        remote_file_path = self.remotemachinepath  + '/' + \
+                           self.remotemachinefilename
+        remote_file_path_false = self.remotemachinepath  + '/' + \
+                                 self.remotemachinefilenamefalse
+
+        util.netutil.ssh_copy_file_to_target(self.remotemachineip,
+        self.remotemachineusername, self.remotemachinepassword, local_file_path,
+        remote_file_path, remote_port=22)
+
+        transport_layer = paramiko.Transport((self.remotemachineip,
+                                              self.remotemachineport))
+        transport_layer.connect(username=self.remotemachineusername,
+                                password=self.remotemachinepassword)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+
+        file_status = sftp.stat(remote_file_path_false)
+
+        self.assertTrue(file_status)
+        sftp.close()
+        transport_layer.close()
+
 
     @classmethod
     def tearDownClass(cls):
