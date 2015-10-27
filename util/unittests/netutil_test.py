@@ -203,6 +203,41 @@ class NetUtilTest(unittest.TestCase):
         sftp.close()
         transport_layer.close()
 
+    def test08_copy_directory_to_target(self):
+        """Testing copy_directory_to_target(). Copying a local directory to
+        remote target and checking for its existence"""
+
+        pass
+
+    def test09_make_remote_file_executable(self):
+        """Testing make_remote_file_executable(). Copying a local file to
+        remote target, making it executable, testing if became executable"""
+
+        pass
+
+    def test10_create_remote_directory(self):
+        """Testing create_remote_directory(). Creating a directory on the
+        remote target, and using isdir to check for its existence"""
+
+        pass
+
+    def test11_remove_remote_directory(self):
+        """Testing remove_remote_directory(). Creating a directory on the
+        remote target using create_remote_directory, removing it using
+        removed_remote_directory, and using isdir to check for its existence"""
+
+        pass
+
+    def test12_ssh_run_command(self):
+        """ """
+        pass
+
+    def test13_ssh_delete_file_if_exists(self):
+        """ Testing ssh_delete_file_if_exists. Copying localfilepath using
+        ssh_copy_file_to_target(), and  ssh_delete_file_if_exists, checking file
+        for its existence on the remote target"""
+        pass
+
 
     @classmethod
     def tearDownClass(cls):
