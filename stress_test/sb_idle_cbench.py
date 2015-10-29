@@ -8,7 +8,7 @@
 
 import common
 import controller_utils
-import generator_utils
+import cbench_utils
 import itertools
 import json
 import logging
@@ -100,7 +100,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         if generator_rebuild:
             logging.info('{0} Building generator.'.format(test_type))
-            generator_utils.rebuild_generator(generator_build_handler)
+            cbench_utils.rebuild_generator(generator_build_handler)
 
         if controller_rebuild:
             logging.info('{0} Building controller.'.format(test_type))
@@ -163,7 +163,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             logging.info('{0} Creating generator thread'.format(test_type))
             generator_thread = multiprocessing.Process(
-                target=generator_utils.generator_thread,
+                target=cbench_utils.generator_thread,
                 args=(generator_run_handler, generator_cpus_str, controller_ip,
                       controller_port, generator_threads,
                       generator_switches_per_thread, generator_switches,
@@ -268,7 +268,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         if generator_cleanup:
             logging.info('{0} Cleaning generator.'.format(test_type))
-            generator_utils.cleanup_generator(generator_clean_handler)
+            cbench_utils.cleanup_generator(generator_clean_handler)
 
 
 def get_report_spec(test_type, config_json, results_json):
