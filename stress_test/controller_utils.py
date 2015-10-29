@@ -141,9 +141,13 @@ def check_controller_status(controller_status_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    return command_exec_wrapper([controller_status_handler],
-                                universal_newlines=True, ssh_client)
-
+    if ssh_client == None:
+        return subprocess.check_output([controller_status_handler],
+                                   universal_newlines=True).strip()
+    else:
+        exit_status, cmd_output = ssh_run_command(ssh_client,
+            [controller_status_handler])
+        return cmd_output.strip()
 
 def controller_changestatsperiod(controller_statistics_handler,
                                  stat_period_ms, ssh_client=None):
