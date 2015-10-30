@@ -236,10 +236,10 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                                 cbench_node_ssh_port)
 
         controller_ssh_client = util.netutil.ssh_connect_or_return(
-            cbench_node_ip, cbench_node_username, cbench_node_password, 10,
-            cbench_node_ssh_port)
+            controller_node_ip, controller_node_username,
+            controller_node_password, 10, controller_node_ssh_port)
 
-
+        exit(0)
 
         controller_cpus_str, cbench_cpus_str = \
             common.create_cpu_shares(controller_cpu_shares,
