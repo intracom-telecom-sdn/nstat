@@ -230,11 +230,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_statistics_handler, cbench_build_handler,
             cbench_run_handler, cbench_clean_handler])
 
-        cbench_ssh_client = util.netutil.ssh_connect_or_return(
-                                                               cbench_node_ip,
-                                                cbench_node_username,
-                                                cbench_node_password, 10,
-                                                cbench_node_ssh_port)
+        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip,
+            cbench_node_username, cbench_node_password, 10, cbench_node_ssh_port)
 
         print("{0}  {1}  {2}  {3}  {4}".format(
             cbench_node_ip, cbench_node_username,
