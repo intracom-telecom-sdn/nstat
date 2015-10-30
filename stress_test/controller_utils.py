@@ -145,7 +145,7 @@ def check_controller_status(controller_status_handler, ssh_client=None):
         return subprocess.check_output([controller_status_handler],
                                    universal_newlines=True).strip()
     else:
-        exit_status, cmd_output = ssh_run_command(ssh_client,
+        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
             [controller_status_handler])
         return cmd_output.strip()
 
