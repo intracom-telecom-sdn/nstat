@@ -238,7 +238,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip, controller_node_username,
             controller_node_password, 10, controller_node_ssh_port)
-
+        print("{0}  {1}  {2}  {3}  {4}".format(
+            controller_node_ip, controller_node_username,
+            controller_node_password, 10, controller_node_ssh_port))
         exit(0)
 
         controller_cpus_str, cbench_cpus_str = \
