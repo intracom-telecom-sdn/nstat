@@ -35,7 +35,7 @@ def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
                                                      prefix,
                                                      data_queue)
     else:
-        exit_status, cmd_output = ssh_run_command(ssh_client,
+        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
             command_to_run=' '.join(cmd_list), prefix, data_queue)
     return exit_status
 
@@ -97,7 +97,7 @@ def run_generator(generator_run_handler, generator_cpus, controller_ip,
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd_list = ['taskset', '-c', generator_cpus, generator_run_handler, 
+    cmd_list = ['taskset', '-c', generator_cpus, generator_run_handler,
                 controller_ip, str(controller_port), str(threads),
                 str(sw_per_thread), str(switches), str(thr_delay_ms),
                 str(traf_delay_ms), str(ms_per_test), str(internal_repeats),
@@ -128,8 +128,8 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
 
     :param generator_run_handler: generator run handler
     :param generator_cpus: Cpu ids we assign to generator thread
-    :param controller_ip: controller IP 
-    :param controller_port: controller port 
+    :param controller_ip: controller IP
+    :param controller_port: controller port
     :param threads: number of generator threads
     :param sw_per_thread: number of switches per thread
     :param switches: number of total switches

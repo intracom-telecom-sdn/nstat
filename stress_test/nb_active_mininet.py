@@ -562,6 +562,14 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     total_samples = []
 
     try:
+
+        util.file_ops.check_filelist([controller_build_handler,
+            controller_start_handler, controller_status_handler,
+            controller_stop_handler, controller_clean_handler,
+            controller_statistics_handler, mininet_boot_handler,
+            mininet_stop_switches_handler, mininet_get_switches_handler,
+            mininet_start_topo_handler, mininet_init_topo_handler])
+
         logging.info(
             '{0} Initiating SSH session with Mininet node.'.format(test_type))
         mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_ip,
@@ -583,13 +591,6 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         # CPUs for generator are not used here.
         controller_cpus_str, generator_cpus_str = \
             common.create_cpu_shares(controller_cpu_shares, 0)
-
-        util.file_ops.check_filelist([controller_build_handler,
-            controller_start_handler, controller_status_handler,
-            controller_stop_handler, controller_clean_handler,
-            controller_statistics_handler, mininet_boot_handler,
-            mininet_stop_switches_handler, mininet_get_switches_handler,
-            mininet_start_topo_handler, mininet_init_topo_handler])
 
         if controller_rebuild:
             logging.info('{0} Building controller.'.format(test_type))
