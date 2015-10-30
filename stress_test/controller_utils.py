@@ -146,7 +146,7 @@ def check_controller_status(controller_status_handler, ssh_client=None):
                                    universal_newlines=True).strip()
     else:
         exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            [controller_status_handler])
+            controller_status_handler)
         return cmd_output.strip()
 
 def controller_changestatsperiod(controller_statistics_handler,
