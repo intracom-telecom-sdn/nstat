@@ -124,7 +124,7 @@ def stop_controller(controller_stop_handler, controller_status_handler, cpid,
     if check_controller_status(controller_status_handler, ssh_client) == '1':
         logging.info('[stop_controller] Stopping controller.')
         command_exec_wrapper(
-            [controller_stop_handler], '[controller_stop_handler]')
+            [controller_stop_handler], '[controller_stop_handler]', ssh_client)
         util.process.wait_until_process_finishes(cpid, ssh_client)
     else:
         logging.info('[stop_controller] Controller already stopped.')
