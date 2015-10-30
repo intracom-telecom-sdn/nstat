@@ -40,25 +40,25 @@ def ssh_connect_or_return(ipaddr, user, passwd, maxretries, remote_port=22):
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname=ipaddr.strip(), port=remote_port,
-                        username=user.strip(), password=passwd.strip())
-            logging.info('[netutil] Connected to {0} '.format(ipaddr.strip()))
+            ssh.connect(hostname=ipaddr, port=remote_port,
+                        username=user, password=passwd)
+            logging.info('[netutil] Connected to {0} '.format(ipaddr))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
                 '[netutil] Authentication failed when connecting to {0}'.
-                format(ipaddr.strip()))
+                format(ipaddr))
 
         except:
             logging.error(
                 '[netutil] Could not SSH to {0}, waiting for it to start'.
-                format(ipaddr.strip()))
+                format(ipaddr))
 
         retries += 1
         time.sleep(2)
     # If we exit while without ssh object been returned, then return -1
     logging.info('[netutil] Could not connect to {0}. Returning'
-                 .format(ipaddr.strip()))
+                 .format(ipaddr))
     return None
 
 
@@ -81,8 +81,8 @@ def ssh_copy_file_to_target(ipaddr, user, passwd, local_file, remote_file,
     :type remote_port: int
     """
 
-    transport_layer = paramiko.Transport((ipaddr.strip(), remote_port))
-    transport_layer.connect(username=user.strip(), password=passwd.strip())
+    transport_layer = paramiko.Transport((ipaddr, remote_port))
+    transport_layer.connect(username=user, password=passwd)
     sftp = paramiko.SFTPClient.from_transport(transport_layer)
     sftp.put(local_file, remote_file)
     sftp.close()
@@ -112,8 +112,8 @@ def copy_directory_to_target(ipaddr, user, passwd, local_path, remote_path,
     if local_path.endswith('/'):
         local_path = local_path[:-1]
 
-    transport_layer = paramiko.Transport((ipaddr.strip(), remote_port))
-    transport_layer.connect(username=user.strip(), password=passwd.strip())
+    transport_layer = paramiko.Transport((ipaddr, remote_port))
+    transport_layer.connect(username=user, password=passwd)
     sftp = paramiko.SFTPClient.from_transport(transport_layer)
     os.chdir(os.path.split(local_path)[0])
     parent = os.path.split(local_path)[1]
@@ -148,10 +148,10 @@ def make_remote_file_executable(ipaddr, user, passwd, remote_file,
     :type remote_port: int
     """
 
-    transport_layer = paramiko.Transport((ipaddr.strip(), remote_port))
-    transport_layer.connect(username=user.strip(), password=passwd.strip())
+    transport_layer = paramiko.Transport((ipaddr, remote_port))
+    transport_layer.connect(username=user, password=passwd)
     sftp = paramiko.SFTPClient.from_transport(transport_layer)
-    sftp.chmod(remote_file.strip(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+    sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
     sftp.close()
     transport_layer.close()
 
@@ -170,12 +170,12 @@ def create_remote_directory(ipaddr, user, passwd, remote_path, remote_port=22):
     :type remote_port: int
     """
 
-    transport_layer = paramiko.Transport((ipaddr.strip(), remote_port))
-    transport_layer.connect(username=user.strip(), password=passwd.strip())
+    transport_layer = paramiko.Transport((ipaddr, remote_port))
+    transport_layer.connect(username=user, password=passwd)
     sftp = paramiko.SFTPClient.from_transport(transport_layer)
     try:
         # Test if remote_path exists
-        sftp.chdir(remote_path.strip())
+        sftp.chdir(remote_path)
     except IOError:
         # Create remote_path
         sftp.mkdir(remote_path)
