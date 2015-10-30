@@ -32,11 +32,10 @@ def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
 
     if ssh_client == None:
         exit_status = util.customsubprocess.check_output_streaming(cmd_list,
-                                                     prefix,
-                                                     data_queue)
+                                                     prefix, data_queue)
     else:
         exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            command_to_run=' '.join(cmd_list), prefix, data_queue)
+            ' '.join(cmd_list), prefix, data_queue)
     return exit_status
 
 
