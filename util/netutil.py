@@ -93,7 +93,7 @@ def copy_directory_to_target(ipaddr, user, passwd, local_path, remote_path,
                              remote_port=22):
     """Copy a local directory on a remote machine.
 
-    :param ipaddr: IP adress of the remote machine
+    :param ipaddr: IP address of the remote machine
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param local_path: directory path from local machine to copy, full location

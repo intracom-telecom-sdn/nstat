@@ -15,10 +15,10 @@
 # make a new nstat_vm_basebox based on 'nstat_vm_base'
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-nstat_vm_ram = '16384'
+nstat_vm_ram = '2048'
 nstat_vm_cpus = '2'
 nstat_vm_bridge_interface_name = 'br0'
-nstat_vm_hostname = 'nstatnodecontroller'
+nstat_vm_hostname = 'nodecbench'
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ Vagrant.configure(2) do |config|
 # ------------------------------------------------------------------------------
 # Provisioning actions
 # ------------------------------------------------------------------------------
-  config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth1 192.168.64.16 netmask 255.255.255.0 up'
+  config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth1 192.168.64.17 netmask 255.255.255.0 up'
 
 
 

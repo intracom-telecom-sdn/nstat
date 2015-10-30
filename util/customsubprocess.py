@@ -24,7 +24,7 @@ def check_output_streaming(cmd, prefix='', queue=None):
     :returns: return exit status of command.
     :raises subprocess.CalledProcessError: If the exit status of the executed
     command is not 0.
-    :rtype: str
+    :rtype: int
     :type cmd: list<str>
     :type prefix: str
     :type queue: multiprocessing.Queue
