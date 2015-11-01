@@ -319,7 +319,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
-                target=cbench_utils.cbench_thread,
+                target=cbench_utils.generator_thread,
                 args=(cbench_run_handler, cbench_cpus_str, controller_node_ip,
                       controller_port, cbench_threads.value,
                       cbench_switches_per_thread.value,
