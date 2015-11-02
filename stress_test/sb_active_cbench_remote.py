@@ -336,7 +336,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
             logging.info('{0} Joining generator thread'.format(test_type))
-            cbench_thread.join()
+            #cbench_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid.value, controller_ssh_client)
