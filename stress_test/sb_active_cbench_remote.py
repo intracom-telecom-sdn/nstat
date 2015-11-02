@@ -76,8 +76,8 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
     samples = []
 
     controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip, controller_node_username,
-            controller_node_password, 10, int(controller_node_ssh_port))
+            controller_node_ip.value, controller_node_username.value,
+            controller_node_password.value, 10, int(controller_node_ssh_port.value))
 
     while True:
         try:
@@ -182,10 +182,10 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
 
 
-    controller_node_ip = multiprocessing.Value(ctypes.c_char_p, '')
-    controller_node_ssh_port= multiprocessing.Value(ctypes.c_char_p, '')
-    controller_node_username = multiprocessing.Value(ctypes.c_char_p, '')
-    controller_node_password = multiprocessing.Value(ctypes.c_char_p, '')
+    controller_node_ip = multiprocessing.Array('c', '')
+    controller_node_ssh_port= multiprocessing.Array('c', '')
+    controller_node_username = multiprocessing.Array('c', '')
+    controller_node_password = multiprocessing.Array('c', '')
 
 
     test_type = '[sb_active_cbench]'
@@ -200,10 +200,12 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     controller_statistics_handler = \
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
-    controller_node_ip = conf['controller_node_ip']
-    controller_node_ssh_port = conf['controller_node_ssh_port']
-    controller_node_username = conf['controller_node_username']
-    controller_node_password = conf['controller_node_password']
+
+    controller_node_ip.value = conf['controller_node_ip']
+    controller_node_ssh_port.value = conf['controller_node_ssh_port']
+    controller_node_username.value = conf['controller_node_username']
+    controller_node_password.value = conf['controller_node_password']
+
     controller_port = conf['controller_port']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
@@ -250,8 +252,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
 
         controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip, controller_node_username,
-            controller_node_password, 10, int(controller_node_ssh_port))
+            controller_node_ip.value, controller_node_username.value,
+            controller_node_password.value, 10, int(controller_node_ssh_port.value))
 
 
         controller_cpus_str, cbench_cpus_str = \
@@ -342,7 +344,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             monitor_thread.start()
 
             cbench_utils.generator_thread(cbench_run_handler, cbench_cpus_str,
-                controller_node_ip, controller_port, cbench_threads.value,
+                controller_node_ip.value, controller_port, cbench_threads.value,
                 cbench_switches_per_thread.value, cbench_switches.value,
                 cbench_thread_creation_delay_ms.value,
                 cbench_delay_before_traffic_ms.value, cbench_ms_per_test,
