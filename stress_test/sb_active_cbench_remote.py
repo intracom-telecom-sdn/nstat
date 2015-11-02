@@ -32,7 +32,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
             cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
-            controller_statistics_period_ms):
+            controller_statistics_period_ms, cbench_ssh_client=None):
     """ Function executed by the monitor thread
 
     :param data_queue: data queue where monitor receives generator output line
@@ -86,7 +86,8 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
                 # 'total = 1.2345 per ms'
                 match = re.search(r'total = (.+) per ms', line)
                 if match is not None or line == TERM_FAIL:
-                    statistics = common.sample_stats(cpid.value)
+                    statistics = common.sample_stats(cpid.value,
+                                                     cbench_ssh_client)
                     statistics['global_sample_id'] = \
                         global_sample_id.value
                     global_sample_id.value += 1
@@ -315,25 +316,21 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       cbench_delay_before_traffic_ms,
                                       cbench_thread_creation_delay_ms,
                                       cbench_simulated_hosts,
-                                      controller_statistics_period_ms))
+                                      controller_statistics_period_ms,
+                                      cbench_ssh_client))
 
             logging.info('{0} Creating generator thread'.format(test_type))
-            cbench_thread = multiprocessing.Process(
-                target=cbench_utils.generator_thread,
-                args=(cbench_run_handler, cbench_cpus_str, controller_node_ip,
-                      controller_port, cbench_threads.value,
-                      cbench_switches_per_thread.value,
-                      cbench_switches.value,
-                      cbench_thread_creation_delay_ms.value,
-                      cbench_delay_before_traffic_ms.value,
-                      cbench_ms_per_test, cbench_internal_repeats,
-                      cbench_simulated_hosts.value, cbench_warmup,
-                      cbench_mode, data_queue, TERM_SUCCESS, TERM_FAIL,
-                      cbench_ssh_client))
+            cbench_utils.generator_thread(cbench_run_handler, cbench_cpus_str,
+                controller_node_ip, controller_port, cbench_threads.value,
+                cbench_switches_per_thread.value, cbench_switches.value,
+                cbench_thread_creation_delay_ms.value,
+                cbench_delay_before_traffic_ms.value, cbench_ms_per_test,
+                cbench_internal_repeats, cbench_simulated_hosts.value,
+                cbench_warmup, cbench_mode, data_queue, TERM_SUCCESS,
+                TERM_FAIL, cbench_ssh_client)
 
             # Parallel section
             monitor_thread.start()
-            cbench_thread.start()
             samples = result_queue.get(block=True)
             total_samples = total_samples + samples
             logging.info('{0} Joining monitor thread'.format(test_type))

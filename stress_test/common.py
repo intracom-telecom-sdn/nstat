@@ -46,7 +46,7 @@ def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
             auth=auth_token).json()['topology'][0]
     except:
         return -1
-    
+
     switches = [node for node in datastore.get('node', []) if not node['node-id'].startswith('host:')]
     return len(switches)
 
@@ -166,7 +166,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
         time.sleep(1)
 
 
-def sample_stats(cpid):
+def sample_stats(cpid, ssh_client=None):
     """ Take runtime statistics
 
     :param cpid: controller PID
@@ -177,32 +177,34 @@ def sample_stats(cpid):
 
     common_statistics = {}
     common_statistics['total_memory_bytes'] = \
-        util.sysstats.sys_total_memory_bytes()
-    common_statistics['controller_cwd'] = util.sysstats.proc_cwd(cpid)
+        util.sysstats.sys_total_memory_bytes(ssh_client)
+    common_statistics['controller_cwd'] = util.sysstats.proc_cwd(cpid, ssh_client)
     common_statistics['controller_java_xopts'] = \
-        util.sysstats.get_java_options(cpid)
+        util.sysstats.get_java_options(cpid, ssh_client)
     common_statistics['timestamp'] = \
         int(subprocess.check_output('date +%s', shell=True,
                                               universal_newlines=True).strip())
     common_statistics['date'] = subprocess.check_output('date', shell=True,
                                      universal_newlines=True).strip()
     common_statistics['used_memory_bytes'] = \
-        util.sysstats.sys_used_memory_bytes()
+        util.sysstats.sys_used_memory_bytes(ssh_client)
     common_statistics['free_memory_bytes'] = \
-        util.sysstats.sys_free_memory_bytes()
+        util.sysstats.sys_free_memory_bytes(ssh_client)
     common_statistics['controller_cpu_system_time'] = \
-        util.sysstats.proc_cpu_system_time(cpid)
+        util.sysstats.proc_cpu_system_time(cpid, ssh_client)
 
     common_statistics['controller_cpu_user_time'] = \
-        util.sysstats.proc_cpu_user_time(cpid)
-    common_statistics['controller_vm_size'] = util.sysstats.proc_vm_size(cpid)
-    common_statistics['controller_num_fds'] = util.sysstats.proc_num_fds(cpid)
+        util.sysstats.proc_cpu_user_time(cpid, ssh_client)
+    common_statistics['controller_vm_size'] = \
+        util.sysstats.proc_vm_size(cpid, ssh_client)
+    common_statistics['controller_num_fds'] = \
+        util.sysstats.proc_num_fds(cpid, ssh_client)
     common_statistics['controller_num_threads'] = \
-        util.sysstats.proc_num_threads(cpid)
-    common_statistics['one_minute_load'] = util.sysstats.sys_load_average()[0]
-    common_statistics['five_minute_load'] = util.sysstats.sys_load_average()[1]
+        util.sysstats.proc_num_threads(cpid, ssh_client)
+    common_statistics['one_minute_load'] = util.sysstats.sys_load_average(ssh_client)[0]
+    common_statistics['five_minute_load'] = util.sysstats.sys_load_average(ssh_client)[1]
     common_statistics['fifteen_minute_load'] = \
-        util.sysstats.sys_load_average()[2]
+        util.sysstats.sys_load_average(ssh_client)[2]
     return common_statistics
 
 
