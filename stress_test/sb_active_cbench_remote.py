@@ -87,7 +87,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
                 match = re.search(r'total = (.+) per ms', line)
                 if match is not None or line == TERM_FAIL:
                     statistics = common.sample_stats(cpid.value,
-                                                     cbench_ssh_client)
+                                                     controller_ssh_client)
                     statistics['global_sample_id'] = \
                         global_sample_id.value
                     global_sample_id.value += 1
