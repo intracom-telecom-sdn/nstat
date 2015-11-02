@@ -9,6 +9,7 @@
 import controller_utils
 import common
 import cbench_utils
+import ctypes
 import itertools
 import json
 import logging
@@ -32,7 +33,9 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
             cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
-            controller_statistics_period_ms, controller_ssh_client=None):
+            controller_statistics_period_ms, controller_node_ip,
+            controller_node_ssh_port, controller_node_username,
+            controller_node_password):
     """ Function executed by the monitor thread
 
     :param data_queue: data queue where monitor receives generator output line
@@ -71,6 +74,10 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
     logging.debug('[monitor_thread] Monitor thread started')
     # will hold samples taken in the lifetime of this thread
     samples = []
+
+    controller_ssh_client = util.netutil.ssh_connect_or_return(
+            controller_node_ip, controller_node_username,
+            controller_node_password, 10, int(controller_node_ssh_port))
 
     while True:
         try:
@@ -173,6 +180,13 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_switches = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
+
+
+    controller_node_ip = multiprocessing.Value(ctypes.c_char_p, '')
+    controller_node_ssh_port= multiprocessing.Value(ctypes.c_char_p, '')
+    controller_node_username = multiprocessing.Value(ctypes.c_char_p, '')
+    controller_node_password = multiprocessing.Value(ctypes.c_char_p, '')
+
 
     test_type = '[sb_active_cbench]'
 
@@ -317,9 +331,16 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       cbench_thread_creation_delay_ms,
                                       cbench_simulated_hosts,
                                       controller_statistics_period_ms,
-                                      controller_ssh_client))
+                                      controller_node_ip,
+                                      controller_node_ssh_port,
+                                      controller_node_username,
+                                      controller_node_password))
+
 
             logging.info('{0} Creating generator thread'.format(test_type))
+            # Parallel section
+            monitor_thread.start()
+
             cbench_utils.generator_thread(cbench_run_handler, cbench_cpus_str,
                 controller_node_ip, controller_port, cbench_threads.value,
                 cbench_switches_per_thread.value, cbench_switches.value,
@@ -329,8 +350,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                 cbench_warmup, cbench_mode, data_queue, TERM_SUCCESS,
                 TERM_FAIL, cbench_ssh_client)
 
-            # Parallel section
-            monitor_thread.start()
+
             samples = result_queue.get(block=True)
             total_samples = total_samples + samples
             logging.info('{0} Joining monitor thread'.format(test_type))
