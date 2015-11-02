@@ -32,7 +32,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
             cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
-            controller_statistics_period_ms, cbench_ssh_client=None):
+            controller_statistics_period_ms, controller_ssh_client=None):
     """ Function executed by the monitor thread
 
     :param data_queue: data queue where monitor receives generator output line
@@ -317,7 +317,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       cbench_thread_creation_delay_ms,
                                       cbench_simulated_hosts,
                                       controller_statistics_period_ms,
-                                      cbench_ssh_client))
+                                      controller_ssh_client))
 
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_utils.generator_thread(cbench_run_handler, cbench_cpus_str,
