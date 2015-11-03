@@ -271,6 +271,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                                      controller_ssh_client)
         controller_utils.set_java_opts(' '.join(conf['java_opts']),
                                        controller_ssh_client)
+        exit()
         #os.environ['JAVA_OPTS'] = ' '.join(conf['java_opts'])
 
         logging.info(

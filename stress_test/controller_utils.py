@@ -291,7 +291,7 @@ def set_java_opts(java_opts, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
     command_exec_wrapper(
-        ['export JAVA_OPTS={0}'.format(java_opts)],
+        ['export JAVA_OPTS="{0}"'.format(java_opts)],
         '[set_java_opts] setting JAVA_OPTS on controller node',
         ssh_client)
     logging.info(
