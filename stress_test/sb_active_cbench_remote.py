@@ -194,10 +194,15 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
 
-    controller_node_ip = multiprocessing.Array('c',b'192.168.64.16')
-    controller_node_ssh_port = multiprocessing.Array('c', b'22')
-    controller_node_username = multiprocessing.Array('c', b'vagrant')
-    controller_node_password = multiprocessing.Array('c', b'vagrant')
+    controller_node_ip = multiprocessing.Array('c',
+        str(conf['controller_node_ip']).encode())
+    controller_node_ssh_port = multiprocessing.Array('c',
+        str(conf['controller_node_ssh_port']).encode())
+    controller_node_username = multiprocessing.Array('c',
+        str(conf['controller_node_username']).encode())
+    controller_node_password = multiprocessing.Array('c',
+        str(conf['controller_node_password']).encode())
+
 
     controller_port = conf['controller_port']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -348,8 +353,6 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             total_samples = total_samples + samples
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
-            logging.info('{0} Joining generator thread'.format(test_type))
-            #cbench_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid.value, controller_ssh_client)

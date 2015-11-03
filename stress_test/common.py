@@ -170,9 +170,11 @@ def sample_stats(cpid, ssh_client=None):
     """ Take runtime statistics
 
     :param cpid: controller PID
+    :param ssh_client : SSH client provided by paramiko to run the command
     :returns: the statistics in a dictionary
     :rtype: dict
     :type cpid: int
+    :type ssh_client: paramiko.SSHClient
     """
 
     common_statistics = {}
