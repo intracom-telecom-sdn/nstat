@@ -37,8 +37,8 @@ def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
         exit_status = util.customsubprocess.check_output_streaming(cmd_list,
             prefix, data_queue)
     else:
-        exit_status, cmd_output = ssh_run_command(ssh_client,
-            command_to_run =' '.join(cmd_list), prefix, data_queue)
+        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
+            ' '.join(cmd_list), prefix, data_queue)
     return exit_status
 
 
@@ -124,7 +124,7 @@ def stop_controller(controller_stop_handler, controller_status_handler, cpid,
     if check_controller_status(controller_status_handler, ssh_client) == '1':
         logging.info('[stop_controller] Stopping controller.')
         command_exec_wrapper(
-            [controller_stop_handler], '[controller_stop_handler]')
+            [controller_stop_handler], '[controller_stop_handler]', ssh_client)
         util.process.wait_until_process_finishes(cpid, ssh_client)
     else:
         logging.info('[stop_controller] Controller already stopped.')
@@ -145,8 +145,8 @@ def check_controller_status(controller_status_handler, ssh_client=None):
         return subprocess.check_output([controller_status_handler],
                                    universal_newlines=True).strip()
     else:
-        exit_status, cmd_output = ssh_run_command(ssh_client,
-            [controller_status_handler])
+        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
+            controller_status_handler)
         return cmd_output.strip()
 
 def controller_changestatsperiod(controller_statistics_handler,
