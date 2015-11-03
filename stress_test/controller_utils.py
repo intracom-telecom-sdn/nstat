@@ -185,7 +185,7 @@ def restart_controller(controller_stop_handler, controller_start_handler,
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller process ID
     :rtype: int
-    :type controller_stop_handler: str    
+    :type controller_stop_handler: str
     :type controller_start_handler: str
     :type controller_status_handler: str
     :type controller_port: int
@@ -282,3 +282,18 @@ def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
                     'Status check returned 0 after trying for {0} seconds.'.
                     format(float(interval_ms) / 1000))
 
+def set_java_opts(java_opts, ssh_client=None):
+    """Wrapper to the controller statistics handler
+
+    :param java_opts: JAVA options to be set for controller
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :type java_opts: str
+    :type ssh_client: paramiko.SSHClient
+    """
+    command_exec_wrapper(
+        ['export JAVA_OPTS={0}'.format(java_opts)],
+        '[set_java_opts] setting JAVA_OPTS on controller node',
+        ssh_client)
+    logging.info(
+        '[set_java_opts] JAVA_OPTS set to {0}'.
+        format(java_opts))
