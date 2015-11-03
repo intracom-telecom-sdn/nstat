@@ -132,8 +132,8 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
     :param threads: number of generator threads
     :param sw_per_thread: number of switches per thread
     :param switches: number of total switches
-    :param thr_delay: delay between thread creation
-    :param traf_delay: delay between last thread creation and traffic
+    :param thr_delay_ms: delay between thread creation
+    :param traf_delay_ms: delay between last thread creation and traffic
     transmission
     :param ms_per_test: test duration of a single generator loop
     :param internal_repeats: number of generator loops
@@ -141,6 +141,9 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
     :param warmup: initial loops to be considered as 'warmup'
     :param mode: generator mode
     :param data_queue: data queue where generator output is posted line by line
+    :parar succ_msg: message written to data queue when generator_thread
+    succeeds
+    :parar fail_msg: message written to data queue when generator_thread fails
     :param ssh_client : SSH client provided by paramiko to run the command
     :type generator_run_handler: str
     :type generator_cpus: str
@@ -155,8 +158,10 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
     :type internal_repeats: int
     :type hosts: int
     :type warmup: int
-    :type mode: int
+    :type mode: str
     :type data_queue: multiprocessing.Queue
+    :type succ_msg: str
+    :type fail_msg: str
     :type ssh_client: paramiko.SSHClient
     """
 

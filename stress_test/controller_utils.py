@@ -62,8 +62,8 @@ def start_controller(controller_start_handler, controller_status_handler,
     :param controller_start_handler: filepath to the controller start handler
     :param controller_status_handler: filepath to the controller status handler
     :param controller_port: controller port number to listen for SB connections
-    :param controller_cpus_str: controller CPU share as a strin containing
-    the values of shares, separated with coma
+    :param controller_cpus_str: controller CPU share as a string containing
+    the values of shares, separated with comma
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller's process ID
     :raises Exception: When controller fails to start.
@@ -175,9 +175,9 @@ def restart_controller(controller_stop_handler, controller_start_handler,
                        controller_cpus_str, ssh_client=None):
     """Restarts the controller
 
-    :param controller_start: filepath to the controller start handler
-    :param controller_status: filepath to the controller status handler
-    :param controller_stop: filepath to the controller stop handler
+    :param controller_stop_handler: filepath to the controller stop handler
+    :param controller_start_handler: filepath to the controller start handler
+    :param controller_status_handler: filepath to the controller status handler
     :param controller_port: controller port number to listen for SB connections
     :param old_cpid: PID of already running controller process
     :param controller_cpus_str: controller CPU share as a strin containing
@@ -185,9 +185,9 @@ def restart_controller(controller_stop_handler, controller_start_handler,
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller process ID
     :rtype: int
-    :type controller_start: str
-    :type controller_status: str
-    :type controller_stop: str
+    :type controller_stop_handler: str    
+    :type controller_start_handler: str
+    :type controller_status_handler: str
     :type controller_port: int
     :type old_cpid: int
     :type controller_cpus_str: str

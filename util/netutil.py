@@ -18,16 +18,18 @@ def ssh_connect_or_return(ipaddr, user, passwd, maxretries, remote_port=22):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
 
-    :param ipaddr: Ip adress of the remote machine
+    :param ipaddr: IP address of the remote machine
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param maxretries: maximum number of times to connect
+    :param remote_port: port for ssh connection
     :returns: an ssh connection handle or -1 on failure
     :rtype: paramiko.SSHClient (or -1 when failure)
     :type ipaddr: str
     :type user: str
     :type passwd: str
     :type maxretries: int
+    :type remote_port: int
     """
 
     retries = 1
@@ -66,7 +68,7 @@ def ssh_copy_file_to_target(ipaddr, user, passwd, local_file, remote_file,
                             remote_port=22):
     """Copies local file on a remote machine target.
 
-    :param ipaddr: Ip adress of the remote machine
+    :param ipaddr: IP address of the remote machine
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param local_file: file from local machine to copy,full location required
@@ -136,7 +138,7 @@ def make_remote_file_executable(ipaddr, user, passwd, remote_file,
                                 remote_port=22):
     """Makes the remote file executable.
 
-    :param ipaddr: Ip adress of the remote machine
+    :param ipaddr: IP address of the remote machine
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param remote_file: remote file to make executable
@@ -158,7 +160,7 @@ def make_remote_file_executable(ipaddr, user, passwd, remote_file,
 def create_remote_directory(ipaddr, user, passwd, remote_path, remote_port=22):
     """Opens an ssh connection to a remote machine and creates a new directory.
 
-    :param ipaddr: Ip adress of the remote machine
+    :param ipaddr: IP address of the remote machine
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param remote_path: maximum number of times to connect
@@ -205,15 +207,15 @@ def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
     """Removes recursively remote directories (removes all files and
     other sub-directories).
 
-    :param ipaddr: Ip adress of the remote machine
+    :param ipaddr: IP address of the remote machine
     :param user: username of the remote user
     :param passwd: password of the remote user
-    :param remote_file: remote file to make executable
+    :param path: A string with the full path we want to remove
     :param remote_port: port to perform sftp from
     :type ipaddr: str
     :type user: str
     :type passwd: str
-    :type remote_file: str
+    :type path: str
     :type remote_port: int
     """
     transport_layer = paramiko.Transport((ipaddr, remote_port))
@@ -240,6 +242,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
 
     :param ssh_client : SSH client provided by paramiko to run the command
     :param command_to_run: Command to execute
+    :param prefix: prefix of log message
     :param lines_queue: Queue datastructure to buffer the result of execution
     :param print_flag: Flag that defines if the output of the command will be
     printed on screen
@@ -250,6 +253,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     :rtype: tuple<int, str>
     :type ssh_client: paramiko.SSHClient
     :type command_to_run: str
+    :type prefix: str
     :type lines_queue: queue<str>
     :type print_flag: bool
     :type block_flag: bool
@@ -293,7 +297,7 @@ def ssh_delete_file_if_exists(ipaddr, user, passwd, remote_file,
                               remote_port=22):
     """Deletes the file on e remote machine, if it exists
 
-    :param ipaddr: Ip adress of the remote machine
+    :param ipaddr: IP address of the remote machine
     :param user: username of the remote user
     :param passwd: password of the remote user
     :param remote_file: remote file to remove, full path must be used.
