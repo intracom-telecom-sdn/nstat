@@ -76,7 +76,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     generator_ms_per_test = conf['generator_ms_per_test']
     generator_internal_repeats = conf['generator_internal_repeats']
     generator_cpu_shares = conf['generator_cpu_shares']
-    generator_rebuild = conf['generator_rebuild']
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -299,7 +298,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_clean_handler', 'Controller cleanup script'),
              ('controller_statistics_handler', 'Controller statistics script'),
              ('controller_ip', 'Controller IP address'),
-             ('controller_port', 'Controller listening port'),
+             ('controller_port', 'Controller Southbound port'),
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
              ('generator_name', 'Generator name'),

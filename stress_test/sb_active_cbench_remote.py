@@ -184,8 +184,6 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     global_sample_id = multiprocessing.Value('i', 0)
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
 
-
-
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
     controller_status_handler = \
@@ -205,10 +203,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     controller_node_password = multiprocessing.Array('c',
         str(conf['controller_node_password']).encode())
 
-
     controller_port = conf['controller_port']
 
-    controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cpu_shares = conf['controller_cpu_shares']
     controller_cleanup = conf['controller_cleanup']
@@ -219,10 +215,12 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
+
     cbench_node_ip = conf['cbench_node_ip']
     cbench_node_ssh_port = conf['cbench_node_ssh_port']
     cbench_node_username = conf['cbench_node_username']
     cbench_node_password = conf['cbench_node_password']
+
     cbench_mode = conf['cbench_mode']
     cbench_warmup = conf['cbench_warmup']
     cbench_ms_per_test = conf['cbench_ms_per_test']
@@ -248,11 +246,14 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_statistics_handler, cbench_build_handler,
             cbench_run_handler, cbench_clean_handler])
 
+        # Opening connection with cbench_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
         cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip,
             cbench_node_username, cbench_node_password, 10,
             int(cbench_node_ssh_port))
 
-
+        # Opening connection with controller_node_ip and returning
+        # controller_ssh_client to be utilized in the sequel
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
@@ -262,7 +263,6 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         controller_cpus_str, cbench_cpus_str = \
             common.create_cpu_shares(controller_cpu_shares,
                                      cbench_cpu_shares)
-
 
         if cbench_rebuild:
             logging.info('{0} Building generator.'.format(test_type))
@@ -280,6 +280,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         logging.info(
             '{0} Starting and stopping controller to generate xml files'.
             format(test_type))
+
         cpid.value = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
             controller_port, controller_cpus_str, ' '.join(conf['java_opts']),
@@ -321,7 +322,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_switches.value = \
                 cbench_threads.value * cbench_switches_per_thread.value
 
-            logging.info('{0} Creating data and control queues'.
+            logging.info('{0} Creating data and result queues'.
                           format(test_type))
             data_queue = multiprocessing.Queue()
             result_queue = multiprocessing.Queue()
@@ -344,6 +345,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
 
             logging.info('{0} Creating generator thread'.format(test_type))
+
             # Parallel section
             monitor_thread.start()
 
