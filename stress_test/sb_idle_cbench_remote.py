@@ -38,12 +38,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     :type output_dir: str
     """
 
+    test_type = '[sb_idle_cbench]'
+    logging.info('{0} Initializing test parameters'.format(test_type))
+
     # Global variables read-write shared between monitor-main thread.
     cpid = 0
     global_sample_id = 0
-    test_type = '[sb_idle_cbench]'
 
-    logging.info('{0} Initializing test parameters'.format(test_type))
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
     controller_status_handler = \
@@ -53,8 +54,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_statistics_handler = \
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
+
     controller_node_ip = conf['controller_node_ip']
     controller_port = conf['controller_port']
+
     controller_restconf_port = conf['controller_restconf_port']
     controller_restconf_auth_token = (conf['controller_restconf_user'],
                                       conf['controller_restconf_password'])

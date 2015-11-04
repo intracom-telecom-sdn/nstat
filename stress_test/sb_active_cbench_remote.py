@@ -168,6 +168,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     :type output_dir: str
     """
 
+    test_type = '[sb_active_cbench]'
+    logging.info('{0} Initializing test parameters'.format(test_type))
+
     # Shared read-write variables between monitor-main thread and
     # generator thread.
     repeat_id = multiprocessing.Value('i', 0)
@@ -181,9 +184,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     global_sample_id = multiprocessing.Value('i', 0)
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
 
-    test_type = '[sb_active_cbench]'
 
-    logging.info('{0} Initializing test parameters'.format(test_type))
+
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
     controller_status_handler = \
@@ -205,10 +207,12 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
 
     controller_port = conf['controller_port']
+
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cpu_shares = conf['controller_cpu_shares']
     controller_cleanup = conf['controller_cleanup']
+
     cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
     cbench_run_handler = sb_gen_base_dir + conf['cbench_run_handler']
     cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
