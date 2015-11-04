@@ -56,7 +56,8 @@ def rebuild_controller(controller_build_handler, ssh_client=None):
                          '[controller_build_handler]', ssh_client)
 
 def start_controller(controller_start_handler, controller_status_handler,
-                     controller_port, controller_cpus_str, ssh_client=None):
+                     controller_port, controller_cpus_str, java_opts,
+                     ssh_client=None):
     """Wrapper to the controller start handler
 
     :param controller_start_handler: filepath to the controller start handler
@@ -64,6 +65,7 @@ def start_controller(controller_start_handler, controller_status_handler,
     :param controller_port: controller port number to listen for SB connections
     :param controller_cpus_str: controller CPU share as a string containing
     the values of shares, separated with comma
+    :param java_opts: JAVA options to be set for controller
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller's process ID
     :raises Exception: When controller fails to start.
@@ -72,13 +74,16 @@ def start_controller(controller_start_handler, controller_status_handler,
     :type controller_status_handler: str
     :type controller_port: int
     :type controller_cpus_str: str
+    :type java_opts: str
     :type ssh_client: paramiko.SSHClient
     """
 
     if check_controller_status(controller_status_handler, ssh_client) == '0':
         command_exec_wrapper(
-            ['taskset', '-c', controller_cpus_str, controller_start_handler],
+            ['export JAVA_OPTS="{0}";'.format(java_opts), 'taskset', '-c',
+             controller_cpus_str, controller_start_handler],
             '[controller_start_handler]', ssh_client)
+        logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
         logging.info(
             '[start_controller] Waiting until controller starts listening')
         cpid = wait_until_controller_listens(420000, controller_port,
@@ -281,19 +286,3 @@ def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
     raise Exception('Controller failed to start. '
                     'Status check returned 0 after trying for {0} seconds.'.
                     format(float(interval_ms) / 1000))
-
-def set_java_opts(java_opts, ssh_client=None):
-    """Wrapper to the controller statistics handler
-
-    :param java_opts: JAVA options to be set for controller
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :type java_opts: str
-    :type ssh_client: paramiko.SSHClient
-    """
-    command_exec_wrapper(
-        ['export JAVA_OPTS="{0}"'.format(java_opts)],
-        '[set_java_opts] setting JAVA_OPTS on controller node',
-        ssh_client)
-    logging.info(
-        '[set_java_opts] JAVA_OPTS set to {0}'.
-        format(java_opts))

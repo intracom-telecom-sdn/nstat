@@ -279,7 +279,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             format(test_type))
         cpid.value = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
-            controller_port, controller_cpus_str, controller_ssh_client)
+            controller_port, controller_cpus_str, ' '.join(conf['java_opts']),
+            controller_ssh_client)
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -309,7 +310,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} Starting controller'.format(test_type))
             cpid.value = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
-                controller_port, controller_cpus_str, controller_ssh_client)
+                controller_port, controller_cpus_str,
+                ' '.join(conf['java_opts']), controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
             cbench_switches.value = \
