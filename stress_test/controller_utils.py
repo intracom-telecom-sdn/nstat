@@ -8,6 +8,7 @@
 
 import common
 import logging
+import os
 import subprocess
 import time
 import util.customsubprocess
@@ -78,11 +79,15 @@ def start_controller(controller_start_handler, controller_status_handler,
     :type ssh_client: paramiko.SSHClient
     """
 
+    if ssh_client==None:
+        os.environ['JAVA_OPTS'] = ' '.join(java_opts)
+        cmd = ['taskset', '-c', controller_cpus_str, controller_start_handler]
+    else:
+        cmd = ['export JAVA_OPTS="{0}";'.format(java_opts), 'taskset', '-c',
+               controller_cpus_str, controller_start_handler]
+
     if check_controller_status(controller_status_handler, ssh_client) == '0':
-        command_exec_wrapper(
-            ['export JAVA_OPTS="{0}";'.format(java_opts), 'taskset', '-c',
-             controller_cpus_str, controller_start_handler],
-            '[controller_start_handler]', ssh_client)
+        command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
         logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
         logging.info(
             '[start_controller] Waiting until controller starts listening')
