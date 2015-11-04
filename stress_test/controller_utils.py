@@ -80,7 +80,7 @@ def start_controller(controller_start_handler, controller_status_handler,
     """
 
     if ssh_client==None:
-        os.environ['JAVA_OPTS'] = ' '.join(java_opts)
+        os.environ['JAVA_OPTS'] = java_opts
         cmd = ['taskset', '-c', controller_cpus_str, controller_start_handler]
     else:
         cmd = ['export JAVA_OPTS="{0}";'.format(java_opts), 'taskset', '-c',
@@ -153,7 +153,7 @@ def check_controller_status(controller_status_handler, ssh_client=None):
 
     if ssh_client == None:
         return subprocess.check_output([controller_status_handler],
-                                   universal_newlines=True).strip()
+                                       universal_newlines=True).strip()
     else:
         exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
             controller_status_handler)
