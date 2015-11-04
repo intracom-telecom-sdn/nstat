@@ -54,14 +54,13 @@ def rebuild_generator(generator_build_handler, ssh_client=None):
 
 
 
-def run_generator(generator_run_handler, generator_cpus, controller_ip,
+def run_generator(generator_run_handler, controller_ip,
                   controller_port, threads, sw_per_thread, switches,
                   thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
                   hosts, warmup, mode, data_queue=None, ssh_client=None):
     """Runs a generator instance
 
     :param generator_run_handler: generator run handler
-    :param generator_cpus: cpu ids we assign to generator (comma separated)
     :param controller_ip: controller IP for OpenFlow connection
     :param controller_port: controller port for OpenFlow connection
     :param threads: number of generator threads
@@ -79,7 +78,6 @@ def run_generator(generator_run_handler, generator_cpus, controller_ip,
     the generator process will run.
     :param ssh_client : SSH client provided by paramiko to run the command
     :type generator_run_handler: str
-    :type generator_cpus: str
     :type controller_ip: str
     :type controller_port: int
     :type threads: int
@@ -96,7 +94,7 @@ def run_generator(generator_run_handler, generator_cpus, controller_ip,
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd_list = ['taskset', '-c', generator_cpus, generator_run_handler,
+    cmd_list = [generator_run_handler,
                 controller_ip, str(controller_port), str(threads),
                 str(sw_per_thread), str(switches), str(thr_delay_ms),
                 str(traf_delay_ms), str(ms_per_test), str(internal_repeats),
@@ -118,15 +116,16 @@ def cleanup_generator(generator_clean_handler, ssh_client=None):
                          '[generator_clean_handler]', ssh_client)
 
 
-def generator_thread(generator_run_handler, generator_cpus, controller_ip,
+def generator_thread(generator_run_handler, controller_ip,
                      controller_port, threads, sw_per_thread, switches,
                      thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
                      hosts, warmup, mode, data_queue=None, succ_msg='',
-                     fail_msg='', ssh_client=None):
+                     fail_msg='', cbench_node_ip, cbench_node_ssh_port,
+                     cbench_node_username, cbench_node_password):
+
     """ Function executed by generator thread.
 
     :param generator_run_handler: generator run handler
-    :param generator_cpus: Cpu ids we assign to generator thread
     :param controller_ip: controller IP
     :param controller_port: controller port
     :param threads: number of generator threads
@@ -146,7 +145,6 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
     :parar fail_msg: message written to data queue when generator_thread fails
     :param ssh_client : SSH client provided by paramiko to run the command
     :type generator_run_handler: str
-    :type generator_cpus: str
     :type controller_ip: str
     :type controller_port: int
     :type threads: int
@@ -168,10 +166,14 @@ def generator_thread(generator_run_handler, generator_cpus, controller_ip,
     logging.info('[generator_thread] Generator thread started')
 
     try:
-        run_generator(generator_run_handler, generator_cpus, controller_ip,
+        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip,
+            cbench_node_username, cbench_node_password, 10,
+            int(cbench_node_ssh_port))
+
+        run_generator(generator_run_handler, controller_ip,
             controller_port, threads, sw_per_thread, switches, thr_delay_ms,
             traf_delay_ms, ms_per_test, internal_repeats, hosts, warmup, mode,
-            data_queue, ssh_client)
+            data_queue, cbench_ssh_client)
 
         # generator ended, enqueue termination message
         if data_queue is not None:

@@ -24,7 +24,6 @@ import time
 import util.customsubprocess
 import util.process
 import util.file_ops
-import util.cpu
 import util.netutil
 
 
@@ -532,7 +531,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     auth_token = (conf['controller_restconf_user'],
                   conf['controller_restconf_password'])
     controller_rebuild = conf['controller_rebuild']
-    controller_cpu_shares = conf['controller_cpu_shares']
+
     controller_cleanup = conf['controller_cleanup']
 
     mininet_boot_handler = mininet_base_dir + conf['mininet_boot_handler']
@@ -587,11 +586,6 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                   mininet_password, mininet_base_dir,
                                   '/tmp/transfered_files/', mininet_ssh_port)
 
-        # Define CPU affinity for controller.
-        # CPUs for generator are not used here.
-        controller_cpus_str, generator_cpus_str = \
-            common.create_cpu_shares(controller_cpu_shares, 0)
-
         if controller_rebuild:
             logging.info('{0} Building controller.'.format(test_type))
             controller_utils.rebuild_controller(controller_build_handler)
@@ -604,8 +598,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             '{0} Starting and stopping controller to generate xml files'.
             format(test_type))
         cpid = controller_utils.start_controller(controller_start_handler,
-                                   controller_status_handler, controller_port,
-                                   controller_cpus_str)
+                                   controller_status_handler, controller_port)
+
         logging.info('{0} OK, controller status is 1.'.format(test_type))
         controller_utils.stop_controller(controller_stop_handler,
             controller_status_handler, cpid)
@@ -642,7 +636,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} Starting controller.'.format(test_type))
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
-                controller_port, controller_cpus_str)
+                controller_port)
 
             logging.info('{0} OK, controller status is 1.'.format(test_type))
             logging.debug(

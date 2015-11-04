@@ -59,7 +59,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                       conf['controller_restconf_password'])
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
-    controller_cpu_shares = conf['controller_cpu_shares']
+
     controller_cleanup = conf['controller_cleanup']
 
     generator_build_handler = sb_gen_base_dir + conf['generator_build_handler']
@@ -75,7 +75,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     generator_warmup = conf['generator_warmup']
     generator_ms_per_test = conf['generator_ms_per_test']
     generator_internal_repeats = conf['generator_internal_repeats']
-    generator_cpu_shares = conf['generator_cpu_shares']
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -86,9 +85,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     total_samples = []
 
     try:
-        controller_cpus_str, generator_cpus_str = \
-            common.create_cpu_shares(controller_cpu_shares,
-                                     generator_cpu_shares)
+
         # Before proceeding with the experiments check validity of all
         # handlers
         util.file_ops.check_filelist([controller_build_handler,
@@ -112,7 +109,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         logging.info('{0} Starting and stopping controller to '
                      'generate xml files'.format(test_type))
         cpid = controller_utils.start_controller(controller_start_handler,
-            controller_status_handler, controller_port, controller_cpus_str)
+            controller_status_handler, controller_port)
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -135,8 +132,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             logging.info('{0} Starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_start_handler,
-                controller_status_handler, controller_port,
-                controller_cpus_str)
+                controller_status_handler, controller_port)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
             generator_switches = \
                 generator_threads * generator_switches_per_thread
@@ -163,7 +159,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} Creating generator thread'.format(test_type))
             generator_thread = multiprocessing.Process(
                 target=cbench_utils.generator_thread,
-                args=(generator_run_handler, generator_cpus_str, controller_ip,
+                args=(generator_run_handler, controller_ip,
                       controller_port, generator_threads,
                       generator_switches_per_thread, generator_switches,
                       generator_thread_creation_delay_ms,
@@ -201,8 +197,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 generator_switches_per_thread
             statistics['generator_thread_creation_delay_ms'] = \
                 generator_thread_creation_delay_ms
-            statistics['controller_cpu_shares'] = \
-                '{0}%'.format(controller_cpu_shares)
+
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['generator_delay_before_traffic_ms'] = \
@@ -213,8 +208,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['generator_ms_per_test'] = generator_ms_per_test
             statistics['generator_internal_repeats'] = \
                 generator_internal_repeats
-            statistics['generator_cpu_shares'] = \
-                '{0}%'.format(generator_cpu_shares)
+
             statistics['generator_warmup'] = generator_warmup
             statistics['bootup_time_secs'] = res[1]
             statistics['discovered_switches'] = res[2]
@@ -339,7 +333,6 @@ def get_report_spec(test_type, config_json, results_json):
              ('generator_ms_per_test', 'Internal repeats interval'),
              ('generator_warmup', 'Generator warmup repeats'),
              ('generator_mode', 'Generator test mode'),
-             ('generator_cpu_shares', 'Generator CPU percentage'),
              ('controller_ip', 'Controller IP'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
@@ -348,7 +341,6 @@ def get_report_spec(test_type, config_json, results_json):
              ('fifteen_minute_load', 'fifteen minutes load'),
              ('used_memory_bytes', 'System used memory (Bytes)'),
              ('total_memory_bytes', 'Total system memory'),
-             ('controller_cpu_shares', 'Controller CPU percentage'),
              ('controller_cpu_system_time', 'Controller CPU system time'),
              ('controller_cpu_user_time', 'Controller CPU user time'),
              ('controller_num_threads', 'Controller threads'),

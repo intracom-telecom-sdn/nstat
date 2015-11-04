@@ -18,7 +18,6 @@ import report_spec
 import shutil
 import sys
 import time
-import util.cpu
 import util.customsubprocess
 import util.file_ops
 import util.process
@@ -62,7 +61,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_restconf_auth_token = (conf['controller_restconf_user'],
                                       conf['controller_restconf_password'])
     controller_rebuild = conf['controller_rebuild']
-    controller_cpu_shares = conf['controller_cpu_shares']
+
     controller_cleanup = conf['controller_cleanup']
 
     mininet_boot_handler = mininet_base_dir + conf['mininet_boot_handler']
@@ -109,11 +108,6 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                             '/tmp/transfered_files/',
                                             mininet_ssh_port)
 
-        # Define CPU affinity for controller.
-        # CPUs for generator are not used here.
-        controller_cpus_str, generator_cpus_str = \
-            common.create_cpu_shares(controller_cpu_shares, 0)
-
         # Before procceeding with the experiments check validity
         # of all handlers
         util.file_ops.check_filelist([controller_build_handler,
@@ -135,7 +129,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             '{0} Starting and stopping controller to generate xml files'.
             format(test_type))
         cpid = controller_utils.start_controller(controller_start_handler,
-            controller_status_handler, controller_port, controller_cpus_str)
+            controller_status_handler, controller_port)
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -167,8 +161,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             logging.info('{0} Starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_start_handler,
-                controller_status_handler, controller_port,
-                controller_cpus_str)
+                controller_status_handler, controller_port)
             # Control of controller status
             # is done inside controller_utils.start_controller()
             logging.info('{0} OK, controller status is 1.'.format(test_type))

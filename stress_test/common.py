@@ -10,7 +10,6 @@ import logging
 import requests
 import subprocess
 import time
-import util.cpu
 import util.file_ops
 import util.process
 import util.sysstats
@@ -210,22 +209,3 @@ def sample_stats(cpid, ssh_client=None):
     return common_statistics
 
 
-def create_cpu_shares(controller_cpu_shares, generator_cpu_shares):
-    """Returns a tuple of 2 strings, in which we have the controller and
-    generator CPU shares as a comma separated values.
-
-    :param controller_cpu_shares: Percentage of CPU resources to be used by
-    controller.
-    :param generator_cpu_shares: Percentage of CPU resources to be used by
-    generator.
-    :type controller_cpu_shares: int
-    :type generator_cpu_shares: int
-    """
-
-    # Define CPU affinity for controller and generator
-    cpu_lists = util.cpu.compute_cpu_shares([controller_cpu_shares,
-                                             generator_cpu_shares],
-                                            util.sysstats.sys_nprocs())
-    controller_cpus_str = ','.join(str(e) for e in cpu_lists[0])
-    generator_cpus_str = ','.join(str(e) for e in cpu_lists[1])
-    return (controller_cpus_str, generator_cpus_str)

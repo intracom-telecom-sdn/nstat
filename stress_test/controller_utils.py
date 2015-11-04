@@ -57,15 +57,13 @@ def rebuild_controller(controller_build_handler, ssh_client=None):
                          '[controller_build_handler]', ssh_client)
 
 def start_controller(controller_start_handler, controller_status_handler,
-                     controller_port, controller_cpus_str, java_opts,
+                     controller_port, java_opts,
                      ssh_client=None):
     """Wrapper to the controller start handler
 
     :param controller_start_handler: filepath to the controller start handler
     :param controller_status_handler: filepath to the controller status handler
     :param controller_port: controller port number to listen for SB connections
-    :param controller_cpus_str: controller CPU share as a string containing
-    the values of shares, separated with comma
     :param java_opts: JAVA options to be set for controller
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller's process ID
@@ -74,17 +72,16 @@ def start_controller(controller_start_handler, controller_status_handler,
     :type controller_start_handler: str
     :type controller_status_handler: str
     :type controller_port: int
-    :type controller_cpus_str: str
     :type java_opts: str
     :type ssh_client: paramiko.SSHClient
     """
 
     if ssh_client==None:
         os.environ['JAVA_OPTS'] = java_opts
-        cmd = ['taskset', '-c', controller_cpus_str, controller_start_handler]
+        cmd = [controller_start_handler]
     else:
-        cmd = ['export JAVA_OPTS="{0}";'.format(java_opts), 'taskset', '-c',
-               controller_cpus_str, controller_start_handler]
+        cmd = ['export JAVA_OPTS="{0}";'.format(java_opts),
+               controller_start_handler]
 
     if check_controller_status(controller_status_handler, ssh_client) == '0':
         command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
@@ -182,7 +179,7 @@ def controller_changestatsperiod(controller_statistics_handler,
 
 def restart_controller(controller_stop_handler, controller_start_handler,
                        controller_status_handler, controller_port, old_cpid,
-                       controller_cpus_str, ssh_client=None):
+                       ssh_client=None):
     """Restarts the controller
 
     :param controller_stop_handler: filepath to the controller stop handler
@@ -190,8 +187,6 @@ def restart_controller(controller_stop_handler, controller_start_handler,
     :param controller_status_handler: filepath to the controller status handler
     :param controller_port: controller port number to listen for SB connections
     :param old_cpid: PID of already running controller process
-    :param controller_cpus_str: controller CPU share as a strin containing
-    the values of shares, separated with comma
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller process ID
     :rtype: int
@@ -200,15 +195,13 @@ def restart_controller(controller_stop_handler, controller_start_handler,
     :type controller_status_handler: str
     :type controller_port: int
     :type old_cpid: int
-    :type controller_cpus_str: str
     :type ssh_client: paramiko.SSHClient
     """
 
     stop_controller(controller_stop_handler, controller_status_handler,
                     old_cpid, ssh_client)
     new_cpid = start_controller(controller_start_handler,
-        controller_status_handler, controller_port, controller_cpus_str,
-        ssh_client)
+        controller_status_handler, controller_port, ssh_client)
     return new_cpid
 
 
