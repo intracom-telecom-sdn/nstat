@@ -41,11 +41,9 @@ class FileTestFileExist(unittest.TestCase):
         if os.path.exists(virtualfolder):
             shutil.rmtree(virtualfolder)
 
-        namlist = ['foo1', 'foo2', 'foo3',
-                   'foo4', 'foo5', 'foo6',
-                   'foo7', 'foo8', 'foo9']
-        extlist = ['.txt', '.mp3', '.mp4',
-                   '.avi', '.sh', '.png', '.jpg']
+        namlist = ['foo1', 'foo2', 'foo3', 'foo4', 'foo5', 'foo6', 'foo7',
+                   'foo8', 'foo9']
+        extlist = ['.txt', '.mp3', '.mp4', '.avi', '.sh', '.png', '.jpg']
         fillist = []
 
         for res in itertools.product(namlist, extlist):
@@ -54,6 +52,7 @@ class FileTestFileExist(unittest.TestCase):
 
         fillistlength = len(fillist)
         subprocess.check_output(["mkdir", virtualfolder])
+
         for i in range(0, fillistlength):
             subprocess.check_output(["touch", fillist[i]])
             mvcommand = 'mv' + ' ' + fillist[i] + ' ' + virtualfolder
@@ -136,8 +135,8 @@ class FileTestFileExist(unittest.TestCase):
         """
 
         # Define the test folder list.
-        tstlist = ['foo1.txt', 'foo1.mp3', 'foo1.avi',
-                   'foo2.txt', 'foo2.txt', 'foo2.txt', ]
+        tstlist = ['foo1.txt', 'foo1.mp3', 'foo1.avi', 'foo2.txt', 'foo2.txt',
+                   'foo2.txt', ]
 
         self.dfnstfldr = DefineTestFolder()
         virtualfolder = self.dfnstfldr.virtualfolder

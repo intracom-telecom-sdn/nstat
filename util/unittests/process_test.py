@@ -14,13 +14,16 @@ import socket
 import subprocess
 import sys
 import unittest
+import util.netutil
 import util.process
 
 LOGGER = logging.getLogger()
 LOGGER.level = logging.INFO
 STREAM_HANDLER = logging.StreamHandler(sys.stdout)
 LOGGER.addHandler(STREAM_HANDLER)
-
+SSH_IP = '127.0.0.1'
+SSH_UNAME = 'jenkins'
+SSH_PWD = 'jenkins'
 
 def server_init(listen_port):
     """The helper method start a server process that listens to a predefined
@@ -98,6 +101,8 @@ class ProcessTestAllFunctions(unittest.TestCase):
         cls.SERVER_PID = os.getpid()
         logging.getLogger().info('SERVER PID: %d', cls.SERVER_PID)
         logging.getLogger().info('NOT OWNED PORT: %s', cls.port_not_owned)
+        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP, SSH_UNAME,
+                                                            SSH_PWD, 10, 22)
 
     def test01_getpid_listeningonport(self):
         """Checks the getpid_listeningonport() function of
@@ -107,7 +112,8 @@ class ProcessTestAllFunctions(unittest.TestCase):
         self.assertEqual(self.SERVER_PID,
                          util.process.\
                          getpid_listeningonport(self.LISTEN_PORT),
-                         'Testing the returned PID')
+                         'Testing the returned PID. Local')
+
 
     def test02_getpid_listeningonport(self):
         """Checks the getpid_listeningonport() function of
@@ -118,7 +124,12 @@ class ProcessTestAllFunctions(unittest.TestCase):
         self.assertEqual(0,
                          util.process.\
                          getpid_listeningonport(self.port_not_owned),
-                         'Testing when port is not owned')
+                         'Testing when port is not owned. Local')
+        self.assertEqual(0,
+                         util.process.\
+                         getpid_listeningonport(self.port_not_owned,
+                                                self.ssh_client),
+                         'Testing when port is not owned. Remote')
 
     def test03_getpid_listeningonport(self):
         """Checks the getpid_listeningonport() function of
@@ -128,32 +139,44 @@ class ProcessTestAllFunctions(unittest.TestCase):
         self.assertEqual(-1,
                          util.process.\
                          getpid_listeningonport(self.invalid_process),
-                         'Testing with an invalid port ')
-
+                         'Testing with an invalid port. Local')
+        self.assertEqual(-1,
+                         util.process.\
+                         getpid_listeningonport(self.invalid_process,
+                                                self.ssh_client),
+                         'Testing with an invalid port. Remote')
 
     def test01_is_process_running(self):
         """Checks the is_process_running() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function a valid process id.
         """
-        self.assertTrue(util.process.is_process_running(self.SERVER_PID),
-                        'Testing true case for a valid process id')
-
+        #self.assertTrue(util.process.is_process_running(self.SERVER_PID),
+        #                'Testing true case for a valid process id. Local')
+        self.assertTrue(util.process.is_process_running(self.SERVER_PID,
+                                                        self.ssh_client),
+                        'Testing true case for a valid process id. Remote')
+        
     def test02_is_process_running(self):
         """Checks the is_process_running() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function a invalid process id.
         """
-        self.assertFalse(util.process.is_process_running(self.invalid_process),
-                         'Testing false case for invalid process id')
+        #self.assertFalse(util.process.is_process_running(self.invalid_process),
+        #                 'Testing false case for invalid process id. Local')
+        self.assertFalse(util.process.is_process_running(self.invalid_process,
+                                                         self.ssh_client),
+                         'Testing false case for invalid process id. Remote')
 
     def test03_is_process_running(self):
         """Checks the is_process_running() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function a invalid process id.
         """
-        self.assertTrue(util.process.is_process_running(1),
-                         'Testing most privileged process id 1')
+        #self.assertTrue(util.process.is_process_running(1),
+        #                 'Testing most privileged process id 1. Local')
+        self.assertTrue(util.process.is_process_running(1, self.ssh_client),
+                         'Testing most privileged process id 1. Remote')
 
     @classmethod
     def tearDownClass(cls):
@@ -161,6 +184,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
         server process we started
         """
         cls.srv.terminate()
+        cls.ssh_client.close()
 
 if __name__ == '__main__':
     SUITE_PROCESSTESTALLFUNCTIONS = unittest.TestLoader().\
