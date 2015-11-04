@@ -6,9 +6,9 @@
 
 """ Active Southbound Performance test """
 
-import controller_utils
-import common
 import cbench_utils
+import common
+import controller_utils
 import ctypes
 import itertools
 import json
@@ -38,7 +38,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
             controller_node_password):
     """ Function executed by the monitor thread
 
-    :param data_queue: data queue where monitor receives generator output line
+    :param data_queue: data queue where monitor receives cbench output line
     by line
     :param result_queue: result queue used by monitor to send result to main
     :param conf: test configuration
@@ -47,7 +47,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
     :param repeat_id: ID of the test repeat
     :param cbench_switches: total number of simulated switches
     :param cbench_switches_per_thread: number of sim. switches per thread
-    :param cbench_threads: total number of generator threads
+    :param cbench_threads: total number of cbench threads
     :param cbench_delay_before_traffic_ms: delay before traffic transmission
     (in milliseconds)
     :param cbench_thread_creation_delay_ms: delay between thread creation
@@ -245,12 +245,15 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_run_handler, cbench_clean_handler])
 
         cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip,
-            cbench_node_username, cbench_node_password, 10, int(cbench_node_ssh_port))
+            cbench_node_username, cbench_node_password, 10,
+            int(cbench_node_ssh_port))
 
 
         controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip.value.decode(), controller_node_username.value.decode(),
-            controller_node_password.value.decode(), 10, int(controller_node_ssh_port.value.decode()))
+            controller_node_ip.value.decode(),
+            controller_node_username.value.decode(),
+            controller_node_password.value.decode(), 10,
+            int(controller_node_ssh_port.value.decode()))
 
         controller_cpus_str, cbench_cpus_str = \
             common.create_cpu_shares(controller_cpu_shares,
@@ -279,6 +282,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_start_handler, controller_status_handler,
             controller_port, controller_cpus_str, ' '.join(conf['java_opts']),
             controller_ssh_client)
+
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -490,7 +494,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_warmup', 'Generator warmup repeats'),
              ('cbench_mode', 'Generator test mode'),
              ('cbench_cpu_shares', 'Generator CPU percentage'),
-             ('controller_node_ip', 'Controller IP'),
+             ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
              ('one_minute_load', 'One minute load'),

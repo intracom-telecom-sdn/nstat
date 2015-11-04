@@ -18,6 +18,7 @@ import nb_active_mininet
 import os
 import sb_active_cbench_remote
 import sb_idle_cbench
+import sb_idle_cbench_remote
 import sb_idle_mininet
 import shutil
 import sys
