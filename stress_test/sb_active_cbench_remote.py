@@ -68,7 +68,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :param controller_port: controller port number where OF switches should
     connect
     :param controller_node_ip: controller node IP address
-    :param controller_node_ssh_port: ssh port of controller node 
+    :param controller_node_ssh_port: ssh port of controller node
     (controller_node_ip)
     :param controller_node_username: username of the controller node
     :param controller_node_password: password of the controller node
@@ -372,11 +372,12 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                       cbench_delay_before_traffic_ms,
                       cbench_ms_per_test, cbench_internal_repeats,
                       cbench_simulated_hosts, cbench_warmup,
-                      cbench_mode, data_queue, TERM_SUCCESS, TERM_FAIL,
+                      cbench_mode,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,
-                      cbench_node_password))
+                      cbench_node_password, TERM_SUCCESS, TERM_FAIL,
+                      data_queue))
 
             # Parallel section
             monitor_thread.start()

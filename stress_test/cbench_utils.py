@@ -119,9 +119,9 @@ def cleanup_generator(generator_clean_handler, ssh_client=None):
 def generator_thread(generator_run_handler, controller_ip,
                      controller_port, threads, sw_per_thread, switches,
                      thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
-                     hosts, warmup, mode, data_queue=None, succ_msg='',
-                     fail_msg='', cbench_node_ip, cbench_node_ssh_port,
-                     cbench_node_username, cbench_node_password):
+                     hosts, warmup, mode, cbench_node_ip, cbench_node_ssh_port,
+                     cbench_node_username, cbench_node_password, succ_msg='',
+                     fail_msg='', data_queue=None):
 
     """ Function executed by generator thread.
 
