@@ -267,7 +267,11 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_statistics_handler, cbench_build_handler,
             cbench_run_handler.value.decode(), cbench_clean_handler])
 
-
+        # Opening connection with cbench_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
+        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
+            cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
+            int(cbench_node_ssh_port.value.decode()))
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client object to be utilized in the sequel within
