@@ -63,7 +63,7 @@ Vagrant.configure(2) do |config|
   config.vm.define 'nstat_vm_packaged' do |nstat_machine|
 
     nstat_machine.vm.box = nstat_vm_basebox
-      nstat_machine.vm.network :public_network, bridge: nstat_vm_bridge_interface_name
+      nstat_machine.vm.network :public_network, bridge: nstat_vm_bridge_interface_name, nictype: "virtio"
       nstat_machine.vm.hostname = nstat_vm_hostname
       nstat_machine.vm.provider :virtualbox do |vb|
 
