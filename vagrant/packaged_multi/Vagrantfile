@@ -82,7 +82,7 @@ Vagrant.configure(2) do |config|
     config.vm.define odlp2_vm_name_vm_01 do |machine|
         machine.vm.box = odlp2_vm_basebox
         machine.vm.host_name = odlp2_vm_hostname_vm_01 + '.' + odlp2_vm_hostname_vm_01
-        machine.vm.network :private_network, ip: odlp2_vm_private_network_ip_vm_01
+        machine.vm.network :private_network, ip: odlp2_vm_private_network_ip_vm_01, nictype: "virtio"
 
         machine.vm.provider :virtualbox do |vb|
             # Display the VirtualBox GUI when booting the machine
@@ -109,7 +109,7 @@ Vagrant.configure(2) do |config|
     config.vm.define odlp2_vm_name_vm_02 do |machine|
         machine.vm.box = odlp2_vm_basebox
         machine.vm.host_name = odlp2_vm_hostname_vm_02 + '.' + odlp2_vm_hostname_vm_02
-        machine.vm.network :private_network, ip: odlp2_vm_private_network_ip_vm_02
+        machine.vm.network :private_network, ip: odlp2_vm_private_network_ip_vm_02, nictype: "virtio"
 
         machine.vm.provider :virtualbox do |vb|
             # Display the VirtualBox GUI when booting the machine

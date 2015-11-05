@@ -16,8 +16,6 @@
 "controller_restconf_user":"admin",
 "controller_restconf_password":"admin",
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":50,
-
 
 "mininet_boot_handler":"./mininet_custom_boot.py",
 "mininet_stop_switches_handler":"./stop_topology_handler.py",

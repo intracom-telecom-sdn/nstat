@@ -13,7 +13,6 @@
 "controller_ip":"127.0.0.1",
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":75,
 
 "generator_build_handler":"./build.sh",
 "generator_run_handler":"./run.sh",
@@ -30,7 +29,6 @@
 "generator_warmup":0,
 "generator_ms_per_test":20000,
 "generator_internal_repeats":1,
-"generator_cpu_shares":25,
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 

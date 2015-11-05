@@ -33,7 +33,7 @@ TERM_FAIL= multiprocessing.Array('c',
 def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
             cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
-            cbench_thread_creation_delay_ms,  cbench_simulated_hosts,
+            cbench_thread_creation_delay_ms, cbench_simulated_hosts,
             cbench_ms_per_test, cbench_internal_repeats, cbench_warmup,
             cbench_mode, controller_statistics_period_ms, controller_port,
             controller_node_ip, controller_node_ssh_port,
@@ -43,7 +43,6 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :param data_queue: data queue where monitor receives cbench output line
     by line
     :param result_queue: result queue used by monitor to send result to main
-    :param conf: test configuration
     :param cpid: controller PID
     :param global_sample_id: unique ascending ID for the next sample
     :param repeat_id: ID of the test repeat
@@ -55,11 +54,26 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :param cbench_thread_creation_delay_ms: delay between thread creation
     (in milliseconds)
     :param cbench_simulated_hosts: number of simulated hosts
+    :param cbench_ms_per_test: duration (in (ms)) of generator internal
+    iteration
+    :param cbench_internal_repeats: number of internal iterations during traffic
+    transmission where performance and other statistics are sampled
+    :param cbench_warmup: number of initial internal iterations that were
+    treated as "warmup" and  are not considered when computing aggregate
+    performance results
+    :param cbench_mode: (one of "Latency" or "Throughput", see Cbench
+    documentation)
     :param controller_statistics_period_ms: Interval that controller sends
     statistics flow requests to the switches (in milliseconds)
+    :param controller_port: controller port number where OF switches should
+    connect
+    :param controller_node_ip: controller node IP address
+    :param controller_node_ssh_port: ssh port of controller node 
+    (controller_node_ip)
+    :param controller_node_username: username of the controller node
+    :param controller_node_password: password of the controller node
     :type data_queue: multiprocessing.Queue
     :type result_queue: multiprocessing.Queue
-    :type conf: dict
     :type cpid: int
     :type global_sample_id: int
     :type repeat_id: int
@@ -69,7 +83,16 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :type cbench_delay_before_traffic_ms: int
     :type cbench_thread_creation_delay_ms: int
     :type cbench_simulated_hosts: int
+    :type cbench_ms_per_test: int
+    :type cbench_internal_repeats: int
+    :type cbench_warmup: int
+    :type cbench_mode: str
     :type controller_statistics_period_ms: int
+    :type controller_port: str
+    :type controller_node_ip: str
+    :type controller_node_ssh_port: str
+    :type controller_node_username: str
+    :type controller_node_password: str
     """
 
     internal_repeat_id = 0
@@ -247,7 +270,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
 
         # Opening connection with controller_node_ip and returning
-        # controller_ssh_client to be utilized in the sequel
+        # controller_ssh_client object to be utilized in the sequel within
+        # sb_active_cbench_run where necessary
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
