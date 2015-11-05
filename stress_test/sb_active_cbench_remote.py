@@ -401,10 +401,17 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         except:
             pass
 
-        if os.path.isdir(controller_logs_dir):
+        try:
             logging.info('{0} Collecting logs'.format(test_type))
-            shutil.copytree(controller_logs_dir, output_dir+'/log')
-            shutil.rmtree(controller_logs_dir)
+            util.netutil.copy_remote_directory(
+                controller_node_ip.value.decode(),
+                controller_node_username.value.decode(),
+                controller_node_password.value.decode(),
+                controller_logs_dir, output_dir+'/log',
+                int(controller_node_ssh_port.value.decode()))
+        except:
+            logging.error('{0} {1}'.format(
+                test_type, 'Fail to transfer logs dir of the controller.'))
 
         if controller_cleanup:
             logging.info('{0} Cleaning controller.'.format(test_type))

@@ -227,7 +227,8 @@ def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
     for file_item in files:
         filepath = os.path.join(path, file_item)
         if isdir(filepath, sftp):
-            remove_remote_directory(ipaddr, user, passwd, filepath)
+            remove_remote_directory(ipaddr, user, passwd, filepath,
+                                    remote_port)
         else:
             sftp.remove(filepath)
 
@@ -327,3 +328,44 @@ def ssh_delete_file_if_exists(ipaddr, user, passwd, remote_file,
     transport_layer.close()
     logging.error(
         '[netutil] [ssh_delete_file_if_exists]: transport layer closed')
+
+
+def copy_remote_directory(ipaddr, user, passwd, remote_path, local_path,
+                          remote_port=22):
+    """Copy recursively remote directories (Copies all files and
+    other sub-directories).
+
+    :param ipaddr: IP address of the remote machine
+    :param user: username of the remote user
+    :param passwd: password of the remote user
+    :param remote_path: A string with the full remote path we want to copy
+    :param local_path: A string with the full local path we want to copy
+    :param remote_port: port to perform sftp from
+    :type ipaddr: str
+    :type user: str
+    :type passwd: str
+    :type remote_path: str
+    :type local_path: str
+    :type remote_port: int
+    """
+
+    transport_layer = paramiko.Transport((ipaddr, remote_port))
+    transport_layer.connect(username=user, password=passwd)
+    sftp = paramiko.SFTPClient.from_transport(transport_layer)
+
+    files = sftp.listdir(path=remote_path)
+
+    for file_item in files:
+        remote_filepath = os.path.join(remote_path, file_item)
+        if isdir(remote_filepath, sftp):
+            if not os.path.exists(os.path.join(local_path, file_item)):
+                os.makedirs(os.path.join(local_path, file_item))
+            copy_remote_directory(ipaddr, user, passwd, remote_filepath,
+                                  os.path.join(local_path, file_item),
+                                  remote_port)
+        else:
+            sftp.get(remote_filepath, local_path)
+
+    sftp.rmdir(remote_path)
+    sftp.close()
+    transport_layer.close()
