@@ -30,7 +30,7 @@ TERM_SUCCESS= multiprocessing.Array('c',
 TERM_FAIL= multiprocessing.Array('c',
                                  str('__failed_termination__').encode())
 
-def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
+def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_repeats,
             cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
@@ -142,7 +142,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                         cbench_delay_before_traffic_ms.value
                     statistics['controller_statistics_period_ms'] = \
                         controller_statistics_period_ms.value
-                    statistics['test_repeats'] = conf['test_repeats']
+                    statistics['test_repeats'] = test_repeats.value
                     statistics['controller_node_ip'] = \
                         controller_node_ip.value.decode()
                     statistics['controller_port'] = str(controller_port.value)
@@ -199,6 +199,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     repeat_id = multiprocessing.Value('i', 0)
     cpid = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
+    test_repeats = multiprocessing.Value('i', conf['test_repeats'])
 
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
@@ -248,6 +249,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
     cbench_rebuild = conf['cbench_rebuild']
+
+
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -323,7 +326,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                conf['cbench_thread_creation_delay_ms'],
                                conf['cbench_delay_before_traffic_ms'],
                                conf['cbench_simulated_hosts'],
-                               list(range(0, conf['test_repeats'])),
+                               list(range(0, test_repeats.value)),
                                conf['controller_statistics_period_ms']):
 
             controller_utils.controller_changestatsperiod(
@@ -349,6 +352,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             monitor_thread = multiprocessing.Process(
                 target=monitor, args=(data_queue, result_queue,
                                       cpid, global_sample_id, repeat_id,
+                                      test_repeats,
                                       cbench_switches,
                                       cbench_switches_per_thread,
                                       cbench_threads,

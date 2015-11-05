@@ -99,7 +99,7 @@ def run_generator(generator_run_handler, controller_ip,
                 str(sw_per_thread), str(switches), str(thr_delay_ms),
                 str(traf_delay_ms), str(ms_per_test), str(internal_repeats),
                 str(hosts), str(warmup), mode]
-    command_exec_wrapper(cmd_list, '[generator_clean_handler]', ssh_client,
+    command_exec_wrapper(cmd_list, '[generator_run_handler]', ssh_client,
                          data_queue)
 
 def cleanup_generator(generator_clean_handler, ssh_client=None):
