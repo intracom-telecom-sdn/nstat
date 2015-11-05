@@ -166,22 +166,26 @@ def generator_thread(generator_run_handler, controller_ip,
     logging.info('[generator_thread] Generator thread started')
 
     try:
-        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip,
-            cbench_node_username, cbench_node_password, 10,
-            int(cbench_node_ssh_port))
+        # Opening connection with cbench_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
+        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
+            cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
+            int(cbench_node_ssh_port.value.decode()))
 
-        run_generator(generator_run_handler, controller_ip,
-            controller_port, threads, sw_per_thread, switches, thr_delay_ms,
-            traf_delay_ms, ms_per_test, internal_repeats, hosts, warmup, mode,
+        run_generator(generator_run_handler.value.decode(), controller_ip.value.decode(),
+            controller_port.value, threads.value, sw_per_thread.value, switches.value, thr_delay_ms.value,
+            traf_delay_ms.value, ms_per_test.value, internal_repeats.value, hosts.value, warmup.value, mode.value.decode(),
             data_queue, cbench_ssh_client)
 
         # generator ended, enqueue termination message
         if data_queue is not None:
-            data_queue.put(succ_msg, block=True)
+            data_queue.put(succ_msg.value.decode(), block=True)
         logging.info('[generator_thread] Generator thread ended successfully')
     except subprocess.CalledProcessError as err:
         if data_queue is not None:
-            data_queue.put(fail_msg, block=True)
+            data_queue.put(fail_msg.value.decode(), block=True)
         logging.error('[generator_thread] Exception:{0}'.format(str(err)))
+    except:
+        logging.error('[generator_thread] General exception in generator thread.')
 
     return

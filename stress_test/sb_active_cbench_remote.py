@@ -25,17 +25,19 @@ import util.netutil
 
 
 # termination message sent to monitor thread when generator is finished
-TERM_SUCCESS = '__successful_termination__'
-TERM_FAIL = '__failed_termination__'
+TERM_SUCCESS= multiprocessing.Array('c',
+                                    str('__successful_termination__').encode())
+TERM_FAIL= multiprocessing.Array('c',
+                                 str('__failed_termination__').encode())
 
-
-def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
+def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
             cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
-            cbench_thread_creation_delay_ms, cbench_simulated_hosts,
-            controller_statistics_period_ms, controller_node_ip,
-            controller_node_ssh_port, controller_node_username,
-            controller_node_password):
+            cbench_thread_creation_delay_ms,  cbench_simulated_hosts,
+            cbench_ms_per_test, cbench_internal_repeats, cbench_warmup,
+            cbench_mode, controller_statistics_period_ms, controller_port,
+            controller_node_ip, controller_node_ssh_port,
+            controller_node_username, controller_node_password):
     """ Function executed by the monitor thread
 
     :param data_queue: data queue where monitor receives cbench output line
@@ -72,6 +74,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
 
     internal_repeat_id = 0
     logging.debug('[monitor_thread] Monitor thread started')
+
     # will hold samples taken in the lifetime of this thread
     samples = []
 
@@ -85,7 +88,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
         try:
             # read messages from queue while TERM_SUCCESS has not been sent
             line = data_queue.get(block=True, timeout=10000)
-            if line == TERM_SUCCESS:
+            if line == TERM_SUCCESS.value.decode():
                 logging.debug('[monitor_thread] Got successful termination '
                               'string. Returning samples and exiting.')
                 result_queue.put(samples, block=True)
@@ -94,7 +97,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
                 # look for lines containing a substring like e.g.
                 # 'total = 1.2345 per ms'
                 match = re.search(r'total = (.+) per ms', line)
-                if match is not None or line == TERM_FAIL:
+                if match is not None or line == TERM_FAIL.value.decode():
                     statistics = common.sample_stats(cpid.value,
                                                      controller_ssh_client)
                     statistics['global_sample_id'] = \
@@ -117,17 +120,15 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
                     statistics['controller_statistics_period_ms'] = \
                         controller_statistics_period_ms.value
                     statistics['test_repeats'] = conf['test_repeats']
-                    statistics['controller_node_ip'] = controller_node_ip.value
-                    statistics['controller_port'] = \
-                        str(conf['controller_port'])
-                    statistics['cbench_mode'] = conf['cbench_mode']
-                    statistics['cbench_ms_per_test'] = \
-                        conf['cbench_ms_per_test']
+                    statistics['controller_node_ip'] = \
+                        controller_node_ip.value.decode()
+                    statistics['controller_port'] = str(controller_port.value)
+                    statistics['cbench_mode'] = cbench_mode.value
+                    statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
                     statistics['cbench_internal_repeats'] = \
-                        conf['cbench_internal_repeats']
-                    statistics['cbench_warmup'] = \
-                        conf['cbench_warmup']
-                    if line == TERM_FAIL:
+                        cbench_internal_repeats.value
+                    statistics['cbench_warmup'] = cbench_warmup.value
+                    if line == TERM_FAIL.value.decode():
                         logging.debug(
                             '[monitor_thread] Got failed termination string.'
                             'Returning samples gathered so far and exiting.')
@@ -174,15 +175,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     # generator thread.
     repeat_id = multiprocessing.Value('i', 0)
     cpid = multiprocessing.Value('i', 0)
-    cbench_threads = multiprocessing.Value('i', 0)
-    cbench_switches_per_thread = multiprocessing.Value('i', 0)
-    cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
-    cbench_delay_before_traffic_ms = multiprocessing.Value('i', 0)
-    cbench_simulated_hosts = multiprocessing.Value('i', 0)
-    cbench_switches = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
-    controller_statistics_period_ms = multiprocessing.Value('i', 0)
 
+    controller_statistics_period_ms = multiprocessing.Value('i', 0)
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
     controller_status_handler = \
@@ -192,52 +187,30 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     controller_statistics_handler = \
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
-
-    controller_node_ip = multiprocessing.Array('c',
-        str(conf['controller_node_ip']).encode())
     controller_node_ssh_port = multiprocessing.Array('c',
         str(conf['controller_node_ssh_port']).encode())
     controller_node_username = multiprocessing.Array('c',
         str(conf['controller_node_username']).encode())
     controller_node_password = multiprocessing.Array('c',
         str(conf['controller_node_password']).encode())
-
-    controller_port = conf['controller_port']
-
     controller_rebuild = conf['controller_rebuild']
-
     controller_cleanup = conf['controller_cleanup']
 
     cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
-    cbench_run_handler = sb_gen_base_dir + conf['cbench_run_handler']
-
-    cbench_run_handler  = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-    = multiprocessing.Array('c', str().encode())
-
-
-    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
-    cbench_rebuild = conf['cbench_rebuild']
-    cbench_cleanup = conf['cbench_cleanup']
-    cbench_name = conf['cbench_name']
-
+    cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
+        conf['cbench_run_handler']).encode())
+    controller_node_ip = multiprocessing.Array('c',
+        str(conf['controller_node_ip']).encode())
+    controller_port = multiprocessing.Value('i', conf['controller_port'])
+    cbench_threads = multiprocessing.Value('i', 0)
+    cbench_switches_per_thread = multiprocessing.Value('i', 0)
+    cbench_switches = multiprocessing.Value('i', 0)
+    cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
+    cbench_delay_before_traffic_ms = multiprocessing.Value('i', 0)
+    cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
+    cbench_internal_repeats = multiprocessing.Value('i', conf['cbench_internal_repeats'])
+    cbench_simulated_hosts = multiprocessing.Value('i', 0)
+    cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
     cbench_node_ip = multiprocessing.Array('c',
         str(conf['cbench_node_ip']).encode())
     cbench_node_ssh_port = multiprocessing.Array('c',
@@ -246,13 +219,11 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         str(conf['cbench_node_username']).encode())
     cbench_node_password = multiprocessing.Array('c',
         str(conf['cbench_node_password']).encode())
-
-
-    cbench_mode = conf['cbench_mode']
-    cbench_warmup = conf['cbench_warmup']
-    cbench_ms_per_test = conf['cbench_ms_per_test']
-    cbench_internal_repeats = conf['cbench_internal_repeats']
-
+    cbench_mode= multiprocessing.Array('c', str(conf['cbench_mode']).encode())
+    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
+    cbench_rebuild = conf['cbench_rebuild']
+    cbench_cleanup = conf['cbench_cleanup']
+    cbench_name = conf['cbench_name']
     cbench_rebuild = conf['cbench_rebuild']
 
     # list of samples: each sample is a dictionary that contains all
@@ -271,13 +242,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
             controller_statistics_handler, cbench_build_handler,
-            cbench_run_handler, cbench_clean_handler])
+            cbench_run_handler.value.decode(), cbench_clean_handler])
 
-        # Opening connection with cbench_node_ip and returning
-        # cbench_ssh_client to be utilized in the sequel
-        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip,
-            cbench_node_username, cbench_node_password, 10,
-            int(cbench_node_ssh_port))
+
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
@@ -297,7 +264,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
 
-        controller_utils.check_for_active_controller(controller_port,
+        controller_utils.check_for_active_controller(controller_port.value,
                                                      controller_ssh_client)
 
         logging.info(
@@ -306,7 +273,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         cpid.value = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
-            controller_port, ' '.join(conf['java_opts']),
+            controller_port.value, ' '.join(conf['java_opts']),
             controller_ssh_client)
 
         # Controller status check is done inside start_controller() of the
@@ -338,7 +305,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} Starting controller'.format(test_type))
             cpid.value = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
-                controller_port, ' '.join(conf['java_opts']),
+                controller_port.value, ' '.join(conf['java_opts']),
                 controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
@@ -352,7 +319,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
             logging.info('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
-                target=monitor, args=(data_queue, result_queue, conf,
+                target=monitor, args=(data_queue, result_queue,
                                       cpid, global_sample_id, repeat_id,
                                       cbench_switches,
                                       cbench_switches_per_thread,
@@ -360,7 +327,11 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       cbench_delay_before_traffic_ms,
                                       cbench_thread_creation_delay_ms,
                                       cbench_simulated_hosts,
+                                      cbench_ms_per_test,
+                                      cbench_internal_repeats,
+                                      cbench_warmup, cbench_mode,
                                       controller_statistics_period_ms,
+                                      controller_port,
                                       controller_node_ip,
                                       controller_node_ssh_port,
                                       controller_node_username,
@@ -383,18 +354,16 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                       cbench_node_username,
                       cbench_node_password))
 
-
             # Parallel section
             monitor_thread.start()
             cbench_thread.start()
-
-
-
 
             samples = result_queue.get(block=True)
             total_samples = total_samples + samples
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
+            logging.info('{0} Joining generator thread'.format(test_type))
+            generator_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid.value, controller_ssh_client)
@@ -428,7 +397,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} Stopping controller.'.
                          format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid, controller_ssh_client)
+                controller_status_handler, cpid.value, controller_ssh_client)
         except:
             pass
 
