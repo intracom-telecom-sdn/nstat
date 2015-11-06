@@ -25,7 +25,7 @@ import util.netutil
 
 
 
-def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
+def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_repeats,
             cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
@@ -140,7 +140,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                         cbench_delay_before_traffic_ms.value
                     statistics['controller_statistics_period_ms'] = \
                         controller_statistics_period_ms.value
-                    statistics['test_repeats'] = conf['test_repeats']
+                    statistics['test_repeats'] = test_repeats.value
                     statistics['controller_node_ip'] = \
                         controller_node_ip.value.decode()
                     statistics['controller_port'] = str(controller_port.value)
@@ -197,6 +197,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     repeat_id = multiprocessing.Value('i', 0)
     cpid = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
+    test_repeats = multiprocessing.Value('i', conf['test_repeats'])
 
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
@@ -252,6 +253,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     term_fail = multiprocessing.Array('c',
         str('__failed_termination__').encode())
 
+
+
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -270,7 +273,11 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_statistics_handler, cbench_build_handler,
             cbench_run_handler.value.decode(), cbench_clean_handler])
 
-
+        # Opening connection with cbench_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
+        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
+            cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
+            int(cbench_node_ssh_port.value.decode()))
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client object to be utilized in the sequel within
@@ -322,7 +329,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                conf['cbench_thread_creation_delay_ms'],
                                conf['cbench_delay_before_traffic_ms'],
                                conf['cbench_simulated_hosts'],
-                               list(range(0, conf['test_repeats'])),
+                               list(range(0, test_repeats.value)),
                                conf['controller_statistics_period_ms']):
 
             controller_utils.controller_changestatsperiod(
@@ -348,6 +355,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             monitor_thread = multiprocessing.Process(
                 target=monitor, args=(data_queue, result_queue,
                                       cpid, global_sample_id, repeat_id,
+                                      test_repeats,
                                       cbench_switches,
                                       cbench_switches_per_thread,
                                       cbench_threads,
@@ -368,7 +376,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.generator_thread,
-                args=(cbench_run_handler, controller_ip,
+                args=(cbench_run_handler, controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,
@@ -376,11 +384,12 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                       cbench_delay_before_traffic_ms,
                       cbench_ms_per_test, cbench_internal_repeats,
                       cbench_simulated_hosts, cbench_warmup,
-                      cbench_mode, data_queue, term_success, term_fail,
+                      cbench_mode,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,
-                      cbench_node_password))
+                      cbench_node_password, term_success, term_fail,
+                      data_queue))
 
             # Parallel section
             monitor_thread.start()
@@ -391,7 +400,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
             logging.info('{0} Joining generator thread'.format(test_type))
-            generator_thread.join()
+            cbench_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid.value, controller_ssh_client)
