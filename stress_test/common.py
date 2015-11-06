@@ -109,7 +109,8 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
 def poll_ds_thread(controller_ip, controller_restconf_port,
                    controller_restconf_auth_token, boot_start_time,
-                   expected_switches, discovery_deadline_ms, queuecomm):
+                   expected_switches, discovery_deadline_ms, term_success,
+                   term_fail, queuecomm):
     """
     Poll operational DS to discover installed switches
 
@@ -131,9 +132,9 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :type queuecomm: multiprocessing.Queue
     """
 
-    discovery_deadline = float(discovery_deadline_ms)/1000
+    discovery_deadline = float(discovery_deadline_ms.vlue)/1000
     logging.info('[poll_ds_thread] Monitor thread started')
-    t_start = boot_start_time
+    t_start = boot_start_time.value
 
     logging.info('[poll_ds_thread] Starting discovery')
     t_discovery_start = time.time()
@@ -147,20 +148,22 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
                 '{1} switches.'.format(discovery_deadline,
                                        discovered_switches))
 
-            queuecomm.put((TERM_GEN_FAIL, -1.0, discovered_switches))
+            queuecomm.put((term_fail.value.decode(), -1.0, discovered_switches))
             return
         else:
-            discovered_switches = check_ds_switches(controller_ip,
-                controller_restconf_port, controller_restconf_auth_token)
+            discovered_switches = check_ds_switches(controller_ip.value.decode(),
+                controller_restconf_port.value,
+                (controller_restconf_auth_token[0].value.decode(),
+                 controller_restconf_auth_token[1].value.decode()))
 
-            if discovered_switches == expected_switches:
+            if discovered_switches == expected_switches.value:
                 delta_t = time.time() - t_start
                 logging.info(
                     '[poll_ds_thread] {0} switches found in {1} seconds'.
                     format(discovered_switches, delta_t))
 
-                queuecomm.put((TERM_GEN_SUCCESS, time.time() - t_start,
-                               discovered_switches))
+                queuecomm.put((term_success.value.decode(),
+                               time.time() - t_start, discovered_switches))
                 return
         time.sleep(1)
 

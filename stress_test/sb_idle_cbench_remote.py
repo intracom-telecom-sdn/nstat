@@ -53,8 +53,12 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         str(conf['cbench_node_username']).encode())
     cbench_node_password = multiprocessing.Array('c',
         str(conf['cbench_node_password']).encode())
-
-
+    cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
+        conf['cbench_run_handler']).encode())
+    cbench_threads = multiprocessing.Value('i', 0)
+    cbench_switches_per_thread = multiprocessing.Value('i', 0)
+    cbench_switches = multiprocessing.Value('i', 0)
+    cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
 
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
@@ -74,15 +78,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         str(conf['controller_node_username']).encode())
     controller_node_password = multiprocessing.Array('c',
         str(conf['controller_node_password']).encode())
-
-    controller_port = conf['controller_port']
+    controller_port = multiprocessing.Value('i', conf['controller_port'])
 
     controller_rebuild = conf['controller_rebuild']
 
     controller_cleanup = conf['controller_cleanup']
 
     cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
-    cbench_run_handler = sb_gen_base_dir + conf['cbench_run_handler']
     cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
@@ -93,22 +95,31 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     #cbench_node_username = conf['cbench_node_username']
     #cbench_node_password = conf['cbench_node_password']
 
-    cbench_mode = conf['cbench_mode']
-    cbench_warmup = conf['cbench_warmup']
-    cbench_ms_per_test = conf['cbench_ms_per_test']
-    cbench_internal_repeats = conf['cbench_internal_repeats']
+    cbench_mode = multiprocessing.Array('c', conf['cbench_mode'])
+    cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
+    cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
+    cbench_internal_repeats = multiprocessing.Value('i',
+        conf['cbench_internal_repeats'])
 
+    controller_restconf_port = multiprocessing.Value('i',
+        conf['controller_restconf_port'])
+    controller_restconf_user = multiprocessing.Array('c',
+        conf['controller_restconf_user'])
+    controller_restconf_password = multiprocessing.Array('c',
+        conf['controller_restconf_password'])
 
+    cbench_simulated_hosts = multiprocessing.Value('i',
+        conf['cbench_simulated_hosts'])
+    cbench_delay_before_traffic_ms = multiprocessing.Value('i',
+        conf['cbench_delay_before_traffic_ms'])
 
-    controller_restconf_port = conf['controller_restconf_port']
-    controller_restconf_auth_token = (conf['controller_restconf_user'],
-                                      conf['controller_restconf_password'])
-
-
-    cbench_simulated_hosts = conf['cbench_simulated_hosts']
-    cbench_delay_before_traffic_ms = \
-        conf['cbench_delay_before_traffic_ms']
-
+    sleep_ms = multiprocessing.Value('i', 0)
+    discovery_deadline_ms = multiprocessing.Value('i', 0)
+    # termination message sent to monitor thread when generator is finished
+    term_success = multiprocessing.Array('c',
+        str('__kill_successful_generator__').encode())
+    term_fail = multiprocessing.Array('c',
+        str('__kill_failed_generator__').encode())
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -124,7 +135,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
             controller_statistics_handler, cbench_build_handler,
-            cbench_run_handler, cbench_clean_handler])
+            cbench_run_handler.value.decode(), cbench_clean_handler])
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
@@ -153,7 +164,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                                 controller_ssh_client)
 
 
-        controller_utils.check_for_active_controller(controller_port,
+        controller_utils.check_for_active_controller(controller_port.value,
                                                      controller_ssh_client)
 
         logging.info('{0} Starting and stopping controller to '
@@ -161,7 +172,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         cpid = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
-            controller_port, ' '.join(conf['java_opts']),
+            controller_port.value, ' '.join(conf['java_opts']),
             controller_ssh_client)
 
         # Controller status check is done inside start_controller() of the
@@ -171,9 +182,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_status_handler, cpid.value, controller_ssh_client)
 
         # Run tests for all possible dimensions
-        for (cbench_threads,
-             cbench_switches_per_thread,
-             cbench_thread_creation_delay_ms,
+        for (cbench_threads.value,
+             cbench_switches_per_thread.value,
+             cbench_thread_creation_delay_ms.value,
              controller_statistics_period_ms) in \
              itertools.product(conf['cbench_threads'],
                                conf['cbench_switches_per_thread'],
@@ -188,53 +199,55 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
-                controller_port, ' '.join(conf['java_opts']),
+                controller_port.value, ' '.join(conf['java_opts']),
                 controller_ssh_client)
 
             logging.info('{0} OK, controller status is 1.'.format(test_type))
-            cbench_switches = \
-                cbench_threads * cbench_switches_per_thread
+            cbench_switches.value = \
+                cbench_threads.value * cbench_switches_per_thread.value
 
             logging.debug('{0} Creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            sleep_ms = \
-                cbench_threads * cbench_thread_creation_delay_ms
+            sleep_ms.value = \
+                cbench_threads.value * cbench_thread_creation_delay_ms.value
             total_cbench_switches = \
-                cbench_threads * cbench_switches_per_thread
+                cbench_threads.value * cbench_switches_per_thread.value
             total_cbench_hosts = \
-                cbench_simulated_hosts * total_cbench_switches
+                cbench_simulated_hosts.value * total_cbench_switches
 
 
             # We want this value to be high enough, equivalent to the topology
             # size.
             discovery_deadline_ms = \
-                (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms
+                (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms.value
 
 
             logging.debug('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_node_ip, controller_restconf_port,
-                      controller_restconf_auth_token, sleep_ms,
-                      cbench_switches, discovery_deadline_ms, result_queue))
+                      (controller_restconf_user, controller_restconf_password),
+                      sleep_ms, cbench_switches, discovery_deadline_ms,
+                      term_success, term_fail, result_queue))
 
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
-                target=cbench_utils.generator_thread,
+                target=cbench_utils.cbench_thread,
                 args=(cbench_run_handler, controller_node_ip,
                       controller_port, cbench_threads,
-                      cbench_switches_per_thread, cbench_switches,
+                      cbench_switches_per_thread,
+                      cbench_switches,
                       cbench_thread_creation_delay_ms,
                       cbench_delay_before_traffic_ms,
-                      cbench_ms_per_test,
-                      cbench_internal_repeats,
-                      cbench_simulated_hosts,
-                      cbench_warmup, cbench_mode,
+                      cbench_ms_per_test, cbench_internal_repeats,
+                      cbench_simulated_hosts, cbench_warmup,
+                      cbench_mode,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,
-                      cbench_node_password))
+                      cbench_node_password, term_success, term_fail,
+                      data_queue))
 
             # Parallel section
             monitor_thread.start()
@@ -257,26 +270,26 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['cbench_simulated_hosts'] = \
-                conf['cbench_simulated_hosts']
-            statistics['cbench_switches'] = cbench_switches
-            statistics['cbench_threads'] = cbench_threads
+                cbench_simulated_hosts.value
+            statistics['cbench_switches'] = cbench_switches.value
+            statistics['cbench_threads'] = cbench_threads.value
             statistics['cbench_switches_per_thread'] = \
-                cbench_switches_per_thread
+                cbench_switches_per_thread.value
             statistics['cbench_thread_creation_delay_ms'] = \
-                cbench_thread_creation_delay_ms
+                cbench_thread_creation_delay_ms.value
 
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['cbench_delay_before_traffic_ms'] = \
                 conf['cbench_delay_before_traffic_ms']
             statistics['controller_node_ip'] = controller_node_ip
-            statistics['controller_port'] = str(controller_port)
-            statistics['cbench_mode'] = cbench_mode
-            statistics['cbench_ms_per_test'] = cbench_ms_per_test
+            statistics['controller_port'] = str(controller_port.value)
+            statistics['cbench_mode'] = cbench_mode.value.decode()
+            statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
             statistics['cbench_internal_repeats'] = \
-                cbench_internal_repeats
+                cbench_internal_repeats.value
 
-            statistics['cbench_warmup'] = cbench_warmup
+            statistics['cbench_warmup'] = cbench_warmup.value
             statistics['bootup_time_secs'] = res[1]
             statistics['discovered_switches'] = res[2]
             cbench_thread.terminate()
@@ -317,10 +330,17 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         except:
             pass
 
-        if os.path.isdir(controller_logs_dir):
+        try:
             logging.info('{0} Collecting logs'.format(test_type))
-            shutil.copytree(controller_logs_dir, output_dir+'/log')
-            shutil.rmtree(controller_logs_dir)
+            util.netutil.copy_remote_directory(
+                controller_node_ip.value.decode(),
+                controller_node_username.value.decode(),
+                controller_node_password.value.decode(),
+                controller_logs_dir, output_dir+'/log',
+                int(controller_node_ssh_port.value.decode()))
+        except:
+            logging.error('{0} {1}'.format(
+                test_type, 'Fail to transfer logs dir of the controller.'))
 
         if controller_cleanup:
             logging.info('{0} Cleaning controller.'.format(test_type))

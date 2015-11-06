@@ -253,8 +253,6 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     term_fail = multiprocessing.Array('c',
         str('__failed_termination__').encode())
 
-
-
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -375,7 +373,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
-                target=cbench_utils.generator_thread,
+                target=cbench_utils.cbench_thread,
                 args=(cbench_run_handler, controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,

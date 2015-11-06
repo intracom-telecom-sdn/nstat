@@ -116,7 +116,7 @@ def cleanup_generator(generator_clean_handler, ssh_client=None):
                          '[generator_clean_handler]', ssh_client)
 
 
-def generator_thread(generator_run_handler, controller_ip,
+def cbench_thread(generator_run_handler, controller_ip,
                      controller_port, threads, sw_per_thread, switches,
                      thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
                      hosts, warmup, mode, cbench_node_ip, cbench_node_ssh_port,
