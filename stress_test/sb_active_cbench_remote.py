@@ -24,11 +24,6 @@ import util.file_ops
 import util.netutil
 
 
-# termination message sent to monitor thread when generator is finished
-TERM_SUCCESS= multiprocessing.Array('c',
-                                    str('__successful_termination__').encode())
-TERM_FAIL= multiprocessing.Array('c',
-                                 str('__failed_termination__').encode())
 
 def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
             cbench_switches, cbench_switches_per_thread,
@@ -37,7 +32,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
             cbench_ms_per_test, cbench_internal_repeats, cbench_warmup,
             cbench_mode, controller_statistics_period_ms, controller_port,
             controller_node_ip, controller_node_ssh_port,
-            controller_node_username, controller_node_password):
+            controller_node_username, controller_node_password, term_success,
+            term_fail):
     """ Function executed by the monitor thread
 
     :param data_queue: data queue where monitor receives cbench output line
@@ -68,10 +64,12 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :param controller_port: controller port number where OF switches should
     connect
     :param controller_node_ip: controller node IP address
-    :param controller_node_ssh_port: ssh port of controller node 
+    :param controller_node_ssh_port: ssh port of controller node
     (controller_node_ip)
     :param controller_node_username: username of the controller node
     :param controller_node_password: password of the controller node
+    :param term_success: The success message when we have success in cbench thread
+    :param term_fail: The fail message
     :type data_queue: multiprocessing.Queue
     :type result_queue: multiprocessing.Queue
     :type cpid: int
@@ -111,7 +109,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
         try:
             # read messages from queue while TERM_SUCCESS has not been sent
             line = data_queue.get(block=True, timeout=10000)
-            if line == TERM_SUCCESS.value.decode():
+            if line == term_success.value.decode():
                 logging.debug('[monitor_thread] Got successful termination '
                               'string. Returning samples and exiting.')
                 result_queue.put(samples, block=True)
@@ -120,7 +118,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                 # look for lines containing a substring like e.g.
                 # 'total = 1.2345 per ms'
                 match = re.search(r'total = (.+) per ms', line)
-                if match is not None or line == TERM_FAIL.value.decode():
+                if match is not None or line == term_fail.value.decode():
                     statistics = common.sample_stats(cpid.value,
                                                      controller_ssh_client)
                     statistics['global_sample_id'] = \
@@ -146,12 +144,12 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                     statistics['controller_node_ip'] = \
                         controller_node_ip.value.decode()
                     statistics['controller_port'] = str(controller_port.value)
-                    statistics['cbench_mode'] = cbench_mode.value
+                    statistics['cbench_mode'] = cbench_mode.value.decode()
                     statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
                     statistics['cbench_internal_repeats'] = \
                         cbench_internal_repeats.value
                     statistics['cbench_warmup'] = cbench_warmup.value
-                    if line == TERM_FAIL.value.decode():
+                    if line == term_fail.value.decode():
                         logging.debug(
                             '[monitor_thread] Got failed termination string.'
                             'Returning samples gathered so far and exiting.')
@@ -248,6 +246,11 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
     cbench_rebuild = conf['cbench_rebuild']
+    # termination message sent to monitor thread when generator is finished
+    term_success = multiprocessing.Array('c',
+        str('__successful_termination__').encode())
+    term_fail = multiprocessing.Array('c',
+        str('__failed_termination__').encode())
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -359,7 +362,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       controller_node_ip,
                                       controller_node_ssh_port,
                                       controller_node_username,
-                                      controller_node_password))
+                                      controller_node_password,
+                                      term_success, term_fail))
 
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
@@ -372,7 +376,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                       cbench_delay_before_traffic_ms,
                       cbench_ms_per_test, cbench_internal_repeats,
                       cbench_simulated_hosts, cbench_warmup,
-                      cbench_mode, data_queue, TERM_SUCCESS, TERM_FAIL,
+                      cbench_mode, data_queue, term_success, term_fail,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,

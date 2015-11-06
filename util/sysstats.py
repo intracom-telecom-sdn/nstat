@@ -23,12 +23,17 @@ def command_exec_wrapper(cmd, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    if ssh_client is not None:
-        cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
-    else:
-        cmd_output = str(subprocess.check_output(cmd, shell=True).
-                         decode(sys.stdout.encoding))
-    return cmd_output
+    max_exec_tries = 5
+    cmd_output = None
+    while (not cmd_output) and max_exec_tries>0:
+        if ssh_client is not None:
+            cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
+        else:
+            cmd_output = str(subprocess.check_output(cmd, shell=True).
+                             decode(sys.stdout.encoding))
+        max_exec_tries -= 1
+    if cmd_output:
+        return cmd_output
 
 
 def sys_used_ram_mb(ssh_client=None):
@@ -276,4 +281,3 @@ def get_java_options(pid, ssh_client=None):
     cmd_output = command_exec_wrapper(cmd, ssh_client)
     java_options = [o for o in cmd_output.strip().split() if o.startswith('-X')]
     return java_options
-

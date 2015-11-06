@@ -279,7 +279,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     while not channel.exit_status_ready():
         data = ''
         data = channel.recv(bufferSize).decode('utf-8')
-        while data:
+        while data is not '':
             channel_output += data
             if print_flag:
                 logging.debug('{0} {1}'.format(prefix, data).strip())
@@ -291,7 +291,6 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel_exit_status = channel.recv_exit_status()
     channel.close()
     return (channel_exit_status, channel_output)
-
 
 
 def ssh_delete_file_if_exists(ipaddr, user, passwd, remote_file,
@@ -364,8 +363,7 @@ def copy_remote_directory(ipaddr, user, passwd, remote_path, local_path,
                                   os.path.join(local_path, file_item),
                                   remote_port)
         else:
-            sftp.get(remote_filepath, local_path)
-
-    sftp.rmdir(remote_path)
+            sftp.get(remote_filepath, os.path.join(local_path, file_item))
+    #remove_remote_directory(ipaddr, user, passwd, remote_path, remote_port)
     sftp.close()
     transport_layer.close()

@@ -66,7 +66,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
 
-
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
     controller_node_ssh_port = multiprocessing.Array('c',
