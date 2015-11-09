@@ -148,10 +148,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
         controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip,
-            controller_node_username,
-            controller_node_password, 10,
-            int(controller_node_ssh_port))
+            controller_node_ip.value.decode(),
+            controller_node_username.value.decode(),
+            controller_node_password.value.decode(), 10,
+            int(controller_node_ssh_port.value.decode()))
 
         if cbench_rebuild:
             logging.info('{0} Building generator.'.format(test_type))
@@ -336,7 +336,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 controller_node_ip.value.decode(),
                 controller_node_username.value.decode(),
                 controller_node_password.value.decode(),
-                controller_logs_dir, output_dir+'/log',
+                controller_logs_dir.decode(), output_dir+'/log',
                 int(controller_node_ssh_port.value.decode()))
         except:
             logging.error('{0} {1}'.format(
