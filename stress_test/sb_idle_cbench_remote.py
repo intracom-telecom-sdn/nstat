@@ -165,17 +165,19 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         logging.info('{0} Starting and stopping controller to '
                      'generate xml files'.format(test_type))
 
-        cpid = controller_utils.start_controller(
-            controller_start_handler, controller_status_handler,
-            controller_port.value, ' '.join(conf['java_opts']),
-            controller_ssh_client)
-
         common.poll_ds_thread(controller_node_ip, controller_restconf_port,
                       (controller_restconf_user,
                        controller_restconf_password),
                       sleep_ms, cbench_switches, discovery_deadline_ms,
                       term_success, term_fail, result_queue)
         exit()
+
+        cpid = controller_utils.start_controller(
+            controller_start_handler, controller_status_handler,
+            controller_port.value, ' '.join(conf['java_opts']),
+            controller_ssh_client)
+
+
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
