@@ -11,13 +11,11 @@
 "controller_cleanup":false,
 "controller_name":"ODL",
 
-"controller_node_ip":"127.0.0.1",
+"controller_node_ip":"192.168.64.16",
 "controller_node_ssh_port":"22",
 "controller_node_username":"vagrant",
 "controller_node_password":"vagrant",
-"controller_port":6653,
 
-"controller_ip":"127.0.0.1",
 "controller_port":6653,
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",
@@ -31,7 +29,7 @@
 "cbench_cleanup":false,
 "cbench_name":"Cbench",
 
-"cbench_node_ip":"127.0.0.1",
+"cbench_node_ip":"192.168.64.17",
 "cbench_node_ssh_port":"22",
 "cbench_node_username":"vagrant",
 "cbench_node_password":"vagrant",
