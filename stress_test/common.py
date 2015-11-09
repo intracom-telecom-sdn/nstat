@@ -132,7 +132,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :type queuecomm: multiprocessing.Queue
     """
 
-    discovery_deadline = float(discovery_deadline_ms.vlue)/1000
+    discovery_deadline = float(discovery_deadline_ms.value)/1000
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time.value
 

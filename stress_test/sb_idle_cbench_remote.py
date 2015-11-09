@@ -90,12 +90,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
 
-    #cbench_node_ip = conf['cbench_node_ip']
-    #cbench_node_ssh_port = conf['cbench_node_ssh_port']
-    #cbench_node_username = conf['cbench_node_username']
-    #cbench_node_password = conf['cbench_node_password']
-
-    cbench_mode = multiprocessing.Array('c', conf['cbench_mode'])
+    cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
     cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
     cbench_internal_repeats = multiprocessing.Value('i',
@@ -104,9 +99,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_restconf_port = multiprocessing.Value('i',
         conf['controller_restconf_port'])
     controller_restconf_user = multiprocessing.Array('c',
-        conf['controller_restconf_user'])
+        str(conf['controller_restconf_user']).encode())
     controller_restconf_password = multiprocessing.Array('c',
-        conf['controller_restconf_password'])
+        str(conf['controller_restconf_password']).encode())
 
     cbench_simulated_hosts = multiprocessing.Value('i',
         conf['cbench_simulated_hosts'])
@@ -170,16 +165,18 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         logging.info('{0} Starting and stopping controller to '
                      'generate xml files'.format(test_type))
 
+
         cpid = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
             controller_port.value, ' '.join(conf['java_opts']),
             controller_ssh_client)
 
+
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
         controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid.value, controller_ssh_client)
+            controller_status_handler, cpid, controller_ssh_client)
 
         # Run tests for all possible dimensions
         for (cbench_threads.value,
@@ -216,7 +213,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             total_cbench_hosts = \
                 cbench_simulated_hosts.value * total_cbench_switches
 
-
             # We want this value to be high enough, equivalent to the topology
             # size.
             discovery_deadline_ms = \
@@ -227,7 +223,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_node_ip, controller_restconf_port,
-                      (controller_restconf_user, controller_restconf_password),
+                      (controller_restconf_user,
+                       controller_restconf_password),
                       sleep_ms, cbench_switches, discovery_deadline_ms,
                       term_success, term_fail, result_queue))
 
@@ -246,8 +243,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,
-                      cbench_node_password, term_success, term_fail,
-                      data_queue))
+                      cbench_node_password, term_success, term_fail))
 
             # Parallel section
             monitor_thread.start()
