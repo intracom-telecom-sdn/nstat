@@ -22,7 +22,7 @@
     node: test-server
     scm:
     - git:
-        url: http://github.com/intracom-telecom-sdn/nstat.git
+        url: git@github.com:intracom-telecom-sdn/nstat.git
         credentials-id: <provide with API token>
         branches: [master]
     logrotate:
