@@ -108,6 +108,7 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
 
 def poll_ds_thread(controller_ip, controller_restconf_port,
+                   controller_restconf_user, controller_restconf_password,
                    controller_restconf_auth_token, boot_start_time,
                    expected_switches, discovery_deadline_ms, term_success,
                    term_fail, queuecomm):
@@ -153,8 +154,8 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
         else:
             discovered_switches = check_ds_switches(controller_ip.value.decode(),
                 controller_restconf_port.value,
-                (controller_restconf_auth_token[0].value.decode(),
-                 controller_restconf_auth_token[1].value.decode()))
+                (controller_restconf_user.value.decode(),
+                 controller_restconf_password.value.decode()))
 
             if discovered_switches == expected_switches.value:
                 delta_t = time.time() - t_start
