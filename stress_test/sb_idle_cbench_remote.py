@@ -221,7 +221,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_node_ip, controller_restconf_port,
-                      (controller_restconf_user, controller_restconf_password),
+                      (controller_restconf_user,
+                       controller_restconf_password),
                       sleep_ms, cbench_switches, discovery_deadline_ms,
                       term_success, term_fail, result_queue))
 
