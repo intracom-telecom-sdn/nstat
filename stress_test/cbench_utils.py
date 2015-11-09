@@ -136,7 +136,7 @@ def generator_thread(generator_run_handler, controller_ip,
     transmission
     :param ms_per_test: test duration of a single generator loop
     :param internal_repeats: number of generator loops
-    :param hosts: number of simulated hoss
+    :param hosts: number of simulated hosts
     :param warmup: initial loops to be considered as 'warmup'
     :param mode: generator mode
     :param data_queue: data queue where generator output is posted line by line
