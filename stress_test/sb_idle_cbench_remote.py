@@ -336,7 +336,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 controller_node_ip.value.decode(),
                 controller_node_username.value.decode(),
                 controller_node_password.value.decode(),
-                controller_logs_dir.decode(), output_dir+'/log',
+                controller_logs_dir, output_dir+'/log',
                 int(controller_node_ssh_port.value.decode()))
         except:
             logging.error('{0} {1}'.format(

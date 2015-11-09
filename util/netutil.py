@@ -14,6 +14,7 @@ import socket
 import stat
 import time
 
+
 def ssh_connect_or_return(ipaddr, user, passwd, maxretries, remote_port=22):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
@@ -368,17 +369,3 @@ def copy_remote_directory(ipaddr, user, passwd, remote_path, local_path,
     sftp.close()
     transport_layer.close()
 
-if __name__=='__main__':
-
-    cbench_ssh_client = ssh_connect_or_return(
-            '127.0.0.1',
-            'panageo',
-            'panos123!@#', 10,
-            22)
-    json_conf_file = open('/home/panageo/SW/nstat_github_code_workdir/nstat/stress_test/sample_test_confs/cbench_remote_execution/lithium_RPC_sb_active_stability_mtcbench.json')
-    test_config = json.load(json_conf_file)
-    ctrl_base_dir = ''
-    controller_logs_dir = ctrl_base_dir + test_config['controller_logs_dir']
-    copy_remote_directory('127.0.0.1', 'panageo', 'panos123!@#',
-                          '/home/panageo/nstat/', '/home/panageo/nstat_copy/',
-                          22)
