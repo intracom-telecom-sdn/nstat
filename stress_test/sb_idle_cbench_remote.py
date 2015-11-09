@@ -148,6 +148,14 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_node_password.value.decode(), 10,
             int(controller_node_ssh_port.value.decode()))
 
+        common.poll_ds_thread(controller_node_ip, controller_restconf_port,
+                      (controller_restconf_user,
+                       controller_restconf_password),
+                      sleep_ms, cbench_switches, discovery_deadline_ms,
+                      term_success, term_fail, result_queue)
+        exit()
+
+
         if cbench_rebuild:
             logging.info('{0} Building generator.'.format(test_type))
             cbench_utils.rebuild_generator(cbench_build_handler,
@@ -165,12 +173,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         logging.info('{0} Starting and stopping controller to '
                      'generate xml files'.format(test_type))
 
-        common.poll_ds_thread(controller_node_ip, controller_restconf_port,
-                      (controller_restconf_user,
-                       controller_restconf_password),
-                      sleep_ms, cbench_switches, discovery_deadline_ms,
-                      term_success, term_fail, result_queue)
-        exit()
 
         cpid = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
