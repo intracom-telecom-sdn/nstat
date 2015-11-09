@@ -203,7 +203,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             logging.debug('{0} Creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
-            data_queue = multiprocessing.Queue()
 
             sleep_ms.value = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
@@ -241,8 +240,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,
-                      cbench_node_password, term_success, term_fail,
-                      data_queue))
+                      cbench_node_password, term_success, term_fail))
 
             # Parallel section
             monitor_thread.start()
