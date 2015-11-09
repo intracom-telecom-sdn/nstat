@@ -97,11 +97,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         conf['cbench_internal_repeats'])
 
     controller_restconf_port = multiprocessing.Value('i',
-        conf['controller_restconf_port'])
+        str(conf['controller_restconf_port']).encode())
     controller_restconf_user = multiprocessing.Array('c',
-        conf['controller_restconf_user'])
+        str(conf['controller_restconf_user']).encode())
     controller_restconf_password = multiprocessing.Array('c',
-        conf['controller_restconf_password'])
+        str(conf['controller_restconf_password']).encode())
 
     cbench_simulated_hosts = multiprocessing.Value('i',
         conf['cbench_simulated_hosts'])
