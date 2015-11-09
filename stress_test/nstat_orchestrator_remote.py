@@ -17,7 +17,6 @@ import logging
 import nb_active_mininet
 import os
 import sb_active_cbench_remote
-import sb_idle_cbench
 import sb_idle_cbench_remote
 import sb_idle_mininet
 import shutil
@@ -157,13 +156,13 @@ def main():
         if not args.bypass_test:
             logging.info('[nstat_orchestrator] Running test {0}'.
                          format(args.test_type))
-            sb_idle_cbench.sb_idle_cbench_run(
+            sb_idle_cbench_remote.sb_idle_cbench_run(
                 args.json_output,
                 args.ctrl_base_dir,
                 args.sb_gen_base_dir,
                 test_config,
                 args.output_dir)
-        report_spec = sb_idle_cbench.get_report_spec(args.test_type,
+        report_spec = sb_idle_cbench_remote.get_report_spec(args.test_type,
                                                      args.json_config,
                                                      args.json_output)
 
