@@ -109,9 +109,8 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
 def poll_ds_thread(controller_ip, controller_restconf_port,
                    controller_restconf_user, controller_restconf_password,
-                   controller_restconf_auth_token, boot_start_time,
-                   expected_switches, discovery_deadline_ms, term_success,
-                   term_fail, queuecomm):
+                   boot_start_time, expected_switches, discovery_deadline_ms,
+                   term_success, term_fail, queuecomm):
     """
     Poll operational DS to discover installed switches
 
