@@ -97,7 +97,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         conf['cbench_internal_repeats'])
 
     controller_restconf_port = multiprocessing.Value('i',
-        str(conf['controller_restconf_port']).encode())
+        conf['controller_restconf_port'])
     controller_restconf_user = multiprocessing.Array('c',
         str(conf['controller_restconf_user']).encode())
     controller_restconf_password = multiprocessing.Array('c',
