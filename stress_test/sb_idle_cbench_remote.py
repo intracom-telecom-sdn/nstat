@@ -203,6 +203,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             logging.debug('{0} Creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
+            data_queue = multiprocessing.Queue()
 
             sleep_ms.value = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
@@ -210,7 +211,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 cbench_threads.value * cbench_switches_per_thread.value
             total_cbench_hosts = \
                 cbench_simulated_hosts.value * total_cbench_switches
-
 
             # We want this value to be high enough, equivalent to the topology
             # size.
