@@ -90,12 +90,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
 
-    #cbench_node_ip = conf['cbench_node_ip']
-    #cbench_node_ssh_port = conf['cbench_node_ssh_port']
-    #cbench_node_username = conf['cbench_node_username']
-    #cbench_node_password = conf['cbench_node_password']
-
-    cbench_mode = multiprocessing.Array('c', conf['cbench_mode'])
+    cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
     cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
     cbench_internal_repeats = multiprocessing.Value('i',
