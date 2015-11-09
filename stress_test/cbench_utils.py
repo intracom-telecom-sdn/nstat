@@ -99,7 +99,7 @@ def run_generator(generator_run_handler, controller_ip,
                 str(sw_per_thread), str(switches), str(thr_delay_ms),
                 str(traf_delay_ms), str(ms_per_test), str(internal_repeats),
                 str(hosts), str(warmup), mode]
-    command_exec_wrapper(cmd_list, '[generator_clean_handler]', ssh_client,
+    command_exec_wrapper(cmd_list, '[generator_run_handler]', ssh_client,
                          data_queue)
 
 def cleanup_generator(generator_clean_handler, ssh_client=None):
@@ -116,12 +116,12 @@ def cleanup_generator(generator_clean_handler, ssh_client=None):
                          '[generator_clean_handler]', ssh_client)
 
 
-def generator_thread(generator_run_handler, controller_ip,
+def cbench_thread(generator_run_handler, controller_ip,
                      controller_port, threads, sw_per_thread, switches,
                      thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
-                     hosts, warmup, mode, data_queue=None, succ_msg='',
-                     fail_msg='', cbench_node_ip, cbench_node_ssh_port,
-                     cbench_node_username, cbench_node_password):
+                     hosts, warmup, mode, cbench_node_ip, cbench_node_ssh_port,
+                     cbench_node_username, cbench_node_password, succ_msg='',
+                     fail_msg='', data_queue=None):
 
     """ Function executed by generator thread.
 

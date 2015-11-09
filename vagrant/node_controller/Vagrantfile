@@ -70,6 +70,8 @@ Vagrant.configure(2) do |config|
         # Customize the amount of memory on the VM:
         vb.memory = nstat_vm_ram
         vb.cpus = nstat_vm_cpus
+        vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+        vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
       end
 
       nstat_machine.vm.provider :libvirt do |libvirt|
