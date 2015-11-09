@@ -14,6 +14,7 @@ import socket
 import stat
 import time
 
+
 def ssh_connect_or_return(ipaddr, user, passwd, maxretries, remote_port=22):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
@@ -367,3 +368,4 @@ def copy_remote_directory(ipaddr, user, passwd, remote_path, local_path,
     #remove_remote_directory(ipaddr, user, passwd, remote_path, remote_port)
     sftp.close()
     transport_layer.close()
+

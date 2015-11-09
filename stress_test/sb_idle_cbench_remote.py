@@ -90,12 +90,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
 
-    #cbench_node_ip = conf['cbench_node_ip']
-    #cbench_node_ssh_port = conf['cbench_node_ssh_port']
-    #cbench_node_username = conf['cbench_node_username']
-    #cbench_node_password = conf['cbench_node_password']
-
-    cbench_mode = multiprocessing.Array('c', conf['cbench_mode'])
+    cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
     cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
     cbench_internal_repeats = multiprocessing.Value('i',
@@ -104,9 +99,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_restconf_port = multiprocessing.Value('i',
         conf['controller_restconf_port'])
     controller_restconf_user = multiprocessing.Array('c',
-        conf['controller_restconf_user'])
+        str(conf['controller_restconf_user']).encode())
     controller_restconf_password = multiprocessing.Array('c',
-        conf['controller_restconf_password'])
+        str(conf['controller_restconf_password']).encode())
 
     cbench_simulated_hosts = multiprocessing.Value('i',
         conf['cbench_simulated_hosts'])
@@ -148,10 +143,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
         controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip,
-            controller_node_username,
-            controller_node_password, 10,
-            int(controller_node_ssh_port))
+            controller_node_ip.value.decode(),
+            controller_node_username.value.decode(),
+            controller_node_password.value.decode(), 10,
+            int(controller_node_ssh_port.value.decode()))
 
         if cbench_rebuild:
             logging.info('{0} Building generator.'.format(test_type))
@@ -179,7 +174,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
         controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid.value, controller_ssh_client)
+            controller_status_handler, cpid, controller_ssh_client)
 
         # Run tests for all possible dimensions
         for (cbench_threads.value,

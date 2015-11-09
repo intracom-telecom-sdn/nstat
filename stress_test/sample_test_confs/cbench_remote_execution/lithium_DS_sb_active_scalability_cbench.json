@@ -21,7 +21,7 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
-"controller_logs_dir":"./controllers/odl_lithium_sr1_pb/distribution-karaf-0.3.0-Lithium/data/log/",
+"controller_logs_dir":"./distribution-karaf-0.3.1-Lithium-SR1/data/log/",
 
 "cbench_build_handler":"./build.sh",
 "cbench_run_handler":"./run.sh",
