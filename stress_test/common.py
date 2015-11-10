@@ -103,9 +103,8 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
 def poll_ds_thread(controller_ip, controller_restconf_port,
                    controller_restconf_user, controller_restconf_password,
-                   boot_start_time, sleep_before_discovery_ms,
-                   expected_switches, discovery_deadline_ms,
-                   queuecomm):
+                   boot_start_time, bootup_time_ms, expected_switches,
+                   discovery_deadline_ms, queuecomm):
     """
     Poll operational DS to discover installed switches
 
@@ -128,7 +127,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     """
 
     discovery_deadline = float(discovery_deadline_ms.value) / 1000
-    sleep_before_discovery = float(sleep_before_discovery_ms) / 1000
+    sleep_before_discovery = float(bootup_time_ms) / 1000
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time.value
     time.sleep(sleep_before_discovery)
