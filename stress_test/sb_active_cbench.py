@@ -6,9 +6,10 @@
 
 """ Active Southbound Performance test """
 
-import controller_utils
-import common
 import cbench_utils
+import common
+import controller_utils
+import ctypes
 import itertools
 import json
 import logging
@@ -20,63 +21,95 @@ import report_spec
 import shutil
 import sys
 import util.file_ops
+import util.netutil
 
 
 
-# termination message sent to monitor thread when generator is finished
-TERM_SUCCESS = '__successful_termination__'
-TERM_FAIL = '__failed_termination__'
-
-
-def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
-            generator_switches, generator_switches_per_thread,
-            generator_threads, generator_delay_before_traffic_ms,
-            generator_thread_creation_delay_ms, generator_simulated_hosts,
-            controller_statistics_period_ms):
+def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_repeats,
+            cbench_switches, cbench_switches_per_thread,
+            cbench_threads, cbench_delay_before_traffic_ms,
+            cbench_thread_creation_delay_ms, cbench_simulated_hosts,
+            cbench_ms_per_test, cbench_internal_repeats, cbench_warmup,
+            cbench_mode, controller_statistics_period_ms, controller_port,
+            controller_node_ip, controller_node_ssh_port,
+            controller_node_username, controller_node_password, term_success,
+            term_fail):
     """ Function executed by the monitor thread
 
-    :param data_queue: data queue where monitor receives generator output line
+    :param data_queue: data queue where monitor receives cbench output line
     by line
     :param result_queue: result queue used by monitor to send result to main
-    :param conf: test configuration
     :param cpid: controller PID
     :param global_sample_id: unique ascending ID for the next sample
     :param repeat_id: ID of the test repeat
-    :param generator_switches: total number of simulated switches
-    :param generator_switches_per_thread: number of sim. switches per thread
-    :param generator_threads: total number of generator threads
-    :param generator_delay_before_traffic_ms: delay before traffic transmission
+    :param cbench_switches: total number of simulated switches
+    :param cbench_switches_per_thread: number of sim. switches per thread
+    :param cbench_threads: total number of cbench threads
+    :param cbench_delay_before_traffic_ms: delay before traffic transmission
     (in milliseconds)
-    :param generator_thread_creation_delay_ms: delay between thread creation
+    :param cbench_thread_creation_delay_ms: delay between thread creation
     (in milliseconds)
-    :param generator_simulated_hosts: number of simulated hosts
+    :param cbench_simulated_hosts: number of simulated hosts
+    :param cbench_ms_per_test: duration (in (ms)) of generator internal
+    iteration
+    :param cbench_internal_repeats: number of internal iterations during traffic
+    transmission where performance and other statistics are sampled
+    :param cbench_warmup: number of initial internal iterations that were
+    treated as "warmup" and  are not considered when computing aggregate
+    performance results
+    :param cbench_mode: (one of "Latency" or "Throughput", see Cbench
+    documentation)
     :param controller_statistics_period_ms: Interval that controller sends
     statistics flow requests to the switches (in milliseconds)
+    :param controller_port: controller port number where OF switches should
+    connect
+    :param controller_node_ip: controller node IP address
+    :param controller_node_ssh_port: ssh port of controller node
+    (controller_node_ip)
+    :param controller_node_username: username of the controller node
+    :param controller_node_password: password of the controller node
+    :param term_success: The success message when we have success in cbench thread
+    :param term_fail: The fail message
     :type data_queue: multiprocessing.Queue
     :type result_queue: multiprocessing.Queue
-    :type conf: dict
     :type cpid: int
     :type global_sample_id: int
     :type repeat_id: int
-    :type generator_switches: int
-    :type generator_switches_per_thread: int
-    :type generator_threads: int
-    :type generator_delay_before_traffic_ms: int
-    :type generator_thread_creation_delay_ms: int
-    :type generator_simulated_hosts: int
+    :type cbench_switches: int
+    :type cbench_switches_per_thread: int
+    :type cbench_threads: int
+    :type cbench_delay_before_traffic_ms: int
+    :type cbench_thread_creation_delay_ms: int
+    :type cbench_simulated_hosts: int
+    :type cbench_ms_per_test: int
+    :type cbench_internal_repeats: int
+    :type cbench_warmup: int
+    :type cbench_mode: str
     :type controller_statistics_period_ms: int
+    :type controller_port: str
+    :type controller_node_ip: str
+    :type controller_node_ssh_port: str
+    :type controller_node_username: str
+    :type controller_node_password: str
     """
 
     internal_repeat_id = 0
     logging.debug('[monitor_thread] Monitor thread started')
+
     # will hold samples taken in the lifetime of this thread
     samples = []
+
+    controller_ssh_client = util.netutil.ssh_connect_or_return(
+            controller_node_ip.value.decode(),
+            controller_node_username.value.decode(),
+            controller_node_password.value.decode(), 10,
+            int(controller_node_ssh_port.value.decode()))
 
     while True:
         try:
             # read messages from queue while TERM_SUCCESS has not been sent
             line = data_queue.get(block=True, timeout=10000)
-            if line == TERM_SUCCESS:
+            if line == term_success.value.decode():
                 logging.debug('[monitor_thread] Got successful termination '
                               'string. Returning samples and exiting.')
                 result_queue.put(samples, block=True)
@@ -85,41 +118,38 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
                 # look for lines containing a substring like e.g.
                 # 'total = 1.2345 per ms'
                 match = re.search(r'total = (.+) per ms', line)
-                if match is not None or line == TERM_FAIL:
-                    statistics = common.sample_stats(cpid.value)
+                if match is not None or line == term_fail.value.decode():
+                    statistics = common.sample_stats(cpid.value,
+                                                     controller_ssh_client)
                     statistics['global_sample_id'] = \
                         global_sample_id.value
                     global_sample_id.value += 1
                     statistics['repeat_id'] = repeat_id.value
                     statistics['internal_repeat_id'] = internal_repeat_id
-                    statistics['generator_simulated_hosts'] = \
-                        generator_simulated_hosts.value
-                    statistics['generator_switches'] = \
-                        generator_switches.value
-                    statistics['generator_threads'] = \
-                        generator_threads.value
-                    statistics['generator_switches_per_thread'] = \
-                        generator_switches_per_thread.value
-                    statistics['generator_thread_creation_delay_ms'] = \
-                        generator_thread_creation_delay_ms.value
-                    statistics['generator_delay_before_traffic_ms'] = \
-                        generator_delay_before_traffic_ms.value
-
+                    statistics['cbench_simulated_hosts'] = \
+                        cbench_simulated_hosts.value
+                    statistics['cbench_switches'] = \
+                        cbench_switches.value
+                    statistics['cbench_threads'] = \
+                        cbench_threads.value
+                    statistics['cbench_switches_per_thread'] = \
+                        cbench_switches_per_thread.value
+                    statistics['cbench_thread_creation_delay_ms'] = \
+                        cbench_thread_creation_delay_ms.value
+                    statistics['cbench_delay_before_traffic_ms'] = \
+                        cbench_delay_before_traffic_ms.value
                     statistics['controller_statistics_period_ms'] = \
                         controller_statistics_period_ms.value
-                    statistics['test_repeats'] = conf['test_repeats']
-                    statistics['controller_ip'] = conf['controller_ip']
-                    statistics['controller_port'] = \
-                        str(conf['controller_port'])
-
-                    statistics['generator_mode'] = conf['generator_mode']
-                    statistics['generator_ms_per_test'] = \
-                        conf['generator_ms_per_test']
-                    statistics['generator_internal_repeats'] = \
-                        conf['generator_internal_repeats']
-                    statistics['generator_warmup'] = \
-                        conf['generator_warmup']
-                    if line == TERM_FAIL:
+                    statistics['test_repeats'] = test_repeats.value
+                    statistics['controller_node_ip'] = \
+                        controller_node_ip.value.decode()
+                    statistics['controller_port'] = str(controller_port.value)
+                    statistics['cbench_mode'] = cbench_mode.value.decode()
+                    statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
+                    statistics['cbench_internal_repeats'] = \
+                        cbench_internal_repeats.value
+                    statistics['cbench_warmup'] = cbench_warmup.value
+                    if line == term_fail.value.decode():
                         logging.debug(
                             '[monitor_thread] Got failed termination string.'
                             'Returning samples gathered so far and exiting.')
@@ -130,6 +160,7 @@ def monitor(data_queue, result_queue, conf, cpid, global_sample_id, repeat_id,
                         return
 
                     if match is not None:
+
                         # extract the numeric portion from the above regex
                         statistics['throughput_responses_sec'] = \
                             float(match.group(1)) * 1000.0
@@ -158,22 +189,17 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     :type output_dir: str
     """
 
+    test_type = '[sb_active_cbench]'
+    logging.info('{0} Initializing test parameters'.format(test_type))
+
     # Shared read-write variables between monitor-main thread and
     # generator thread.
     repeat_id = multiprocessing.Value('i', 0)
     cpid = multiprocessing.Value('i', 0)
-    generator_threads = multiprocessing.Value('i', 0)
-    generator_switches_per_thread = multiprocessing.Value('i', 0)
-    generator_thread_creation_delay_ms = multiprocessing.Value('i', 0)
-    generator_delay_before_traffic_ms = multiprocessing.Value('i', 0)
-    generator_simulated_hosts = multiprocessing.Value('i', 0)
-    generator_switches = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
+    test_repeats = multiprocessing.Value('i', conf['test_repeats'])
+
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
-
-    test_type = '[sb_active_cbench]'
-
-    logging.info('{0} Initializing test parameters'.format(test_type))
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
     controller_status_handler = \
@@ -183,25 +209,49 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     controller_statistics_handler = \
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
-    controller_ip = conf['controller_ip']
-    controller_port = conf['controller_port']
-    controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
+    controller_node_ssh_port = multiprocessing.Array('c',
+        str(conf['controller_node_ssh_port']).encode())
+    controller_node_username = multiprocessing.Array('c',
+        str(conf['controller_node_username']).encode())
+    controller_node_password = multiprocessing.Array('c',
+        str(conf['controller_node_password']).encode())
     controller_rebuild = conf['controller_rebuild']
-
     controller_cleanup = conf['controller_cleanup']
 
-    generator_build_handler = sb_gen_base_dir + conf['generator_build_handler']
-    generator_run_handler = sb_gen_base_dir + conf['generator_run_handler']
-    generator_clean_handler = sb_gen_base_dir + conf['generator_clean_handler']
-    generator_rebuild = conf['generator_rebuild']
-    generator_cleanup = conf['generator_cleanup']
-    generator_name = conf['generator_name']
-    generator_mode = conf['generator_mode']
-    generator_warmup = conf['generator_warmup']
-    generator_ms_per_test = conf['generator_ms_per_test']
-    generator_internal_repeats = conf['generator_internal_repeats']
-
-    generator_rebuild = conf['generator_rebuild']
+    cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
+    cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
+        conf['cbench_run_handler']).encode())
+    controller_node_ip = multiprocessing.Array('c',
+        str(conf['controller_node_ip']).encode())
+    controller_port = multiprocessing.Value('i', conf['controller_port'])
+    cbench_threads = multiprocessing.Value('i', 0)
+    cbench_switches_per_thread = multiprocessing.Value('i', 0)
+    cbench_switches = multiprocessing.Value('i', 0)
+    cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
+    cbench_delay_before_traffic_ms = multiprocessing.Value('i', 0)
+    cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
+    cbench_internal_repeats = multiprocessing.Value('i', conf['cbench_internal_repeats'])
+    cbench_simulated_hosts = multiprocessing.Value('i', 0)
+    cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
+    cbench_node_ip = multiprocessing.Array('c',
+        str(conf['cbench_node_ip']).encode())
+    cbench_node_ssh_port = multiprocessing.Array('c',
+        str(conf['cbench_node_ssh_port']).encode())
+    cbench_node_username = multiprocessing.Array('c',
+        str(conf['cbench_node_username']).encode())
+    cbench_node_password = multiprocessing.Array('c',
+        str(conf['cbench_node_password']).encode())
+    cbench_mode= multiprocessing.Array('c', str(conf['cbench_mode']).encode())
+    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
+    cbench_rebuild = conf['cbench_rebuild']
+    cbench_cleanup = conf['cbench_cleanup']
+    cbench_name = conf['cbench_name']
+    cbench_rebuild = conf['cbench_rebuild']
+    # termination message sent to monitor thread when generator is finished
+    term_success = multiprocessing.Array('c',
+        str('__successful_termination__').encode())
+    term_fail = multiprocessing.Array('c',
+        str('__failed_termination__').encode())
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -218,104 +268,140 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
-            controller_statistics_handler, generator_build_handler,
-            generator_run_handler, generator_clean_handler])
+            controller_statistics_handler, cbench_build_handler,
+            cbench_run_handler.value.decode(), cbench_clean_handler])
 
-        if generator_rebuild:
+        # Opening connection with cbench_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
+        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
+            cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
+            int(cbench_node_ssh_port.value.decode()))
+
+        # Opening connection with controller_node_ip and returning
+        # controller_ssh_client object to be utilized in the sequel within
+        # sb_active_cbench_run where necessary
+        controller_ssh_client = util.netutil.ssh_connect_or_return(
+            controller_node_ip.value.decode(),
+            controller_node_username.value.decode(),
+            controller_node_password.value.decode(), 10,
+            int(controller_node_ssh_port.value.decode()))
+
+        if cbench_rebuild:
             logging.info('{0} Building generator.'.format(test_type))
-            cbench_utils.rebuild_generator(generator_build_handler)
+            cbench_utils.rebuild_generator(cbench_build_handler,
+                                           cbench_ssh_client)
 
         if controller_rebuild:
             logging.info('{0} Building controller.'.format(test_type))
-            controller_utils.rebuild_controller(controller_build_handler)
+            controller_utils.rebuild_controller(controller_build_handler,
+                                                controller_ssh_client)
 
-        controller_utils.check_for_active_controller(controller_port)
-
-        os.environ['JAVA_OPTS'] = ' '.join(conf['java_opts'])
+        controller_utils.check_for_active_controller(controller_port.value,
+                                                     controller_ssh_client)
 
         logging.info(
             '{0} Starting and stopping controller to generate xml files'.
             format(test_type))
+
         cpid.value = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
-            controller_port)
+            controller_port.value, ' '.join(conf['java_opts']),
+            controller_ssh_client)
+
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
         controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid.value)
+            controller_status_handler, cpid.value, controller_ssh_client)
 
         # run tests for all possible dimensions
-        for (generator_threads.value,
-             generator_switches_per_thread.value,
-             generator_thread_creation_delay_ms.value,
-             generator_delay_before_traffic_ms.value,
-             generator_simulated_hosts.value,
+        for (cbench_threads.value,
+             cbench_switches_per_thread.value,
+             cbench_thread_creation_delay_ms.value,
+             cbench_delay_before_traffic_ms.value,
+             cbench_simulated_hosts.value,
              repeat_id.value,
              controller_statistics_period_ms.value) in \
-             itertools.product(conf['generator_threads'],
-                               conf['generator_switches_per_thread'],
-                               conf['generator_thread_creation_delay_ms'],
-                               conf['generator_delay_before_traffic_ms'],
-                               conf['generator_simulated_hosts'],
-                               list(range(0, conf['test_repeats'])),
+             itertools.product(conf['cbench_threads'],
+                               conf['cbench_switches_per_thread'],
+                               conf['cbench_thread_creation_delay_ms'],
+                               conf['cbench_delay_before_traffic_ms'],
+                               conf['cbench_simulated_hosts'],
+                               list(range(0, test_repeats.value)),
                                conf['controller_statistics_period_ms']):
 
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler,
-                controller_statistics_period_ms.value)
+                controller_statistics_period_ms.value, controller_ssh_client)
 
             logging.info('{0} Starting controller'.format(test_type))
             cpid.value = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
-                controller_port)
+                controller_port.value, ' '.join(conf['java_opts']),
+                controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
-            generator_switches.value = \
-                generator_threads.value * generator_switches_per_thread.value
+            cbench_switches.value = \
+                cbench_threads.value * cbench_switches_per_thread.value
 
-            logging.info('{0} Creating data and control queues'.
+            logging.info('{0} Creating data and result queues'.
                           format(test_type))
             data_queue = multiprocessing.Queue()
             result_queue = multiprocessing.Queue()
 
             logging.info('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
-                target=monitor, args=(data_queue, result_queue, conf,
+                target=monitor, args=(data_queue, result_queue,
                                       cpid, global_sample_id, repeat_id,
-                                      generator_switches,
-                                      generator_switches_per_thread,
-                                      generator_threads,
-                                      generator_delay_before_traffic_ms,
-                                      generator_thread_creation_delay_ms,
-                                      generator_simulated_hosts,
-                                      controller_statistics_period_ms))
+                                      test_repeats,
+                                      cbench_switches,
+                                      cbench_switches_per_thread,
+                                      cbench_threads,
+                                      cbench_delay_before_traffic_ms,
+                                      cbench_thread_creation_delay_ms,
+                                      cbench_simulated_hosts,
+                                      cbench_ms_per_test,
+                                      cbench_internal_repeats,
+                                      cbench_warmup, cbench_mode,
+                                      controller_statistics_period_ms,
+                                      controller_port,
+                                      controller_node_ip,
+                                      controller_node_ssh_port,
+                                      controller_node_username,
+                                      controller_node_password,
+                                      term_success, term_fail))
 
             logging.info('{0} Creating generator thread'.format(test_type))
-            generator_thread = multiprocessing.Process(
-                target=cbench_utils.generator_thread,
-                args=(generator_run_handler, controller_ip,
-                      controller_port, generator_threads.value,
-                      generator_switches_per_thread.value,
-                      generator_switches.value,
-                      generator_thread_creation_delay_ms.value,
-                      generator_delay_before_traffic_ms.value,
-                      generator_ms_per_test, generator_internal_repeats,
-                      generator_simulated_hosts.value, generator_warmup,
-                      generator_mode, data_queue, TERM_SUCCESS, TERM_FAIL))
+            cbench_thread = multiprocessing.Process(
+                target=cbench_utils.cbench_thread,
+                args=(cbench_run_handler, controller_node_ip,
+                      controller_port, cbench_threads,
+                      cbench_switches_per_thread,
+                      cbench_switches,
+                      cbench_thread_creation_delay_ms,
+                      cbench_delay_before_traffic_ms,
+                      cbench_ms_per_test, cbench_internal_repeats,
+                      cbench_simulated_hosts, cbench_warmup,
+                      cbench_mode,
+                      cbench_node_ip,
+                      cbench_node_ssh_port,
+                      cbench_node_username,
+                      cbench_node_password, term_success, term_fail,
+                      data_queue))
 
             # Parallel section
             monitor_thread.start()
-            generator_thread.start()
+            cbench_thread.start()
+
             samples = result_queue.get(block=True)
             total_samples = total_samples + samples
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
             logging.info('{0} Joining generator thread'.format(test_type))
-            generator_thread.join()
+            cbench_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid.value)
+                controller_status_handler, cpid.value, controller_ssh_client)
 
     except:
         logging.error('{0} :::::::::: Exception caught :::::::::::'.
@@ -346,22 +432,31 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} Stopping controller.'.
                          format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid)
+                controller_status_handler, cpid.value, controller_ssh_client)
         except:
             pass
 
-        if os.path.isdir(controller_logs_dir):
+        try:
             logging.info('{0} Collecting logs'.format(test_type))
-            shutil.copytree(controller_logs_dir, output_dir+'/log')
-            shutil.rmtree(controller_logs_dir)
+            util.netutil.copy_remote_directory(
+                controller_node_ip.value.decode(),
+                controller_node_username.value.decode(),
+                controller_node_password.value.decode(),
+                controller_logs_dir, output_dir + '/log',
+                int(controller_node_ssh_port.value.decode()))
+        except:
+            logging.error('{0} {1}'.format(
+                test_type, 'Fail to transfer logs dir of the controller.'))
 
         if controller_cleanup:
             logging.info('{0} Cleaning controller.'.format(test_type))
-            controller_utils.cleanup_controller(controller_clean_handler)
+            controller_utils.cleanup_controller(controller_clean_handler,
+                                                controller_ssh_client)
 
-        if generator_cleanup:
+        if cbench_cleanup:
             logging.info('{0} Cleaning generator.'.format(test_type))
-            cbench_utils.cleanup_generator(generator_clean_handler)
+            cbench_utils.cleanup_generator(cbench_clean_handler,
+                                           cbench_ssh_client)
 
 
 def get_report_spec(test_type, config_json, results_json):
@@ -393,27 +488,34 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_status_handler', 'Controller status script'),
              ('controller_clean_handler', 'Controller cleanup script'),
              ('controller_statistics_handler', 'Controller statistics script'),
-             ('controller_ip', 'Controller IP address'),
-             ('controller_port', 'Controller listening port'),
+             ('controller_node_ip', 'Controller IP node address'),
+             ('controller_node_ssh_port', 'Controller node ssh port'),
+             ('controller_node_username', 'Controller node username'),
+             ('controller_node_password', 'Controller node password'),
+             ('controller_port', 'Controller Southbound port'),
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
-             ('generator_name', 'Generator name'),
-             ('generator_build_handler', 'Generator build script'),
-             ('generator_run_handler', 'Generator start script'),
-             ('generator_clean_handler', 'Generator cleanup script'),
-             ('generator_simulated_hosts', 'Generator simulated hosts'),
-             ('generator_threads', 'Generator threads'),
-             ('generator_thread_creation_delay_ms',
+             ('cbench_name', 'Generator name'),
+             ('cbench_node_ip', 'Cbench node IP address'),
+             ('cbench_node_ssh_port', 'Cbench node ssh port'),
+             ('cbench_node_username', 'Cbench node username'),
+             ('cbench_node_password', 'Cbench node password'),
+             ('cbench_build_handler', 'Generator build script'),
+             ('cbench_run_handler', 'Generator start script'),
+             ('cbench_clean_handler', 'Generator cleanup script'),
+             ('cbench_simulated_hosts', 'Generator simulated hosts'),
+             ('cbench_threads', 'Generator threads'),
+             ('cbench_thread_creation_delay_ms',
               'Generation delay in ms between thread creation'),
-             ('generator_switches_per_thread',
+             ('cbench_switches_per_thread',
               'Switches per generator thread'),
-             ('generator_internal_repeats', 'Generator internal repeats'),
-             ('generator_ms_per_test', 'Internal repeats duration in ms'),
-             ('generator_rebuild',
+             ('cbench_internal_repeats', 'Generator internal repeats'),
+             ('cbench_ms_per_test', 'Internal repeats duration in ms'),
+             ('cbench_rebuild',
               'Generator rebuild between each test repeat'),
-             ('generator_mode', 'Generator testing mode'),
-             ('generator_warmup', 'Generator warmup repeats'),
-             ('generator_delay_before_traffic_ms',
+             ('cbench_mode', 'Generator testing mode'),
+             ('cbench_warmup', 'Generator warmup repeats'),
+             ('cbench_delay_before_traffic_ms',
               'Generator delay before sending traffic in ms'),
              ('java_opts', 'JVM options')
             ], config_json)],
@@ -423,22 +525,22 @@ def get_report_spec(test_type, config_json, results_json):
              ('date', 'Sample timestamp (date)'),
              ('test_repeats', 'Total test repeats'),
              ('repeat_id', 'External repeat ID'),
-             ('generator_internal_repeats', 'Generator Internal repeats'),
+             ('cbench_internal_repeats', 'Generator Internal repeats'),
              ('internal_repeat_id', 'Internal repeat ID'),
              ('throughput_responses_sec', 'Throughput (responses/sec)'),
-             ('generator_simulated_hosts', 'Generator simulated hosts'),
-             ('generator_switches', 'Generated simulated switches'),
-             ('generator_threads', 'Generator threads'),
-             ('generator_switches_per_thread',
+             ('cbench_simulated_hosts', 'Generator simulated hosts'),
+             ('cbench_switches', 'Generated simulated switches'),
+             ('cbench_threads', 'Generator threads'),
+             ('cbench_switches_per_thread',
               'Switches per generator thread'),
-             ('generator_thread_creation_delay_ms',
+             ('cbench_thread_creation_delay_ms',
               'Generator delay before traffic transmission (ms)'),
-             ('generator_delay_before_traffic_ms',
+             ('cbench_delay_before_traffic_ms',
               'Delay between switches requests (ms)'),
-             ('generator_ms_per_test', 'Internal repeats interval'),
-             ('generator_warmup', 'Generator warmup repeats'),
-             ('generator_mode', 'Generator test mode'),
-             ('controller_ip', 'Controller IP'),
+             ('cbench_ms_per_test', 'Internal repeats interval'),
+             ('cbench_warmup', 'Generator warmup repeats'),
+             ('cbench_mode', 'Generator test mode'),
+             ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
              ('one_minute_load', 'One minute load'),
