@@ -1,5 +1,10 @@
 {
 
+"nstat_node_ip":"127.0.0.1",
+"nstat_node_ssh_port":"22",
+"nstat_node_username":"vagrant",
+"nstat_node_password":"vagrant",
+
 
 "controller_node_ip":"127.0.0.1",
 "controller_node_ssh_port":"22",
