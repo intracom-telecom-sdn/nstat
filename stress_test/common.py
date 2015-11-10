@@ -14,12 +14,6 @@ import util.file_ops
 import util.process
 import util.sysstats
 
-# termination messages sent from monitor thread to main in order to
-# kill generator, either when it fails to make its switches visible
-# to the controller, or not
-TERM_GEN_FAIL = '__kill_failed_generator__'
-TERM_GEN_SUCCESS = '__kill_successful_generator__'
-
 
 def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
     """Query number of switches registered in ODL operational DS
@@ -110,7 +104,7 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 def poll_ds_thread(controller_ip, controller_restconf_port,
                    controller_restconf_user, controller_restconf_password,
                    boot_start_time, expected_switches, discovery_deadline_ms,
-                   term_success, term_fail, queuecomm):
+                   queuecomm):
     """
     Poll operational DS to discover installed switches
 
@@ -148,7 +142,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
                 '{1} switches.'.format(discovery_deadline,
                                        discovered_switches))
 
-            queuecomm.put((term_fail.value.decode(), -1.0, discovered_switches))
+            queuecomm.put((-1.0, discovered_switches))
             return
         else:
             discovered_switches = check_ds_switches(controller_ip.value.decode(),
@@ -162,8 +156,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
                     '[poll_ds_thread] {0} switches found in {1} seconds'.
                     format(discovered_switches, delta_t))
 
-                queuecomm.put((term_success.value.decode(),
-                               time.time() - t_start, discovered_switches))
+                queuecomm.put((delta_t, discovered_switches))
                 return
         time.sleep(1)
 

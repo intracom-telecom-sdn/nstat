@@ -9,7 +9,6 @@
 import cbench_utils
 import common
 import controller_utils
-import ctypes
 import itertools
 import json
 import logging
@@ -18,6 +17,7 @@ import os
 import report_spec
 import shutil
 import sys
+import time
 import util.file_ops
 
 
@@ -108,7 +108,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_delay_before_traffic_ms = multiprocessing.Value('i',
         conf['cbench_delay_before_traffic_ms'])
 
-    sleep_ms = multiprocessing.Value('i', 0)
+    t_start = multiprocessing.Value('d', 0.0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
     # termination message sent to monitor thread when generator is finished
     term_success = multiprocessing.Array('c',
@@ -206,7 +206,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.debug('{0} Creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            sleep_ms.value = \
+            sleep_ms = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
             total_cbench_switches = \
                 cbench_threads.value * cbench_switches_per_thread.value
@@ -216,17 +216,17 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             # We want this value to be high enough, equivalent to the topology
             # size.
             discovery_deadline_ms.value = \
-                (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms.value
+                (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms
 
-
+            t_start.value = time.time()
             logging.debug('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_node_ip, controller_restconf_port,
                       controller_restconf_user,
                       controller_restconf_password,
-                      sleep_ms, cbench_switches, discovery_deadline_ms,
-                      term_success, term_fail, result_queue))
+                      t_start, cbench_switches, discovery_deadline_ms,
+                      result_queue))
 
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
@@ -286,8 +286,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 cbench_internal_repeats.value
 
             statistics['cbench_warmup'] = cbench_warmup.value
-            statistics['bootup_time_secs'] = res[1]
-            statistics['discovered_switches'] = res[2]
+            statistics['bootup_time_secs'] = res[0]
+            statistics['discovered_switches'] = res[1]
             cbench_thread.terminate()
             total_samples.append(statistics)
 
