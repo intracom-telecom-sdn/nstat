@@ -109,12 +109,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         conf['cbench_delay_before_traffic_ms'])
 
     t_start = multiprocessing.Value('d', 0.0)
+    sleep_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
-    # termination message sent to monitor thread when generator is finished
-    term_success = multiprocessing.Array('c',
-        str('__kill_successful_generator__').encode())
-    term_fail = multiprocessing.Array('c',
-        str('__kill_failed_generator__').encode())
+
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -206,17 +203,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.debug('{0} Creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            sleep_ms = \
+            sleep_ms.value = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
             total_cbench_switches = \
                 cbench_threads.value * cbench_switches_per_thread.value
             total_cbench_hosts = \
                 cbench_simulated_hosts.value * total_cbench_switches
-
-            # We want this value to be high enough, equivalent to the topology
-            # size.
-            discovery_deadline_ms.value = \
-                (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms
+            discovery_deadline_ms.value = 120000
 
             t_start.value = time.time()
             logging.debug('{0} Creating monitor thread'.format(test_type))
@@ -225,7 +218,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 args=(controller_node_ip, controller_restconf_port,
                       controller_restconf_user,
                       controller_restconf_password,
-                      t_start, cbench_switches, discovery_deadline_ms,
+                      t_start, sleep_ms, cbench_switches, discovery_deadline_ms,
                       result_queue))
 
             logging.info('{0} Creating generator thread'.format(test_type))
