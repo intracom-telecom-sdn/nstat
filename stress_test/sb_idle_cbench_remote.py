@@ -215,7 +215,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             # We want this value to be high enough, equivalent to the topology
             # size.
-            discovery_deadline_ms = \
+            discovery_deadline_ms.value = \
                 (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms.value
 
 
