@@ -215,7 +215,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             # We want this value to be high enough, equivalent to the topology
             # size.
-            discovery_deadline_ms = \
+            discovery_deadline_ms.value = \
                 (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms.value
 
 
@@ -262,7 +262,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             # of the object to reflect the termination.
             cbench_thread.join()
 
-            statistics = common.sample_stats(cpid)
+            statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['cbench_simulated_hosts'] = \
@@ -292,7 +292,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             total_samples.append(statistics)
 
             controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid)
+                controller_status_handler, cpid, controller_ssh_client)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -322,7 +322,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} Stopping controller.'.
                          format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid)
+                controller_status_handler, cpid, controller_ssh_client)
         except:
             pass
 
@@ -340,11 +340,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         if controller_cleanup:
             logging.info('{0} Cleaning controller.'.format(test_type))
-            controller_utils.cleanup_controller(controller_clean_handler)
+            controller_utils.cleanup_controller(controller_clean_handler,
+                                                controller_ssh_client)
 
         if cbench_cleanup:
             logging.info('{0} Cleaning generator.'.format(test_type))
-            cbench_utils.cleanup_generator(cbench_clean_handler)
+            cbench_utils.cleanup_generator(cbench_clean_handler,
+                                           cbench_ssh_client)
 
 
 def get_report_spec(test_type, config_json, results_json):
