@@ -1,5 +1,5 @@
 {
-# Environmental parameters
+
 
 "controller_node_ip":"127.0.0.1",
 "controller_node_ssh_port":"22",
@@ -13,7 +13,6 @@
 "cbench_node_password":"vagrant",
 
 
-# Static parameters
 
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start_droptestDS.sh",
@@ -28,9 +27,6 @@
 "cbench_clean_handler":"./clean.sh",
 "cbench_name":"Cbench",
 
-# Test parameters
-
-## Constants
 
 "controller_rebuild":true,
 "controller_cleanup":false,
@@ -48,7 +44,6 @@
 "test_repeats":2,
 
 
-## Dimensions
 
 "controller_statistics_period_ms":[3000],
 "cbench_simulated_hosts":[100],
@@ -57,7 +52,7 @@
 "cbench_thread_creation_delay_ms":[0],
 "cbench_delay_before_traffic_ms":[0],
 
-# Plots
+
 
 "plots":[
     {
