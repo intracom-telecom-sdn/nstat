@@ -165,10 +165,12 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         logging.info('{0} Starting and stopping controller to '
                      'generate xml files'.format(test_type))
 
+
         cpid = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
             controller_port.value, ' '.join(conf['java_opts']),
             controller_ssh_client)
+
 
         # Controller status check is done inside start_controller() of the
         # controller_utils
@@ -211,7 +213,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             total_cbench_hosts = \
                 cbench_simulated_hosts.value * total_cbench_switches
 
-
             # We want this value to be high enough, equivalent to the topology
             # size.
             discovery_deadline_ms = \
@@ -222,7 +223,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_node_ip, controller_restconf_port,
-                      (controller_restconf_user, controller_restconf_password),
+                      controller_restconf_user,
+                      controller_restconf_password,
                       sleep_ms, cbench_switches, discovery_deadline_ms,
                       term_success, term_fail, result_queue))
 
@@ -241,8 +243,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,
-                      cbench_node_password, term_success, term_fail,
-                      data_queue))
+                      cbench_node_password, term_success, term_fail))
 
             # Parallel section
             monitor_thread.start()

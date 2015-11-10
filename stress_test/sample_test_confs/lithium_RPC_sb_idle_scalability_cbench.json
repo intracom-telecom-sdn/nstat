@@ -4,7 +4,7 @@
 "controller_stop_handler":"./stop.sh",
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
-"controller_statistics_handler":"/change_stats_period.py",
+"controller_statistics_handler":"./change_stats_period.py",
 "controller_logs_dir":"./distribution-karaf-0.3.1-Lithium-SR1/data/log/",
 
 "controller_rebuild":true,
