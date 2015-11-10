@@ -17,6 +17,7 @@ import os
 import report_spec
 import shutil
 import sys
+import time
 import util.file_ops
 
 
@@ -154,11 +155,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             # We want this value to be big, equivalent to the topology size.
             discovery_deadline_ms = \
                 (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms
+
+            t_start = time.time()
             logging.debug('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_ip, controller_restconf_port,
-                      controller_restconf_auth_token, sleep_ms,
+                      controller_restconf_auth_token, t_start,
                       generator_switches, discovery_deadline_ms, result_queue))
 
             logging.info('{0} Creating generator thread'.format(test_type))
