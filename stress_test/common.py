@@ -103,7 +103,8 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
 def poll_ds_thread(controller_ip, controller_restconf_port,
                    controller_restconf_user, controller_restconf_password,
-                   boot_start_time, bootup_time_ms, expected_switches,
+                   boot_start_time, bootup_time_ms,
+                   cbench_thread_creation_delay_ms, expected_switches,
                    discovery_deadline_ms, queuecomm):
     """
     Poll operational DS to discover installed switches
@@ -113,6 +114,10 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :param auth_token: tuple with controller restconf user and controller
     restconf password (controller_restconf_user, controller_restconf_password)
     :param boot_start_time: The time we begin starting topology switches
+    :param bootup_time_ms: Time to bootup switches topology (in ms). We start
+    discovery process after this time.
+    :param cbench_thread_creation_delay_ms: Delay before the creation of a
+    cbench thread (in ms)
     :param expected_switches: switches expected to find in the DS
     :param discovery_deadline_ms: deadline (in ms) at which the thread
     should discover switches (in milliseconds)
@@ -121,13 +126,16 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :type controller_restconf_port: int
     :type controller_restconf_auth_token: tuple<str>
     :type boot_start_time: int
+    :type bootup_time_ms: int
+    :type cbench_thread_creation_delay_ms: int
     :type expected_switches: int
     :type discovery_deadline_ms: float
     :type queuecomm: multiprocessing.Queue
     """
 
     discovery_deadline = float(discovery_deadline_ms.value) / 1000
-    sleep_before_discovery = float(bootup_time_ms) / 1000
+    sleep_before_discovery = float(bootup_time_ms.value) / 1000
+    cbench_thread_creation_delay = float(cbench_thread_creation_delay_ms) / 1000
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time.value
     time.sleep(sleep_before_discovery)
@@ -152,7 +160,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
                  controller_restconf_password.value.decode()))
 
             if discovered_switches == expected_switches.value:
-                delta_t = time.time() - t_start
+                delta_t = time.time() - t_start - cbench_thread_creation_delay
                 logging.info(
                     '[poll_ds_thread] {0} switches found in {1} seconds'.
                     format(discovered_switches, delta_t))
