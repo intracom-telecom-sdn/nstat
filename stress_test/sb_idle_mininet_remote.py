@@ -62,9 +62,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         str(conf['controller_node_password']).encode())
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
-    controller_node_ssh_port = conf['controller_node_ssh_port']
-
-
+    controller_node_ssh_port = multiprocessing.Array('c',
+        str(conf['controller_node_ssh_port']).encode())
+    
     controller_restconf_user = multiprocessing.Array('c',
         str(conf['controller_restconf_user']).encode())
 
