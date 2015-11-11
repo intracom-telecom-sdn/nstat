@@ -110,8 +110,8 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
 def poll_ds_thread(controller_ip, controller_restconf_port,
                    controller_restconf_auth_token, boot_start_time,
-                   bootup_time_ms, thread_creation_delay_ms,
-                   expected_switches, discovery_deadline_ms, queuecomm):
+                   bootup_time_ms, expected_switches, discovery_deadline_ms,
+                   queuecomm):
     """
     Poll operational DS to discover installed switches
 
@@ -121,8 +121,6 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     restconf password (controller_restconf_user, controller_restconf_password)
     :param boot_start_time: The time we begin starting topology switches
     :param bootup_time_ms: Time interval to bootup topology (in ms)
-    :param thread_creation_delay_ms: The delay to create each generator
-    thread (in ms)
     :param expected_switches: switches expected to find in the DS
     :param discovery_deadline_ms: deadline (in ms) at which the thread
     should discover switches (in milliseconds)
@@ -132,7 +130,6 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :type controller_restconf_auth_token: tuple<str>
     :type boot_start_time: int
     :type bootup_time_ms: int
-    :type thread_creation_delay_ms: int
     :type expected_switches: int
     :type discovery_deadline_ms: float
     :type queuecomm: multiprocessing.Queue
@@ -140,7 +137,6 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
 
     discovery_deadline = float(discovery_deadline_ms) / 1000
     bootup_time = float(bootup_time_ms) / 1000
-    thread_creation_delay = float(thread_creation_delay_ms) / 1000
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time
     time.sleep(bootup_time)
@@ -163,7 +159,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
                 controller_restconf_port, controller_restconf_auth_token)
 
             if discovered_switches == expected_switches:
-                delta_t = time.time() - t_start - thread_creation_delay
+                delta_t = time.time() - t_start
                 logging.info(
                     '[poll_ds_thread] {0} switches found in {1} seconds'.
                     format(discovered_switches, delta_t))
