@@ -163,13 +163,12 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
                 controller_restconf_port, controller_restconf_auth_token)
 
             if discovered_switches == expected_switches:
-                delta_t = time.time() - t_start
+                delta_t = time.time() - t_start - thread_creation_delay
                 logging.info(
                     '[poll_ds_thread] {0} switches found in {1} seconds'.
                     format(discovered_switches, delta_t))
 
-                queuecomm.put((TERM_GEN_SUCCESS, time.time() - t_start,
-                               discovered_switches))
+                queuecomm.put((TERM_GEN_SUCCESS, delta_t, discovered_switches))
                 return
         time.sleep(1)
 
