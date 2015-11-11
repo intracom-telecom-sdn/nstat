@@ -214,13 +214,13 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 'on controller.'.format(test_type))
             logging.info('{0} Initialize mininet topology.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
-                mininet_node_ip, mininet_server_rest_port, 
-                controller_node_ip.value, controller_port, 
+                mininet_node_ip, mininet_server_rest_port,
+                controller_node_ip.value, controller_port,
                 mininet_topology_type, mininet_size.value,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
-            t_start = time.time()
+            t_start.value = time.time()
 
             logging.debug('{0} Start mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
@@ -259,7 +259,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['discovered_switches'] = res[2]
             total_samples.append(statistics)
 
-            logging.info('{0} Stopping mininet topology.'.format(test_type))
+            logging.info('{0} Stopping Mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_node_ip, mininet_server_rest_port)
 
