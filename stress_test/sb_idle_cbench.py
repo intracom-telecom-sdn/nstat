@@ -241,9 +241,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             # Parallel section
             monitor_thread.start()
             cbench_thread.start()
+
             res = result_queue.get(block=True)
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
+
             # After the monitor thread joins, we no longer need the generator
             # because the actual test has been completed and we have the
             # results. That is why we do not wait generator thread to return

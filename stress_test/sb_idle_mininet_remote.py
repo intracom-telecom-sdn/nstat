@@ -66,10 +66,6 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         str(conf['controller_restconf_password']).encode())
 
 
-
-
-
-
     controller_port = conf['controller_port']
     controller_restconf_port = multiprocessing.Value('i',
         conf['controller_restconf_port'])
@@ -90,6 +86,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         conf['mininet_init_topo_handler']
     mininet_start_topo_handler = mininet_base_dir + \
         conf['mininet_start_topo_handler']
+    mininet_size = multiprocessing.Value('i', conf['mininet_size'])
+
     mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
     mininet_node_ip = conf['mininet_node_ip']
     mininet_node_ssh_port = conf['mininet_node_ssh_port']
@@ -99,7 +97,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
+    discovery_deadline_ms.value = multiprocessing.Value('i', 0)
     cbench_switches = multiprocessing.Value('i', 0)
 
     # list of samples: each sample is a dictionary that contains
@@ -160,7 +158,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_status_handler, cpid, controller_ssh_client)
 
         # Run tests for all possible dimensions
-        for (mininet_size,
+        for (mininet_size.value,
              mininet_group_size,
              mininet_group_delay_ms,
              mininet_hosts_per_switch,
@@ -197,12 +195,12 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             result_queue = multiprocessing.Queue()
 
             sleep_ms = \
-                int(mininet_size/mininet_group_size) * mininet_group_delay_ms
-            total_mininet_hosts = mininet_hosts_per_switch * mininet_size
+                int(mininet_size.value/mininet_group_size) * mininet_group_delay_ms
+            total_mininet_hosts = mininet_hosts_per_switch * mininet_size.value
 
             # We want this value to be big, equivalent to the topology size.
-            discovery_deadline_ms = \
-                (7000 * (mininet_size + total_mininet_hosts)) + sleep_ms
+            discovery_deadline_ms.value = \
+                (7000 * (mininet_size.value + total_mininet_hosts)) + sleep_ms
 
             logging.info(
                 '{0} Initiating topology on REST server and start '
@@ -211,7 +209,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} Initialize mininet topology.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_node_ip, mininet_server_rest_port, controller_node_ip,
-                controller_port, mininet_topology_type, mininet_size,
+                controller_port, mininet_topology_type, mininet_size.value,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
@@ -228,20 +226,19 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 args=(controller_node_ip, controller_restconf_port,
                       controller_restconf_user,
                       controller_restconf_password,
-                      t_start, bootup_time_ms, cbench_switches,
+                      t_start, bootup_time_ms, mininet_size,
                       discovery_deadline_ms, result_queue))
 
-
-
-
+            monitor_thread.start()
             res = result_queue.get(block=True)
+
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
 
             statistics = common.sample_stats(cpid)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
-            statistics['mininet_size'] = mininet_size
+            statistics['mininet_size'] = mininet_size.value
             statistics['mininet_topology_type'] = mininet_topology_type
             statistics['mininet_hosts_per_switch'] = \
                 mininet_hosts_per_switch
