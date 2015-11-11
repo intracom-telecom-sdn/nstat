@@ -40,12 +40,34 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     :type output_dir: str
     """
 
+    test_type = '[sb_idle_mininet]'
+    logging.info('{0} Initializing test parameters'.format(test_type))
+
     # Global variables read-write shared between monitor-main thread.
     cpid = 0
     global_sample_id = 0
-    test_type = '[sb_idle_mininet]'
 
-    logging.info('{0} Initializing test parameters'.format(test_type))
+    # Mininet parameters
+    mininet_boot_handler = mininet_base_dir + conf['mininet_boot_handler']
+    mininet_stop_switches_handler = mininet_base_dir + \
+        conf['mininet_stop_switches_handler']
+    mininet_get_switches_handler = mininet_base_dir + \
+        conf['mininet_get_switches_handler']
+    mininet_init_topo_handler = mininet_base_dir + \
+        conf['mininet_init_topo_handler']
+    mininet_start_topo_handler = mininet_base_dir + \
+        conf['mininet_start_topo_handler']
+    mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
+    mininet_node_ip = conf['mininet_node_ip']
+    mininet_node_ssh_port = conf['mininet_node_ssh_port']
+    mininet_server_rest_port = conf['mininet_server_rest_port']
+    mininet_node_username = conf['mininet_node_username']
+    mininet_node_password = conf['mininet_node_password']
+
+    mininet_size = multiprocessing.Value('i', 0)
+    mininet_hosts_per_switch = multiprocessing.Value('i', 0)
+
+    # Controller parameters
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
     controller_status_handler = \
@@ -55,6 +77,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_statistics_handler = \
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
+    controller_port = conf['controller_port']
+    controller_rebuild = conf['controller_rebuild']
+
+    controller_cleanup = conf['controller_cleanup']
 
     controller_node_username = multiprocessing.Array('c',
         str(conf['controller_node_username']).encode())
@@ -70,39 +96,12 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
     controller_restconf_password = multiprocessing.Array('c',
         str(conf['controller_restconf_password']).encode())
-
-
-    controller_port = conf['controller_port']
     controller_restconf_port = multiprocessing.Value('i',
         conf['controller_restconf_port'])
 
-    controller_restconf_auth_token = (conf['controller_restconf_user'],
-                                      conf['controller_restconf_password'])
-    controller_rebuild = conf['controller_rebuild']
-
-    controller_cleanup = conf['controller_cleanup']
 
 
-    mininet_boot_handler = mininet_base_dir + conf['mininet_boot_handler']
-    mininet_stop_switches_handler = mininet_base_dir + \
-        conf['mininet_stop_switches_handler']
-    mininet_get_switches_handler = mininet_base_dir + \
-        conf['mininet_get_switches_handler']
-    mininet_init_topo_handler = mininet_base_dir + \
-        conf['mininet_init_topo_handler']
-    mininet_start_topo_handler = mininet_base_dir + \
-        conf['mininet_start_topo_handler']
-
-    mininet_size = multiprocessing.Value('i', 0)
-    mininet_hosts_per_switch = multiprocessing.Value('i', 0)
-
-    mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
-    mininet_node_ip = conf['mininet_node_ip']
-    mininet_node_ssh_port = conf['mininet_node_ssh_port']
-    mininet_server_rest_port = conf['mininet_server_rest_port']
-    mininet_node_username = conf['mininet_node_username']
-    mininet_node_password = conf['mininet_node_password']
-
+    #Various test parameters
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
@@ -291,6 +290,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         logging.info('{0} Creating test output directory if not exist.'.
                      format(test_type))
+
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
@@ -317,7 +317,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 int(controller_node_ssh_port.value.decode()))
         except:
             logging.error('{0} {1}'.format(
-                test_type, 'Fail to transfer logs dir of the controller.'))
+                test_type, 'Fail to transfer controller logs dir.'))
 
         if controller_cleanup:
             logging.info('{0} Cleaning controller'.format(test_type))
@@ -341,7 +341,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         except:
             pass
 
-        # Closing ssh connections with controller/cbench nodes
+        # Closing ssh connections with controller/mininet nodes
         controller_ssh_client.close()
         mininet_ssh_client.close()
 
