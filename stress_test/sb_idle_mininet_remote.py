@@ -245,7 +245,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
 
-            statistics = common.sample_stats(cpid)
+            statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['mininet_size'] = mininet_size.value
