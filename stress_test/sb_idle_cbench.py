@@ -343,6 +343,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cbench_utils.cleanup_generator(cbench_clean_handler,
                                            cbench_ssh_client)
 
+        # Closing ssh connections with controller/cbench nodes
+        controller_ssh_client.close()
+        cbench_ssh_client.close()
 
 def get_report_spec(test_type, config_json, results_json):
     """It returns all the information that is needed for the generation of the

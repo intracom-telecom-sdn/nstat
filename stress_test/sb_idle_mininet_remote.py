@@ -63,9 +63,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
     controller_node_ssh_port = conf['controller_node_ssh_port']
-    
-    
-    
+
+
     controller_restconf_user = multiprocessing.Array('c',
         str(conf['controller_restconf_user']).encode())
 
@@ -338,10 +337,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         except:
             pass
 
-        logging.info('{0} Delete handleres from Mininet VM'.format(test_type))
-        mininet_utils.delete_mininet_handlers(mininet_node_ip, mininet_node_username,
-            mininet_node_password, '/tmp/transfered_files/',
-            mininet_node_ssh_port)
+        # Closing ssh connections with controller/cbench nodes
+        controller_ssh_client.close()
         mininet_ssh_client.close()
 
 
