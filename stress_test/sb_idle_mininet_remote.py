@@ -92,7 +92,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         conf['mininet_init_topo_handler']
     mininet_start_topo_handler = mininet_base_dir + \
         conf['mininet_start_topo_handler']
+
     mininet_size = multiprocessing.Value('i', 0)
+    mininet_hosts_per_switch = multiprocessing.Value('i', 0)
 
     mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
     mininet_node_ip = conf['mininet_node_ip']
@@ -126,7 +128,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         # Opening connection with mininet_node_ip and returning
         # mininet_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating session with Mininet VM.'.
+        logging.info('{0} Initiating session with mininet VM.'.
                      format(test_type))
         mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_node_ip,
             mininet_node_username, mininet_node_password, 10,
@@ -167,7 +169,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         for (mininet_size.value,
              mininet_group_size,
              mininet_group_delay_ms,
-             mininet_hosts_per_switch,
+             mininet_hosts_per_switch.value,
              mininet_topology_type,
              controller_statistics_period_ms) in \
              itertools.product(conf['mininet_size'],
@@ -181,7 +183,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_statistics_handler, controller_statistics_period_ms,
                 controller_ssh_client)
 
-            logging.info('{0} Booting up Mininet REST server'.
+            logging.info('{0} Booting up mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_node_ip,
@@ -202,7 +204,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             sleep_ms = \
                 int(mininet_size.value/mininet_group_size) * mininet_group_delay_ms
-            total_mininet_hosts = mininet_hosts_per_switch * mininet_size.value
+            total_mininet_hosts = \
+                mininet_hosts_per_switch.value * mininet_size.value
 
             # We want this value to be big, equivalent to the topology size.
             discovery_deadline_ms.value = \
@@ -218,7 +221,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_node_ip.value, controller_port,
                 mininet_topology_type, mininet_size.value,
                 mininet_group_size, mininet_group_delay_ms,
-                mininet_hosts_per_switch)
+                mininet_hosts_per_switch.value)
 
             t_start.value = time.time()
 
@@ -248,7 +251,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['mininet_size'] = mininet_size.value
             statistics['mininet_topology_type'] = mininet_topology_type
             statistics['mininet_hosts_per_switch'] = \
-                mininet_hosts_per_switch
+                mininet_hosts_per_switch.value
             statistics['mininet_group_size'] = mininet_group_size
             statistics['mininet_group_delay_ms'] = mininet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
@@ -259,7 +262,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['discovered_switches'] = res[2]
             total_samples.append(statistics)
 
-            logging.info('{0} Stopping Mininet topology.'.format(test_type))
+            logging.info('{0} Stopping mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_node_ip, mininet_server_rest_port)
 
@@ -267,7 +270,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_status_handler, cpid, controller_ssh_client)
 
             logging.info(
-                '{0} Killing REST daemon in Mininet VM and existing topology.'.
+                '{0} Killing REST daemon in mininet VM and existing topology.'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_server_rest_port)
@@ -322,7 +325,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                                 controller_ssh_client)
 
         try:
-            logging.info('{0} Tearing down existing Mininet topologies.'.
+            logging.info('{0} Tearing down existing mininet topologies.'.
                           format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_node_ip, mininet_server_rest_port)
@@ -331,7 +334,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         try:
             logging.info(
-                '{0} Killing REST daemon in Mininet VM and existing topology.'.
+                '{0} Killing REST daemon in mininet VM and existing topology.'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_server_rest_port)
