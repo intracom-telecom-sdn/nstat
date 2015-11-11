@@ -273,6 +273,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
+        logging.info('{0} Initiating session with Cbench VM.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
             cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
             int(cbench_node_ssh_port.value.decode()))
@@ -458,6 +459,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_utils.cleanup_generator(cbench_clean_handler,
                                            cbench_ssh_client)
 
+        # Closing ssh connections with controller/cbench nodes
+        controller_ssh_client.close()
+        cbench_ssh_client.close()
 
 def get_report_spec(test_type, config_json, results_json):
     """It returns all the information that is needed for the generation of the
