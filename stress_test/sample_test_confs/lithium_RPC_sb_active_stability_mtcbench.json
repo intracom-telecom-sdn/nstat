@@ -16,7 +16,7 @@
 
 "cbench_node_spec":"/nstat/vagrant/node_cbench/Vagrantfile",
 "cbench_host_ip":"127.0.0.1",
-"cbench_node_ip":"192.168.64.17",
+"cbench_node_ip":"127.0.0.1",
 "cbench_node_ssh_port":"22",
 "cbench_node_username":"vagrant",
 "cbench_node_password":"vagrant",
