@@ -64,7 +64,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         str(conf['controller_node_ip']).encode())
     controller_node_ssh_port = multiprocessing.Array('c',
         str(conf['controller_node_ssh_port']).encode())
-    
+
     controller_restconf_user = multiprocessing.Array('c',
         str(conf['controller_restconf_user']).encode())
 
@@ -154,7 +154,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         cpid = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
-            controller_port.value, ' '.join(conf['java_opts']),
+            controller_port, ' '.join(conf['java_opts']),
             controller_ssh_client)
 
         # Controller status check is done inside start_controller() of the
@@ -190,7 +190,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} Starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
-                controller_port.value, ' '.join(conf['java_opts']),
+                controller_port, ' '.join(conf['java_opts']),
                 controller_ssh_client)
             # Control of controller status
             # is done inside controller_utils.start_controller()
