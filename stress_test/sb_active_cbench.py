@@ -273,6 +273,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
+        logging.info('{0} Initiating session with Cbench VM.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
             cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
             int(cbench_node_ssh_port.value.decode()))
