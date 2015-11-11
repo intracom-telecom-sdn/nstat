@@ -86,7 +86,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         conf['mininet_init_topo_handler']
     mininet_start_topo_handler = mininet_base_dir + \
         conf['mininet_start_topo_handler']
-    mininet_size = multiprocessing.Value('i', conf['mininet_size'])
+    mininet_size = multiprocessing.Value('i', 0)
 
     mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
     mininet_node_ip = conf['mininet_node_ip']
