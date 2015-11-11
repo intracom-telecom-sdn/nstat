@@ -39,7 +39,7 @@ def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
     return exit_status
 
 
-def rebuild_generator(generator_build_handler, ssh_client=None):
+def rebuild_cbench(generator_build_handler, ssh_client=None):
     """Rebuilds the generator.
 
     :param generator_build_handler: filepath to the handler that builds the
@@ -54,10 +54,10 @@ def rebuild_generator(generator_build_handler, ssh_client=None):
 
 
 
-def run_generator(generator_run_handler, controller_ip,
-                  controller_port, threads, sw_per_thread, switches,
-                  thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
-                  hosts, warmup, mode, data_queue=None, ssh_client=None):
+def run_cbench(generator_run_handler, controller_ip, controller_port, threads,
+               sw_per_thread, switches, thr_delay_ms, traf_delay_ms,
+               ms_per_test, internal_repeats, hosts, warmup, mode,
+               data_queue=None, ssh_client=None):
     """Runs a generator instance
 
     :param generator_run_handler: generator run handler
@@ -102,7 +102,7 @@ def run_generator(generator_run_handler, controller_ip,
     command_exec_wrapper(cmd_list, '[generator_run_handler]', ssh_client,
                          data_queue)
 
-def cleanup_generator(generator_clean_handler, ssh_client=None):
+def cleanup_cbench(generator_clean_handler, ssh_client=None):
     """Shuts down the Generator.
 
     :param generator_clean_handler: Filepath to the handler that cleanup the
@@ -172,7 +172,7 @@ def cbench_thread(generator_run_handler, controller_ip,
             cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
             int(cbench_node_ssh_port.value.decode()))
 
-        run_generator(generator_run_handler.value.decode(), controller_ip.value.decode(),
+        run_cbench(generator_run_handler.value.decode(), controller_ip.value.decode(),
             controller_port.value, threads.value, sw_per_thread.value, switches.value, thr_delay_ms.value,
             traf_delay_ms.value, ms_per_test.value, internal_repeats.value, hosts.value, warmup.value, mode.value.decode(),
             data_queue, cbench_ssh_client)

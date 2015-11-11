@@ -73,6 +73,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_switches_per_thread = multiprocessing.Value('i', 0)
     cbench_switches = multiprocessing.Value('i', 0)
     cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
+    cbench_simulated_hosts = multiprocessing.Value('i',
+        conf['cbench_simulated_hosts'])
+    cbench_delay_before_traffic_ms = multiprocessing.Value('i',
+        conf['cbench_delay_before_traffic_ms'])
 
     # Controller parameters
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
@@ -103,11 +107,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_restconf_password = multiprocessing.Array('c',
         str(conf['controller_restconf_password']).encode())
 
-    cbench_simulated_hosts = multiprocessing.Value('i',
-        conf['cbench_simulated_hosts'])
-    cbench_delay_before_traffic_ms = multiprocessing.Value('i',
-        conf['cbench_delay_before_traffic_ms'])
-
     # Various test parameters
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
@@ -132,7 +131,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating session with Cbench VM.'.format(test_type))
+        logging.info('{0} Initiating session with Cbench node.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(
             cbench_node_ip.value.decode(),
             cbench_node_username.value.decode(),
@@ -148,9 +147,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             int(controller_node_ssh_port.value.decode()))
 
         if cbench_rebuild:
-            logging.info('{0} Building generator.'.format(test_type))
-            cbench_utils.rebuild_generator(cbench_build_handler,
-                                           cbench_ssh_client)
+            logging.info('{0} Building cbench.'.format(test_type))
+            cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
         if controller_rebuild:
             logging.info('{0} Building controller.'.format(test_type))
@@ -222,7 +220,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       t_start, bootup_time_ms, cbench_switches,
                       discovery_deadline_ms, result_queue))
 
-            logging.info('{0} Creating generator thread'.format(test_type))
+            logging.info('{0} Creating cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
                 args=(cbench_run_handler, controller_node_ip,
@@ -247,11 +245,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
 
-            # After the monitor thread joins, we no longer need the generator
+            # After the monitor thread joins, we no longer need cbench
             # because the actual test has been completed and we have the
             # results. That is why we do not wait generator thread to return
             # and we stop it with a termination signal.
-            logging.info('{0} Terminating generator thread'.format(test_type))
+            logging.info('{0} Terminating cbench thread'.format(test_type))
             cbench_thread.terminate()
             # It is important to join() the process after terminating it in
             # order to give the background machinery time to update the status
@@ -341,8 +339,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         if cbench_cleanup:
             logging.info('{0} Cleaning cbench.'.format(test_type))
-            cbench_utils.cleanup_generator(cbench_clean_handler,
-                                           cbench_ssh_client)
+            cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
         controller_ssh_client.close()

@@ -293,8 +293,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         if cbench_rebuild:
             logging.info('{0} Building generator.'.format(test_type))
-            cbench_utils.rebuild_generator(cbench_build_handler,
-                                           cbench_ssh_client)
+            cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
         if controller_rebuild:
             logging.info('{0} Building controller.'.format(test_type))
@@ -460,8 +459,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         if cbench_cleanup:
             logging.info('{0} Cleaning generator.'.format(test_type))
-            cbench_utils.cleanup_generator(cbench_clean_handler,
-                                           cbench_ssh_client)
+            cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
         controller_ssh_client.close()
