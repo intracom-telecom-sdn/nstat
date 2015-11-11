@@ -273,7 +273,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 controller_statistics_period_ms
             statistics['cbench_delay_before_traffic_ms'] = \
                 conf['cbench_delay_before_traffic_ms']
-            statistics['controller_node_ip'] = controller_node_ip
+            statistics['controller_node_ip'] = controller_node_ip.value.decode()
             statistics['controller_port'] = str(controller_port.value)
             statistics['cbench_mode'] = cbench_mode.value.decode()
             statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
@@ -283,7 +283,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_warmup'] = cbench_warmup.value
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
-            cbench_thread.terminate()
             total_samples.append(statistics)
 
             controller_utils.stop_controller(controller_stop_handler,
