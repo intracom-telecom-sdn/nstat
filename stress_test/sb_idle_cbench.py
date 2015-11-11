@@ -146,23 +146,22 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.debug('{0} Creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            sleep_ms = \
+            bootup_time_ms = \
                 generator_threads * generator_thread_creation_delay_ms
             total_cbench_switches = \
                 generator_threads * generator_switches_per_thread
             total_cbench_hosts = \
                 generator_simulated_hosts * total_cbench_switches
-            # We want this value to be big, equivalent to the topology size.
-            discovery_deadline_ms = \
-                (7000 * (total_cbench_switches + total_cbench_hosts)) + sleep_ms
-
+            discovery_deadline_ms = 120000
             t_start = time.time()
+
             logging.debug('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_ip, controller_restconf_port,
-                      controller_restconf_auth_token, t_start,
-                      generator_switches, discovery_deadline_ms, result_queue))
+                      controller_restconf_auth_token, t_start, bootup_time_ms,
+                      thread_creation_delay_ms, generator_switches,
+                      discovery_deadline_ms, result_queue))
 
             logging.info('{0} Creating generator thread'.format(test_type))
             generator_thread = multiprocessing.Process(

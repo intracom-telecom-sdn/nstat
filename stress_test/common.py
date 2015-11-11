@@ -46,7 +46,7 @@ def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
             auth=auth_token).json()['topology'][0]
     except:
         return -1
-    
+
     switches = [node for node in datastore.get('node', []) if not node['node-id'].startswith('host:')]
     return len(switches)
 
@@ -110,6 +110,7 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
 def poll_ds_thread(controller_ip, controller_restconf_port,
                    controller_restconf_auth_token, boot_start_time,
+                   bootup_time_ms, thread_creation_delay_ms,
                    expected_switches, discovery_deadline_ms, queuecomm):
     """
     Poll operational DS to discover installed switches
@@ -119,6 +120,9 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :param auth_token: tuple with controller restconf user and controller
     restconf password (controller_restconf_user, controller_restconf_password)
     :param boot_start_time: The time we begin starting topology switches
+    :param bootup_time_ms: Time interval to bootup topology (in ms)
+    :param thread_creation_delay_ms: The delay to create each generator
+    thread (in ms)
     :param expected_switches: switches expected to find in the DS
     :param discovery_deadline_ms: deadline (in ms) at which the thread
     should discover switches (in milliseconds)
@@ -127,15 +131,19 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
     :type controller_restconf_port: int
     :type controller_restconf_auth_token: tuple<str>
     :type boot_start_time: int
+    :type bootup_time_ms: int
+    :type thread_creation_delay_ms: int
     :type expected_switches: int
     :type discovery_deadline_ms: float
     :type queuecomm: multiprocessing.Queue
     """
 
-    discovery_deadline = float(discovery_deadline_ms)/1000
+    discovery_deadline = float(discovery_deadline_ms) / 1000
+    bootup_time = float(bootup_time_ms) / 1000
+    thread_creation_delay = float(thread_creation_delay_ms) / 1000
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time
-
+    time.sleep(bootup_time)
     logging.info('[poll_ds_thread] Starting discovery')
     t_discovery_start = time.time()
     discovered_switches = 0
