@@ -131,6 +131,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
+        logging.info('{0} Initiating session with Cbench VM.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(
             cbench_node_ip.value.decode(),
             cbench_node_username.value.decode(),
@@ -167,7 +168,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_start_handler, controller_status_handler,
             controller_port.value, ' '.join(conf['java_opts']),
             controller_ssh_client)
-
 
         # Controller status check is done inside start_controller() of the
         # controller_utils
@@ -241,9 +241,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             # Parallel section
             monitor_thread.start()
             cbench_thread.start()
+
             res = result_queue.get(block=True)
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
+
             # After the monitor thread joins, we no longer need the generator
             # because the actual test has been completed and we have the
             # results. That is why we do not wait generator thread to return
@@ -341,6 +343,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cbench_utils.cleanup_generator(cbench_clean_handler,
                                            cbench_ssh_client)
 
+        # Closing ssh connections with controller/cbench nodes
+        controller_ssh_client.close()
+        cbench_ssh_client.close()
 
 def get_report_spec(test_type, config_json, results_json):
     """It returns all the information that is needed for the generation of the

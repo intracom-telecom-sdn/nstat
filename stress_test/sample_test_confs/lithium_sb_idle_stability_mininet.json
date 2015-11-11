@@ -21,7 +21,7 @@
 "mininet_node_ssh_port":"22",
 "mininet_node_username":"vagrant",
 "mininet_node_password":"vagrant",
-    
+
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start.sh",
 "controller_stop_handler":"./stop.sh",
@@ -33,7 +33,6 @@
 "controller_rebuild":true,
 "controller_cleanup":false,
 "controller_name":"ODL",
-"controller_ip":"127.0.0.1",
 "controller_port":6653,
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",

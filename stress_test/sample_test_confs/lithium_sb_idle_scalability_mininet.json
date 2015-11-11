@@ -1,14 +1,14 @@
 {
 "nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
 "nstat_host_ip":"127.0.0.1",
-"nstat_node_ip":"127.0.0.1",
+"nstat_node_ip":"192.168.64.15",
 "nstat_node_ssh_port":"22",
 "nstat_node_username":"vagrant",
 "nstat_node_password":"vagrant",
 
 "controller_node_spec":"/nstat/vagrant/node_controller/Vagrantfile",
 "controller_host_ip":"127.0.0.1",
-"controller_node_ip":"127.0.0.1",
+"controller_node_ip":"192.168.64.16",
 "controller_node_ssh_port":"22",
 "controller_node_username":"vagrant",
 "controller_node_password":"vagrant",
@@ -16,7 +16,7 @@
 
 "mininet_node_spec":"/nstat/vagrant/node_mininet/Vagrantfile",
 "mininet_host_ip":"127.0.0.1",
-"mininet_node_ip":"127.0.0.1",
+"mininet_node_ip":"192.168.64.17",
 "mininet_node_ssh_port":"22",
 "mininet_node_username":"vagrant",
 "mininet_node_password":"vagrant",
@@ -32,7 +32,6 @@
 "controller_rebuild":true,
 "controller_cleanup":false,
 "controller_name":"ODL",
-"controller_ip":"127.0.0.1",
 "controller_port":6653,
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",
