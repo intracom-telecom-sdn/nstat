@@ -115,7 +115,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     total_samples = []
 
     try:
-        # Before procceeding with the experiments check validity
+        # Before proceeding with the experiments check validity
         # of all handlers
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
