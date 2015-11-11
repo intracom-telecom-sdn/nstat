@@ -321,7 +321,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                                 controller_ssh_client)
 
         try:
-            logging.info('{0} Tearing down any existend mininet topology.'.
+            logging.info('{0} Tearing down existing Mininet topologies.'.
                           format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_node_ip, mininet_server_rest_port)
