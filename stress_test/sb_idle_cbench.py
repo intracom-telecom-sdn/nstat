@@ -301,7 +301,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         logging.exception('')
 
     finally:
-        logging.info('{0} Finalizing test')
+        logging.info('{0} Finalizing test'.format(test_type))
 
         logging.info('{0} Creating test output dirctory if not exist.'.
                      format(test_type))

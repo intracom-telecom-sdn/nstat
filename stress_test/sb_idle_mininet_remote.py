@@ -262,15 +262,15 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['discovered_switches'] = res[2]
             total_samples.append(statistics)
 
+            controller_utils.stop_controller(controller_stop_handler,
+                controller_status_handler, cpid, controller_ssh_client)
+
             logging.info('{0} Stopping mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_node_ip, mininet_server_rest_port)
 
-            controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid, controller_ssh_client)
-
             logging.info(
-                '{0} Killing REST daemon in mininet VM and existing topology.'.
+                '{0} Killing 1) REST daemon in mininet node 2) mininet topology.'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_server_rest_port)
