@@ -130,7 +130,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                      format(test_type))
         mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_node_ip,
             mininet_node_username, mininet_node_password, 10,
-            mininet_node_ssh_port)
+            int(mininet_node_ssh_port))
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
