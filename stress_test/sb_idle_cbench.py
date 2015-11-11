@@ -30,7 +30,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
     :param out_json: the JSON output file
     :param ctrl_base_dir: controller base directory
-    :param sb_gen_base_dir: generator base directory
+    :param sb_gen_base_dir: cbench base directory
     :param conf: JSON configuration dictionary
     :param output_dir: directory to store output files
     :type out_json: str
@@ -123,6 +123,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     try:
         # Before proceeding with the experiments check validity of all
         # handlers
+        logging.info('{0} Initiating controller node session.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -131,7 +132,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating session with Cbench node.'.format(test_type))
+        logging.info('{0} Initiating Cbench node session.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(
             cbench_node_ip.value.decode(),
             cbench_node_username.value.decode(),
@@ -247,7 +248,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             # After the monitor thread joins, we no longer need cbench
             # because the actual test has been completed and we have the
-            # results. That is why we do not wait generator thread to return
+            # results. That is why we do not wait cbench thread to return
             # and we stop it with a termination signal.
             logging.info('{0} Terminating cbench thread'.format(test_type))
             cbench_thread.terminate()
@@ -392,7 +393,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_thread_creation_delay_ms',
               'Generation delay in ms between thread creation'),
              ('cbench_switches_per_thread',
-              'Switches per generator thread'),
+              'Switches per cbench thread'),
              ('cbench_internal_repeats', 'Generator internal repeats'),
              ('cbench_ms_per_test', 'Internal repeats duration in ms'),
              ('cbench_rebuild',
@@ -413,7 +414,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_switches', 'Generated simulated switches'),
              ('cbench_threads', 'Generator threads'),
              ('cbench_switches_per_thread',
-              'Switches per generator thread'),
+              'Switches per cbench thread'),
              ('cbench_thread_creation_delay_ms',
               'Generator delay before traffic transmission (ms)'),
              ('cbench_delay_before_traffic_ms',

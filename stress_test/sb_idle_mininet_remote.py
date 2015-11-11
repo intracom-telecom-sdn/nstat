@@ -115,6 +115,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     try:
         # Before proceeding with the experiments check validity
         # of all handlers
+        logging.info('{0} Initiating controller node session.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -124,8 +125,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         # Opening connection with mininet_node_ip and returning
         # mininet_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating session with mininet VM.'.
-                     format(test_type))
+        logging.info('{0} Initiating mininet node session.'.format(test_type))
         mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_node_ip,
             mininet_node_username, mininet_node_password, 10,
             int(mininet_node_ssh_port))
