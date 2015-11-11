@@ -254,8 +254,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_statistics_period_ms
             statistics['controller_node_ip'] = controller_node_ip
             statistics['controller_port'] = str(controller_port)
-            statistics['bootup_time_secs'] = res[1]
-            statistics['discovered_switches'] = res[2]
+            statistics['bootup_time_secs'] = res[0]
+            statistics['discovered_switches'] = res[1]
             total_samples.append(statistics)
 
             controller_utils.stop_controller(controller_stop_handler,
