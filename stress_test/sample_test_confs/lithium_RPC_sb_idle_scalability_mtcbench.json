@@ -33,12 +33,6 @@
 "controller_cleanup":false,
 "controller_name":"ODL",
 
-"controller_node_ip":"127.0.0.1",
-"controller_node_ssh_port":"22",
-"controller_node_username":"jenkins",
-"controller_node_password":"jenkins",
-
-
 "controller_port":6653,
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",
