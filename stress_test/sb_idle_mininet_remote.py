@@ -99,13 +99,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_restconf_port = multiprocessing.Value('i',
         conf['controller_restconf_port'])
 
-
-
     #Various test parameters
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
-    cbench_switches = multiprocessing.Value('i', 0)
 
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:

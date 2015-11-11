@@ -192,33 +192,14 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     test_type = '[sb_active_cbench]'
     logging.info('{0} Initializing test parameters'.format(test_type))
 
-    # Shared read-write variables between monitor-main thread and
-    # generator thread.
-    repeat_id = multiprocessing.Value('i', 0)
-    cpid = multiprocessing.Value('i', 0)
-    global_sample_id = multiprocessing.Value('i', 0)
-    test_repeats = multiprocessing.Value('i', conf['test_repeats'])
-
-    controller_statistics_period_ms = multiprocessing.Value('i', 0)
-    controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
-    controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
-    controller_status_handler = \
-        ctrl_base_dir + conf['controller_status_handler']
-    controller_stop_handler = ctrl_base_dir + conf['controller_stop_handler']
-    controller_clean_handler = ctrl_base_dir + conf['controller_clean_handler']
-    controller_statistics_handler = \
-        ctrl_base_dir + conf['controller_statistics_handler']
-    controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
-    controller_node_ssh_port = multiprocessing.Array('c',
-        str(conf['controller_node_ssh_port']).encode())
-    controller_node_username = multiprocessing.Array('c',
-        str(conf['controller_node_username']).encode())
-    controller_node_password = multiprocessing.Array('c',
-        str(conf['controller_node_password']).encode())
-    controller_rebuild = conf['controller_rebuild']
-    controller_cleanup = conf['controller_cleanup']
-
+    # Cbench parameters
     cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
+    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
+    cbench_rebuild = conf['cbench_rebuild']
+    cbench_cleanup = conf['cbench_cleanup']
+    cbench_name = conf['cbench_name']
+    cbench_rebuild = conf['cbench_rebuild']
+
     cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
         conf['cbench_run_handler']).encode())
     controller_node_ip = multiprocessing.Array('c',
@@ -242,11 +223,34 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_node_password = multiprocessing.Array('c',
         str(conf['cbench_node_password']).encode())
     cbench_mode= multiprocessing.Array('c', str(conf['cbench_mode']).encode())
-    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
-    cbench_rebuild = conf['cbench_rebuild']
-    cbench_cleanup = conf['cbench_cleanup']
-    cbench_name = conf['cbench_name']
-    cbench_rebuild = conf['cbench_rebuild']
+
+    # Controller parameters
+    controller_statistics_period_ms = multiprocessing.Value('i', 0)
+    controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
+    controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
+    controller_status_handler = \
+        ctrl_base_dir + conf['controller_status_handler']
+    controller_stop_handler = ctrl_base_dir + conf['controller_stop_handler']
+    controller_clean_handler = ctrl_base_dir + conf['controller_clean_handler']
+    controller_statistics_handler = \
+        ctrl_base_dir + conf['controller_statistics_handler']
+    controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
+    controller_node_ssh_port = multiprocessing.Array('c',
+        str(conf['controller_node_ssh_port']).encode())
+    controller_node_username = multiprocessing.Array('c',
+        str(conf['controller_node_username']).encode())
+    controller_node_password = multiprocessing.Array('c',
+        str(conf['controller_node_password']).encode())
+    controller_rebuild = conf['controller_rebuild']
+    controller_cleanup = conf['controller_cleanup']
+
+    # Shared read-write variables between monitor-main thread and
+    # generator thread.
+    repeat_id = multiprocessing.Value('i', 0)
+    cpid = multiprocessing.Value('i', 0)
+    global_sample_id = multiprocessing.Value('i', 0)
+    test_repeats = multiprocessing.Value('i', conf['test_repeats'])
+
     # termination message sent to monitor thread when generator is finished
     term_success = multiprocessing.Array('c',
         str('__successful_termination__').encode())
