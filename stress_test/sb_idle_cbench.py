@@ -160,7 +160,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 target=common.poll_ds_thread,
                 args=(controller_ip, controller_restconf_port,
                       controller_restconf_auth_token, t_start, bootup_time_ms,
-                      thread_creation_delay_ms, generator_switches,
+                      generator_thread_creation_delay_ms, generator_switches,
                       discovery_deadline_ms, result_queue))
 
             logging.info('{0} Creating generator thread'.format(test_type))
