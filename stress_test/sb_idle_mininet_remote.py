@@ -64,6 +64,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
     controller_cleanup = conf['controller_cleanup']
 
+
     mininet_boot_handler = mininet_base_dir + conf['mininet_boot_handler']
     mininet_stop_switches_handler = mininet_base_dir + \
         conf['mininet_stop_switches_handler']
