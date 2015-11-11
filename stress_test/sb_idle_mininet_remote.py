@@ -214,8 +214,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 'on controller.'.format(test_type))
             logging.info('{0} Initialize mininet topology.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
-                mininet_node_ip, mininet_server_rest_port, controller_node_ip,
-                controller_port, mininet_topology_type, mininet_size.value,
+                mininet_node_ip, mininet_server_rest_port, 
+                controller_node_ip.value, controller_port, 
+                mininet_topology_type, mininet_size.value,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
