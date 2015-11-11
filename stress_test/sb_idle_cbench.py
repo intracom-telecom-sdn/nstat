@@ -236,7 +236,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       cbench_node_ip,
                       cbench_node_ssh_port,
                       cbench_node_username,
-                      cbench_node_password, term_success, term_fail))
+                      cbench_node_password))
 
             # Parallel section
             monitor_thread.start()
