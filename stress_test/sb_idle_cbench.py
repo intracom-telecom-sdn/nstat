@@ -218,8 +218,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 args=(controller_node_ip, controller_restconf_port,
                       controller_restconf_user,
                       controller_restconf_password,
-                      t_start, bootup_time_ms, cbench_thread_creation_delay_ms,
-                      cbench_switches, discovery_deadline_ms, result_queue))
+                      t_start, bootup_time_ms, cbench_switches,
+                      discovery_deadline_ms, result_queue))
 
             logging.info('{0} Creating generator thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
