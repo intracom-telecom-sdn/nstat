@@ -205,6 +205,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             bootup_time_ms.value = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
+
             total_cbench_switches = \
                 cbench_threads.value * cbench_switches_per_thread.value
             total_cbench_hosts = \
@@ -212,14 +213,17 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             discovery_deadline_ms.value = 120000
 
             t_start.value = time.time()
+
             logging.debug('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
+
                 args=(controller_node_ip, controller_restconf_port,
                       controller_restconf_user,
                       controller_restconf_password,
                       t_start, bootup_time_ms, cbench_switches,
                       discovery_deadline_ms, result_queue))
+
 
             logging.info('{0} Creating cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(

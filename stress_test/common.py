@@ -131,6 +131,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
 
     discovery_deadline = float(discovery_deadline_ms.value) / 1000
     sleep_before_discovery = float(bootup_time_ms.value) / 1000
+
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time.value
     time.sleep(sleep_before_discovery)
