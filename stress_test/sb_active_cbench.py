@@ -94,7 +94,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
     """
 
     internal_repeat_id = 0
-    logging.debug('[monitor_thread] Monitor thread started')
+    logging.info('[monitor_thread] Monitor thread started')
 
     # will hold samples taken in the lifetime of this thread
     samples = []
@@ -110,7 +110,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
             # read messages from queue while TERM_SUCCESS has not been sent
             line = data_queue.get(block=True, timeout=10000)
             if line == term_success.value.decode():
-                logging.debug('[monitor_thread] Got successful termination '
+                logging.info('[monitor_thread] Got successful termination '
                               'string. Returning samples and exiting.')
                 result_queue.put(samples, block=True)
                 return
@@ -150,7 +150,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
                         cbench_internal_repeats.value
                     statistics['cbench_warmup'] = cbench_warmup.value
                     if line == term_fail.value.decode():
-                        logging.debug(
+                        logging.info(
                             '[monitor_thread] Got failed termination string.'
                             'Returning samples gathered so far and exiting.')
 
@@ -269,7 +269,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Before proceeding with the experiments check validity of all
         # handlers
-        logging.info('{0} Initiating controller node session.'.format(test_type))
+        logging.info('{0} Checking handler files.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -279,13 +279,15 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
         logging.info('{0} Initiating cbench node session.'.format(test_type))
-        cbench_ssh_client = util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
-            cbench_node_username.value.decode(), cbench_node_password.value.decode(), 10,
-            int(cbench_node_ssh_port.value.decode()))
+        cbench_ssh_client = util.netutil.ssh_connect_or_return(
+            cbench_node_ip.value.decode(), cbench_node_username.value.decode(),
+             cbench_node_password.value.decode(), 10,
+             int(cbench_node_ssh_port.value.decode()))
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client object to be utilized in the sequel within
         # sb_active_cbench_run where necessary
+        logging.info('{0} Initiating controller node session.'.format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
@@ -301,18 +303,19 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
 
+        logging.info('{0} Checking for other active controllers'.
+                     format(test_type))
         controller_utils.check_for_active_controller(controller_port.value,
                                                      controller_ssh_client)
 
         logging.info(
             '{0} Starting and stopping controller to generate xml files'.
             format(test_type))
-
+        logging.info('{0} Starting controller'.format(test_type))
         cpid.value = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
             controller_port.value, ' '.join(conf['java_opts']),
             controller_ssh_client)
-
         # Controller status check is done inside start_controller() of the
         # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -335,6 +338,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                list(range(0, test_repeats.value)),
                                conf['controller_statistics_period_ms']):
 
+            logging.info('{0} Changing controller statistics period to {1} ms'.
+                format(test_type, controller_statistics_period_ms.value))
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler,
                 controller_statistics_period_ms.value, controller_ssh_client)
@@ -428,6 +433,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
+        logging.info('{0} Saving results to JSON file.'.format(test_type))
         if len(total_samples) > 0:
             with open(out_json, 'w') as ojf:
                 json.dump(total_samples, ojf)
@@ -463,8 +469,16 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
-        controller_ssh_client.close()
-        cbench_ssh_client.close()
+        if controller_ssh_client:
+            controller_ssh_client.close()
+        else:
+            logging.error('{0} Controller ssh connection does not exist.'.
+                          format(test_type))
+        if cbench_ssh_client:
+            cbench_ssh_client.close()
+        else:
+            logging.error('{0} Cbench ssh connection does not exist.'.
+                          format(test_type))
 
 def get_report_spec(test_type, config_json, results_json):
     """It returns all the information that is needed for the generation of the

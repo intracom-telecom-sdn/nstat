@@ -123,7 +123,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     try:
         # Before proceeding with the experiments check validity of all
         # handlers
-        logging.info('{0} Initiating controller node session.'.format(test_type))
+        logging.info('{0} Checking handler files.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -141,6 +141,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
+        logging.info('{0} Initiating controller node session.'.format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
@@ -156,14 +157,14 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
 
-
+        logging.info('{0} Checking for other active controllers'.
+                     format(test_type))
         controller_utils.check_for_active_controller(controller_port.value,
                                                      controller_ssh_client)
 
         logging.info('{0} Starting and stopping controller to '
                      'generate xml files'.format(test_type))
-
-
+        logging.info('{0} Starting controller'.format(test_type))
         cpid = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
             controller_port.value, ' '.join(conf['java_opts']),
@@ -185,22 +186,23 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                conf['cbench_thread_creation_delay_ms'],
                                conf['controller_statistics_period_ms']):
 
+            logging.info('{0} Changing controller statistics period to {1} ms'.
+                format(test_type, controller_statistics_period_ms.value))
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler,
                 controller_statistics_period_ms, controller_ssh_client)
 
             logging.info('{0} Starting controller'.format(test_type))
-
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port.value, ' '.join(conf['java_opts']),
                 controller_ssh_client)
-
             logging.info('{0} OK, controller status is 1.'.format(test_type))
+
             cbench_switches.value = \
                 cbench_threads.value * cbench_switches_per_thread.value
 
-            logging.debug('{0} Creating queue'.format(test_type))
+            logging.info('{0} Creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
             bootup_time_ms.value = \
@@ -214,7 +216,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
             t_start.value = time.time()
 
-            logging.debug('{0} Creating monitor thread'.format(test_type))
+            logging.info('{0} Creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
 
@@ -311,6 +313,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
+        logging.info('{0} Saving results to JSON file.'.format(test_type))
         if len(total_samples) > 0:
             with open(out_json, 'w') as ojf:
                 json.dump(total_samples, ojf)
@@ -346,8 +349,16 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
-        controller_ssh_client.close()
-        cbench_ssh_client.close()
+        if controller_ssh_client:
+            controller_ssh_client.close()
+        else:
+            logging.error('{0} Controller ssh connection does not exist.'.
+                          format(test_type))
+        if cbench_ssh_client:
+            cbench_ssh_client.close()
+        else:
+            logging.error('{0} Cbench ssh connection does not exist.'.
+                          format(test_type))
 
 def get_report_spec(test_type, config_json, results_json):
     """It returns all the information that is needed for the generation of the
