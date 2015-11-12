@@ -14,13 +14,11 @@ import multiprocessing
 import requests
 import time
 
-def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
+def flow_master_thread(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
                        flow_template, op_delay_ms, delete_flag,
                        discovery_deadline_ms, auth_token):
     """Function executed by flow master thread.
 
-    :param mqueue: queue where the flow master thread returns results to the
-    main context
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
     :param nnodes: number of nodes (switches) to generate operations for.
@@ -33,7 +31,6 @@ def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     test
     :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
     :param auth_token: RESTconf authorization token (username/password tuple)
-    :type mqueue: multiprocessing.Queue
     :type ctrl_ip:
     :type ctrl_port: int
     :type nflows: int
@@ -45,7 +42,7 @@ def flow_master_thread(mqueue, ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     :type discovery_deadline_ms: int
     :type auth_token: tuple<str>
     """
-
+    mqueue = multiprocessing.Queue()
     results = []
     failed_flow_ops = 0
 
