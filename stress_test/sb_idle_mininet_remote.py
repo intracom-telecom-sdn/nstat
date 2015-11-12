@@ -79,7 +79,6 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_port = conf['controller_port']
     controller_rebuild = conf['controller_rebuild']
-
     controller_cleanup = conf['controller_cleanup']
 
     controller_node_username = multiprocessing.Array('c',
@@ -214,7 +213,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} Initialize mininet topology.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_node_ip, mininet_server_rest_port,
-                controller_node_ip.value, controller_port,
+                controller_node_ip.value.decode(), controller_port,
                 mininet_topology_type, mininet_size.value,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch.value)
@@ -241,6 +240,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
 
+
+
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
@@ -252,7 +253,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['mininet_group_delay_ms'] = mininet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
-            statistics['controller_node_ip'] = controller_node_ip
+            statistics['controller_node_ip'] = controller_node_ip.value.decode()
             statistics['controller_port'] = str(controller_port)
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
@@ -371,7 +372,10 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_status_handler', 'Controller status script'),
              ('controller_clean_handler', 'Controller cleanup script'),
              ('controller_statistics_handler', 'Controller statistics script'),
-             ('controller_node_ip', 'Controller IP address'),
+             ('controller_node_ip', 'Controller IP node address'),
+             ('controller_node_ssh_port', 'Controller node ssh port'),
+             ('controller_node_username', 'Controller node username'),
+             ('controller_node_password', 'Controller node password'),
              ('controller_port', 'Controller listening port'),
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
