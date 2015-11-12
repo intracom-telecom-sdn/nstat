@@ -16,7 +16,7 @@
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
 nstat_vm_ram = '1024'
-nstat_vm_cpus = '2'
+nstat_vm_cpus = '1'
 nstat_vm_bridge_interface_name = 'br0'
 nstat_vm_hostname = 'nodenstat'
 # ------------------------------------------------------------------------------
