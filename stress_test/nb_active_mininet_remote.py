@@ -390,7 +390,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     finally:
         logging.info('{0} Finalizing test.'.format(test_type))
 
-        logging.info('{0} Creating test output dirctory if not exist.'.
+        logging.info('{0} Creating test output directory if not exist.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
