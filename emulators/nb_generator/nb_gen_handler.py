@@ -39,6 +39,21 @@ def northbound_generator():
 
     if mininet_start_call.status_code != 200:
         sys.exit(mininet_start_call.status_code)
+        
+        
+        
+        
+flow_master_thread,
+                                    args=(mqueue, controller_ip,
+                                          str(controller_restconf_port),
+                                          total_flows, mininet_size,
+                                          flow_workers, f_temp,
+                                          flow_operations_delay_ms,
+                                          flow_delete_flag,
+                                          flow_discovery_deadline_ms,
+                                          auth_token)        
+        
+        
 
 if __name__ == '__main__':
     northbound_generator()
