@@ -21,6 +21,8 @@ import time
 import util.file_ops
 
 
+
+
 def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                        conf, output_dir):
     """Run test. This is the main function that is called from
@@ -28,7 +30,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
     :param out_json: the JSON output file
     :param ctrl_base_dir: controller base directory
-    :param sb_gen_base_dir: generator base directory
+    :param sb_gen_base_dir: cbench base directory
     :param conf: JSON configuration dictionary
     :param output_dir: directory to store output files
     :type out_json: str
@@ -45,6 +47,18 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cpid = 0
     global_sample_id = 0
 
+    # Cbench parameters
+    cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
+    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
+    cbench_rebuild = conf['cbench_rebuild']
+    cbench_cleanup = conf['cbench_cleanup']
+    cbench_name = conf['cbench_name']
+
+    cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
+    cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
+    cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
+    cbench_internal_repeats = multiprocessing.Value('i',
+        conf['cbench_internal_repeats'])
     cbench_node_ip = multiprocessing.Array('c',
         str(conf['cbench_node_ip']).encode())
     cbench_node_ssh_port = multiprocessing.Array('c',
@@ -59,7 +73,12 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_switches_per_thread = multiprocessing.Value('i', 0)
     cbench_switches = multiprocessing.Value('i', 0)
     cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
+    cbench_simulated_hosts = multiprocessing.Value('i',
+        conf['cbench_simulated_hosts'])
+    cbench_delay_before_traffic_ms = multiprocessing.Value('i',
+        conf['cbench_delay_before_traffic_ms'])
 
+    # Controller parameters
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
     controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
     controller_status_handler = \
@@ -69,6 +88,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_statistics_handler = \
         ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
+    controller_rebuild = conf['controller_rebuild']
+    controller_cleanup = conf['controller_cleanup']
 
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
@@ -79,23 +100,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_node_password = multiprocessing.Array('c',
         str(conf['controller_node_password']).encode())
     controller_port = multiprocessing.Value('i', conf['controller_port'])
-
-    controller_rebuild = conf['controller_rebuild']
-
-    controller_cleanup = conf['controller_cleanup']
-
-    cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
-    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
-    cbench_rebuild = conf['cbench_rebuild']
-    cbench_cleanup = conf['cbench_cleanup']
-    cbench_name = conf['cbench_name']
-
-    cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
-    cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
-    cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
-    cbench_internal_repeats = multiprocessing.Value('i',
-        conf['cbench_internal_repeats'])
-
     controller_restconf_port = multiprocessing.Value('i',
         conf['controller_restconf_port'])
     controller_restconf_user = multiprocessing.Array('c',
@@ -103,11 +107,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_restconf_password = multiprocessing.Array('c',
         str(conf['controller_restconf_password']).encode())
 
-    cbench_simulated_hosts = multiprocessing.Value('i',
-        conf['cbench_simulated_hosts'])
-    cbench_delay_before_traffic_ms = multiprocessing.Value('i',
-        conf['cbench_delay_before_traffic_ms'])
-
+    # Various test parameters
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
@@ -123,6 +123,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     try:
         # Before proceeding with the experiments check validity of all
         # handlers
+        logging.info('{0} Initiating controller node session.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -131,7 +132,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating session with Cbench VM.'.format(test_type))
+        logging.info('{0} Initiating Cbench node session.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(
             cbench_node_ip.value.decode(),
             cbench_node_username.value.decode(),
@@ -147,9 +148,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             int(controller_node_ssh_port.value.decode()))
 
         if cbench_rebuild:
-            logging.info('{0} Building generator.'.format(test_type))
-            cbench_utils.rebuild_generator(cbench_build_handler,
-                                           cbench_ssh_client)
+            logging.info('{0} Building cbench.'.format(test_type))
+            cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
         if controller_rebuild:
             logging.info('{0} Building controller.'.format(test_type))
@@ -221,7 +221,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       t_start, bootup_time_ms, cbench_switches,
                       discovery_deadline_ms, result_queue))
 
-            logging.info('{0} Creating generator thread'.format(test_type))
+            logging.info('{0} Creating cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
                 args=(cbench_run_handler, controller_node_ip,
@@ -246,11 +246,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} Joining monitor thread'.format(test_type))
             monitor_thread.join()
 
-            # After the monitor thread joins, we no longer need the generator
+            # After the monitor thread joins, we no longer need cbench
             # because the actual test has been completed and we have the
-            # results. That is why we do not wait generator thread to return
+            # results. That is why we do not wait cbench thread to return
             # and we stop it with a termination signal.
-            logging.info('{0} Terminating generator thread'.format(test_type))
+            logging.info('{0} Terminating cbench thread'.format(test_type))
             cbench_thread.terminate()
             # It is important to join() the process after terminating it in
             # order to give the background machinery time to update the status
@@ -300,9 +300,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         logging.exception('')
 
     finally:
-        logging.info('{0} Finalizing test')
+        logging.info('{0} Finalizing test'.format(test_type))
 
-        logging.info('{0} Creating test output dirctory if not exist.'.
+        logging.info('{0} Creating test output directory if not exist.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
@@ -330,7 +330,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 int(controller_node_ssh_port.value.decode()))
         except:
             logging.error('{0} {1}'.format(
-                test_type, 'Fail to transfer logs dir of the controller.'))
+                test_type, 'Fail to transfer controller logs dir.'))
 
         if controller_cleanup:
             logging.info('{0} Cleaning controller.'.format(test_type))
@@ -338,9 +338,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                                 controller_ssh_client)
 
         if cbench_cleanup:
-            logging.info('{0} Cleaning generator.'.format(test_type))
-            cbench_utils.cleanup_generator(cbench_clean_handler,
-                                           cbench_ssh_client)
+            logging.info('{0} Cleaning cbench.'.format(test_type))
+            cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
         controller_ssh_client.close()
@@ -393,7 +392,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_thread_creation_delay_ms',
               'Generation delay in ms between thread creation'),
              ('cbench_switches_per_thread',
-              'Switches per generator thread'),
+              'Switches per cbench thread'),
              ('cbench_internal_repeats', 'Generator internal repeats'),
              ('cbench_ms_per_test', 'Internal repeats duration in ms'),
              ('cbench_rebuild',
@@ -414,7 +413,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_switches', 'Generated simulated switches'),
              ('cbench_threads', 'Generator threads'),
              ('cbench_switches_per_thread',
-              'Switches per generator thread'),
+              'Switches per cbench thread'),
              ('cbench_thread_creation_delay_ms',
               'Generator delay before traffic transmission (ms)'),
              ('cbench_delay_before_traffic_ms',
