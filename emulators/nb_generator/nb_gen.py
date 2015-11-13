@@ -31,12 +31,12 @@ def flow_master_thread(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     test
     :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
     :param auth_token: RESTconf authorization token (username/password tuple)
-    :type ctrl_ip:
+    :type ctrl_ip: str
     :type ctrl_port: int
     :type nflows: int
     :type nnodes: int
     :type nworkers: int
-    :type flow_template:
+    :type flow_template: str
     :type op_delay_ms: int
     :type delete_flag: bool
     :type discovery_deadline_ms: int

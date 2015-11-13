@@ -36,14 +36,17 @@ def northbound_generator():
     # python3.4 nb_gen_handler "192.168.64.17" "8181" "100000" "10" "*.json" "100" "True" "240000" "admin" "admin"
 
     ctrl_ip = sys.argv[1]
-    ctrl_port = sys.argv[2]
-    nnodes = sys.argv[3]
-    nflows = sys.argv[4]
-    nworkers = sys.argv[5]
+    ctrl_port = int(sys.argv[2])
+    nnodes = int(sys.argv[3])
+    nflows = int(sys.argv[4])
+    nworkers = int(sys.argv[5])
     flow_template = sys.argv[6]
-    op_delay_ms = sys.argv[7]
-    delete_flag = sys.argv[8]
-    discovery_deadline_ms = sys.argv[9]
+    op_delay_ms = int(sys.argv[7])
+    if sys.argv[8] == 'True':
+        delete_flag = True
+    elif sys.argv[8] == 'False':
+        delete_flag = False
+    discovery_deadline_ms = int(sys.argv[9])
     auth_token = (sys.argv[10], sys.argv[11])
     print(nflows)
     nb_generator_results = nb_gen.flow_master_thread(ctrl_ip, ctrl_port,nflows,
