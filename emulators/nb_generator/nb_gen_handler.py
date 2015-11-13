@@ -13,32 +13,43 @@ the current node
 
 import requests
 import sys
+import nb_gen
 
 def northbound_generator():
     """
     Command line arguments:
 
-    1. IP Address of the Mininet REST server
-    2. Port number of the Mininet REST server
+    1.  ctrl_ip: controller IP
+    2.  ctrl_port: controller RESTconf port
+    3.  nnodes: number of nodes (switches) to generate operations for.
+    Flows will be added to nodes [0, n-1]
+    4.  nflows: total number of flows to distribute
+    5.  nworkers: number of worker threads to create
+    6.  flow_template: template from which flows are created
+    7.  op_delay_ms: delay between thread operations (in milliseconds)
+    8.  delete_flag: whether to delete or not the added flows as part of the
+    test
+    9.  discovery_deadline_ms: deadline for flow discovery (in milliseconds)
+    10. auth_token: RESTconf authorization token (username/password tuple)
     """
+    # Example
+    # python3.4 nb_gen_handler "192.168.64.17" "8181" "100000" "10" "*.json" "100" "True" "240000" "admin" "admin"
 
-    mininet_rest_host = sys.argv[1]
-    mininet_rest_port = sys.argv[2]
+    ctrl_ip = sys.argv[1]
+    ctrl_port = sys.argv[2]
+    nnodes = sys.argv[3]
+    nflows = sys.argv[4]
+    nworkers = sys.argv[5]
+    flow_template = sys.argv[6]
+    op_delay_ms = sys.argv[7]
+    delete_flag = sys.argv[8]
+    discovery_deadline_ms = sys.argv[9]
+    auth_token = (sys.argv[10], sys.argv[11])
 
-    session = requests.Session()
-    session.trust_env = False
+    flow_master_thread(ctrl_ip, ctrl_port, nnodes, nworkers, flow_template,
+                       op_delay_ms, delete_flag, discovery_deadline_ms,
+                       auth_token)
 
-    url = 'http://{0}:{1}/start'.format(mininet_rest_host, mininet_rest_port)
-
-    print('[start_topology_handler][url] {0}'.format(url))
-    mininet_start_call = session.post(url)
-    print('[start_topology_handler][response status code] {0}'.
-          format(mininet_start_call.status_code))
-    print('[start_topology_handler][response data] {0}'.
-          format(mininet_start_call.text))
-
-    if mininet_start_call.status_code != 200:
-        sys.exit(mininet_start_call.status_code)
 
 if __name__ == '__main__':
     northbound_generator()
