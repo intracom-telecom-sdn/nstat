@@ -8,7 +8,6 @@
 
 import common
 import controller_utils
-import flow_utils
 import ipaddress
 import itertools
 import json
