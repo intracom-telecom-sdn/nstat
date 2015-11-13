@@ -36,7 +36,7 @@ def northbound_generator():
     # python3.4 nb_gen_handler "192.168.64.17" "8181" "100000" "10" "*.json" "100" "True" "240000" "admin" "admin"
 
     ctrl_ip = sys.argv[1]
-    ctrl_port = int(sys.argv[2])
+    ctrl_port = sys.argv[2]
     nnodes = int(sys.argv[3])
     nflows = int(sys.argv[4])
     nworkers = int(sys.argv[5])
