@@ -187,7 +187,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                conf['controller_statistics_period_ms']):
 
             logging.info('{0} Changing controller statistics period to {1} ms'.
-                format(test_type, controller_statistics_period_ms.value))
+                format(test_type, controller_statistics_period_ms))
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler,
                 controller_statistics_period_ms, controller_ssh_client)
