@@ -25,7 +25,7 @@ import util.file_ops
 import util.netutil
 
 
-import emulators.nb_generator.nb_gen
+#import emulators.nb_generator.nb_gen
 
 def mininet_topo_check_booted(expected_switches, mininet_group_size,
                               mininet_group_delay_ms,
@@ -320,7 +320,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             # Parallel section
             logging.info('{0} Creating flow master thread'.format(test_type))
-            flowmaster_thread = multiprocessing.Process(
+            """flowmaster_thread = multiprocessing.Process(
                                     target=emulators.nb_generator.nb_gen.flow_master_thread,
                                     args=(mqueue, controller_ip,
                                           str(controller_restconf_port),
@@ -330,7 +330,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                           flow_delete_flag,
                                           flow_discovery_deadline_ms,
                                           auth_token))
-
+            """
             flowmaster_thread.start()
             res = mqueue.get(block=True)
             logging.info('{0} Joining flow master thread.'.format(test_type))
