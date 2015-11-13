@@ -42,7 +42,7 @@ def flow_master_thread(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     :type discovery_deadline_ms: int
     :type auth_token: tuple<str>
     """
-    mqueue = multiprocessing.Queue()
+
     results = []
     failed_flow_ops = 0
 
@@ -106,7 +106,8 @@ def flow_master_thread(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
         results.append(deletion_time)
 
     results.append(failed_flow_ops)
-    mqueue.put(results)
+
+
     return
 
 def create_workers(nworkers, flow_template, url_template, op_delay_ms,
