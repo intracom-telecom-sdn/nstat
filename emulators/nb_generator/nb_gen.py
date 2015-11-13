@@ -107,8 +107,7 @@ def flow_master_thread(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
 
     results.append(failed_flow_ops)
 
-
-    return
+    return results
 
 def create_workers(nworkers, flow_template, url_template, op_delay_ms,
                    auth_token):
