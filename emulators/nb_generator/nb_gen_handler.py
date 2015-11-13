@@ -45,7 +45,7 @@ def northbound_generator():
     delete_flag = sys.argv[8]
     discovery_deadline_ms = sys.argv[9]
     auth_token = (sys.argv[10], sys.argv[11])
-
+    print(nflows)
     nb_generator_results = flow_master_thread(ctrl_ip, ctrl_port, nnodes,
                                               nworkers, flow_template,
                                               op_delay_ms,
