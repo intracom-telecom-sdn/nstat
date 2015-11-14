@@ -6,6 +6,7 @@
 
 """ Reusable functions for processes that are cbench related """
 
+import argparse
 import flow_utils
 import ipaddress
 import json
@@ -349,3 +350,109 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
         node_names.append(node.get('node-id'))
 
     return node_names
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+
+    parser.add_argument('--controller-ip',
+                        required=True,
+                        type=str,
+                        dest='ctrl_ip',
+                        action='store',
+                        help=("The ip address of the controller. \n"
+                              "This is a compulsory argument.\n"
+                              "Example: --controller-ip='127.0.0.1'"))
+    parser.add_argument('--controller-port',
+                        required=True,
+                        type=str,
+                        dest='ctrl_port',
+                        action='store',
+                        help=("The port number of RESTCONF port of the controller. \n"
+                              "This is a compulsory argument.\n"
+                              "Example: --controller-port='8181'"))
+    parser.add_argument('--number-of-flows',
+                        required=True,
+                        type=str,
+                        dest='nflows',
+                        action='store',
+                        help=("The total number of flow modifications. \n"
+                              "This is a compulsory argument.\n"
+                              "Example: --number-of-flows='1000'"))
+    parser.add_argument('--number-of-switches',
+                        required=True,
+                        type=str,
+                        dest='nnodes',
+                        action='store',
+                        help=("The total number of switches connected on the controller. \n"
+                              "This is a compulsory argument.\n"
+                              "Example: --number-of-switches='100'"))
+    parser.add_argument('--number-of-workers',
+                        required=True,
+                        type=str,
+                        dest='nworkers',
+                        action='store',
+                        help=("The total number of worker threads that will be created. \n"
+                              "This is a compulsory argument.\n"
+                              "Example: --number-of-workers='10'"))
+    parser.add_argument('--flow-template',
+                        required=True,
+                        type=str,
+                        dest='flow_template',
+                        action='store',
+                        help=("The addition flow template. \n"
+                              "This is a compulsory argument.\n"))
+    parser.add_argument('--operation-delay',
+                        required=True,
+                        type=str,
+                        dest='op_delay_ms',
+                        action='store',
+                        help=("The delay between each flow operation (in ms). \n"
+                              "This is a compulsory argument.\n"
+                              "Example: --operation-delay='5'"))
+    parser.add_argument('--delete-flag',
+                        required=False,
+                        dest='delete_flag',
+                        action='store_true',
+                        default=False,
+                        help=("Flag defining if we are going to have the "
+                              "equivalent delete operations. \n"
+                              "The default value is False. \n"
+                              "Example: --delete-flag"))
+    parser.add_argument('--discovery-deadline',
+                        required=False,
+                        type=str,
+                        dest='discovery_deadline_ms',
+                        action='store',
+                        default='240000',
+                        help=("The deadline to discover switches (in ms). \n"
+                              "The default value is '240000'.\n"
+                              "Example: --discovery-deadline='240000'"))
+    parser.add_argument('--restconf-user',
+                        required=False,
+                        type=str,
+                        dest='restconf_user',
+                        action='store',
+                        default='admin',
+                        help=("The controller's RESTCONF username. \n"
+                              "The default value is 'admin'.\n"
+                              "Example: --restconf-user='admin'"))
+    parser.add_argument('--restconf-password',
+                        required=False,
+                        type=str,
+                        dest='restconf_password',
+                        action='store',
+                        default='admin',
+                        help=("The controller's RESTCONF password. \n"
+                              "The default value is 'admin'.\n"
+                              "Example: --restconf-password='admin'"))
+
+    args = parser.parse_args()
+
+    result = nb_gen.flow_master_thread(args.ctrl_ip, args.ctrl_port,
+        int(args.nflows), int(args.nnodes), int(args.nworkers),
+        args.flow_template, int(args.op_delay_ms), args.delete_flag,
+        int(args.discovery_deadline_ms),
+        (args.restconf_user, args.restconf_password))
+
+    print result
