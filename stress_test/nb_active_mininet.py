@@ -652,7 +652,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 mininet_hosts_per_switch)
 
             logging.info('{0} Starting mininet topology.'.format(test_type))
-            mininet_utils.stop_mininet_topo(mininet_start_topo_handler,
+            mininet_utils.start_mininet_topo(mininet_start_topo_handler,
                 mininet_ip, mininet_rest_server_port)
 
             mininet_topo_check_booted(mininet_size, mininet_group_size,

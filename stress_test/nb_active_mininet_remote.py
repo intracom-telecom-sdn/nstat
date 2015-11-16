@@ -31,7 +31,8 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
                               mininet_group_delay_ms,
                               mininet_get_switches_handler, mininet_ip,
                               mininet_rest_server_port, ctrl_ip,
-                              ctrl_port, auth_token, num_tries=3):
+                              ctrl_port, controller_restconf_user,
+                              controller_restconf_password, num_tries=3):
     """
     Check if a Mininet topology has been booted. Check both from the Mininet
     side and from the controller operational DS.
@@ -47,7 +48,8 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     :param mininet_rest_server_port: port of the Mininet node REST server
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
-    :param auth_token: RESTconf authorization token (username/password tuple)
+    :param controller_restconf_user: RESTconf username
+    :param controller_restconf_password: RESTconf password
     :param num_tries: maximum number of tries until the method identifies that
     number of discovered switches of the Mininet topology is equal to the
     number of expected Mininet switches
@@ -61,7 +63,8 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     :type mininet_rest_server_port: int
     :type ctrl_ip: str
     :type ctrl_port: int
-    :type auth_token: tuple<str>
+    :type controller_restconf_user: str
+    :type controller_restconf_password: str
     :type num_tries: int
     """
 
@@ -69,6 +72,8 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     discovered_switches = 0
     ds_switches = 0
     tries = 0
+    auth_token = (controller_restconf_user, controller_restconf_password)
+
     while tries < num_tries:
         logging.info('[mininet_topo_check_booted] Check if topology is up.')
 
@@ -107,8 +112,8 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
                            ds_switches))
 
 
-def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
-                          output_dir):
+def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
+                          mininet_base_dir, conf, output_dir):
     """Run NB active test with Mininet.
 
     :param out_json: the JSON output file
@@ -163,31 +168,14 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         ]
        }"""
 
+    test_type = '[nb_active_mininet]'
+    logging.info('{0} Initializing test parameters.'.format(test_type))
+
     # Global variables read-write shared between monitor and main thread
     global_sample_id = 0
     cpid = 0
-    test_type = '[nb_active_mininet]'
 
-    logging.info('{0} Initializing test parameters.'.format(test_type))
-    controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
-    controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
-    controller_status_handler = \
-        ctrl_base_dir + conf['controller_status_handler']
-    controller_stop_handler = ctrl_base_dir + conf['controller_stop_handler']
-    controller_clean_handler = ctrl_base_dir + conf['controller_clean_handler']
-    controller_statistics_handler = \
-        ctrl_base_dir + conf['controller_statistics_handler']
-    controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
-    controller_restart = conf['controller_restart']
-    controller_ip = conf['controller_ip']
-    controller_port = conf['controller_port']
-    controller_restconf_port = conf['controller_restconf_port']
-    auth_token = (conf['controller_restconf_user'],
-                  conf['controller_restconf_password'])
-    controller_rebuild = conf['controller_rebuild']
-
-    controller_cleanup = conf['controller_cleanup']
-
+    # Mininet parameters
     mininet_boot_handler = mininet_base_dir + conf['mininet_boot_handler']
     mininet_stop_switches_handler = mininet_base_dir + \
         conf['mininet_stop_switches_handler']
@@ -204,6 +192,34 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     mininet_rest_server_port = conf['mininet_rest_server_port']
     mininet_username = conf['mininet_username']
     mininet_password = conf['mininet_password']
+
+    nb_generator_run_handler = nb_generator_base_dir + \
+        conf['nb_generator_run_handler']
+
+    # Controller parameters
+    controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
+    controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
+    controller_status_handler = \
+        ctrl_base_dir + conf['controller_status_handler']
+    controller_stop_handler = ctrl_base_dir + conf['controller_stop_handler']
+    controller_clean_handler = ctrl_base_dir + conf['controller_clean_handler']
+    controller_statistics_handler = \
+        ctrl_base_dir + conf['controller_statistics_handler']
+    controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
+    controller_rebuild = conf['controller_rebuild']
+    controller_cleanup = conf['controller_cleanup']
+    controller_restart = conf['controller_restart']
+    cbench_node_ip = conf['controller_node_ip']
+    controller_port = conf['controller_port']
+
+    controller_restconf_port = multiprocessing.Value('i',
+        conf['controller_restconf_port'])
+    controller_restconf_user = multiprocessing.Array('c',
+        str(conf['controller_restconf_user']).encode())
+    controller_restconf_password = multiprocessing.Array('c',
+        str(conf['controller_restconf_password']).encode())
+
+    # Various test parameters
     flow_delete_flag = conf['flow_delete_flag']
 
     # list of samples: each sample is a dictionary that contains
@@ -216,6 +232,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
     try:
 
+        # Before proceeding with the experiments check validity of all
+        # handlers
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -223,6 +241,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             mininet_stop_switches_handler, mininet_get_switches_handler,
             mininet_start_topo_handler, mininet_init_topo_handler])
 
+        # Opening connection with mininet_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
         logging.info(
             '{0} Initiating SSH session with Mininet node.'.format(test_type))
         mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_ip,
@@ -230,33 +250,40 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                                         mininet_password, 10,
                                                         mininet_ssh_port)
 
-        util.netutil.create_remote_directory(mininet_ip, mininet_username,
-                                             mininet_password,
-                                             '/tmp/transfered_files/',
-                                             mininet_ssh_port)
-
-        logging.info('{0} Copying handlers to Mininet VM'.format(test_type))
-        mininet_utils.copy_mininet_handlers(mininet_ip, mininet_username,
-                                  mininet_password, mininet_base_dir,
-                                  '/tmp/transfered_files/', mininet_ssh_port)
+        # Opening connection with controller_node_ip and returning
+        # controller_ssh_client to be utilized in the sequel
+        logging.info('{0} Initiating controller node session.'.format(test_type))
+        controller_ssh_client = util.netutil.ssh_connect_or_return(
+            controller_node_ip.value.decode(),
+            controller_node_username.value.decode(),
+            controller_node_password.value.decode(), 10,
+            int(controller_node_ssh_port.value.decode()))
 
         if controller_rebuild:
-            logging.info('{0} Building controller.'.format(test_type))
-            controller_utils.rebuild_controller(controller_build_handler)
+            logging.info('{0} Building controller'.format(test_type))
+            controller_utils.rebuild_controller(controller_build_handler,
+                                                controller_ssh_client)
 
-        controller_utils.check_for_active_controller(controller_port)
-
-        os.environ['JAVA_OPTS'] = ' '.join(conf['java_opts'])
+        logging.info('{0} Checking for other active controllers'.
+                     format(test_type))
+        controller_utils.check_for_active_controller(controller_port,
+                                                     controller_ssh_client)
 
         logging.info(
             '{0} Starting and stopping controller to generate xml files'.
             format(test_type))
-        cpid = controller_utils.start_controller(controller_start_handler,
-                                   controller_status_handler, controller_port)
+        logging.info('{0} Starting controller'.format(test_type))
+        cpid = controller_utils.start_controller(
+            controller_start_handler, controller_status_handler,
+            controller_port, ' '.join(conf['java_opts']),
+            controller_ssh_client)
 
+        # Controller status check is done inside start_controller() of the
+        # controller_utils
         logging.info('{0} OK, controller status is 1.'.format(test_type))
         controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid)
+            controller_status_handler, cpid, controller_ssh_client)
+
 
         # Run tests for all possible dimensions
         for (total_flows,
@@ -278,69 +305,78 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                conf['mininet_topology_type'],
                                conf['controller_statistics_period_ms']):
 
+            logging.info('{0} Changing controller statistics period to {1} ms'.
+                format(test_type, controller_statistics_period_ms))
             controller_utils.controller_changestatsperiod(
-                controller_statistics_handler, controller_statistics_period_ms)
+                controller_statistics_handler, controller_statistics_period_ms,
+                controller_ssh_client)
 
-            logging.info('{0} Booting up Mininet REST server.'.
+            logging.info('{0} Booting up mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
-                mininet_server_remote_path, mininet_ip,
-                mininet_rest_server_port)
+                mininet_server_remote_path, mininet_node_ip,
+                mininet_server_rest_port)
 
-            logging.info('{0} Starting controller.'.format(test_type))
+            logging.info('{0} Starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
-                controller_port)
+                controller_port, ' '.join(conf['java_opts']),
+                controller_ssh_client)
 
             logging.info('{0} OK, controller status is 1.'.format(test_type))
             logging.debug(
                 '{0} Creating flowmaster result queue.'.format(test_type))
 
             # The queue where flowmaster will return its results.
-            mqueue = multiprocessing.Queue()
+            #mqueue = multiprocessing.Queue()
             logging.info(
                 '{0} Initializing topology on REST server.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
-                mininet_ip, mininet_rest_server_port, controller_ip,
+                mininet_ip, mininet_rest_server_port, controller_node_ip,
                 controller_port, mininet_topology_type, mininet_size,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
             logging.info('{0} Starting mininet topology.'.format(test_type))
-            mininet_utils.stop_mininet_topo(mininet_start_topo_handler,
+            mininet_utils.start_mininet_topo(mininet_start_topo_handler,
                 mininet_ip, mininet_rest_server_port)
 
             mininet_topo_check_booted(mininet_size, mininet_group_size,
                                       mininet_group_delay_ms,
                                       mininet_get_switches_handler, mininet_ip,
-                                      mininet_rest_server_port, controller_ip,
-                                      controller_restconf_port, auth_token)
+                                      mininet_rest_server_port, controller_node_ip,
+                                      controller_restconf_port.value,
+                                      controller_restconf_user,
+                                      controller_restconf_password)
 
             flow_discovery_deadline_ms = 240000
 
+
+            #python3.4 nb_gen_handler.py '192.168.64.16' '8181' '100' '3' '10' '{        "flow-node-inventory:flow": [            {                "flow-node-inventory:cookie": %d,                "flow-node-inventory:cookie_mask": 4294967295,                "flow-node-inventory:flow-name": "%s",                "flow-node-inventory:hard-timeout": %d,                "flow-node-inventory:id": "%s",                "flow-node-inventory:idle-timeout": %d,                "flow-node-inventory:installHw": true,                "flow-node-inventory:instructions": {                    "flow-node-inventory:instruction": [                        {                            "flow-node-inventory:apply-actions": {                                "flow-node-inventory:action": [                                    {                                        "flow-node-inventory:drop-action": {},                                        "flow-node-inventory:order": 0                                    }                                ]                            },                            "flow-node-inventory:order": 0                        }                    ]                },                "flow-node-inventory:match": {                    "flow-node-inventory:ipv4-destination": "%s/32",                    "flow-node-inventory:ethernet-match": {                        "flow-node-inventory:ethernet-type": {                            "flow-node-inventory:type": 2048                        }                    }                },                "flow-node-inventory:priority": 1,                "flow-node-inventory:strict": false,                "flow-node-inventory:table_id": 0            }        ]       }' '10' 'False' '240000' 'admin' 'admin'
+
+
+            results = nb_gen.flow_master_thread(controller_node_ip,
+                                      str(controller_restconf_port),
+                                      total_flows, mininet_size, flow_workers,
+                                      f_temp, flow_operations_delay_ms,
+                                      flow_delete_flag,
+                                      flow_discovery_deadline_ms,
+                                      controller_restconf_user,
+                                      controller_restconf_password)
+
+
+
             # Parallel section
             logging.info('{0} Creating flow master thread'.format(test_type))
-            """flowmaster_thread = multiprocessing.Process(
-                                    target=emulators.nb_generator.nb_gen.flow_master_thread,
-                                    args=(mqueue, controller_ip,
-                                          str(controller_restconf_port),
-                                          total_flows, mininet_size,
-                                          flow_workers, f_temp,
-                                          flow_operations_delay_ms,
-                                          flow_delete_flag,
-                                          flow_discovery_deadline_ms,
-                                          auth_token))
-            """
-            flowmaster_thread.start()
-            res = mqueue.get(block=True)
+
             logging.info('{0} Joining flow master thread.'.format(test_type))
-            flowmaster_thread.join()
+
 
             # Getting results
             statistics = common.sample_stats(cpid)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
-            statistics['controller_ip'] = controller_ip
+            statistics['controller_node_ip'] = controller_node_ip
             statistics['controller_port'] = str(controller_port)
             statistics['controller_restart'] = controller_restart
             statistics['total_flows'] = total_flows
@@ -462,7 +498,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_status_handler', 'Controller status script'),
              ('controller_clean_handler', 'Controller cleanup script'),
              ('controller_statistics_handler', 'Controller statistics script'),
-             ('controller_ip', 'Controller IP address'),
+             ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller listening port'),
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
@@ -504,7 +540,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('mininet_hosts_per_switch', 'Mininet Hosts per Switch'),
              ('mininet_group_size', 'Mininet Group Size'),
              ('mininet_group_delay_ms', 'Mininet Group Delay (ms)'),
-             ('controller_ip', 'Controller IP'),
+             ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_vm_size', 'Controller VM size'),
              ('controller_java_xopts', 'Java options'),

@@ -380,7 +380,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_port', 'Controller listening port'),
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
-             ('controller_restconf_port', 'Controller restconf port'),
+             ('controller_restconf_port', 'Controller RESTconf port'),
              ('mininet_boot_handler', 'Mininet boot handler'),
              ('mininet_stop_switches_handler',
               'Mininet stop switches handler'),

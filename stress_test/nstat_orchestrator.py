@@ -61,6 +61,12 @@ def main():
                         dest='sb_gen_base_dir',
                         action='store',
                         help='Cbench or Mininet generator base directory')
+    parser.add_argument('--nb-generator-base-dir',
+                        required=False,
+                        type=str,
+                        dest='nb_gen_base_dir',
+                        action='store',
+                        help='Northbound traffic generator base directory')
     parser.add_argument('--json-config',
                         required=True,
                         type=str,
@@ -188,6 +194,7 @@ def main():
                          format(args.test_type))
             nb_active_mininet_remote.nb_active_mininet_run(args.json_output,
                                                     args.ctrl_base_dir,
+                                                    args.nb_gen_base_dir,
                                                     args.sb_gen_base_dir,
                                                     test_config,
                                                     args.output_dir)

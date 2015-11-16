@@ -17,7 +17,8 @@ import time
 
 def flow_master_thread(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
                        flow_template, op_delay_ms, delete_flag,
-                       discovery_deadline_ms, auth_token):
+                       discovery_deadline_ms, controller_restconf_user,
+                       controller_restconf_password):
     """Function executed by flow master thread.
 
     :param ctrl_ip: controller IP
@@ -46,6 +47,7 @@ def flow_master_thread(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
 
     results = []
     failed_flow_ops = 0
+    auth_token = (controller_restconf_user, controller_restconf_password)
 
     logging.info('[flow_master_thread] Initializing. Will perform {0} flow '
                  'operations at {1} openflow nodes with {2} workers'.format(
