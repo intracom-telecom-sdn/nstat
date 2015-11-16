@@ -16,7 +16,7 @@ def generate_html(report_spec, report_filename):
     Generates the test HTML report
 
     :param report_spec: report specification for this report
-    :param report_filename: target HTML filename 
+    :param report_filename: target HTML filename
     :type report_spec: ReportSpec
     :type report_filename: str
     """
@@ -276,18 +276,7 @@ table {
                                                      html_head_content)
 
     # Generating results parameters table
-    for cfgt in report_spec.config_tables:
-        table_data = json.loads(open(cfgt.source_json).read())
-
-        if cfgt.table_type == '1d':
-            content = content + util.html.single_dict_to_html(table_data,
-                'Parameter', 'Value', cfgt.title, cfgt.keys)
-
-        elif cfgt.table_type == '2d':
-            content = content + util.html.multi_dict_to_html(
-                table_data, cfgt.title, cfgt.keys, cfgt.ordering_key)
-
-        content = content + '<br>' + '<hr>'
+    content = content + generate_table(report_spec.config_tables)
 
     # Generating inserting graph inside the report page
     num_plots = len(params['plots'])
@@ -296,13 +285,13 @@ table {
         content = content + '<div class=\"graph-container\">'
         graph_float = 'left'
 
-        for i in list(range(0, num_plots)):
-            if params['plots'][i]['plot_filename']:
+        for plot_id in list(range(0, num_plots)):
+            if params['plots'][plot_id]['plot_filename']:
 
                 # Adding a graph image in document.
                 content = content + \
                     '<img class=\"graph-' + graph_float + '\" src=\"' + \
-                str(params['plots'][i]['plot_filename']) + \
+                str(params['plots'][plot_id]['plot_filename']) + \
                     '.png\" alt=\"result graph\" />'
 
                 # Changing the page alignment of the next inserted graph image.
@@ -320,22 +309,37 @@ table {
     content = content + '<hr>'
 
     # Generating test results table
-    for rest in report_spec.results_table:
-        table_data = json.loads(open(rest.source_json).read())
-        if rest.table_type == '1d':
-            content = content + \
-                util.html.single_dict_to_html(table_data, 'Parameter', 'Value',
-                                              rest.title, rest.keys)
-        elif rest.table_type == '2d':
-            content = content + \
-                util.html.multi_dict_to_html(table_data, rest.title, rest.keys,
-                                             rest.ordering_key)
-        content = content + '<br>' + '<hr>'
+    content = content + generate_table(report_spec.results_table)
 
     content = content + util.html.generate_html_foot()
     repf = open(report_filename, 'w')
     repf.write(content)
     repf.close()
+
+def generate_table(table_specs):
+    """ Gets a dictionary with table specifications and generates the
+    corresponded html code.
+
+    :param table_specs: Dictionary containing the specifications of a table.
+    :returns: html code of the table.
+    :rtype: str
+    :type table_specs: <dictionary>
+    """
+
+    table_html = ''
+    for table_spec in table_specs:
+        table_data = json.loads(open(table_spec.source_json).read())
+        if table_spec.table_type == '1d':
+            table_html = table_html + \
+                util.html.single_dict_to_html(table_data, 'Parameter', 'Value',
+                    table_spec.title, table_spec.keys)
+        elif table_spec.table_type == '2d':
+            table_html = table_html + \
+                util.html.multi_dict_to_html(table_data, table_spec.title,
+                    table_spec.keys, table_spec.ordering_key)
+        table_html = table_html + '<br>' + '<hr>'
+    return table_html
+
 
 def self_test():
     """
