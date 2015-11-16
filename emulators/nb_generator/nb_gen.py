@@ -449,7 +449,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    result = nb_gen.flow_master_thread(args.ctrl_ip, args.ctrl_port,
+    result = flow_master_thread(args.ctrl_ip, args.ctrl_port,
         int(args.nflows), int(args.nnodes), int(args.nworkers),
         args.flow_template, int(args.op_delay_ms), args.delete_flag,
         int(args.discovery_deadline_ms),

@@ -11,7 +11,6 @@ Handler for requesting a Mininet REST server to start a Mininet topology on
 the current node
 """
 import json
-import os
 import requests
 import subprocess
 import sys
@@ -36,8 +35,8 @@ def northbound_generator():
     # Example
     # python3.4 nb_gen_handler "192.168.64.17" "8181" "100000" "10" "*.json" "100" "True" "240000" "admin" "admin"
 
-    generator_path = os.path.dirname(os.path.abspath(__file__))
-    cmd = generator_path + ('/python3.4 nb_gen.py --controller-ip=\'{0}\' '
+
+    cmd = ('python3.4 nb_gen.py --controller-ip=\'{0}\' '
                             '--controller-port=\'{1}\' '
                             '--number-of-flows=\'{2}\' '
                             '--number-of-switches=\'{3}\' '
@@ -48,7 +47,7 @@ def northbound_generator():
                             '--restconf-user=\'{8}\' '
                             '--restconf-password=\'{9}\'')
     if sys.argv[8] == 'True':
-        cmd += ' --delete-flag'
+        cmd += ' --delete-flows'
     cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
                      sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[9],
                      sys.argv[10], sys.argv[11])
