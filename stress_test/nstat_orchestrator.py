@@ -172,12 +172,12 @@ def main():
         if not args.bypass_test:
             logging.info('[nstat_orchestrator] Running test {0}'.
                          format(args.test_type))
-            sb_idle_mininet_remote.sb_idle_mininet_run(args.json_output,
+            sb_idle_mininet.sb_idle_mininet_run(args.json_output,
                                                 args.ctrl_base_dir,
                                                 args.sb_gen_base_dir,
                                                 test_config,
                                                 args.output_dir)
-        report_spec = sb_idle_mininet_remote.get_report_spec(args.test_type,
+        report_spec = sb_idle_mininet.get_report_spec(args.test_type,
                                                       args.json_config,
                                                       args.json_output)
     # sb_active_mininet
