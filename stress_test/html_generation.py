@@ -278,35 +278,8 @@ table {
     # Generating results parameters table
     content = content + generate_table(report_spec.config_tables)
 
-    # Generating inserting graph inside the report page
-    num_plots = len(params['plots'])
-
-    if num_plots:
-        content = content + '<div class=\"graph-container\">'
-        graph_float = 'left'
-
-        for plot_id in list(range(0, num_plots)):
-            if params['plots'][plot_id]['plot_filename']:
-
-                # Adding a graph image in document.
-                content = content + \
-                    '<img class=\"graph-' + graph_float + '\" src=\"' + \
-                str(params['plots'][plot_id]['plot_filename']) + \
-                    '.png\" alt=\"result graph\" />'
-
-                # Changing the page alignment of the next inserted graph image.
-                # Also place a content break to have images group of 2.
-                if graph_float == 'right':
-                    content = content + \
-                        '<div class=\"float-cleaner\"><br></div>'
-                    graph_float = 'left'
-                else:
-                    graph_float = 'right'
-
-        content = content + '</div>'
-        content = content + '<div class=\"float-cleaner\"><br></div>'
-
-    content = content + '<hr>'
+    # Inserting plots inside the report page
+    content = content +insert_plots(params['plots'])
 
     # Generating test results table
     content = content + generate_table(report_spec.results_table)
@@ -316,29 +289,71 @@ table {
     repf.write(content)
     repf.close()
 
-def generate_table(table_specs):
-    """ Gets a dictionary with table specifications and generates the
+def generate_table(tables_specs):
+    """ Gets a dictionary with tables specifications and generates the
     corresponded html code.
 
-    :param table_specs: Dictionary containing the specifications of a table.
+    :param tables_specs: Dictionary containing the specifications of a group
+    of tables.
     :returns: html code of the table.
     :rtype: str
-    :type table_specs: <dictionary>
+    :type tables_specs: <dictionary>
     """
 
     table_html = ''
-    for table_spec in table_specs:
-        table_data = json.loads(open(table_spec.source_json).read())
-        if table_spec.table_type == '1d':
+    for table_specs in tables_specs:
+        table_data = json.loads(open(table_specs.source_json).read())
+        if table_specs.table_type == '1d':
             table_html = table_html + \
                 util.html.single_dict_to_html(table_data, 'Parameter', 'Value',
-                    table_spec.title, table_spec.keys)
-        elif table_spec.table_type == '2d':
+                    table_specs.title, table_specs.keys)
+        elif table_specs.table_type == '2d':
             table_html = table_html + \
-                util.html.multi_dict_to_html(table_data, table_spec.title,
-                    table_spec.keys, table_spec.ordering_key)
+                util.html.multi_dict_to_html(table_data, table_specs.title,
+                    table_specs.keys, table_specs.ordering_key)
         table_html = table_html + '<br>' + '<hr>'
     return table_html
+
+
+def insert_plots(plots_list):
+    """ Gets a list of dictionaries that describes the plots of the report,
+    and generates the corresponded html code.
+
+    :param plots_list: A list of dictionaries with the plots description.
+    :returns: The corresponded html code to insert the plots.
+    :rtype: str
+    :type plots_list: <list<dictionary>>
+    """
+
+    num_plots = len(plots_list)
+    plots_html = ''
+    if num_plots:
+        plots_html = plots_html + '<div class=\"graph-container\">'
+        graph_float = 'left'
+
+        for plot_id in list(range(0, num_plots)):
+            if plots_list[plot_id]['plot_filename']:
+
+                # Adding a graph image in document.
+                plots_html = plots_html + \
+                    '<img class=\"graph-' + graph_float + '\" src=\"' + \
+                str(plots_list[plot_id]['plot_filename']) + \
+                    '.png\" alt=\"result graph\" />'
+
+                # Changing the page alignment of the next inserted graph image.
+                # Also place a content break to have images group of 2.
+                if graph_float == 'right':
+                    plots_html = plots_html + \
+                        '<div class=\"float-cleaner\"><br></div>'
+                    graph_float = 'left'
+                else:
+                    graph_float = 'right'
+
+        plots_html = plots_html + '</div>'
+        plots_html = plots_html + '<div class=\"float-cleaner\"><br></div>'
+
+    plots_html = plots_html + '<hr>'
+    return plots_html
 
 
 def self_test():
