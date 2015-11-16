@@ -410,7 +410,7 @@ if __name__ == '__main__':
                         help=("The delay between each flow operation (in ms). \n"
                               "This is a compulsory argument.\n"
                               "Example: --operation-delay='5'"))
-    parser.add_argument('--delete-flag',
+    parser.add_argument('--delete-flows',
                         required=False,
                         dest='delete_flag',
                         action='store_true',
@@ -455,4 +455,4 @@ if __name__ == '__main__':
         int(args.discovery_deadline_ms),
         (args.restconf_user, args.restconf_password))
 
-    print result
+    print(result)

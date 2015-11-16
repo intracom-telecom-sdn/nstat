@@ -11,8 +11,9 @@ Handler for requesting a Mininet REST server to start a Mininet topology on
 the current node
 """
 import json
-import nb_gen
+import os
 import requests
+import subprocess
 import sys
 
 def northbound_generator():
@@ -35,25 +36,27 @@ def northbound_generator():
     # Example
     # python3.4 nb_gen_handler "192.168.64.17" "8181" "100000" "10" "*.json" "100" "True" "240000" "admin" "admin"
 
-    ctrl_ip = sys.argv[1]
-    ctrl_port = sys.argv[2]
-    nnodes = int(sys.argv[3])
-    nflows = int(sys.argv[4])
-    nworkers = int(sys.argv[5])
-    flow_template = sys.argv[6]
-    op_delay_ms = int(sys.argv[7])
+    generator_path = os.path.dirname(os.path.abspath(__file__))
+    cmd = generator_path + ('/python3.4 nb_gen.py --controller-ip=\'{0}\' '
+                            '--controller-port=\'{1}\' '
+                            '--number-of-flows=\'{2}\' '
+                            '--number-of-switches=\'{3}\' '
+                            '--number-of-workers=\'{4}\' '
+                            '--flow-template=\'{5}\' '
+                            '--operation-delay=\'{6}\' '
+                            '--discovery-deadline=\'{7}\' '
+                            '--restconf-user=\'{8}\' '
+                            '--restconf-password=\'{9}\'')
     if sys.argv[8] == 'True':
-        delete_flag = True
-    elif sys.argv[8] == 'False':
-        delete_flag = False
-    discovery_deadline_ms = int(sys.argv[9])
-    auth_token = (sys.argv[10], sys.argv[11])
-    nb_generator_results = nb_gen.flow_master_thread(ctrl_ip, ctrl_port,nflows,
-                                              nnodes, nworkers, flow_template,
-                                              op_delay_ms, delete_flag,
-                                              discovery_deadline_ms,
-                                              auth_token)
-    print(json.dumps(nb_generator_results))
+        cmd += ' --delete-flag'
+    cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
+                     sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[9],
+                     sys.argv[10], sys.argv[11])
+    p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+    cmd_output = p.stdout.read().decode(sys.stdout.encoding)
+    cmd_output = cmd_output.strip()
+    print(json.dumps(cmd_output))
 
 if __name__ == '__main__':
     northbound_generator()

@@ -71,7 +71,7 @@ def is_process_running(pid, ssh_client=None):
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                 close_fds=True)
             cmd_output = p.stdout.read().decode(sys.stdout.encoding)
-        cmd_output.strip()
+        cmd_output = cmd_output.strip()
     except subprocess.CalledProcessError as exc:
         cmd_output = exc.output
     finally:
