@@ -80,19 +80,15 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_port = conf['controller_port']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    controller_node_username = conf['controller_node_username']
+    controller_node_password = conf['controller_node_password']
+    controller_node_ssh_port = conf['controller_node_ssh_port']
 
-    controller_node_username = multiprocessing.Array('c',
-        str(conf['controller_node_username']).encode())
-    controller_node_password = multiprocessing.Array('c',
-        str(conf['controller_node_password']).encode())
+
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
-    controller_node_ssh_port = multiprocessing.Array('c',
-        str(conf['controller_node_ssh_port']).encode())
-
     controller_restconf_user = multiprocessing.Array('c',
         str(conf['controller_restconf_user']).encode())
-
     controller_restconf_password = multiprocessing.Array('c',
         str(conf['controller_restconf_password']).encode())
     controller_restconf_port = multiprocessing.Value('i',
@@ -214,9 +210,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 '{0} initiating topology on REST server and start '
                 'monitor thread to check for discovered switches '
                 'on controller.'.format(test_type))
-            
+
             logging.info('{0} initializing Mininet topology.'.format(test_type))
-            
+
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_node_ip, mininet_server_rest_port,
                 controller_node_ip.value.decode(), controller_port,
@@ -226,7 +222,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             t_start.value = time.time()
 
-            
+
             logging.info('{0} starting mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
                 mininet_node_ip, mininet_server_rest_port)
@@ -334,7 +330,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         except:
             pass
 
-        # Closing ssh connections with controller/cbench nodes
+        # Closing ssh connections with controller/mininet nodes
         if controller_ssh_client:
             controller_ssh_client.close()
         else:
@@ -352,7 +348,7 @@ def get_report_spec(test_type, config_json, results_json):
     report for the specific test.
 
     :param test_type: Describes the type of the specific test. This value
-    defines the Title of the html report.
+    defines the title of the html report.
     :param config_json: this is the filepath to the configuration json file.
     :param results_json: this is the filepath to the results json file.
     :returns: A ReportSpec object that holds all the test report information
