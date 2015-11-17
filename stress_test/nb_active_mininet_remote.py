@@ -311,7 +311,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 controller_statistics_handler, controller_statistics_period_ms,
                 controller_ssh_client)
 
-            logging.info('{0} booting up mininet REST server'.
+            logging.info('{0} booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_node_ip,
@@ -325,10 +325,10 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             logging.info('{0} OK, controller status is 1.'.format(test_type))
             logging.debug(
-                '{0} Creating flowmaster result queue.'.format(test_type))
+                '{0} creating flowmaster result queue.'.format(test_type))
 
             # The queue where flowmaster will return its results.
-            #mqueue = multiprocessing.Queue()
+            # mqueue = multiprocessing.Queue()
             logging.info(
                 '{0} initializing topology on REST server.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
@@ -351,8 +351,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             flow_discovery_deadline_ms = 240000
 
-            #python3.4 nb_gen_handler.py '192.168.64.16' '8181' '100' '3' '10' '{        "flow-node-inventory:flow": [            {                "flow-node-inventory:cookie": %d,                "flow-node-inventory:cookie_mask": 4294967295,                "flow-node-inventory:flow-name": "%s",                "flow-node-inventory:hard-timeout": %d,                "flow-node-inventory:id": "%s",                "flow-node-inventory:idle-timeout": %d,                "flow-node-inventory:installHw": true,                "flow-node-inventory:instructions": {                    "flow-node-inventory:instruction": [                        {                            "flow-node-inventory:apply-actions": {                                "flow-node-inventory:action": [                                    {                                        "flow-node-inventory:drop-action": {},                                        "flow-node-inventory:order": 0                                    }                                ]                            },                            "flow-node-inventory:order": 0                        }                    ]                },                "flow-node-inventory:match": {                    "flow-node-inventory:ipv4-destination": "%s/32",                    "flow-node-inventory:ethernet-match": {                        "flow-node-inventory:ethernet-type": {                            "flow-node-inventory:type": 2048                        }                    }                },                "flow-node-inventory:priority": 1,                "flow-node-inventory:strict": false,                "flow-node-inventory:table_id": 0            }        ]       }' '10' 'False' '240000' 'admin' 'admin'
-
+            #python3.4 nb_gen_handler.py '192.168.64.16' '8181' '100' '3' '10' '{"flow-node-inventory:flow": [            {                "flow-node-inventory:cookie": %d,                "flow-node-inventory:cookie_mask": 4294967295,                "flow-node-inventory:flow-name": "%s",                "flow-node-inventory:hard-timeout": %d,                "flow-node-inventory:id": "%s",                "flow-node-inventory:idle-timeout": %d,                "flow-node-inventory:installHw": true,                "flow-node-inventory:instructions": {                    "flow-node-inventory:instruction": [                        {                            "flow-node-inventory:apply-actions": {                                "flow-node-inventory:action": [                                    {                                        "flow-node-inventory:drop-action": {},                                        "flow-node-inventory:order": 0                                    }                                ]                            },                            "flow-node-inventory:order": 0                        }                    ]                },                "flow-node-inventory:match": {                    "flow-node-inventory:ipv4-destination": "%s/32",                    "flow-node-inventory:ethernet-match": {                        "flow-node-inventory:ethernet-type": {                            "flow-node-inventory:type": 2048                        }                    }                },                "flow-node-inventory:priority": 1,                "flow-node-inventory:strict": false,                "flow-node-inventory:table_id": 0            }        ]       }' '10' 'False' '240000' 'admin' 'admin'
 
             results = nb_gen.flow_master_thread(controller_node_ip,
                                       str(controller_restconf_port),
@@ -391,6 +390,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             total_samples.append(statistics)
 
             logging.debug('{0} stopping Mininet topology.'.format(test_type))
+
+
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_ip, mininet_rest_server_port)
 
@@ -422,46 +423,56 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
+        logging.info('{0} saving results to JSON file.'.format(test_type))
         if len(total_samples) > 0:
             with open(out_json, 'w') as ojf:
                 json.dump(total_samples, ojf)
                 ojf.close()
 
         try:
-            logging.info('{0} Stopping controller.'.
-                         format(test_type))
+            logging.info('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid)
-        except:
-            pass
-
-        if os.path.isdir(controller_logs_dir):
-            logging.info('{0} Collecting logs'.format(test_type))
-            shutil.copytree(controller_logs_dir, output_dir + '/log')
-            shutil.rmtree(controller_logs_dir)
-
-        try:
-            logging.info('{0} Tearing down any existend mininet topology.'.
-                          format(test_type))
-            mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
-                mininet_ip, mininet_rest_server_port)
+                controller_status_handler, cpid, controller_ssh_client)
         except:
             pass
 
         try:
-            logging.info('{0} Killing REST daemon in Mininet VM.'.
+            logging.info('{0} collecting logs'.format(test_type))
+            util.netutil.copy_remote_directory(
+                controller_node_ip.value.decode(),
+                controller_node_username.value.decode(),
+                controller_node_password.value.decode(),
+                controller_logs_dir, output_dir+'/log',
+                int(controller_node_ssh_port.value.decode()))
+        except:
+            logging.error('{0} {1}'.format(
+                test_type, 'failed transferring controller logs dir.'))
+
+        if controller_cleanup:
+            logging.info('{0} cleaning controller directory'.format(test_type))
+            controller_utils.cleanup_controller(controller_clean_handler,
+                                                controller_ssh_client)
+
+
+        try:
+            logging.info('{0} stopping REST daemon in Mininet node.'.
                           format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_rest_server_port)
         except:
             pass
 
-        logging.info('{0} Delete handleres from Mininet VM.'.
-                      format(test_type))
-        mininet_utils.delete_mininet_handlers(mininet_ip, mininet_username,
-                                    mininet_password,
-                                    '/tmp/transfered_files/', mininet_ssh_port)
-        mininet_ssh_client.close()
+        # Closing ssh connections with controller/mininet nodes
+        if controller_ssh_client:
+            controller_ssh_client.close()
+        else:
+            logging.error('{0} controller ssh connection does not exist.'.
+                          format(test_type))
+        if mininet_ssh_client:
+            mininet_ssh_client.close()
+        else:
+            logging.error('{0} Mininet ssh connection does not exist.'.
+                          format(test_type))
 
 
 def get_report_spec(test_type, config_json, results_json):

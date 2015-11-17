@@ -214,9 +214,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 '{0} initiating topology on REST server and start '
                 'monitor thread to check for discovered switches '
                 'on controller.'.format(test_type))
-            
+
             logging.info('{0} initializing Mininet topology.'.format(test_type))
-            
+
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_node_ip, mininet_server_rest_port,
                 controller_node_ip.value.decode(), controller_port,
@@ -226,7 +226,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             t_start.value = time.time()
 
-            
+
             logging.info('{0} starting mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
                 mininet_node_ip, mininet_server_rest_port)
@@ -334,7 +334,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         except:
             pass
 
-        # Closing ssh connections with controller/cbench nodes
+        # Closing ssh connections with controller/mininet nodes
         if controller_ssh_client:
             controller_ssh_client.close()
         else:

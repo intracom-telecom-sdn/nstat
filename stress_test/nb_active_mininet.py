@@ -759,7 +759,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             shutil.rmtree(controller_logs_dir)
 
         try:
-            logging.info('{0} Tearing down any existend mininet topology.'.
+            logging.info('{0} tearing down any existing mininet topology.'.
                           format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_ip, mininet_rest_server_port)
