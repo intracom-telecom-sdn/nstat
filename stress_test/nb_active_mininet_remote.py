@@ -147,8 +147,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         conf['mininet_init_topo_handler']
     mininet_start_topo_handler = mininet_base_dir + \
         conf['mininet_start_topo_handler']
-    mininet_server_remote_path = \
-        '/tmp/transfered_files/mininet/mininet_custom_boot.py'
+
     mininet_node_ip = conf['mininet_node_ip']
     mininet_node_ssh_port = conf['mininet_node_ssh_port']
     mininet_rest_server_port = conf['mininet_rest_server_port']
@@ -289,7 +288,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             logging.info('{0} booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
-                mininet_server_remote_path, mininet_node_ip,
+                mininet_boot_handler, mininet_node_ip,
                 mininet_rest_server_port)
 
             logging.info('{0} starting controller'.format(test_type))
