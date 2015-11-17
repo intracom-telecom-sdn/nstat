@@ -290,7 +290,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_node_ip,
-                mininet_server_rest_port)
+                mininet_rest_server_port)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
