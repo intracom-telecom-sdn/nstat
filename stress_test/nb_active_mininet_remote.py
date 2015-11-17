@@ -149,11 +149,11 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         conf['mininet_start_topo_handler']
     mininet_server_remote_path = \
         '/tmp/transfered_files/mininet/mininet_custom_boot.py'
-    mininet_ip = conf['mininet_ip']
-    mininet_ssh_port = conf['mininet_ssh_port']
+    mininet_node_ip = conf['mininet_node_ip']
+    mininet_node_ssh_port = conf['mininet_node_ssh_port']
     mininet_rest_server_port = conf['mininet_rest_server_port']
-    mininet_username = conf['mininet_username']
-    mininet_password = conf['mininet_password']
+    mininet_node_username = conf['mininet_node_username']
+    mininet_node_password = conf['mininet_node_password']
 
     # Northbound generator node parameters
     nb_generator_run_handler = nb_generator_base_dir + \
@@ -213,8 +213,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         # cbench_ssh_client to be utilized in the sequel
         logging.info(
             '{0} Initiating SSH session with Mininet node.'.format(test_type))
-        mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_ip,
-            mininet_username, mininet_password, 10, mininet_ssh_port)
+        mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_node_ip,
+            mininet_node_username, mininet_node_password, 10, mininet_node_ssh_port)
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
@@ -306,18 +306,18 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             logging.info(
                 '{0} initializing topology on REST server.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
-                mininet_ip, mininet_rest_server_port, controller_node_ip,
+                mininet_node_ip, mininet_rest_server_port, controller_node_ip,
                 controller_port, mininet_topology_type, mininet_size,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
             logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
-                mininet_ip, mininet_rest_server_port)
+                mininet_node_ip, mininet_rest_server_port)
 
             mininet_topo_check_booted(mininet_size, mininet_group_size,
                                       mininet_group_delay_ms,
-                                      mininet_get_switches_handler, mininet_ip,
+                                      mininet_get_switches_handler, mininet_node_ip,
                                       mininet_rest_server_port,
                                       controller_node_ip,
                                       controller_restconf_port,
@@ -371,7 +371,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
 
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
-                mininet_ip, mininet_rest_server_port)
+                mininet_node_ip, mininet_rest_server_port)
 
             logging.debug('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
@@ -488,7 +488,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('mininet_init_topo_handler',
               'Mininet initialize topology handler'),
              ('mininet_start_topo_handler', 'Mininet start topology handler'),
-             ('mininet_ip', 'Mininet node IP'),
+             ('mininet_node_ip', 'Mininet node IP'),
              ('mininet_rest_server_port', 'Mininet node REST server port'),
              ('mininet_size', 'Mininet network size'),
              ('mininet_topology_type', 'Mininet topology type'),
