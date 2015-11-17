@@ -33,13 +33,10 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
     boot_command = ('sudo python {0} --rest-host {1} --rest-port {2}'.
                     format(mininet_server_remote_path, mininet_rest_server_host,
                            mininet_rest_server_port))
-    exit_status, output = util.netutil.ssh_run_command(mininet_ssh_session, boot_command,
+    util.netutil.ssh_run_command(mininet_ssh_session, boot_command,
                                  prefix='[start_mininet_server]',
                                  lines_queue=None, print_flag=True,
                                  block_flag=False)
-    if exit_status!=0:
-        raise Exception('{0}'.
-            format('[start_mininet_server] rest server failed to start'))
 
     logging.info('{0} {1}'.format('[start_mininet_server] boot command: ',
                                    boot_command))
