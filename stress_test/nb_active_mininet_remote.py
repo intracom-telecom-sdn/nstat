@@ -155,8 +155,15 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     mininet_username = conf['mininet_username']
     mininet_password = conf['mininet_password']
 
+    # Northbound generator node parameters
     nb_generator_run_handler = nb_generator_base_dir + \
         conf['nb_generator_run_handler']
+    nb_generator_host_ip = conf['nb_generator_host_ip']
+    nb_generator_node_ip = conf['nb_generator_node_ip']
+    nb_generator_node_ssh_port = conf['nb_generator_node_ssh_port']
+    nb_generator_node_username = conf['nb_generator_node_username']
+    nb_generator_node_password = conf['nb_generator_node_password']
+
 
     # Controller parameters
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
@@ -207,16 +214,24 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         logging.info(
             '{0} Initiating SSH session with Mininet node.'.format(test_type))
         mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_ip,
-                                                        mininet_username,
-                                                        mininet_password, 10,
-                                                        mininet_ssh_port)
+            mininet_username, mininet_password, 10, mininet_ssh_port)
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating controller node session.'.format(test_type))
+        logging.info('{0} initiating controller node session.'.
+                     format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip, controller_node_username,
             controller_node_password, 10, int(controller_node_ssh_port))
+
+        # Opening connection with northbound generator node
+        # nb_generator_ssh_client to be utilized in the sequel
+        logging.info('{0} initiating northbound generator node session.'.
+                     format(test_type))
+        nb_generator_ssh_client = util.netutil.ssh_connect_or_return(
+            nb_generator_node_ip, nb_generator_node_username,
+            nb_generator_node_password, 10, int(nb_generator_node_ssh_port))
+
 
         if controller_rebuild:
             logging.info('{0} Building controller'.format(test_type))
@@ -311,16 +326,19 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             flow_discovery_deadline_ms = 240000
 
-            #python3.4 nb_gen_handler.py '192.168.64.16' '8181' '100' '3' '10' '{"flow-node-inventory:flow": [            {                "flow-node-inventory:cookie": %d,                "flow-node-inventory:cookie_mask": 4294967295,                "flow-node-inventory:flow-name": "%s",                "flow-node-inventory:hard-timeout": %d,                "flow-node-inventory:id": "%s",                "flow-node-inventory:idle-timeout": %d,                "flow-node-inventory:installHw": true,                "flow-node-inventory:instructions": {                    "flow-node-inventory:instruction": [                        {                            "flow-node-inventory:apply-actions": {                                "flow-node-inventory:action": [                                    {                                        "flow-node-inventory:drop-action": {},                                        "flow-node-inventory:order": 0                                    }                                ]                            },                            "flow-node-inventory:order": 0                        }                    ]                },                "flow-node-inventory:match": {                    "flow-node-inventory:ipv4-destination": "%s/32",                    "flow-node-inventory:ethernet-match": {                        "flow-node-inventory:ethernet-type": {                            "flow-node-inventory:type": 2048                        }                    }                },                "flow-node-inventory:priority": 1,                "flow-node-inventory:strict": false,                "flow-node-inventory:table_id": 0            }        ]       }' '10' 'False' '240000' 'admin' 'admin'
+            cmd = ('python3.4  {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}'.
+                format(nb_generator_run_handler, controller_node_ip,
+                       controller_restconf_port, total_flows, mininet_size,
+                       flow_workers, flow_operations_delay_ms,
+                       flow_discovery_deadline_ms, controller_restconf_user,
+                       controller_restconf_password))
+            exit_status , output = util.netutil.ssh_run_command(
+                nb_generator_ssh_client, cmd , '[gemerator_run_handler]')
 
-            results = nb_gen.flow_master_thread(controller_node_ip,
-                                      str(controller_restconf_port),
-                                      total_flows, mininet_size, flow_workers,
-                                      f_temp, flow_operations_delay_ms,
-                                      flow_delete_flag,
-                                      flow_discovery_deadline_ms,
-                                      controller_restconf_user,
-                                      controller_restconf_password)
+            if exit_status!=0:
+                raise Exception('{0} Northbound generator failed'.format(test_type))
+
+            results = json.loads(output)
 
             # Getting results
             statistics = common.sample_stats(cpid)

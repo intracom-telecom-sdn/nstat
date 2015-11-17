@@ -21,7 +21,13 @@
 "mininet_node_username":"vagrant",
 "mininet_node_password":"vagrant",
 
+"nb_generator_node_spec":"/nstat/vagrant/node_nb_generator/Vagrantfile",
 "nb_generator_run_handler":"./run_handler.py",
+"nb_generator_host_ip":"127.0.0.1",
+"nb_generator_node_ip":"192.168.64.19",
+"nb_generator_node_ssh_port":"22",
+"nb_generator_node_username":"vagrant",
+"nb_generator_node_password":"vagrant",
 
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start_no_dlux.sh",
