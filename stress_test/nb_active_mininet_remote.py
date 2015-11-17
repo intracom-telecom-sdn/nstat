@@ -209,15 +209,14 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
     controller_restart = conf['controller_restart']
-    cbench_node_ip = conf['controller_node_ip']
     controller_port = conf['controller_port']
-
-    controller_restconf_port = multiprocessing.Value('i',
-        conf['controller_restconf_port'])
-    controller_restconf_user = multiprocessing.Array('c',
-        str(conf['controller_restconf_user']).encode())
-    controller_restconf_password = multiprocessing.Array('c',
-        str(conf['controller_restconf_password']).encode())
+    controller_node_username = conf['controller_node_username']
+    controller_node_password = conf['controller_node_password']
+    controller_node_ssh_port = conf['controller_node_ssh_port']
+    controller_node_ip = conf['controller_node_ip']
+    controller_restconf_port = conf['controller_restconf_port']
+    controller_restconf_user = conf['controller_restconf_user']
+    controller_restconf_password = conf['controller_restconf_password']
 
     # Various test parameters
     flow_delete_flag = conf['flow_delete_flag']
@@ -254,10 +253,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         # controller_ssh_client to be utilized in the sequel
         logging.info('{0} Initiating controller node session.'.format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip.value.decode(),
-            controller_node_username.value.decode(),
-            controller_node_password.value.decode(), 10,
-            int(controller_node_ssh_port.value.decode()))
+            controller_node_ip, controller_node_username,
+            controller_node_password, 10, int(controller_node_ssh_port))
 
         if controller_rebuild:
             logging.info('{0} Building controller'.format(test_type))
@@ -344,8 +341,9 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             mininet_topo_check_booted(mininet_size, mininet_group_size,
                                       mininet_group_delay_ms,
                                       mininet_get_switches_handler, mininet_ip,
-                                      mininet_rest_server_port, controller_node_ip,
-                                      controller_restconf_port.value,
+                                      mininet_rest_server_port,
+                                      controller_node_ip,
+                                      controller_restconf_port,
                                       controller_restconf_user,
                                       controller_restconf_password)
 
@@ -438,12 +436,10 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
         try:
             logging.info('{0} collecting logs'.format(test_type))
-            util.netutil.copy_remote_directory(
-                controller_node_ip.value.decode(),
-                controller_node_username.value.decode(),
-                controller_node_password.value.decode(),
+            util.netutil.copy_remote_directory( controller_node_ip,
+                controller_node_username, controller_node_password,
                 controller_logs_dir, output_dir+'/log',
-                int(controller_node_ssh_port.value.decode()))
+                int(controller_node_ssh_port))
         except:
             logging.error('{0} {1}'.format(
                 test_type, 'failed transferring controller logs dir.'))
