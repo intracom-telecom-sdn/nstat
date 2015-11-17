@@ -80,19 +80,15 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_port = conf['controller_port']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    controller_node_username = conf['controller_node_username']
+    controller_node_password = conf['controller_node_password']
+    controller_node_ssh_port = conf['controller_node_ssh_port']
 
-    controller_node_username = multiprocessing.Array('c',
-        str(conf['controller_node_username']).encode())
-    controller_node_password = multiprocessing.Array('c',
-        str(conf['controller_node_password']).encode())
+
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
-    controller_node_ssh_port = multiprocessing.Array('c',
-        str(conf['controller_node_ssh_port']).encode())
-
     controller_restconf_user = multiprocessing.Array('c',
         str(conf['controller_restconf_user']).encode())
-
     controller_restconf_password = multiprocessing.Array('c',
         str(conf['controller_restconf_password']).encode())
     controller_restconf_port = multiprocessing.Value('i',
@@ -114,7 +110,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     try:
         # Before proceeding with the experiments check validity
         # of all handlers
-        logging.info('{0} Checking handler files.'.format(test_type))
+        logging.info('{0} checking handler files.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -124,14 +120,14 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         # Opening connection with mininet_node_ip and returning
         # mininet_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating mininet node session.'.format(test_type))
+        logging.info('{0} initiating Mininet node session.'.format(test_type))
         mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_node_ip,
             mininet_node_username, mininet_node_password, 10,
             int(mininet_node_ssh_port))
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating controller node session.'.format(test_type))
+        logging.info('{0} initiating controller node session.'.format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
@@ -140,18 +136,18 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
 
         if controller_rebuild:
-            logging.info('{0} Building controller'.format(test_type))
+            logging.info('{0} building controller'.format(test_type))
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
 
-        logging.info('{0} Checking for other active controllers'.
+        logging.info('{0} checking for other active controllers'.
                      format(test_type))
         controller_utils.check_for_active_controller(controller_port,
                                                      controller_ssh_client)
         logging.info(
-            '{0} Starting and stopping controller to generate xml files'.
+            '{0} starting and stopping controller to generate xml files'.
             format(test_type))
-        logging.info('{0} Starting controller'.format(test_type))
+        logging.info('{0} starting controller'.format(test_type))
         cpid = controller_utils.start_controller(
             controller_start_handler, controller_status_handler,
             controller_port, ' '.join(conf['java_opts']),
@@ -177,19 +173,19 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                conf['mininet_topology_type'],
                                conf['controller_statistics_period_ms']):
 
-            logging.info('{0} Changing controller statistics period to {1} ms'.
+            logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler, controller_statistics_period_ms,
                 controller_ssh_client)
 
-            logging.info('{0} Booting up mininet REST server'.
+            logging.info('{0} Booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_node_ip,
                 mininet_server_rest_port)
 
-            logging.info('{0} Starting controller'.format(test_type))
+            logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
@@ -198,7 +194,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             # is done inside controller_utils.start_controller()
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
-            logging.info('{0} Creating queue'.format(test_type))
+            logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
             sleep_ms = \
@@ -211,10 +207,12 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 (7000 * (mininet_size.value + total_mininet_hosts)) + sleep_ms
 
             logging.info(
-                '{0} Initiating topology on REST server and start '
+                '{0} initiating topology on REST server and start '
                 'monitor thread to check for discovered switches '
                 'on controller.'.format(test_type))
-            logging.info('{0} Initialize mininet topology.'.format(test_type))
+
+            logging.info('{0} initializing Mininet topology.'.format(test_type))
+
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_node_ip, mininet_server_rest_port,
                 controller_node_ip.value.decode(), controller_port,
@@ -224,12 +222,13 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             t_start.value = time.time()
 
-            logging.info('{0} Start mininet topology.'.format(test_type))
+
+            logging.info('{0} starting mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
                 mininet_node_ip, mininet_server_rest_port)
 
             # Parallel section
-            logging.info('{0} Creating monitor thread'.format(test_type))
+            logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_node_ip, controller_restconf_port,
@@ -240,7 +239,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             monitor_thread.start()
             res = result_queue.get(block=True)
-            logging.info('{0} Joining monitor thread'.format(test_type))
+            logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
             statistics = common.sample_stats(cpid, controller_ssh_client)
@@ -263,12 +262,11 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid, controller_ssh_client)
 
-            logging.info('{0} Stopping mininet topology.'.format(test_type))
+            logging.info('{0} stopping Mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_node_ip, mininet_server_rest_port)
 
-            logging.info(
-                '{0} Killing 1) REST daemon in mininet node 2) mininet topology.'.
+            logging.info('{0} stopping REST daemon in Mininet node'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_server_rest_port)
@@ -285,21 +283,21 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         logging.exception('')
 
     finally:
-        logging.info('{0} Finalizing test'.format(test_type))
+        logging.info('{0} finalizing test'.format(test_type))
 
-        logging.info('{0} Creating test output directory if not exist.'.
+        logging.info('{0} creating test output directory if not exist.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        logging.info('{0} Saving results to JSON file.'.format(test_type))
+        logging.info('{0} saving results to JSON file.'.format(test_type))
         if len(total_samples) > 0:
             with open(out_json, 'w') as ojf:
                 json.dump(total_samples, ojf)
             ojf.close()
 
         try:
-            logging.info('{0} Stopping controller.'.
+            logging.info('{0} stopping controller.'.
                          format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid, controller_ssh_client)
@@ -307,7 +305,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             pass
 
         try:
-            logging.info('{0} Collecting logs'.format(test_type))
+            logging.info('{0} collecting logs'.format(test_type))
             util.netutil.copy_remote_directory(
                 controller_node_ip.value.decode(),
                 controller_node_username.value.decode(),
@@ -316,32 +314,32 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 int(controller_node_ssh_port.value.decode()))
         except:
             logging.error('{0} {1}'.format(
-                test_type, 'Fail to transfer controller logs dir.'))
+                test_type, 'failed transferring controller logs dir.'))
 
         if controller_cleanup:
-            logging.info('{0} Cleaning controller'.format(test_type))
+            logging.info('{0} cleaning controller directory'.format(test_type))
             controller_utils.cleanup_controller(controller_clean_handler,
                                                 controller_ssh_client)
 
         try:
             logging.info(
-                '{0} Killing REST daemon in mininet VM and existing topology.'.
+                '{0} stopping REST daemon in Mininet node.'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_server_rest_port)
         except:
             pass
 
-        # Closing ssh connections with controller/cbench nodes
+        # Closing ssh connections with controller/mininet nodes
         if controller_ssh_client:
             controller_ssh_client.close()
         else:
-            logging.error('{0} Controller ssh connection does not exist.'.
+            logging.error('{0} controller ssh connection does not exist.'.
                           format(test_type))
         if cbench_ssh_client:
             cbench_ssh_client.close()
         else:
-            logging.error('{0} Cbench ssh connection does not exist.'.
+            logging.error('{0} cbench ssh connection does not exist.'.
                           format(test_type))
 
 
@@ -350,7 +348,7 @@ def get_report_spec(test_type, config_json, results_json):
     report for the specific test.
 
     :param test_type: Describes the type of the specific test. This value
-    defines the Title of the html report.
+    defines the title of the html report.
     :param config_json: this is the filepath to the configuration json file.
     :param results_json: this is the filepath to the results json file.
     :returns: A ReportSpec object that holds all the test report information
@@ -380,7 +378,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_port', 'Controller listening port'),
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
-             ('controller_restconf_port', 'Controller restconf port'),
+             ('controller_restconf_port', 'Controller RESTconf port'),
              ('mininet_boot_handler', 'Mininet boot handler'),
              ('mininet_stop_switches_handler',
               'Mininet stop switches handler'),

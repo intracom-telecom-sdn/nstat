@@ -259,12 +259,6 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     :type lines_queue: queue<str>
     :type print_flag: bool
     :type block_flag: bool
-    :exception SSHException: Raised when fails to open a channel from
-    ssh_client object
-    :exception UnicodeDecodeError: Raised when it fails to decode received
-    data into UTF-8
-    :exception socket.timeout: When the channel remains idle for a timeout
-    period (in sec) defined in implementation of the function
     """
 
     channel = ssh_client.get_transport().open_session()

@@ -7,10 +7,10 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 """
-Handler for requesting a Mininet REST server to start a Mininet topology on
-the current node
+Run handler of NorthBound traffic generator
 """
 import json
+import re
 import requests
 import subprocess
 import sys
@@ -25,7 +25,7 @@ def northbound_generator():
     Flows will be added to nodes [0, n-1]
     4.  nflows: total number of flows to distribute
     5.  nworkers: number of worker threads to create
-    6.  flow_template: template from which flows are created
+
     7.  op_delay_ms: delay between thread operations (in milliseconds)
     8.  delete_flag: whether to delete or not the added flows as part of the
     test
@@ -41,21 +41,24 @@ def northbound_generator():
                             '--number-of-flows=\'{2}\' '
                             '--number-of-switches=\'{3}\' '
                             '--number-of-workers=\'{4}\' '
-                            '--flow-template=\'{5}\' '
-                            '--operation-delay=\'{6}\' '
-                            '--discovery-deadline=\'{7}\' '
-                            '--restconf-user=\'{8}\' '
-                            '--restconf-password=\'{9}\'')
-    if sys.argv[8] == 'True':
+                            '--operation-delay=\'{5}\' '
+                            '--discovery-deadline=\'{6}\' '
+                            '--restconf-user=\'{7}\' '
+                            '--restconf-password=\'{8}\'')
+    if sys.argv[7] == 'True':
         cmd += ' --delete-flows'
     cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
-                     sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[9],
-                     sys.argv[10], sys.argv[11])
+                     sys.argv[5], sys.argv[6], sys.argv[8],
+                     sys.argv[9], sys.argv[10])
     p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     cmd_output = p.stdout.read().decode(sys.stdout.encoding)
     cmd_output = cmd_output.strip()
-    print(json.dumps(cmd_output))
+    regex_result = re.search(r'[0-9].*', cmd_output)
+    if regex_result == None:
+        sys.exit(1)
+    result = [float(x) for x in regex_result.group().split('/')]
+    print(json.dumps(result))
 
 if __name__ == '__main__':
     northbound_generator()

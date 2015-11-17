@@ -33,11 +33,11 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
     boot_command = ('sudo python {0} --rest-host {1} --rest-port {2}'.
                     format(mininet_server_remote_path, mininet_rest_server_host,
                            mininet_rest_server_port))
-    util.netutil.ssh_run_command(mininet_ssh_session, boot_command, 
-                                 prefix='[start_mininet_server]', 
+    util.netutil.ssh_run_command(mininet_ssh_session, boot_command,
+                                 prefix='[start_mininet_server]',
                                  lines_queue=None, print_flag=True,
                                  block_flag=False)
-    logging.info('{0} {1}'.format('[start_mininet_server] Boot command: ',
+    logging.info('{0} {1}'.format('[start_mininet_server] boot command: ',
                                    boot_command))
     time.sleep(10)
 
@@ -50,13 +50,13 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server_host,
     Locally calls the Mininet handler that remotely initializes a topology on
     a remote Mininet node
 
-    :param mininet_init_topo_handler: full path of the handler to initialize 
+    :param mininet_init_topo_handler: full path of the handler to initialize
     the mininet topology
     :param mininet_rest_server_host: hostname/IP the REST server listens to
     :param mininet_rest_server_port: port the REST server listens to
     :param controller_ip: controller IP
     :param controller_port: controller OpenFlow port
-    :param mininet_topology_type: Type of the network topology. It can have 
+    :param mininet_topology_type: Type of the network topology. It can have
     one of the following values (DisconnectedTopo,LinearTopo or MeshTopo)
     :param mininet_size: Size of the mininet tpology
     :param mininet_group_size: Size of the mininet Group
