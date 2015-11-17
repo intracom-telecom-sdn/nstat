@@ -128,45 +128,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     :type output_dir: str
     """
 
-    f_temp = """{
-        "flow-node-inventory:flow": [
-            {
-                "flow-node-inventory:cookie": %d,
-                "flow-node-inventory:cookie_mask": 4294967295,
-                "flow-node-inventory:flow-name": "%s",
-                "flow-node-inventory:hard-timeout": %d,
-                "flow-node-inventory:id": "%s",
-                "flow-node-inventory:idle-timeout": %d,
-                "flow-node-inventory:installHw": true,
-                "flow-node-inventory:instructions": {
-                    "flow-node-inventory:instruction": [
-                        {
-                            "flow-node-inventory:apply-actions": {
-                                "flow-node-inventory:action": [
-                                    {
-                                        "flow-node-inventory:drop-action": {},
-                                        "flow-node-inventory:order": 0
-                                    }
-                                ]
-                            },
-                            "flow-node-inventory:order": 0
-                        }
-                    ]
-                },
-                "flow-node-inventory:match": {
-                    "flow-node-inventory:ipv4-destination": "%s/32",
-                    "flow-node-inventory:ethernet-match": {
-                        "flow-node-inventory:ethernet-type": {
-                            "flow-node-inventory:type": 2048
-                        }
-                    }
-                },
-                "flow-node-inventory:priority": 1,
-                "flow-node-inventory:strict": false,
-                "flow-node-inventory:table_id": 0
-            }
-        ]
-       }"""
+
 
     test_type = '[nb_active_mininet]'
     logging.info('{0} Initializing test parameters.'.format(test_type))
