@@ -7,6 +7,7 @@
 """ NorthBound traffic generator """
 
 import argparse
+import logging
 import nb_gen_utils
 import time
 
@@ -250,6 +251,6 @@ if __name__ == '__main__':
     result = flow_master(args.ctrl_ip, args.ctrl_port, int(args.nflows),
         int(args.nnodes), int(args.nworkers), int(args.op_delay_ms),
         args.delete_flag, int(args.discovery_deadline_ms),
-        (args.restconf_user, args.restconf_password))
+        args.restconf_user, args.restconf_password)
 
     print(result)
