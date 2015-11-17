@@ -138,7 +138,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     cpid = 0
 
     # Mininet parameters
-    mininet_boot_handler = mininet_base_dir + conf['mininet_boot_handler']
+    mininet_rest_server_boot = mininet_base_dir + conf['mininet_rest_server_boot']
     mininet_stop_switches_handler = mininet_base_dir + \
         conf['mininet_stop_switches_handler']
     mininet_get_switches_handler = mininet_base_dir + \
@@ -204,7 +204,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
-            controller_statistics_handler, mininet_boot_handler,
+            controller_statistics_handler, mininet_rest_server_boot,
             mininet_stop_switches_handler, mininet_get_switches_handler,
             mininet_start_topo_handler, mininet_init_topo_handler])
 
@@ -288,7 +288,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             logging.info('{0} booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
-                mininet_boot_handler, mininet_node_ip,
+                mininet_rest_server_boot, mininet_node_ip,
                 mininet_rest_server_port)
 
             logging.info('{0} starting controller'.format(test_type))
@@ -481,7 +481,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
              ('controller_restconf_port', 'Controller RESTconf port'),
-             ('mininet_boot_handler', 'Mininet boot handler'),
+             ('mininet_rest_server_boot', 'Mininet boot handler'),
              ('mininet_stop_switches_handler',
               'Mininet stop switches handler'),
              ('mininet_get_switches_handler', 'Mininet get switches handler'),
