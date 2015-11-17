@@ -326,10 +326,10 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             flow_discovery_deadline_ms = 240000
 
-            cmd = ('python3.4  {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}'.
+            cmd = ('python3.4 {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}'.
                 format(nb_generator_run_handler, controller_node_ip,
                        controller_restconf_port, total_flows, mininet_size,
-                       flow_workers, flow_operations_delay_ms,
+                       flow_workers, flow_operations_delay_ms, flow_delete_flag,
                        flow_discovery_deadline_ms, controller_restconf_user,
                        controller_restconf_password))
             exit_status , output = util.netutil.ssh_run_command(
