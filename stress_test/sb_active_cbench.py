@@ -50,7 +50,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
     :param cbench_thread_creation_delay_ms: delay between thread creation
     (in milliseconds)
     :param cbench_simulated_hosts: number of simulated hosts
-    :param cbench_ms_per_test: duration (in (ms)) of generator internal
+    :param cbench_ms_per_test: duration (in (ms)) of Cbench internal
     iteration
     :param cbench_internal_repeats: number of internal iterations during traffic
     transmission where performance and other statistics are sampled
@@ -110,8 +110,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
             # read messages from queue while TERM_SUCCESS has not been sent
             line = data_queue.get(block=True, timeout=10000)
             if line == term_success.value.decode():
-                logging.info('[monitor_thread] Got successful termination '
-                              'string. Returning samples and exiting.')
+                logging.info('[monitor_thread] successful termination '
+                              'string returned. Returning samples and exiting.')
                 result_queue.put(samples, block=True)
                 return
             else:
@@ -151,8 +151,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
                     statistics['cbench_warmup'] = cbench_warmup.value
                     if line == term_fail.value.decode():
                         logging.info(
-                            '[monitor_thread] Got failed termination string.'
-                            'Returning samples gathered so far and exiting.')
+                            '[monitor_thread] returned failed termination string.'
+                            'returning gathered samples and exiting.')
 
                         statistics['throughput_responses_sec'] = -1
                         samples.append(statistics)
@@ -179,7 +179,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
     :param out_json: the JSON output file
     :param ctrl_base_dir: controller base directory
-    :param sb_gen_base_dir: generator base directory
+    :param sb_gen_base_dir: Cbench base directory
     :param conf: JSON configuration dictionary
     :param output_dir: directory to store output files
     :type out_json: str
@@ -245,13 +245,13 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     controller_cleanup = conf['controller_cleanup']
 
     # Shared read-write variables between monitor-main thread and
-    # generator thread.
+    # Cbench thread.
     repeat_id = multiprocessing.Value('i', 0)
     cpid = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
     test_repeats = multiprocessing.Value('i', conf['test_repeats'])
 
-    # termination message sent to monitor thread when generator is finished
+    # termination message sent to monitor thread when Cbench is finished
     term_success = multiprocessing.Array('c',
         str('__successful_termination__').encode())
     term_fail = multiprocessing.Array('c',
@@ -269,7 +269,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Before proceeding with the experiments check validity of all
         # handlers
-        logging.info('{0} Checking handler files.'.format(test_type))
+        logging.info('{0} checking handler files.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
@@ -278,7 +278,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} Initiating cbench node session.'.format(test_type))
+        logging.info('{0} initiating Cbench node session.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(
             cbench_node_ip.value.decode(), cbench_node_username.value.decode(),
              cbench_node_password.value.decode(), 10,
@@ -287,7 +287,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client object to be utilized in the sequel within
         # sb_active_cbench_run where necessary
-        logging.info('{0} Initiating controller node session.'.format(test_type))
+        logging.info('{0} initiating controller node session.'.format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
@@ -295,21 +295,21 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             int(controller_node_ssh_port.value.decode()))
 
         if cbench_rebuild:
-            logging.info('{0} Building generator.'.format(test_type))
+            logging.info('{0} building Cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
         if controller_rebuild:
-            logging.info('{0} Building controller.'.format(test_type))
+            logging.info('{0} building controller.'.format(test_type))
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
 
-        logging.info('{0} Checking for other active controllers'.
+        logging.info('{0} checking for other active controllers'.
                      format(test_type))
         controller_utils.check_for_active_controller(controller_port.value,
                                                      controller_ssh_client)
 
         logging.info(
-            '{0} Starting and stopping controller to generate xml files'.
+            '{0} starting and stopping controller to generate xml files'.
             format(test_type))
         logging.info('{0} Starting controller'.format(test_type))
         cpid.value = controller_utils.start_controller(
@@ -338,13 +338,13 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                list(range(0, test_repeats.value)),
                                conf['controller_statistics_period_ms']):
 
-            logging.info('{0} Changing controller statistics period to {1} ms'.
+            logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms.value))
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler,
                 controller_statistics_period_ms.value, controller_ssh_client)
 
-            logging.info('{0} Starting controller'.format(test_type))
+            logging.info('{0} starting controller'.format(test_type))
             cpid.value = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port.value, ' '.join(conf['java_opts']),
@@ -354,12 +354,12 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_switches.value = \
                 cbench_threads.value * cbench_switches_per_thread.value
 
-            logging.info('{0} Creating data and result queues'.
+            logging.info('{0} creating data and result queues'.
                           format(test_type))
             data_queue = multiprocessing.Queue()
             result_queue = multiprocessing.Queue()
 
-            logging.info('{0} Creating monitor thread'.format(test_type))
+            logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=monitor, args=(data_queue, result_queue,
                                       cpid, global_sample_id, repeat_id,
@@ -381,7 +381,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       controller_node_password,
                                       term_success, term_fail))
 
-            logging.info('{0} Creating generator thread'.format(test_type))
+            logging.info('{0} creating Cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
                 args=(cbench_run_handler, controller_node_ip,
@@ -405,9 +405,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
             samples = result_queue.get(block=True)
             total_samples = total_samples + samples
-            logging.info('{0} Joining monitor thread'.format(test_type))
+            logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
-            logging.info('{0} Joining generator thread'.format(test_type))
+            logging.info('{0} joining generator thread'.format(test_type))
             cbench_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,
@@ -426,21 +426,21 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         logging.exception('')
 
     finally:
-        logging.info('{0} Finalizing test'.format(test_type))
+        logging.info('{0} finalizing test'.format(test_type))
 
-        logging.info('{0} Creating test output directory if not exist.'.
+        logging.info('{0} creating test output directory if not exist.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        logging.info('{0} Saving results to JSON file.'.format(test_type))
+        logging.info('{0} saving results to JSON file.'.format(test_type))
         if len(total_samples) > 0:
             with open(out_json, 'w') as ojf:
                 json.dump(total_samples, ojf)
             ojf.close()
 
         try:
-            logging.info('{0} Stopping controller.'.
+            logging.info('{0} stopping controller.'.
                          format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid.value, controller_ssh_client)
@@ -448,7 +448,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             pass
 
         try:
-            logging.info('{0} Collecting logs'.format(test_type))
+            logging.info('{0} collecting logs'.format(test_type))
             util.netutil.copy_remote_directory(
                 controller_node_ip.value.decode(),
                 controller_node_username.value.decode(),
@@ -457,22 +457,22 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                 int(controller_node_ssh_port.value.decode()))
         except:
             logging.error('{0} {1}'.format(
-                test_type, 'Fail to transfer logs dir of the controller.'))
+                test_type, 'failed transferring controller logs directory.'))
 
         if controller_cleanup:
-            logging.info('{0} Cleaning controller.'.format(test_type))
+            logging.info('{0} cleaning controller build directory.'.format(test_type))
             controller_utils.cleanup_controller(controller_clean_handler,
                                                 controller_ssh_client)
 
         if cbench_cleanup:
-            logging.info('{0} Cleaning generator.'.format(test_type))
+            logging.info('{0} cleaning Cbench build directory.'.format(test_type))
             cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
         if controller_ssh_client:
             controller_ssh_client.close()
         else:
-            logging.error('{0} Controller ssh connection does not exist.'.
+            logging.error('{0} controller ssh connection does not exist.'.
                           format(test_type))
         if cbench_ssh_client:
             cbench_ssh_client.close()

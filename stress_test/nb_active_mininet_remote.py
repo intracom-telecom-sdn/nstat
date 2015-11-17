@@ -305,19 +305,19 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                                conf['mininet_topology_type'],
                                conf['controller_statistics_period_ms']):
 
-            logging.info('{0} Changing controller statistics period to {1} ms'.
+            logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))
             controller_utils.controller_changestatsperiod(
                 controller_statistics_handler, controller_statistics_period_ms,
                 controller_ssh_client)
 
-            logging.info('{0} Booting up mininet REST server'.
+            logging.info('{0} booting up mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_node_ip,
                 mininet_server_rest_port)
 
-            logging.info('{0} Starting controller'.format(test_type))
+            logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
@@ -330,14 +330,14 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             # The queue where flowmaster will return its results.
             #mqueue = multiprocessing.Queue()
             logging.info(
-                '{0} Initializing topology on REST server.'.format(test_type))
+                '{0} initializing topology on REST server.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_ip, mininet_rest_server_port, controller_node_ip,
                 controller_port, mininet_topology_type, mininet_size,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
-            logging.info('{0} Starting mininet topology.'.format(test_type))
+            logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
                 mininet_ip, mininet_rest_server_port)
 
@@ -351,7 +351,6 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             flow_discovery_deadline_ms = 240000
 
-
             #python3.4 nb_gen_handler.py '192.168.64.16' '8181' '100' '3' '10' '{        "flow-node-inventory:flow": [            {                "flow-node-inventory:cookie": %d,                "flow-node-inventory:cookie_mask": 4294967295,                "flow-node-inventory:flow-name": "%s",                "flow-node-inventory:hard-timeout": %d,                "flow-node-inventory:id": "%s",                "flow-node-inventory:idle-timeout": %d,                "flow-node-inventory:installHw": true,                "flow-node-inventory:instructions": {                    "flow-node-inventory:instruction": [                        {                            "flow-node-inventory:apply-actions": {                                "flow-node-inventory:action": [                                    {                                        "flow-node-inventory:drop-action": {},                                        "flow-node-inventory:order": 0                                    }                                ]                            },                            "flow-node-inventory:order": 0                        }                    ]                },                "flow-node-inventory:match": {                    "flow-node-inventory:ipv4-destination": "%s/32",                    "flow-node-inventory:ethernet-match": {                        "flow-node-inventory:ethernet-type": {                            "flow-node-inventory:type": 2048                        }                    }                },                "flow-node-inventory:priority": 1,                "flow-node-inventory:strict": false,                "flow-node-inventory:table_id": 0            }        ]       }' '10' 'False' '240000' 'admin' 'admin'
 
 
@@ -363,14 +362,6 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                                       flow_discovery_deadline_ms,
                                       controller_restconf_user,
                                       controller_restconf_password)
-
-
-
-            # Parallel section
-            logging.info('{0} Creating flow master thread'.format(test_type))
-
-            logging.info('{0} Joining flow master thread.'.format(test_type))
-
 
             # Getting results
             statistics = common.sample_stats(cpid)
@@ -390,24 +381,24 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 controller_statistics_period_ms
             statistics['flow_operation_delay_ms'] = flow_operations_delay_ms
             statistics['flow_workers'] = flow_workers
-            statistics['add_flows_transmission_time'] = res[0]
-            statistics['add_flows_time'] = res[1]
+            statistics['add_flows_transmission_time'] = results[0]
+            statistics['add_flows_time'] = results[1]
             if flow_delete_flag:
-                statistics['delete_flows_transmission_time'] = res[-3]
-                statistics['delete_flows_time'] = res[-2]
-            statistics['failed_flow_operations'] = res[-1]
+                statistics['delete_flows_transmission_time'] = results[-3]
+                statistics['delete_flows_time'] = results[-2]
+            statistics['failed_flow_operations'] = results[-1]
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)
 
-            logging.debug('{0} Stopping mininet topology.'.format(test_type))
+            logging.debug('{0} stopping Mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
                 mininet_ip, mininet_rest_server_port)
 
-            logging.debug('{0} Stopping controller.'.format(test_type))
+            logging.debug('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
                 controller_status_handler, cpid)
 
-            logging.debug('{0} Killing REST daemon in Mininet VM.'.
+            logging.debug('{0} killing REST daemon in Mininet VM.'.
                           format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
                                               mininet_rest_server_port)
@@ -424,9 +415,9 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             logging.error('{0} {1}'.format(test_type, error))
 
     finally:
-        logging.info('{0} Finalizing test.'.format(test_type))
+        logging.info('{0} finalizing test.'.format(test_type))
 
-        logging.info('{0} Creating test output directory if not exist.'.
+        logging.info('{0} creating test output directory if not exist.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
