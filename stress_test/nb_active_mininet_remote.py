@@ -341,7 +341,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                        flow_discovery_deadline_ms, controller_restconf_user,
                        controller_restconf_password))
             print(cmd)
-            exit()
+
             exit_status , output = util.netutil.ssh_run_command(
                 nb_generator_ssh_client, cmd , '[generator_run_handler]')
 
