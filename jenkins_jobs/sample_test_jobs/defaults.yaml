@@ -23,7 +23,6 @@
     scm:
     - git:
         url: https://github.com/intracom-telecom-sdn/nstat.git
-        credentials-id: <provide with API token>
-        branches: [master]
+        branches: ['{branch}']
     logrotate:
        numToKeep: 30
