@@ -130,8 +130,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         logging.info('{0} initiating controller node session.'.format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
-            controller_node_username.value.decode(),
-            controller_node_password.value.decode(), 10,
+            controller_node_username,
+            controller_node_password, 10,
             int(controller_node_ssh_port.value.decode()))
 
 
@@ -308,8 +308,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} collecting logs'.format(test_type))
             util.netutil.copy_remote_directory(
                 controller_node_ip.value.decode(),
-                controller_node_username.value.decode(),
-                controller_node_password.value.decode(),
+                controller_node_username,
+                controller_node_password,
                 controller_logs_dir, output_dir+'/log',
                 int(controller_node_ssh_port.value.decode()))
         except:
