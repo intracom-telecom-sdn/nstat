@@ -139,7 +139,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} building controller'.format(test_type))
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
-
+        """
         logging.info('{0} checking for other active controllers'.
                      format(test_type))
         controller_utils.check_for_active_controller(controller_port,
@@ -158,7 +158,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         logging.info('{0} OK, controller status is 1.'.format(test_type))
         controller_utils.stop_controller(controller_stop_handler,
             controller_status_handler, cpid, controller_ssh_client)
-
+        """
         # Run tests for all possible dimensions
         for (mininet_size.value,
              mininet_group_size,

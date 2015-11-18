@@ -49,7 +49,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
             mininet_rest_server_port, mininet_ssh_session)
         time.sleep(1)
         num_of_tries -= 1
-
+    print ('---------aaaaaaaaa'+str(mininet_server_pid))
     if mininet_server_pid <= 0:
         logging.error('{0} Fail to start mininet REST server.'.
                       format('[start_mininet_server]'))
