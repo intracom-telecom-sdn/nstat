@@ -20,7 +20,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
 
     :param mininet_ssh_session: ssh session used to issue remote command
     :param mininet_server_remote_path: path where mininet_custom_boot.py is
-    stored and used to start the mininet topology.
+    stored and used to start the Mininet topology.
     :param mininet_rest_server_host: hostname/IP the REST server should listen
     to
     :param mininet_rest_server_port: port the REST server should listen to
@@ -52,18 +52,18 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server_host,
     a remote Mininet node
 
     :param mininet_init_topo_handler: full path of the handler to initialize
-    the mininet topology
+    the Mininet topology
     :param mininet_rest_server_host: hostname/IP the REST server listens to
     :param mininet_rest_server_port: port the REST server listens to
     :param controller_ip: controller IP
     :param controller_port: controller OpenFlow port
     :param mininet_topology_type: Type of the network topology. It can have
     one of the following values (DisconnectedTopo,LinearTopo or MeshTopo)
-    :param mininet_size: Size of the mininet tpology
-    :param mininet_group_size: Size of the mininet Group
-    :param mininet_group_delay_ms: Delay in which mininet groups are
+    :param mininet_size: Size of the Mininet tpology
+    :param mininet_group_size: Size of the Mininet Group
+    :param mininet_group_delay_ms: Delay in which Mininet groups are
     initialized
-    :param mininet_hosts_per_switch: Number of Hosts each mininet switch is
+    :param mininet_hosts_per_switch: Number of Hosts each Mininet switch is
     attached to
     :type mininet_init_topo_handler: str
     :type mininet_rest_server_host: str

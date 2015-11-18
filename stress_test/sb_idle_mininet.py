@@ -30,7 +30,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
     :param out_json: the JSON output file
     :param ctrl_base_dir: controller base directory
-    :param mininet_base_dir: mininet base directory
+    :param mininet_base_dir: Mininet base directory
     :param conf: JSON configuration dictionary
     :param output_dir: directory to store output files
     :type out_json: str
@@ -223,7 +223,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             t_start.value = time.time()
 
 
-            logging.info('{0} starting mininet topology.'.format(test_type))
+            logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
                 mininet_node_ip, mininet_server_rest_port)
 
@@ -330,7 +330,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         except:
             pass
 
-        # Closing ssh connections with controller/mininet nodes
+        # Closing ssh connections with controller/Mininet nodes
         if controller_ssh_client:
             controller_ssh_client.close()
         else:
