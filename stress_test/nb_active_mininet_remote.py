@@ -375,7 +375,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             logging.debug('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid)
+                controller_status_handler, cpid, controller_ssh_client)
 
             logging.debug('{0} killing REST daemon in Mininet VM.'.
                           format(test_type))
