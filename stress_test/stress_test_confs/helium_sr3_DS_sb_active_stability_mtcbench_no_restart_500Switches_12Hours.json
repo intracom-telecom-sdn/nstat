@@ -19,7 +19,7 @@
 "generator_clean_handler":"./clean.sh",
 "generator_rebuild":true,
 "generator_cleanup":false,
-"generator_name":"Cbench",
+"generator_name":"MT-Cbench",
 "generator_simulated_hosts":[100],
 "generator_threads":[10],
 "generator_switches_per_thread":[50],
