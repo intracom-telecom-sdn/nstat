@@ -212,7 +212,7 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
                           format(odl_inventory.found_flows))
             if odl_inventory.found_flows == expected_flows:
                 time_interval = time.time() - t_start
-                logging.info('[flow_master_thread] Flow-Master '
+                logging.debug('[flow_master_thread] Flow-Master '
                              '{0} flows found in {1} seconds'.
                              format(expected_flows, time_interval))
 

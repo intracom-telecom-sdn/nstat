@@ -197,7 +197,8 @@ def main():
                                                     args.nb_gen_base_dir,
                                                     args.sb_gen_base_dir,
                                                     test_config,
-                                                    args.output_dir)
+                                                    args.output_dir,
+                                                    args.logging_level)
         report_spec = nb_active_mininet_remote.get_report_spec(args.test_type,
                                                         args.json_config,
                                                         args.json_output)

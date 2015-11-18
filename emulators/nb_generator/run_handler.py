@@ -30,11 +30,11 @@ def northbound_generator():
     8.  delete_flag: whether to delete or not the added flows as part of the
     test
     9.  discovery_deadline_ms: deadline for flow discovery (in milliseconds)
-    10. auth_token: RESTconf authorization token (username/password tuple)
+    10. controller_restconf_user: controller NorthBound RESTconf username
+    11. controller_restconf_password: controller NorthBound RESTconf password
+    12. logging_level: nb generator logging level (is passed from
+    nstat orchestrator)
     """
-    # Example
-    # python3.4 nb_gen_handler "192.168.64.17" "8181" "100000" "10" "*.json" "100" "True" "240000" "admin" "admin"
-
 
     cmd = ('python3.4 nb_gen.py --controller-ip=\'{0}\' '
                             '--controller-port=\'{1}\' '
@@ -44,12 +44,13 @@ def northbound_generator():
                             '--operation-delay=\'{5}\' '
                             '--discovery-deadline=\'{6}\' '
                             '--restconf-user=\'{7}\' '
-                            '--restconf-password=\'{8}\'')
+                            '--restconf-password=\'{8}\' '
+                            '--logging-level=\'{9}\'')
     if sys.argv[7] == 'True':
         cmd += ' --delete-flows'
     cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
-                     sys.argv[5], sys.argv[6], sys.argv[8],
-                     sys.argv[9], sys.argv[10])
+                     sys.argv[5], sys.argv[6], sys.argv[8], sys.argv[9],
+                     sys.argv[10], sys.argv[11])
     p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     cmd_output = p.stdout.read().decode(sys.stdout.encoding)

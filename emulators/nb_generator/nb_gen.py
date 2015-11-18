@@ -100,21 +100,21 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
         flow_template, url_template, op_delay_ms, auth_token)
     node_names = nb_gen_utils.get_node_names(ctrl_ip, ctrl_port, auth_token)
 
-    logging.debug('[flow_master_thread] Distributing workload')
+    logging.info('[flow_master_thread] Distributing workload')
     nb_gen_utils.distribute_workload(nnodes, nflows, opqueues, 'A', node_names)
 
-    logging.debug('[flow_master_thread] Starting workers')
+    logging.info('[flow_master_thread] Starting workers')
     t_start = time.time()
     for worker_thread in wthr:
         worker_thread.start()
 
-    logging.debug('[flow_master_thread] Joining workers')
+    logging.info('[flow_master_thread] Joining workers')
     failed_flow_ops += nb_gen_utils.join_workers(opqueues, resqueues, wthr)
     t_stop = time.time()
     nb_transmission_interval = t_stop - t_start
     results.append(nb_transmission_interval)
 
-    logging.debug('[flow_master_thread] Initiate flow polling')
+    logging.info('[flow_master_thread] Initiate flow polling')
     addition_time = nb_gen_utils.poll_flows(nflows, ctrl_ip, ctrl_port,
                                discovery_deadline_ms, t_start, auth_token)
 
@@ -129,18 +129,18 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
         nb_gen_utils.distribute_workload(nnodes, nflows, opqueues, 'D',
                                          node_names)
 
-        logging.debug('[flow_master_thread] Starting workers')
+        logging.info('[flow_master_thread] Starting workers')
         t_start = time.time()
         for worker_thread in wthr:
             worker_thread.start()
 
-        logging.debug('[flow_master_thread] Joining workers')
+        logging.info('[flow_master_thread] Joining workers')
         failed_flow_ops += nb_gen_utils.join_workers(opqueues, resqueues, wthr)
         t_stop = time.time()
         nb_transmission_interval = t_stop - t_start
         results.append(nb_transmission_interval)
 
-        logging.debug('[flow_master_thread] Initiate flow polling')
+        logging.info('[flow_master_thread] Initiate flow polling')
         deletion_time = nb_gen_utils.poll_flows(0, ctrl_ip, ctrl_port,
             discovery_deadline_ms, t_start, auth_token)
         results.append(deletion_time)
@@ -245,8 +245,29 @@ if __name__ == '__main__':
                         help=("The controller's RESTCONF password. \n"
                               "The default value is 'admin'.\n"
                               "Example: --restconf-password='admin'"))
+    parser.add_argument('--logging-level',
+                        type=str,
+                        dest='logging_level',
+                        action='store',
+                        default='DEBUG',
+                        help="Setting the level of the logging messages."
+                             "Can have one of the following values:\n"
+                             "INFO\n"
+                             "DEBUG (default)\n"
+                             "ERROR")
 
     args = parser.parse_args()
+
+    logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
+    if args.logging_level == 'DEBUG':
+        logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
+                        format=logging_format)
+    elif args.logging_level == 'ERROR':
+        logging.basicConfig(level=logging.ERROR, stream=sys.stdout,
+                        format=logging_format)
+    else:
+        logging.basicConfig(level=logging.INFO, stream=sys.stdout,
+                        format=logging_format)
 
     result = flow_master(args.ctrl_ip, args.ctrl_port, int(args.nflows),
         int(args.nnodes), int(args.nworkers), int(args.op_delay_ms),

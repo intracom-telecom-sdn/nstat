@@ -113,7 +113,7 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
 
 
 def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
-                          mininet_base_dir, conf, output_dir):
+                          mininet_base_dir, conf, output_dir, log_level):
     """Run NB active test with Mininet.
 
     :param out_json: the JSON output file
@@ -121,11 +121,14 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     :param mininet_base_dir: mininet base directory
     :param conf: JSON configuration dictionary
     :param output_dir: directory to store output files
+    :param log_level: This parameter is used in order to pass NSTAT
+    --logging-level argument to NorthBound generator.
     :type out_json: str
     :type ctrl_base_dir: str
     :type mininet_base_dir: str
     :type conf: dict
     :type output_dir: str
+    :type log_level: str
     """
 
 
@@ -324,12 +327,13 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             flow_discovery_deadline_ms = 240000
 
-            cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
-                format(nb_generator_base_dir, nb_generator_run_handler, controller_node_ip,
-                       controller_restconf_port, total_flows, mininet_size,
-                       flow_workers, flow_operations_delay_ms, flow_delete_flag,
+            cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}'.
+                format(nb_generator_base_dir, nb_generator_run_handler,
+                       controller_node_ip, controller_restconf_port,
+                       total_flows, mininet_size, flow_workers,
+                       flow_operations_delay_ms, flow_delete_flag,
                        flow_discovery_deadline_ms, controller_restconf_user,
-                       controller_restconf_password))
+                       controller_restconf_password, log_level))
             print(cmd)
 
             exit_status , output = util.netutil.ssh_run_command(
