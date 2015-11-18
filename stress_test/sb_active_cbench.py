@@ -407,7 +407,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             total_samples = total_samples + samples
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
-            logging.info('{0} joining generator thread'.format(test_type))
+            logging.info('{0} joining cbench thread'.format(test_type))
             cbench_thread.join()
 
             controller_utils.stop_controller(controller_stop_handler,

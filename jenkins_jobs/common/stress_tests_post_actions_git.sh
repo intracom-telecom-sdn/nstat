@@ -28,7 +28,7 @@ git branch -a
 # ------------------------------------------------------------------------------
 git checkout develop_ST_idle_scala
 
-# make a git pull to avoid conflicts and get the laetest state of the
+# make a git pull to avoid conflicts and get the latest state of the
 # 'develop' branch
 # ------------------------------------------------------------------------------
 git pull
