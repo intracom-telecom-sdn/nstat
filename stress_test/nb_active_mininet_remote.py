@@ -277,16 +277,6 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                                conf['mininet_topology_type'],
                                conf['controller_statistics_period_ms']):
 
-            flow_discovery_deadline_ms = 240000
-
-            cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
-                format(nb_generator_base_dir, nb_generator_base_dir,
-                       nb_generator_run_handler, controller_node_ip,
-                       controller_restconf_port, total_flows, mininet_size,
-                       flow_workers, flow_operations_delay_ms, flow_delete_flag,
-                       flow_discovery_deadline_ms, controller_restconf_user,
-                       controller_restconf_password))
-
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))
             controller_utils.controller_changestatsperiod(
@@ -335,7 +325,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             flow_discovery_deadline_ms = 240000
 
             cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
-                format(nb_generator_run_handler, controller_node_ip,
+                format(nb_generator_base_dir, nb_generator_run_handler, controller_node_ip,
                        controller_restconf_port, total_flows, mininet_size,
                        flow_workers, flow_operations_delay_ms, flow_delete_flag,
                        flow_discovery_deadline_ms, controller_restconf_user,
