@@ -341,7 +341,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             results = json.loads(output)
 
             # Getting results
-            statistics = common.sample_stats(cpid)
+            statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['controller_node_ip'] = controller_node_ip
