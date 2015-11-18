@@ -19,7 +19,7 @@ cp -r $WORKSPACE/$RESULTS_DIR/*.* /tmp/publisher
 # ------------------------------------------------------------------------------
 cp -r $WORKSPACE/$RESULTS_DIR/$OUTPUT_FILENAME"_results.json" /tmp
 
-# list all active remote heads (usefull for the console output)
+# list all active remote heads (useful for the console output)
 # ------------------------------------------------------------------------------
 git branch -a
 
