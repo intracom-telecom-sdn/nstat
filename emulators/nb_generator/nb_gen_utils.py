@@ -114,7 +114,7 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
         time.sleep(float(op_delay_ms)/1000)
 
 
-def distribute_workload(nnodes, nflows, opqueues, operation, node_names):
+def distribute_workload(nflows, opqueues, operation, node_names):
     """
     Creates operations of the form (operation, 'target_switch', uid,
     'IP_address'), one for each flow, and distributes them in a round robin
@@ -125,18 +125,19 @@ def distribute_workload(nnodes, nflows, opqueues, operation, node_names):
     operation. IP_adress is the IP address that will populate the destination
     IP of the flow created by a template.
 
-    :param nnodes: number of nodes (switches) to generate operations for
-    Flows will be added to nodes [0, n-1]
     :param nflows: total number of flows to distribute
     :param opqueues: workers operation queues
-    :param operation: operation to perform (Add or Remove)
+    :param operation: operation to perform (Add 'A' or Delete 'D')
     :param node_names: array Name of each node in Opendaylight datastore.
-    :type nnodes: int
     :type nflows: int
+    :type opqueues: <queue>
+    :type operation: str
+    :type nodenames: <list>
     """
 
     curr_ip = ipaddress.ip_address('0.0.0.0')
     nworkers = len(opqueues)
+    nnodes = len(node_names)
 
     for flow in range(0, nflows):
         dest_node = flow % nnodes

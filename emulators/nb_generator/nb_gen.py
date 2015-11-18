@@ -9,6 +9,7 @@
 import argparse
 import logging
 import nb_gen_utils
+import os
 import time
 
 F_TEMP = """{
@@ -52,7 +53,7 @@ F_TEMP = """{
        }"""
 
 
-def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
+def flow_master(ctrl_ip, ctrl_port, nflows, nworkers,
                        op_delay_ms, delete_flag,
                        discovery_deadline_ms, controller_restconf_user,
                        controller_restconf_password):
@@ -61,8 +62,6 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
     :param nflows: total number of flows to distribute
-    :param nnodes: number of nodes (switches) to generate operations for.
-    Flows will be added to nodes [0, n-1]
     :param nworkers: number of worker threads to create
     :param op_delay_ms: delay between thread operations (in milliseconds)
     :param delete_flag: whether to delete or not the added flows as part of the
@@ -73,7 +72,6 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     :type ctrl_ip: str
     :type ctrl_port: str
     :type nflows: int
-    :type nnodes: int
     :type nworkers: int
     :type op_delay_ms: int
     :type delete_flag: bool
@@ -86,10 +84,11 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     results = []
     failed_flow_ops = 0
     auth_token = (controller_restconf_user, controller_restconf_password)
+    node_names = nb_gen_utils.get_node_names(ctrl_ip, ctrl_port, auth_token)
 
     logging.info('[flow_master_thread] Initializing. Will perform {0} flow '
                  'operations at {1} openflow nodes with {2} workers'.format(
-                 nflows, nnodes, nworkers))
+                 nflows, len(node_names), nworkers))
 
     url_template = 'http://' + ctrl_ip + ':' + ctrl_port + \
         '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
@@ -98,10 +97,10 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
     logging.info('[flow_master_thread] Creating workers for ADD ops')
     opqueues, wthr, resqueues = nb_gen_utils.create_workers(nworkers,
         flow_template, url_template, op_delay_ms, auth_token)
-    node_names = nb_gen_utils.get_node_names(ctrl_ip, ctrl_port, auth_token)
+
 
     logging.info('[flow_master_thread] Distributing workload')
-    nb_gen_utils.distribute_workload(nnodes, nflows, opqueues, 'A', node_names)
+    nb_gen_utils.distribute_workload(nflows, opqueues, 'A', node_names)
 
     logging.info('[flow_master_thread] Starting workers')
     t_start = time.time()
@@ -126,7 +125,7 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nnodes, nworkers,
             flow_template, url_template, op_delay_ms, auth_token)
 
         logging.debug('[flow_master_thread] Distributing workload')
-        nb_gen_utils.distribute_workload(nnodes, nflows, opqueues, 'D',
+        nb_gen_utils.distribute_workload(nflows, opqueues, 'D',
                                          node_names)
 
         logging.info('[flow_master_thread] Starting workers')
@@ -174,7 +173,8 @@ if __name__ == '__main__':
                         type=str,
                         dest='ctrl_port',
                         action='store',
-                        help=("The port number of RESTCONF port of the controller. \n"
+                        help=("The port number of RESTCONF port of the "
+                              "controller. \n"
                               "This is a compulsory argument.\n"
                               "Example: --controller-port='8181'"))
     parser.add_argument('--number-of-flows',
@@ -185,20 +185,13 @@ if __name__ == '__main__':
                         help=("The total number of flow modifications. \n"
                               "This is a compulsory argument.\n"
                               "Example: --number-of-flows='1000'"))
-    parser.add_argument('--number-of-switches',
-                        required=True,
-                        type=str,
-                        dest='nnodes',
-                        action='store',
-                        help=("The total number of switches connected on the controller. \n"
-                              "This is a compulsory argument.\n"
-                              "Example: --number-of-switches='100'"))
     parser.add_argument('--number-of-workers',
                         required=True,
                         type=str,
                         dest='nworkers',
                         action='store',
-                        help=("The total number of worker threads that will be created. \n"
+                        help=("The total number of worker threads that will "
+                              "be created. \n"
                               "This is a compulsory argument.\n"
                               "Example: --number-of-workers='10'"))
     parser.add_argument('--operation-delay',
@@ -206,7 +199,8 @@ if __name__ == '__main__':
                         type=str,
                         dest='op_delay_ms',
                         action='store',
-                        help=("The delay between each flow operation (in ms). \n"
+                        help=("The delay between each flow operation "
+                              "(in ms). \n"
                               "This is a compulsory argument.\n"
                               "Example: --operation-delay='5'"))
     parser.add_argument('--delete-flows',
@@ -269,8 +263,12 @@ if __name__ == '__main__':
         logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                         format=logging_format)
 
+    abs_filename_path = os.path.abspath(__file__)
+    abs_dir_path = os.path.dirname(abs_filename_path)
+    os.chdir(abs_dir_path)
+
     result = flow_master(args.ctrl_ip, args.ctrl_port, int(args.nflows),
-        int(args.nnodes), int(args.nworkers), int(args.op_delay_ms),
+        int(args.nworkers), int(args.op_delay_ms),
         args.delete_flag, int(args.discovery_deadline_ms),
         args.restconf_user, args.restconf_password)
 
