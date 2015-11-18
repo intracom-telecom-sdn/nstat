@@ -336,10 +336,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         else:
             logging.error('{0} controller ssh connection does not exist.'.
                           format(test_type))
-        if cbench_ssh_client:
-            cbench_ssh_client.close()
+        if mininet_ssh_client:
+            mininet_ssh_client.close()
         else:
-            logging.error('{0} cbench ssh connection does not exist.'.
+            logging.error('{0} Mininet ssh connection does not exist.'.
                           format(test_type))
 
 
