@@ -14,7 +14,7 @@ import argparse
 import html_generation
 import json
 import logging
-import nb_active_mininet_remote
+import nb_active_mininet
 import os
 import sb_active_cbench
 import sb_idle_cbench
@@ -35,11 +35,8 @@ def main():
                         type=str,
                         dest='test_type',
                         action='store',
-                        help="sb_active_scalability_cbench \n"
-                             "sb_active_scalability_mtcbench \n"
-                             "sb_active_stability_cbench\n"
+                        help="sb_active_scalability_mtcbench \n"
                              "sb_active_stability_mtcbench\n"
-                             "sb_idle_scalability_cbench\n"
                              "sb_idle_scalability_mtcbench\n"
                              "sb_idle_scalability_mininet\n"
                              "nb_active_scalability_mininet")
@@ -60,7 +57,7 @@ def main():
                         type=str,
                         dest='sb_gen_base_dir',
                         action='store',
-                        help='Cbench or Mininet generator base directory')
+                        help='MT-Cbench or Mininet generator base directory')
     parser.add_argument('--nb-generator-base-dir',
                         required=False,
                         type=str,
@@ -138,9 +135,7 @@ def main():
     # 02. run test
 
     # sb_active_cbench
-    if args.test_type == 'sb_active_scalability_cbench'   or \
-       args.test_type == 'sb_active_scalability_mtcbench' or \
-       args.test_type == 'sb_active_stability_cbench'     or \
+    if args.test_type == 'sb_active_scalability_mtcbench' or \
        args.test_type == 'sb_active_stability_mtcbench':
 
         if not args.bypass_test:
@@ -156,8 +151,7 @@ def main():
                                                        args.json_output)
 
     # sb_idle_cbench
-    elif args.test_type == 'sb_idle_scalability_cbench' or  \
-         args.test_type == 'sb_idle_scalability_mtcbench':
+    elif args.test_type == 'sb_idle_scalability_mtcbench':
 
         if not args.bypass_test:
             logging.info('[nstat_orchestrator] Running test {0}'.
@@ -192,14 +186,13 @@ def main():
         if not args.bypass_test:
             logging.info('[nstat_orchestrator] Running test {0}'.
                          format(args.test_type))
-            nb_active_mininet_remote.nb_active_mininet_run(args.json_output,
+            nb_active_mininet.nb_active_mininet_run(args.json_output,
                                                     args.ctrl_base_dir,
                                                     args.nb_gen_base_dir,
                                                     args.sb_gen_base_dir,
                                                     test_config,
-                                                    args.output_dir,
-                                                    args.logging_level)
-        report_spec = nb_active_mininet_remote.get_report_spec(args.test_type,
+                                                    args.output_dir)
+        report_spec = nb_active_mininet.get_report_spec(args.test_type,
                                                         args.json_config,
                                                         args.json_output)
     else:
