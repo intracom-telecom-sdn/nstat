@@ -449,7 +449,11 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         else:
             logging.error('{0} Mininet ssh connection does not exist.'.
                           format(test_type))
-
+        if nb_generator_ssh_client:
+            nb_generator_ssh_client.close()
+        else:
+            logging.error('{0} NB generator node ssh connection does not exist.'.
+                          format(test_type))
 
 def get_report_spec(test_type, config_json, results_json):
     """
