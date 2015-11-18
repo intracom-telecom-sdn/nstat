@@ -132,7 +132,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_node_ip.value.decode(),
             controller_node_username,
             controller_node_password, 10,
-            int(controller_node_ssh_port.value.decode()))
+            int(controller_node_ssh_port))
 
 
         if controller_rebuild:
@@ -311,7 +311,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_node_username,
                 controller_node_password,
                 controller_logs_dir, output_dir+'/log',
-                int(controller_node_ssh_port.value.decode()))
+                int(controller_node_ssh_port))
         except:
             logging.error('{0} {1}'.format(
                 test_type, 'failed transferring controller logs dir.'))
