@@ -231,7 +231,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             nb_generator_node_ip, nb_generator_node_username,
             nb_generator_node_password, 10, int(nb_generator_node_ssh_port))
 
-        """
+
         if controller_rebuild:
             logging.info('{0} Building controller'.format(test_type))
             controller_utils.rebuild_controller(controller_build_handler,
@@ -256,7 +256,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         logging.info('{0} OK, controller status is 1.'.format(test_type))
         controller_utils.stop_controller(controller_stop_handler,
             controller_status_handler, cpid, controller_ssh_client)
-        """
+
         # Run tests for all possible dimensions
         for (total_flows,
              flow_operations_delay_ms,
@@ -277,25 +277,15 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                                conf['mininet_topology_type'],
                                conf['controller_statistics_period_ms']):
 
-
-
             flow_discovery_deadline_ms = 240000
 
-            cmd = ('python3.4 {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10}'.
-                format(nb_generator_run_handler, controller_node_ip,
-                       controller_restconf_port, total_flows, mininet_size,
-                       flow_workers, flow_operations_delay_ms, flow_delete_flag,
+            cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
+                format(nb_generator_base_dir,nb_generator_run_handler,
+                       controller_node_ip, controller_restconf_port,
+                       total_flows, mininet_size, flow_workers,
+                       flow_operations_delay_ms, flow_delete_flag,
                        flow_discovery_deadline_ms, controller_restconf_user,
                        controller_restconf_password))
-            print(cmd)
-            exit()
-
-
-
-
-
-
-
 
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))

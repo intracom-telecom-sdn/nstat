@@ -130,7 +130,7 @@ def distribute_workload(nnodes, nflows, opqueues, operation, node_names):
     :param nflows: total number of flows to distribute
     :param opqueues: workers operation queues
     :param operation: operation to perform (Add or Remove)
-    :param node_names: array Name of each node in Opendaylight Datastore.
+    :param node_names: array Name of each node in Opendaylight datastore.
     :type nnodes: int
     :type nflows: int
     """
