@@ -18,10 +18,8 @@ Key features in brief:
 - Unification of different stress tests, see below:
   * SouthBound idle switch scalability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-idle-scalability-cbench),
   [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-idle-scalability-mtcbench) and [Mininet](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-Mininet-switches))
-  * SouthBound active switch scalability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-Cbench-switches)
-  and [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-active-scalability-mtcbench))
-  * SouthBound active switch stability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-active-stability-cbench)
-  and [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-MT-Cbench-switches))
+  * SouthBound active switch scalability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-active-scalability-mtcbench))
+  * SouthBound active switch stability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-MT-Cbench-switches))
   * [Northbound flow scalablity](https://github.com/intracom-telecom-sdn/nstat/wiki/Flow-scalability-test-with-idle-Mininet-switches)
 - Comprehensive reporting and configurable plotting
 

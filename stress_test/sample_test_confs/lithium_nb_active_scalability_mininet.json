@@ -18,8 +18,8 @@
 "mininet_host_ip":"127.0.0.1",
 "mininet_node_ip":"192.168.64.17",
 "mininet_node_ssh_port":"22",
-"mininet_node_username":"vagrant",
-"mininet_node_password":"vagrant",
+"mininet_node_username":"jenkins",
+"mininet_node_password":"jenkins",
 
 "nb_generator_node_spec":"/nstat/vagrant/node_nb_generator/Vagrantfile",
 "nb_generator_run_handler":"./run_handler.py",

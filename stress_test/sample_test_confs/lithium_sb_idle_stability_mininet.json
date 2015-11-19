@@ -19,8 +19,8 @@
 "mininet_host_ip":"127.0.0.1",
 "mininet_node_ip":"192.168.64.17",
 "mininet_node_ssh_port":"22",
-"mininet_node_username":"vagrant",
-"mininet_node_password":"vagrant",
+"mininet_node_username":"jenkins",
+"mininet_node_password":"jenkins",
 
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start.sh",
