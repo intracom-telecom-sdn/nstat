@@ -175,7 +175,6 @@ def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
         raise Exception('Fail to stop mininet REST server. Got invalid pid.')
 
 
-
 def delete_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
                             mininet_folder, remote_port=22):
     """
