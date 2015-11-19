@@ -13,7 +13,12 @@ cp -r $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER /home/jenkins/sample_tests/
 # copy results under 'publisher' folder so that HTML publisher can
 # archive the results
 # -------------------------------------------------------------------
-cp -r $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER/*.* /tmp/publisher
+if [ -d "/tmp/publisher"]; then
+	cp -a $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER/*.* /tmp/publisher
+else
+	mkdir -p "/tmp/publisher"
+	cp -a $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER/*.* /tmp/publisher
+fi
 
 # cleanup the machine
 # --------------------------------------------------------------------
