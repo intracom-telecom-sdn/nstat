@@ -220,11 +220,3 @@ def copy_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
     util.netutil.copy_directory_to_target(mininet_ssh_server_ip, mininet_user,
                                           mininet_pass, mininet_source,
                                           mininet_target, remote_port)
-
-if __name__ == '__main__':
-    mininet_ssh_client = util.netutil.ssh_connect_or_return('127.0.0.1',
-    'vagrant', 'vagrant', 10,
-    22)
-    start_mininet_server(mininet_ssh_client,
-        '/home/vagrant/nstat/emulators/mininet/mininet_custom_boot.py',
-        '127.0.0.1', 3333)
