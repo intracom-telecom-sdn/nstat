@@ -110,14 +110,14 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     try:
         # Before proceeding with the experiments check validity
         # of all handlers
-        logging.info('{0} checking handler files.'.format(test_type))
+        """logging.info('{0} checking handler files.'.format(test_type))
         util.file_ops.check_filelist([controller_build_handler,
             controller_start_handler, controller_status_handler,
             controller_stop_handler, controller_clean_handler,
             controller_statistics_handler, mininet_rest_server_boot,
             mininet_stop_switches_handler, mininet_get_switches_handler,
             mininet_start_topo_handler, mininet_init_topo_handler])
-
+        """
         # Opening connection with mininet_node_ip and returning
         # mininet_ssh_client to be utilized in the sequel
         logging.info('{0} initiating Mininet node session.'.format(test_type))
