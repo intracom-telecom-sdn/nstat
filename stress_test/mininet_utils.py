@@ -50,7 +50,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
         time.sleep(1)
         num_of_tries -= 1
 
-    if mininet_server_pid <= 0:
+    if mininet_server_pid == -1:
         logging.error('{0} Fail to start mininet REST server.'.
                       format('[start_mininet_server]'))
         raise Exception('Fail to start mininet REST server. Got invalid pid.')
@@ -153,18 +153,27 @@ def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
     :type mininet_rest_server_port: int
     """
 
+    get_pid_cmd = """sudo netstat -antup --numeric-ports | grep ':""" + \
+                  str(mininet_rest_server_port) + \
+                  """ ' | awk '{print $NF}' | awk -F '/' '{print $1}'"""
+
+    cmd_exit_status, cmd_output = util.netutil.ssh_run_command(
+        mininet_ssh_session, get_pid_cmd, prefix='[stop_mininet_server]')
+
+    mininet_server_pid = cmd_output.strip()
+    mininet_server_pid = mininet_server_pid.strip('-')
+    util.netutil.ssh_run_command(mininet_ssh_session,
+        'sudo kill -9 {0}'.format(mininet_server_pid),
+        prefix='[stop_mininet_server]')
+    util.netutil.ssh_run_command(mininet_ssh_session, 'sudo mn -c',
+        prefix='[stop_mininet_server]')
     mininet_server_pid = util.process.getpid_listeningonport(
             mininet_rest_server_port, mininet_ssh_session)
-    if mininet_server_pid > 0:
-        util.netutil.ssh_run_command(mininet_ssh_session,
-            'sudo kill -9 {0}'.format(mininet_server_pid),
-            prefix='[stop_mininet_server]')
-        util.netutil.ssh_run_command(mininet_ssh_session, 'sudo mn -c',
-            prefix='[stop_mininet_server]')
-    else:
+    if mininet_server_pid != -1:
         logging.error('{0} Fail to stop mininet REST server.'.
-            format('[stop_mininet_server]'))
+                      format('[stop_mininet_server]'))
         raise Exception('Fail to stop mininet REST server. Got invalid pid.')
+
 
 
 def delete_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
