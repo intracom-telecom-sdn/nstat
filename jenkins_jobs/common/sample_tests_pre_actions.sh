@@ -12,8 +12,8 @@ echo "Job name:" $JOB_NAME
 
 # storing the parent directory
 # -------------------------------------------------------------------
-PARENT_DIRECTORY=$(dirname $WORKSPACE)
-mv $PARENT_DIRECTORY /home/jenkins/nstat
+
+mv $WORKSPACE /home/jenkins/nstat
 export WORKSPACE='/home/jenkins/nstat'
 
 PARENT_DIRECTORY=$(dirname $WORKSPACE)

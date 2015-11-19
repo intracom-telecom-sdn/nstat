@@ -19,7 +19,7 @@
     disabled: false
     block-downstream: false
     concurrent: false
-    node: nstat_node
+    node: test-server
     scm:
     - git:
         url: https://github.com/intracom-telecom-sdn/nstat.git
