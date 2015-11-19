@@ -123,7 +123,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"generator_switches",
+        "x_axis_key":"cbench_switches",
         "y_axis_key":"controller_cpu_user_time",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
