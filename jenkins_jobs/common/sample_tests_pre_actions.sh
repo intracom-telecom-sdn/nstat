@@ -12,6 +12,10 @@ echo "Job name:" $JOB_NAME
 
 # storing the parent directory
 # -------------------------------------------------------------------
+
+mv $WORKSPACE /home/jenkins/nstat
+export WORKSPACE='/home/jenkins/nstat'
+
 PARENT_DIRECTORY=$(dirname $WORKSPACE)
 export PYTHONPATH=$WORKSPACE
 export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
