@@ -12,7 +12,9 @@ echo "Job name:" $JOB_NAME
 
 # storing the parent directory
 # -------------------------------------------------------------------
-
+if [ -d "/home/jenkins/nstat" ]; then
+    rm -rf /home/jenkins/nstat
+fi
 mv $WORKSPACE /home/jenkins/nstat
 export WORKSPACE='/home/jenkins/nstat'
 
