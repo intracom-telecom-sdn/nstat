@@ -13,8 +13,6 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $SCRIPT_DIR
 
-#ODL_ZIP_FILE="distribution-karaf-0.3.1-Lithium-SR1.zip"
-#ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.3.1-Lithium-SR1/"
 ODL_ZIP_FILE="distribution-karaf-0.3.2-Lithium-SR2.zip"
 ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.3.2-Lithium-SR2/"
 
