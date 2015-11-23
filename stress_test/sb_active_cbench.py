@@ -25,8 +25,8 @@ import util.netutil
 
 
 
-def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_repeats,
-            cbench_switches, cbench_switches_per_thread,
+def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
+            test_repeats, cbench_switches, cbench_switches_per_thread,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
             cbench_ms_per_test, cbench_internal_repeats, cbench_warmup,
@@ -36,7 +36,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
             term_fail):
     """ Function executed by the monitor thread
 
-    :param data_queue: data queue where monitor receives cbench output line
+    :param data_queue: data queue where monitor receives Cbench output line
     by line
     :param result_queue: result queue used by monitor to send result to main
     :param cpid: controller PID
@@ -44,7 +44,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
     :param repeat_id: ID of the test repeat
     :param cbench_switches: total number of simulated switches
     :param cbench_switches_per_thread: number of sim. switches per thread
-    :param cbench_threads: total number of cbench threads
+    :param cbench_threads: total number of Cbench threads
     :param cbench_delay_before_traffic_ms: delay before traffic transmission
     (in milliseconds)
     :param cbench_thread_creation_delay_ms: delay between thread creation
@@ -68,7 +68,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id, test_re
     (controller_node_ip)
     :param controller_node_username: username of the controller node
     :param controller_node_password: password of the controller node
-    :param term_success: The success message when we have success in cbench thread
+    :param term_success: The success message when we have success in Cbench thread
     :param term_fail: The fail message
     :type data_queue: multiprocessing.Queue
     :type result_queue: multiprocessing.Queue
@@ -190,7 +190,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     """
 
     test_type = '[sb_active_cbench]'
-    logging.info('{0} Initializing test parameters'.format(test_type))
+    logging.info('{0} initializing test parameters'.format(test_type))
 
     # Cbench parameters
     cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
@@ -211,7 +211,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
     cbench_delay_before_traffic_ms = multiprocessing.Value('i', 0)
     cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
-    cbench_internal_repeats = multiprocessing.Value('i', conf['cbench_internal_repeats'])
+    cbench_internal_repeats = \
+        multiprocessing.Value('i', conf['cbench_internal_repeats'])
     cbench_simulated_hosts = multiprocessing.Value('i', 0)
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
     cbench_node_ip = multiprocessing.Array('c',
@@ -278,7 +279,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating Cbench node session.'.format(test_type))
+        logging.info('{0} initiating cbench node session.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(
             cbench_node_ip.value.decode(), cbench_node_username.value.decode(),
              cbench_node_password.value.decode(), 10,
@@ -287,7 +288,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client object to be utilized in the sequel within
         # sb_active_cbench_run where necessary
-        logging.info('{0} initiating controller node session.'.format(test_type))
+        logging.info('{0} initiating controller node session.'.
+                     format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
@@ -295,7 +297,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             int(controller_node_ssh_port.value.decode()))
 
         if cbench_rebuild:
-            logging.info('{0} building Cbench.'.format(test_type))
+            logging.info('{0} building cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
         if controller_rebuild:
@@ -381,7 +383,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       controller_node_password,
                                       term_success, term_fail))
 
-            logging.info('{0} creating Cbench thread'.format(test_type))
+            logging.info('{0} creating cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
                 args=(cbench_run_handler, controller_node_ip,
@@ -399,7 +401,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                       cbench_node_password, term_success, term_fail,
                       data_queue))
 
-            # Parallel section
+            # Parallel section: starting monitor/cbench threads
             monitor_thread.start()
             cbench_thread.start()
 
@@ -465,7 +467,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                                 controller_ssh_client)
 
         if cbench_cleanup:
-            logging.info('{0} cleaning Cbench build directory.'.format(test_type))
+            logging.info('{0} cleaning cbench build directory.'.format(test_type))
             cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
@@ -477,7 +479,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         if cbench_ssh_client:
             cbench_ssh_client.close()
         else:
-            logging.error('{0} Cbench ssh connection does not exist.'.
+            logging.error('{0} cbench ssh connection does not exist.'.
                           format(test_type))
 
 def get_report_spec(test_type, config_json, results_json):

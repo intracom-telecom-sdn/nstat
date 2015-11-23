@@ -41,7 +41,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     """
 
     test_type = '[sb_idle_cbench]'
-    logging.info('{0} Initializing test parameters'.format(test_type))
+    logging.info('{0} initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.
     cpid = 0
@@ -132,7 +132,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating Cbench node session.'.format(test_type))
+        logging.info('{0} initiating cbench node session.'.format(test_type))
         cbench_ssh_client = util.netutil.ssh_connect_or_return(
             cbench_node_ip.value.decode(),
             cbench_node_username.value.decode(),
@@ -141,7 +141,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating controller node session.'.format(test_type))
+        logging.info('{0} initiating controller node session.'.
+                     format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username.value.decode(),
@@ -149,11 +150,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             int(controller_node_ssh_port.value.decode()))
 
         if cbench_rebuild:
-            logging.info('{0} building Cbench.'.format(test_type))
+            logging.info('{0} building cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
         if controller_rebuild:
-            logging.info('{0} Building controller.'.format(test_type))
+            logging.info('{0} building controller.'.format(test_type))
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
 
@@ -256,7 +257,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             # because the actual test has been completed and we have the
             # results. That is why we do not wait cbench thread to return
             # and we stop it with a termination signal.
-            logging.info('{0} terminating Cbench thread'.format(test_type))
+            logging.info('{0} terminating cbench thread'.format(test_type))
             cbench_thread.terminate()
             # It is important to join() the process after terminating it in
             # order to give the background machinery time to update the status
@@ -357,7 +358,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         if cbench_ssh_client:
             cbench_ssh_client.close()
         else:
-            logging.error('{0} Cbench ssh connection does not exist.'.
+            logging.error('{0} cbench ssh connection does not exist.'.
                           format(test_type))
 
 def get_report_spec(test_type, config_json, results_json):

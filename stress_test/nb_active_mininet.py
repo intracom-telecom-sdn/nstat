@@ -134,14 +134,15 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
 
     test_type = '[nb_active_mininet]'
-    logging.info('{0} Initializing test parameters.'.format(test_type))
+    logging.info('{0} initializing test parameters.'.format(test_type))
 
     # Global variables read-write shared between monitor and main thread
     global_sample_id = 0
     cpid = 0
 
     # Mininet parameters
-    mininet_rest_server_boot = mininet_base_dir + conf['mininet_rest_server_boot']
+    mininet_rest_server_boot = mininet_base_dir + \
+        conf['mininet_rest_server_boot']
     mininet_stop_switches_handler = mininet_base_dir + \
         conf['mininet_stop_switches_handler']
     mininet_get_switches_handler = mininet_base_dir + \
@@ -236,17 +237,17 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
 
         if controller_rebuild:
-            logging.info('{0} Building controller'.format(test_type))
+            logging.info('{0} building controller'.format(test_type))
             controller_utils.rebuild_controller(controller_build_handler,
                                                 controller_ssh_client)
 
-        logging.info('{0} Checking for other active controllers'.
+        logging.info('{0} checking for other active controllers'.
                      format(test_type))
         controller_utils.check_for_active_controller(controller_port,
                                                      controller_ssh_client)
 
         logging.info(
-            '{0} Starting and stopping controller to generate xml files'.
+            '{0} starting and stopping controller to generate xml files'.
             format(test_type))
         logging.info('{0} Starting controller'.format(test_type))
         cpid = controller_utils.start_controller(
@@ -314,7 +315,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             mininet_topo_check_booted(mininet_size, mininet_group_size,
                                       mininet_group_delay_ms,
-                                      mininet_get_switches_handler, mininet_node_ip,
+                                      mininet_get_switches_handler,
+                                      mininet_node_ip,
                                       mininet_rest_server_port,
                                       controller_node_ip,
                                       controller_restconf_port,
@@ -336,7 +338,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 nb_generator_ssh_client, cmd , '[generator_run_handler]')
 
             if exit_status!=0:
-                raise Exception('{0} Northbound generator failed'.format(test_type))
+                raise Exception('{0} northbound generator failed'.
+                                format(test_type))
 
             results = json.loads(output)
 

@@ -41,7 +41,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     """
 
     test_type = '[sb_idle_mininet]'
-    logging.info('{0} Initializing test parameters'.format(test_type))
+    logging.info('{0} initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.
     cpid = 0
@@ -127,7 +127,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         # Opening connection with controller_node_ip and returning
         # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating controller node session.'.format(test_type))
+        logging.info('{0} initiating controller node session.'.
+                     format(test_type))
         controller_ssh_client = util.netutil.ssh_connect_or_return(
             controller_node_ip.value.decode(),
             controller_node_username,
@@ -179,7 +180,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_statistics_handler, controller_statistics_period_ms,
                 controller_ssh_client)
 
-            logging.info('{0} Booting up Mininet REST server'.
+            logging.info('{0} booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_node_ip,
@@ -190,6 +191,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
                 controller_ssh_client)
+            
             # Control of controller status
             # is done inside controller_utils.start_controller()
             logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -211,7 +213,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 'monitor thread to check for discovered switches '
                 'on controller.'.format(test_type))
 
-            logging.info('{0} initializing Mininet topology.'.format(test_type))
+            logging.info('{0} initializing Mininet topology.'.
+                         format(test_type))
 
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
                 mininet_node_ip, mininet_server_rest_port,
