@@ -15,8 +15,8 @@
 # make a new nstat_vm_basebox based on 'nstat_vm_base'
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-nstat_vm_ram = '8192'
-nstat_vm_cpus = '2'
+nstat_vm_ram = '131072'
+nstat_vm_cpus = '32'
 nstat_vm_bridge_interface_name = 'br0'
 nstat_vm_hostname = 'nodecontroller'
 # ------------------------------------------------------------------------------

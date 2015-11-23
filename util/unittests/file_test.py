@@ -19,6 +19,8 @@ class FileTestFileExist(unittest.TestCase):
     Methods checked: testing file.py: file_exists, is_file_exe, make_file_exe
     check_files_exist, check_files_executable
     """
+    def createfile(self):
+        pass
 
     @classmethod
     def setUpClass(cls):
@@ -36,85 +38,70 @@ class FileTestFileExist(unittest.TestCase):
         extlist = ['.txt', '.mp3', '.mp4', '.avi', '.sh', '.png', '.jpg']
         fillist = []
 
+        # Define the test folder list.
+        cls.tstlist = ['foo1.txt', 'foo1.mp3', 'foo1.avi', 'foo2.txt',
+                       'foo2.txt', 'foo2.txt' ]
+        cls.chmode = [0o777, 0o777, 777]
+
         for res in itertools.product(namlist, extlist):
             joinedname = ''.join(res)
             fillist.append(joinedname)
 
-        fillistlength = len(fillist)
         subprocess.check_output(["mkdir", cls.virtualfolder])
 
-        for i in range(0, fillistlength):
+        for i in range(0, len(fillist)):
             subprocess.check_output(["touch", fillist[i]])
             mvcommand = 'mv' + ' ' + fillist[i] + ' ' + cls.virtualfolder
             subprocess.check_output(mvcommand, shell=True)
 
+        index = 3
+        cls.filepath = []
+        while index !=0:
+            name = './' + cls.virtualfolder + '/' + 'foo'+ str(index) + '.txt'
+            cls.filepath.append(name)
+            index -= 1
+
     def test01_file_exists(self):
         """Checks if foo1.txt exists within self.virtualfolder folder
         """
-        filepath = './' + self.virtualfolder + '/' + 'foo1.txt'
-        self.assertTrue(f.file_exists(filepath))
+        self.assertTrue(f.file_exists(self.filepath[0]))
 
     def test02_file_exists(self):
         """Checks if foo2.txt exists within the self.virtualfolder folder
         """
-        filepath = './' + self.virtualfolder + '/' + 'foo2.txt'
-        self.assertTrue(f.file_exists(filepath))
+        self.assertTrue(f.file_exists(self.filepath[1]))
 
     def test03_file_exists(self):
         """Checks if foo3.txt exist within the self.virtualfolder.
         """
-        filepath = './' + self.virtualfolder + '/' + 'foo3.txt'
-        self.assertTrue(f.file_exists(filepath))
+        self.assertTrue(f.file_exists(self.filepath[2]))
 
     def test04_is_file_exe(self):
         """Checks if foo1.txt within the self.virtualfolder is exe
         """
-        filepath = './' + self.virtualfolder + '/' + 'foo1.txt'
-        chmode = 0o777
-        os.chmod(filepath, chmode)
-        self.assertTrue(f.is_file_exe(filepath))
+        os.chmod(self.filepath[0], self.chmode[0])
+        self.assertTrue(f.is_file_exe(self.filepath[0]))
 
-    def test05_is_file_exe(self):
-        """Checks if foo2.txt within the self.virtualfolder is exe
-        """
-        filepath = './' + self.virtualfolder + '/' + 'foo2.sh'
-        chmode = 0o770
-        os.chmod(filepath, chmode)
-        self.assertTrue(f.is_file_exe(filepath))
 
-    def test06_make_file_exe(self):
+    def test05_check_files_exist(self):
+        """Checks file existence within the virtualfolder
         """
-        Method that checks if foo2.sh file within the self.virtualfolder is exe.
-        """
-        filepath = './' + self.virtualfolder + '/' + 'foo2.sh'
-        f.make_file_exe(filepath)
-        self.assertTrue(f.is_file_exe(filepath))
-
-    def test07_check_files_exist(self):
-        """Checks if files within tstlist are all existing with the
-        self.virtualfolder
-        """
-        # Define the test folder list.
-        tstlist = ['foo1.txt', 'foo1.mp3', 'foo1.avi', 'foo2.txt', 'foo2.txt',
-                   'foo2.txt', ]
-
         # Change to the virtualfolder directory and test the tstlist if files
         # exist with the virtualfolder
         os.chdir(self.virtualfolder)
-        reslist = f.check_files_exist(tstlist)
+        reslist = f.check_files_exist(self.tstlist)
         self.assertListEqual(reslist, [], 'some files do not exist')
 
         # Return to parent directory after test is over and continue
         os.chdir(os.pardir)
 
-    def test08_check_files_executables(self):
+    def test06_check_files_executables(self):
         """Modifies recursively self.virtualfolder so that all
         files become executables and tests if all files within the
         self.virtualfolder are executables
         """
         # 'chmod' of all files within virtualfolder with 777
-        chmode = '777'
-        chmodcommand = 'chmod' + ' ' + '-R' + ' ' + chmode + ' ' \
+        chmodcommand = 'chmod' + ' ' + '-R' + ' ' + str(self.chmode[2]) + ' ' \
                      + self.virtualfolder
         subprocess.check_output(chmodcommand, shell=True)
 
