@@ -26,28 +26,22 @@ class FileTestFileExist(unittest.TestCase):
     def setUpClass(cls):
         """Creates a batch of files stored under fillist (filelist =
         namlist x extlist). Created files are stored under self.virtualfolder
-        which is removed in tearDown()
         """
         cls.virtualfolder = "testfolder"
 
         if os.path.exists(cls.virtualfolder):
             shutil.rmtree(cls.virtualfolder)
-
-        namlist = ['foo1', 'foo2', 'foo3', 'foo4', 'foo5', 'foo6', 'foo7',
-                       'foo8', 'foo9']
+        subprocess.check_output(["mkdir", cls.virtualfolder])
+        namlist = ['foo1', 'foo2', 'foo3', 'foo4', 'foo5', 'foo6', 'foo7']
         extlist = ['.txt', '.mp3', '.mp4', '.avi', '.sh', '.png', '.jpg']
         fillist = []
-
         # Define the test folder list.
-        cls.tstlist = ['foo1.txt', 'foo1.mp3', 'foo1.avi', 'foo2.txt',
-                       'foo2.txt', 'foo2.txt' ]
+        cls.tstlist = ['foo1.txt', 'foo1.mp3', 'foo1.avi', 'foo2.txt']
         cls.chmode = [0o777, 0o777, 777]
 
         for res in itertools.product(namlist, extlist):
             joinedname = ''.join(res)
             fillist.append(joinedname)
-
-        subprocess.check_output(["mkdir", cls.virtualfolder])
 
         for i in range(0, len(fillist)):
             subprocess.check_output(["touch", fillist[i]])
@@ -81,7 +75,6 @@ class FileTestFileExist(unittest.TestCase):
         """
         os.chmod(self.filepath[0], self.chmode[0])
         self.assertTrue(f.is_file_exe(self.filepath[0]))
-
 
     def test05_check_files_exist(self):
         """Checks file existence within the virtualfolder
