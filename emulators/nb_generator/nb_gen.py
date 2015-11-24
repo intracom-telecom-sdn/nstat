@@ -80,8 +80,8 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     :type controller_restconf_password: str
     """
 
-    flow_template = F_TEMP
     results = []
+    flow_template = F_TEMP
     failed_flow_ops = 0
     auth_token = (controller_restconf_user, controller_restconf_password)
     node_names = nb_gen_utils.get_node_names(ctrl_ip, ctrl_port, auth_token)
@@ -90,25 +90,35 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
         '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
         'table/0/flow/%d'
 
-    #Calculation addition time
+    # Calculate time needed for add flow operations
+    transmission_interval_add, operation_time_add, failed_flow_ops_add = \
     nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
                                                nworkers, op_delay_ms,
                                                discovery_deadline_ms,
                                                controller_restconf_user,
                                                controller_restconf_password,
-                                               delete_flag=False)
+                                               node_names, url_template,
+                                               flow_template, auth_token)
+    results.append(transmission_interval_add)
+    results.append(operation_time_add)
 
-
-    #Calculation deletion time if delete_flag TRUE
+    # #Calculation time needed for delete flow operations
     if delete_flag:
+        transmission_interval_del, operation_time_del, failed_flow_ops_del = \
         nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
                                                nworkers, op_delay_ms,
                                                discovery_deadline_ms,
                                                controller_restconf_user,
                                                controller_restconf_password,
-                                               delete_flag=False)
-    results.append(failed_flow_ops)
+                                               node_names, url_template,
+                                               flow_template, auth_token,
+                                               delete_flag=True)
+        results.append(transmission_interval_del)
+        results.append(operation_time_del)
 
+    # calculate total failed flow operations
+    failed_flow_ops_total = failed_flow_ops_add + failed_flow_ops_del
+    results.append(failed_flow_ops_total)
 
     output_msg = 'Results:\n'
     output_msg += 'Add_flows_transmission_time/Add_flows_time/'
