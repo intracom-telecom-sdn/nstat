@@ -12,15 +12,18 @@ import sys
 import util.netutil
 
 
-def command_exec_wrapper(cmd, ssh_client=None):
+def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
     """Executes a command either locally or remotely and returns the result
 
     :param cmd: the command to be executed
     :param ssh_client : SSH client provided by paramiko to run the command
+    :param return_type: Defines the return type of the command output
     :returns: The commands execution result as string
-    :rtype: str
+    :rtype: str, int, float
     :type cmd: str
     :type ssh_client: paramiko.SSHClient
+    :type return_type: str
+    :raises: Exception when the output of executed command is None
     """
 
     max_exec_tries = 5
@@ -33,7 +36,17 @@ def command_exec_wrapper(cmd, ssh_client=None):
                              decode(sys.stdout.encoding))
         max_exec_tries -= 1
     if cmd_output:
-        return cmd_output
+        cmd_output = cmd_output.strip()
+        if return_type == 'int':
+            return int(cmd_output)
+        elif return_type == 'float':
+            return float(cmd_output)
+        else:
+            return cmd_output
+    else:
+        raise Exception('[sysstats] No output returned '
+                        'from executed command: {0}'.format(cmd))
+
 
 
 def sys_used_ram_mb(ssh_client=None):
@@ -45,9 +58,9 @@ def sys_used_ram_mb(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'free -m | awk \'/^Mem:/{print $3}\''
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip())
+    return command_exec_wrapper('free -m | awk \'/^Mem:/{print $3}\'',
+                                ssh_client, 'int')
+
 
 def sys_nprocs(ssh_client=None):
     """Returns the number of CPUs in the system.
@@ -57,9 +70,9 @@ def sys_nprocs(ssh_client=None):
     :rtype: int
     :type ssh_client: paramiko.SSHClient
     """
-    cmd = 'cat /proc/cpuinfo | grep processor | wc -l'
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip())
+
+    return command_exec_wrapper('cat /proc/cpuinfo | grep processor | wc -l',
+                                ssh_client, 'int')
 
 
 def sys_free_ram_mb(ssh_client=None):
@@ -71,9 +84,8 @@ def sys_free_ram_mb(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'free -m | awk \'/^Mem:/{print $4}\''
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip())
+    cmd_output = command_exec_wrapper('free -m | awk \'/^Mem:/{print $4}\'',
+                                      ssh_client, 'int')
 
 
 def sys_used_memory_bytes(ssh_client=None):
@@ -97,9 +109,8 @@ def sys_free_memory_bytes(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'cat /proc/meminfo | grep MemFree | awk \'{{print $2}}\''
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip())
+    return command_exec_wrapper('cat /proc/meminfo | grep MemFree | awk \'{{print $2}}\'',
+                                ssh_client, 'int')
 
 
 def sys_total_memory_bytes(ssh_client=None):
@@ -111,9 +122,8 @@ def sys_total_memory_bytes(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'cat /proc/meminfo | grep MemTotal | awk \'{{print $2}}\''
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip())
+    return command_exec_wrapper('cat /proc/meminfo | grep MemTotal | awk \'{{print $2}}\'',
+                                ssh_client, 'int')
 
 
 def sys_iowait_time(ssh_client=None):
@@ -128,9 +138,8 @@ def sys_iowait_time(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'cat /proc/stat | awk \'NR==1 {{print $6}}\''
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return float(cmd_output.strip())
+    return command_exec_wrapper('cat /proc/stat | awk \'NR==1 {{print $6}}\'',
+                                      ssh_client, 'float')
 
 
 def proc_cmdline(pid, ssh_client=None):
@@ -160,11 +169,8 @@ def proc_cwd(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd1 = "cd /proc/{0}/cwd".format(pid)
-    cmd2 = "pwd"
-    command_exec_wrapper(cmd1, ssh_client)
-    cmd_output = command_exec_wrapper(cmd2, ssh_client)
-    return cmd_output.strip()
+    return command_exec_wrapper("cd /proc/{0}/cwd; pwd".format(pid),
+                                ssh_client, 'str')
 
 
 def proc_cpu_system_time(pid, ssh_client=None):
@@ -178,9 +184,8 @@ def proc_cpu_system_time(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'cat /proc/{0}/stat | awk \' {{ print $15 }} \''.format(pid)
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return float(cmd_output.strip())
+    return command_exec_wrapper('cat /proc/{0}/stat | awk \' {{ print $15 }} \''.
+                                format(pid), ssh_client, 'float')
 
 
 def proc_cpu_user_time(pid, ssh_client=None):
@@ -194,9 +199,8 @@ def proc_cpu_user_time(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'cat /proc/{0}/stat | awk \'{{print $14}}\''.format(pid)
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return float(cmd_output.strip())
+    return command_exec_wrapper('cat /proc/{0}/stat | awk \'{{print $14}}\''.
+                                format(pid), ssh_client, 'float')
 
 
 def proc_vm_size(pid, ssh_client=None):
@@ -210,10 +214,8 @@ def proc_vm_size(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = ('cat /proc/{0}/status |grep VmSize | awk \'{{print $2}}\''.
-           format(pid))
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip())*1024
+    return (command_exec_wrapper(('cat /proc/{0}/status |grep VmSize | awk \'{{print $2}}\''.
+        format(pid)), ssh_client, 'int') * 1024)
 
 
 def proc_num_fds(pid, ssh_client=None):
@@ -227,9 +229,8 @@ def proc_num_fds(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'ls -la /proc/{0}/fd | wc -l'.format(pid)
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip()) - 3
+    return (command_exec_wrapper('ls -la /proc/{0}/fd | wc -l'.format(pid),
+                                 ssh_client, 'int') - 3)
 
 
 def proc_num_threads(pid, ssh_client=None):
@@ -243,10 +244,8 @@ def proc_num_threads(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = ('cat /proc/{0}/status |grep Threads | awk \'{{print $2}}\''.
-           format(pid))
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return int(cmd_output.strip())
+    return command_exec_wrapper(('cat /proc/{0}/status |grep Threads | awk \'{{print $2}}\''.
+        format(pid)), ssh_client, 'int')
 
 
 def sys_load_average(ssh_client=None):
@@ -258,8 +257,7 @@ def sys_load_average(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'uptime'
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    cmd_output = command_exec_wrapper('uptime', ssh_client, 'str')
     matches = re.search(r'load average: (.+), (.+), (.+)', cmd_output.strip())
     return (float(matches.group(1)),
             float(matches.group(2)),
@@ -277,7 +275,7 @@ def get_java_options(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = 'ps -ef | grep \' {0} \''.format(pid)
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
+    cmd_output = command_exec_wrapper('ps -ef | grep \' {0} \''.format(pid),
+                                      ssh_client, 'str')
     java_options = [o for o in cmd_output.strip().split() if o.startswith('-X')]
     return java_options
