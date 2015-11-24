@@ -140,10 +140,7 @@ class HtmlIsAListOfDictionaries(unittest.TestCase):
         class
         htmlIsAListOfDictionaries
         """
-
-        del cls.list_of_dictionaries
-        del cls.not_list_of_dictionaries
-        del cls.noise
+        pass
 
 class HtmlMultyDictToHtml(unittest.TestCase):
     """Unittest class that tests the different functionalities of
@@ -269,9 +266,7 @@ class HtmlSingleDictToHtml(unittest.TestCase):
         Method that cleans the testing environment parameters for the Unittest
         class htmlSingleDictToHtml.
         """
-        del self.single_dict_output
-        del self.single_dict_input
-        del self.data_row
+        pass
 
 class GetOrderedIndex(unittest.TestCase):
     """
@@ -308,7 +303,7 @@ class GetOrderedIndex(unittest.TestCase):
         """
         Method that cleans the testing environment parameters
         """
-        del cls.map_dict
+        pass
 
 class SingleDictTableData(unittest.TestCase):
     """
@@ -368,12 +363,7 @@ class SingleDictTableData(unittest.TestCase):
         """
         Method that cleans the testing environment parameters
         """
-        del cls.input1
-        del cls.input2
-        del cls.output1
-        del cls.output2
-        del cls.td_style
-        del cls.td_class
+        pass
 
 if __name__ == '__main__':
 
