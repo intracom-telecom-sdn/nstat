@@ -90,76 +90,23 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
         '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
         'table/0/flow/%d'
 
-
     #Calculation addition time
-    nb_gen_utils.flow_operations_add_delete()
+    nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
+                                               nworkers, op_delay_ms,
+                                               discovery_deadline_ms,
+                                               controller_restconf_user,
+                                               controller_restconf_password,
+                                               delete_flag=False)
 
 
     #Calculation deletion time if delete_flag TRUE
     if delete_flag:
-        nb_gen_utils.flow_operations_add_delete(,delete_flag=True)
-
-
-
-
-    logging.info('[flow_master_thread] Initializing. Will perform {0} flow '
-                 'operations at {1} openflow nodes with {2} workers'.format(
-                 nflows, len(node_names), nworkers))
-
-    logging.info('[flow_master_thread] Creating workers for ADD ops')
-    opqueues, wthr, resqueues = nb_gen_utils.create_workers(nworkers,
-        flow_template, url_template, op_delay_ms, auth_token)
-
-    logging.info('[flow_master_thread] Distributing workload')
-    nb_gen_utils.distribute_workload(nflows, opqueues, 'A', node_names)
-
-    logging.info('[flow_master_thread] Starting workers')
-    t_start = time.time()
-    for worker_thread in wthr:
-        worker_thread.start()
-
-    logging.info('[flow_master_thread] Joining workers')
-    failed_flow_ops += nb_gen_utils.join_workers(opqueues, resqueues, wthr)
-    t_stop = time.time()
-    nb_transmission_interval = t_stop - t_start
-    results.append(nb_transmission_interval)
-
-    logging.info('[flow_master_thread] Initiate flow polling')
-    addition_time = nb_gen_utils.poll_flows(nflows, ctrl_ip, ctrl_port,
-                               discovery_deadline_ms, t_start, auth_token)
-
-    results.append(addition_time)
-
-    if delete_flag:
-        nb_gen_utils.flow_operation()
-
-
-
-        logging.info('[flow_master_thread] Creating workers for DEL ops')
-        opqueues, wthr, resqueues = nb_gen_utils.create_workers(nworkers,
-            flow_template, url_template, op_delay_ms, auth_token)
-
-        logging.debug('[flow_master_thread] Distributing workload')
-        nb_gen_utils.distribute_workload(nflows, opqueues, 'D',
-                                         node_names)
-
-        logging.info('[flow_master_thread] Starting workers')
-        t_start = time.time()
-        for worker_thread in wthr:
-            worker_thread.start()
-
-        logging.info('[flow_master_thread] Joining workers')
-        failed_flow_ops += nb_gen_utils.join_workers(opqueues, resqueues, wthr)
-        t_stop = time.time()
-        nb_transmission_interval = t_stop - t_start
-        results.append(nb_transmission_interval)
-
-        logging.info('[flow_master_thread] Initiate flow polling')
-        deletion_time = nb_gen_utils.poll_flows(0, ctrl_ip, ctrl_port,
-            discovery_deadline_ms, t_start, auth_token)
-
-        results.append(deletion_time)
-
+        nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
+                                               nworkers, op_delay_ms,
+                                               discovery_deadline_ms,
+                                               controller_restconf_user,
+                                               controller_restconf_password,
+                                               delete_flag=False)
     results.append(failed_flow_ops)
 
 

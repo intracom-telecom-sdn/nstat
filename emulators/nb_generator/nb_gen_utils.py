@@ -257,7 +257,9 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
     return node_names
 
 
-def flow_operations_add_delete(,delete_flag=False)
+def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
+                              discovery_deadline_ms, controller_restconf_user,
+                              controller_restconf_password, delete_flag=False)
 
     create_workers_log_message = 'ADD'
     operation_type = 'A'
@@ -266,15 +268,12 @@ def flow_operations_add_delete(,delete_flag=False)
         create_workers_log_message = 'DEL'
         operation_type = 'D'
 
-
-
-    logging.info('[flow_master_thread] Initializing. Will perform {0} flow '
+    logging.info('[flow_master_thread] initializing: will perform {0} flow '
                  'operations at {1} openflow nodes with {2} workers'.format(
                  nflows, len(node_names), nworkers))
 
     logging.info('[flow_master_thread] Creating workers for {0} ops').
     format(create_workers_log_message)
-
 
     opqueues, wthr, resqueues = nb_gen_utils.create_workers(nworkers,
         flow_template, url_template, op_delay_ms, auth_token)
