@@ -255,3 +255,50 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
         node_names.append(node.get('node-id'))
 
     return node_names
+
+
+def flow_operations_add_delete(,delete_flag=False)
+
+    create_workers_log_message = 'ADD'
+    operation_type = 'A'
+
+    if delete_flag:
+        create_workers_log_message = 'DEL'
+        operation_type = 'D'
+
+
+
+    logging.info('[flow_master_thread] Initializing. Will perform {0} flow '
+                 'operations at {1} openflow nodes with {2} workers'.format(
+                 nflows, len(node_names), nworkers))
+
+    logging.info('[flow_master_thread] Creating workers for {0} ops').
+    format(create_workers_log_message)
+
+
+    opqueues, wthr, resqueues = nb_gen_utils.create_workers(nworkers,
+        flow_template, url_template, op_delay_ms, auth_token)
+
+    logging.info('[flow_master_thread] Distributing workload')
+    nb_gen_utils.distribute_workload(nflows, opqueues, '%', node_names)
+
+    logging.info('[flow_master_thread] Starting workers')
+    t_start = time.time()
+
+    for worker_thread in wthr:
+        worker_thread.start()
+
+    logging.info('[flow_master_thread] Joining workers')
+    failed_flow_ops += nb_gen_utils.join_workers(opqueues, resqueues, wthr)
+    t_stop = time.time()
+    transmission_interval = t_stop - t_start
+    results.append(transmission_interval)
+
+    logging.info('[flow_master_thread] Initiate flow polling')
+
+    operation_time = nb_gen_utils.poll_flows(nflows, ctrl_ip, ctrl_port,
+                                             discovery_deadline_ms, t_start,
+                                             auth_token)
+    results.append(operation_time)
+
+    return results
