@@ -221,12 +221,7 @@ class HtmlMultyDictToHtml(unittest.TestCase):
     def tearDownClass(cls):
         """Cleans the testing environment parameters
         """
-
-        del cls.multy_dict_input
-        del cls.multy_dict_output
-        del cls.row_data1
-        del cls.row_data2
-        del cls.data_fields
+        pass
 
 class HtmlSingleDictToHtml(unittest.TestCase):
     """
@@ -347,7 +342,7 @@ class SingleDictTableData(unittest.TestCase):
         Method that tests single_dict_table_data() when data_values parameter
         is a string value.
         """
-        
+
         self.assertEqual(self.output1,
                          util.html.single_dict_table_data(self.input1,
                                                           self.td_style,

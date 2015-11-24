@@ -63,11 +63,7 @@ class StatsAllFunctionsTest(unittest.TestCase):
         """
         Cleans the testing environment parameters
         """
-        del cls.l
-        del cls.mean
-        del cls.variance
-        del cls.stddev
-        del cls.coefvariance
+        pass
 
 if __name__ == '__main__':
     SUITE_STATSALLFUNCTIONSTESTS = \
