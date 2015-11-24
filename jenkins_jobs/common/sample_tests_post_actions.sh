@@ -7,12 +7,12 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 # copy results back to test-server
-# --------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 cp -r $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER /home/jenkins/sample_tests/
 
 # copy results under 'publisher' folder so that HTML publisher can
 # archive the results
-# -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 if [ -d "/tmp/publisher" ]; then
   cp -a $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER/*.* /tmp/publisher
 else
@@ -21,6 +21,6 @@ else
 fi
 
 # cleanup the machine
-# --------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 cd $(dirname $WORKSPACE)
 rm -rf $JOB_NAME

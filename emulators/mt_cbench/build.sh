@@ -11,10 +11,12 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
 MT_CBENCH_LOCATION="https://github.com/intracom-telecom-sdn/mtcbench.git"
-git clone $MT_CBENCH_LOCATION $SCRIPT_DIR"/mtcbench"
 
-mv $SCRIPT_DIR"/mtcbench/oflops" $SCRIPT_DIR | mv $SCRIPT_DIR"/mtcbench/openflow" $SCRIPT_DIR
-rm -rf $SCRIPT_DIR"/mtcbench"
+if [ ! -d $SCRIPT_DIR"/oflops" ]; then
+   git clone $MT_CBENCH_LOCATION $SCRIPT_DIR"/mtcbench"
+   mv $SCRIPT_DIR"/mtcbench/oflops" $SCRIPT_DIR | mv $SCRIPT_DIR"/mtcbench/openflow" $SCRIPT_DIR
+   rm -rf $SCRIPT_DIR"/mtcbench"
+fi
 
 echo "Building Cbench generator."
 echo "Building oflops/configure file"
