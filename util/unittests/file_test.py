@@ -28,14 +28,12 @@ class FileTestFileExist(unittest.TestCase):
         namlist x extlist). Created files are stored under self.virtualfolder
         """
         cls.virtualfolder = "testfolder"
-
         if os.path.exists(cls.virtualfolder):
             shutil.rmtree(cls.virtualfolder)
         subprocess.check_output(["mkdir", cls.virtualfolder])
+        fillist = []
         namlist = ['foo1', 'foo2', 'foo3', 'foo4', 'foo5', 'foo6', 'foo7']
         extlist = ['.txt', '.mp3', '.mp4', '.avi', '.sh', '.png', '.jpg']
-        fillist = []
-        # Define the test folder list.
         cls.tstlist = ['foo1.txt', 'foo1.mp3', 'foo1.avi', 'foo2.txt']
         cls.chmode = [0o777, 0o777, 777]
 
@@ -47,7 +45,6 @@ class FileTestFileExist(unittest.TestCase):
             subprocess.check_output(["touch", fillist[i]])
             mvcommand = 'mv' + ' ' + fillist[i] + ' ' + cls.virtualfolder
             subprocess.check_output(mvcommand, shell=True)
-
         index = 3
         cls.filepath = []
         while index !=0:
