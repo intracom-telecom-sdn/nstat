@@ -58,8 +58,6 @@ class NetUtilTest(unittest.TestCase):
         cls.localmachinefolder = os.getcwd() + '/' + 'fooDir'
         cls.remotemachinefolder = cls.remotemachinepath + '/' + 'fooDir'
 
-
-
         createfilecommand = "touch" + " " + cls.remotemachinefilename
         subprocess.check_output(createfilecommand, shell=True)
 
@@ -103,7 +101,8 @@ class NetUtilTest(unittest.TestCase):
                           self.remotemachinepassword, self.maxretries))
 
     def test02_ssh_connect_or_return(self):
-        """Testing ssh_connect_or_return() when entering a 'wrong' remote username
+        """Testing ssh_connect_or_return() when entering a 'wrong' remote
+        username
         """
         logging.info('[netutil-test] remote address: {0} '.
                      format(self.remotemachineip))

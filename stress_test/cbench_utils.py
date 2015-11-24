@@ -93,11 +93,10 @@ def run_cbench(cbench_run_handler, controller_ip, controller_port, threads,
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd_list = [cbench_run_handler,
-                controller_ip, str(controller_port), str(threads),
-                str(sw_per_thread), str(switches), str(thr_delay_ms),
-                str(traf_delay_ms), str(ms_per_test), str(internal_repeats),
-                str(hosts), str(warmup), mode]
+    cmd_list = [cbench_run_handler, controller_ip, str(controller_port),
+                str(threads), str(sw_per_thread), str(switches),
+                str(thr_delay_ms), str(traf_delay_ms), str(ms_per_test),
+                str(internal_repeats), str(hosts), str(warmup), mode]
     command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
                          data_queue)
 
@@ -114,12 +113,12 @@ def cleanup_cbench(cbench_clean_handler, ssh_client=None):
                          '[cbench_clean_handler]', ssh_client)
 
 
-def cbench_thread(cbench_run_handler, controller_ip,
-                     controller_port, threads, sw_per_thread, switches,
-                     thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
-                     hosts, warmup, mode, cbench_node_ip, cbench_node_ssh_port,
-                     cbench_node_username, cbench_node_password, succ_msg='',
-                     fail_msg='', data_queue=None):
+def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
+                  sw_per_thread, switches, thr_delay_ms, traf_delay_ms,
+                  ms_per_test, internal_repeats, hosts, warmup, mode,
+                  cbench_node_ip, cbench_node_ssh_port, cbench_node_username,
+                  cbench_node_password, succ_msg='', fail_msg='',
+                  data_queue=None):
 
     """ Function executed by cbench thread.
 

@@ -11,7 +11,7 @@ echo "Workspace:" $WORKSPACE
 echo "Job name:" $JOB_NAME
 
 # storing the parent directory
-# -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 if [ -d "/home/jenkins/nstat" ]; then
     rm -rf /home/jenkins/nstat
 fi
