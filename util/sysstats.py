@@ -84,7 +84,7 @@ def sys_free_ram_mb(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd_output = command_exec_wrapper('free -m | awk \'/^Mem:/{print $4}\'',
+    return command_exec_wrapper('free -m | awk \'/^Mem:/{print $4}\'',
                                       ssh_client, 'int')
 
 
@@ -153,9 +153,8 @@ def proc_cmdline(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd = "cat /proc/{0}/cmdline".format(pid)
-    cmd_output = command_exec_wrapper(cmd, ssh_client)
-    return cmd_output.strip().replace('\x00', '')
+    return command_exec_wrapper("cat /proc/{0}/cmdline".format(pid),
+                                ssh_client, 'str').replace('\x00', '')
 
 
 def proc_cwd(pid, ssh_client=None):
@@ -169,7 +168,7 @@ def proc_cwd(pid, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    return command_exec_wrapper("cd /proc/{0}/cwd; pwd".format(pid),
+    return command_exec_wrapper("pwdx {0} | awk '{{print $2}}'".format(pid),
                                 ssh_client, 'str')
 
 

@@ -56,7 +56,7 @@ class MemoryUtilsTest(unittest.TestCase):
         var = util.sysstats.sys_used_ram_mb(self.ssh_client)
         self.assertTrue((var > 0) and isinstance(var, int),
                         'Testing using ssh_client')
-    
+
     def test02_free_ram(self):
         """Test functionality of sysstats.sys_free_ram_mb function
         """
