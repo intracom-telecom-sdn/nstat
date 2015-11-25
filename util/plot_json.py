@@ -137,23 +137,11 @@ def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
         subtitle += sub_key + ':' + curr_string + ', '
 
     plot_options.subtitle = subtitle
+    plot_options.cords = y_values
     # Compute mean and +/- diff values
-    y_mean = []
-    y_diff_plus = []
-    y_diff_minus = []
     x_keys_sorted = sorted(y_values.keys())
-
-    for key in x_keys_sorted:
-        mean = util.stats.mean(y_values[key])
-        diff_plus = plot_options.y_axis_fct * (max(y_values[key]) - mean)
-        diff_minus = plot_options.y_axis_fct * (mean - min(y_values[key]))
-        y_mean.append(mean)
-        y_diff_plus.append(diff_plus)
-        y_diff_minus.append(diff_minus)
-
     # Plot
-    util.plot_utils.plot_errorbar(x_keys_sorted, y_mean, y_diff_minus,
-                                  y_diff_plus, plot_options)
+    util.plot_utils.plot_errorbar(plot_options, x_keys_sorted)
 
 
 def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
@@ -217,10 +205,10 @@ def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
         else:
             curr_string = str(value)
         subtitle += sub_key + ':' + curr_string + ', '
-
+    plot_options.cords = y_values
     # Plot
     plot_options.subtitle = subtitle
-    util.plot_utils.plot_multi_errorbar(y_values, z_axis_key, plot_options)
+    util.plot_utils.plot_multi_errorbar(z_axis_key, plot_options)
 
 
 def plot_scatter_json(results_file, x_axis_key, y_axis_key, plot_subtitle_keys,
@@ -289,9 +277,9 @@ def plot_scatter_json(results_file, x_axis_key, y_axis_key, plot_subtitle_keys,
         for val in y_values[key]:
             x_coords.append(key)
             y_coords.append(val)
-
+    plot_options.cords = dict(zip(x_coords, y_coords))
     # Plot
-    util.plot_utils.plot_scatter(x_coords, y_coords, plot_options)
+    util.plot_utils.plot_scatter(plot_options)
 
 
 def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
