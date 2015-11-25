@@ -262,8 +262,36 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
                               controller_restconf_password, node_names,
                               url_template, flow_template, auth_token,
                               delete_flag=False):
-    """Function executed by flow_master method."""
-
+    """Function executed by flow_master method
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :param
+    :returns
+    :rtype: tuple
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    :type
+    """
     #results = []
     operations_log_message = 'ADD'
     operations_type = 'A'
