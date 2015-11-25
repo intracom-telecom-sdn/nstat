@@ -292,6 +292,7 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     #results = []
     operations_log_message = 'ADD'
     operations_type = 'A'
+    failed_flow_ops = 0
 
     if delete_flag:
         operations_log_message = 'DEL'

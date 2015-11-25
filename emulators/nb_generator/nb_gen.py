@@ -82,7 +82,6 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
 
     results = []
     flow_template = F_TEMP
-    failed_flow_ops = 0
     auth_token = (controller_restconf_user, controller_restconf_password)
     node_names = nb_gen_utils.get_node_names(ctrl_ip, ctrl_port, auth_token)
 
