@@ -258,8 +258,7 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
 
 
 def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
-                              discovery_deadline_ms, controller_restconf_user,
-                              controller_restconf_password, node_names,
+                              discovery_deadline_ms, node_names,
                               url_template, flow_template, auth_token,
                               delete_flag=False):
     """Function executed by flow_master method
@@ -289,8 +288,6 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     :type
     :type
     :type
-    :type
-    :type
     """
     #results = []
     operations_log_message = 'ADD'
@@ -307,11 +304,11 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     logging.info('[flow_operations_calc_time] creating workers for {0} ops'.
                  format(operations_log_message))
 
-    opqueues, wthr, resqueues = create_workers(nworkers,
+    opqueues, wthr, resqueues = nb_gen_utils.create_workers(nworkers,
         flow_template, url_template, op_delay_ms, auth_token)
 
     logging.info('[flow_operations_calc_time] distributing workload')
-    distribute_workload(nflows, opqueues, operations_type,
+    nb_gen_utils.distribute_workload(nflows, opqueues, operations_type,
                                      node_names)
 
     logging.info('[flow_master_thread] starting workers')
@@ -321,7 +318,7 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
         worker_thread.start()
 
     logging.info('[flow_operations_calc_time] joining workers')
-    failed_flow_ops += join_workers(opqueues, resqueues, wthr)
+    failed_flow_ops += nb_gen_utils.join_workers(opqueues, resqueues, wthr)
 
     t_stop = time.time()
     transmission_interval = t_stop - t_start
@@ -329,7 +326,7 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
 
     logging.info('[flow_operations_calc_time] initiate flow polling')
 
-    operation_time = poll_flows(nflows, ctrl_ip, ctrl_port,
+    operation_time = nb_gen_utils.poll_flows(nflows, ctrl_ip, ctrl_port,
                                              discovery_deadline_ms, t_start,
                                              auth_token)
     #results.append(operation_time)

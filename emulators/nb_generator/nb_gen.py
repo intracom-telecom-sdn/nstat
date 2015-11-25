@@ -93,12 +93,11 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     # Calculate time needed for add flow operations
     transmission_interval_add, operation_time_add, failed_flow_ops_add = \
     nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
-                                               nworkers, op_delay_ms,
-                                               discovery_deadline_ms,
-                                               controller_restconf_user,
-                                               controller_restconf_password,
-                                               node_names, url_template,
-                                               flow_template, auth_token)
+                                           nworkers, op_delay_ms,
+                                           discovery_deadline_ms,
+                                           node_names, url_template,
+                                           flow_template, auth_token)
+
     results.append(transmission_interval_add)
     results.append(operation_time_add)
 
@@ -108,8 +107,6 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
         nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
                                                nworkers, op_delay_ms,
                                                discovery_deadline_ms,
-                                               controller_restconf_user,
-                                               controller_restconf_password,
                                                node_names, url_template,
                                                flow_template, auth_token,
                                                delete_flag=True)
