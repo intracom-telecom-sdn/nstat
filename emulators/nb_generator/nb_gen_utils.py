@@ -262,34 +262,39 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
                               url_template, flow_template, auth_token,
                               delete_flag=False):
     """Function executed by flow_master method
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :param
-    :returns
-    :rtype: tuple
-    :type
-    :type
-    :type
-    :type
-    :type
-    :type
-    :type
-    :type
-    :type
-    :type
-    :type
+    :param ctrl_ip: controller IP
+    :param ctrl_port: controller RESTconf port
+    :param nflows: total number of flows to distribute
+    :param nworkers: number of worker threads to create
+    :param op_delay_ms: delay between thread operations (in milliseconds)
+    :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
+    :param node_names: list with node names registered in operational DS
+    :param url_template: url for REST request to add/delete flows in
+    controller's operational DS
+    :param flow_template: template of flow in json form to be added/deleted in
+    controller's operational DS
+    :param auth_token: token containing restconf username/password used for
+    REST requests in controller's operational DS
+    :param delete_flag: whether to delete or not the added flows as part of the
+    test
+    :returns tuple with transmission_interval, operation_time, failed_flow_ops
+    transmission interval: time interval between requested flow operations
+    operation time: total time
+    failed flow operations:
+    :rtype: tuple:
+    :type ctrl_ip: str
+    :type ctrl_port:
+    :type nflows:
+    :type nworkers:
+    :type op_delay_ms:
+    :type discovery_deadline_ms:
+    :type node_names:
+    :type url_template:
+    :type flow_template:
+    :type auth_token:
+    :type delete_flag:
     """
-    #results = []
+
     operations_log_message = 'ADD'
     operations_type = 'A'
     failed_flow_ops = 0
@@ -323,13 +328,12 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
 
     t_stop = time.time()
     transmission_interval = t_stop - t_start
-    #results.append(transmission_interval)
+
 
     logging.info('[flow_operations_calc_time] initiate flow polling')
 
     operation_time = poll_flows(nflows, ctrl_ip, ctrl_port,
-                                             discovery_deadline_ms, t_start,
-                                             auth_token)
-    #results.append(operation_time)
+                                discovery_deadline_ms, t_start, auth_token)
+
 
     return (transmission_interval, operation_time, failed_flow_ops)

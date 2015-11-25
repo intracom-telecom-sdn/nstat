@@ -67,8 +67,8 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     :param delete_flag: whether to delete or not the added flows as part of the
     test
     :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
-    :param controller_restconf_user: Controller RESTconf username
-    :param controller_restconf_password: Controller RESTconf username
+    :param controller_restconf_user: controller RESTconf username
+    :param controller_restconf_password: controller RESTconf password
     :type ctrl_ip: str
     :type ctrl_port: str
     :type nflows: int
@@ -102,7 +102,7 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     results.append(transmission_interval_add)
     results.append(operation_time_add)
 
-    # #Calculation time needed for delete flow operations
+    # Calculate time needed for delete flow operations
     if delete_flag:
         transmission_interval_del, operation_time_del, failed_flow_ops_del = \
         nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
@@ -114,7 +114,7 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
         results.append(transmission_interval_del)
         results.append(operation_time_del)
 
-    # calculate total failed flow operations
+    # sum up total failed flow operations
     failed_flow_ops_total = failed_flow_ops_add + failed_flow_ops_del
     results.append(failed_flow_ops_total)
 
@@ -126,8 +126,6 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     output_msg += '/'.join(str(result) for result in results)
     output_msg += '\nAll times are in seconds.'
     return output_msg
-
-
 
 if __name__ == '__main__':
 
