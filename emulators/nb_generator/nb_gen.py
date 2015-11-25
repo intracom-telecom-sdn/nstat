@@ -79,7 +79,9 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     :type controller_restconf_user: str
     :type controller_restconf_password: str
     """
-
+    failed_flow_ops_del=0
+    failed_flow_ops_add=0
+    failed_flow_ops_total=0
     results = []
     flow_template = F_TEMP
     auth_token = (controller_restconf_user, controller_restconf_password)
