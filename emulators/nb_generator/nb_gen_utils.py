@@ -258,15 +258,46 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
 
 
 def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
-                              discovery_deadline_ms, controller_restconf_user,
-                              controller_restconf_password, node_names,
+                              discovery_deadline_ms, node_names,
                               url_template, flow_template, auth_token,
                               delete_flag=False):
-    """Function executed by flow_master method."""
+    """Function executed by flow_master method
+    :param ctrl_ip: controller IP
+    :param ctrl_port: controller RESTconf port
+    :param nflows: total number of flows to distribute
+    :param nworkers: number of worker threads to create
+    :param op_delay_ms: delay between thread operations (in milliseconds)
+    :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
+    :param node_names: list with node names registered in operational DS
+    :param url_template: url for REST request to add/delete flows in
+    controller's operational DS
+    :param flow_template: template of flow in json form to be added/deleted in
+    controller's operational DS
+    :param auth_token: token containing restconf username/password used for
+    REST requests in controller's operational DS
+    :param delete_flag: whether to delete or not the added flows as part of the
+    test
+    :returns tuple with transmission_interval, operation_time, failed_flow_ops
+    transmission interval: time interval between requested flow operations
+    operation time: total time
+    failed flow operations:
+    :rtype: tuple:
+    :type ctrl_ip: str
+    :type ctrl_port:
+    :type nflows:
+    :type nworkers:
+    :type op_delay_ms:
+    :type discovery_deadline_ms:
+    :type node_names:
+    :type url_template:
+    :type flow_template:
+    :type auth_token:
+    :type delete_flag:
+    """
 
-    #results = []
     operations_log_message = 'ADD'
     operations_type = 'A'
+    failed_flow_ops = 0
 
     if delete_flag:
         operations_log_message = 'DEL'
@@ -279,11 +310,11 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     logging.info('[flow_operations_calc_time] creating workers for {0} ops'.
                  format(operations_log_message))
 
-    opqueues, wthr, resqueues = nb_gen_utils.create_workers(nworkers,
+    opqueues, wthr, resqueues = create_workers(nworkers,
         flow_template, url_template, op_delay_ms, auth_token)
 
     logging.info('[flow_operations_calc_time] distributing workload')
-    nb_gen_utils.distribute_workload(nflows, opqueues, operations_type,
+    distribute_workload(nflows, opqueues, operations_type,
                                      node_names)
 
     logging.info('[flow_master_thread] starting workers')
@@ -293,17 +324,16 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
         worker_thread.start()
 
     logging.info('[flow_operations_calc_time] joining workers')
-    failed_flow_ops += nb_gen_utils.join_workers(opqueues, resqueues, wthr)
+    failed_flow_ops += join_workers(opqueues, resqueues, wthr)
 
     t_stop = time.time()
     transmission_interval = t_stop - t_start
-    #results.append(transmission_interval)
+
 
     logging.info('[flow_operations_calc_time] initiate flow polling')
 
-    operation_time = nb_gen_utils.poll_flows(nflows, ctrl_ip, ctrl_port,
-                                             discovery_deadline_ms, t_start,
-                                             auth_token)
-    #results.append(operation_time)
+    operation_time = poll_flows(nflows, ctrl_ip, ctrl_port,
+                                discovery_deadline_ms, t_start, auth_token)
+
 
     return (transmission_interval, operation_time, failed_flow_ops)

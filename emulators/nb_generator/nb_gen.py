@@ -67,8 +67,8 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     :param delete_flag: whether to delete or not the added flows as part of the
     test
     :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
-    :param controller_restconf_user: Controller RESTconf username
-    :param controller_restconf_password: Controller RESTconf username
+    :param controller_restconf_user: controller RESTconf username
+    :param controller_restconf_password: controller RESTconf password
     :type ctrl_ip: str
     :type ctrl_port: str
     :type nflows: int
@@ -79,10 +79,11 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     :type controller_restconf_user: str
     :type controller_restconf_password: str
     """
-
+    failed_flow_ops_del=0
+    failed_flow_ops_add=0
+    failed_flow_ops_total=0
     results = []
     flow_template = F_TEMP
-    failed_flow_ops = 0
     auth_token = (controller_restconf_user, controller_restconf_password)
     node_names = nb_gen_utils.get_node_names(ctrl_ip, ctrl_port, auth_token)
 
@@ -93,30 +94,27 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     # Calculate time needed for add flow operations
     transmission_interval_add, operation_time_add, failed_flow_ops_add = \
     nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
-                                               nworkers, op_delay_ms,
-                                               discovery_deadline_ms,
-                                               controller_restconf_user,
-                                               controller_restconf_password,
-                                               node_names, url_template,
-                                               flow_template, auth_token)
+                                           nworkers, op_delay_ms,
+                                           discovery_deadline_ms,
+                                           node_names, url_template,
+                                           flow_template, auth_token)
+
     results.append(transmission_interval_add)
     results.append(operation_time_add)
 
-    # #Calculation time needed for delete flow operations
+    # Calculate time needed for delete flow operations
     if delete_flag:
         transmission_interval_del, operation_time_del, failed_flow_ops_del = \
         nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
                                                nworkers, op_delay_ms,
                                                discovery_deadline_ms,
-                                               controller_restconf_user,
-                                               controller_restconf_password,
                                                node_names, url_template,
                                                flow_template, auth_token,
                                                delete_flag=True)
         results.append(transmission_interval_del)
         results.append(operation_time_del)
 
-    # calculate total failed flow operations
+    # sum up total failed flow operations
     failed_flow_ops_total = failed_flow_ops_add + failed_flow_ops_del
     results.append(failed_flow_ops_total)
 
@@ -128,8 +126,6 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     output_msg += '/'.join(str(result) for result in results)
     output_msg += '\nAll times are in seconds.'
     return output_msg
-
-
 
 if __name__ == '__main__':
 
