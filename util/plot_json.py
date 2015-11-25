@@ -123,20 +123,9 @@ def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
                                                                x_axis_key,
                                                                y_axis_key)
 
-    # Create plot title
-    subtitle = ''
-    for sub_key in plot_subtitle_keys:
-        value = lines[0][sub_key]
+    # Create plot subtitle
+    plot_options.subtitle = create_plot_subtitle(lines, plot_subtitle_keys)
 
-        # If key value is a list, convert it to a single
-        # string consisting of its elements
-        if isinstance(value, list):
-            curr_string = ' '.join(map(str, value))
-        else:
-            curr_string = str(value)
-        subtitle += sub_key + ':' + curr_string + ', '
-
-    plot_options.subtitle = subtitle
     plot_options.cords = y_values
     # Compute mean and +/- diff values
     x_keys_sorted = sorted(y_values.keys())
@@ -193,21 +182,10 @@ def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
                                                                 y_axis_key,
                                                                 z_axis_key)
 
-    # Create plot title
-    subtitle = ''
-
-    for sub_key in plot_subtitle_keys:
-        value = lines[0][sub_key]
-        # if key value is a list, convert it to a single
-        # string consisting of its elements
-        if isinstance(value, list):
-            curr_string = ' '.join(map(str, value))
-        else:
-            curr_string = str(value)
-        subtitle += sub_key + ':' + curr_string + ', '
+    # Create plot subtitle
+    plot_options.subtitle = create_plot_subtitle(lines, plot_subtitle_keys)
     plot_options.cords = y_values
     # Plot
-    plot_options.subtitle = subtitle
     util.plot_utils.plot_multi_errorbar(z_axis_key, plot_options)
 
 
@@ -256,21 +234,9 @@ def plot_scatter_json(results_file, x_axis_key, y_axis_key, plot_subtitle_keys,
                                                                x_axis_key,
                                                                y_axis_key)
 
-    # Create plot title
-    subtitle = ''
+    # Create plot subtitle
+    plot_options.subtitle = create_plot_subtitle(lines, plot_subtitle_keys)
 
-    for sub_key in plot_subtitle_keys:
-        value = lines[0][sub_key]
-
-        # if key value is a list, convert it to a single
-        # string consisting of its elements
-        if isinstance(value, list):
-            curr_string = ' '.join(map(str, value))
-        else:
-            curr_string = str(value)
-        subtitle += sub_key + ':' + curr_string + ', '
-
-    plot_options.subtitle = subtitle
     x_coords = []
     y_coords = []
     for key in y_values:
@@ -332,11 +298,18 @@ def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
                                                                 y_axis_key,
                                                                 z_axis_key)
 
-    # Create plot title
-    subtitle = ''
+    # Create plot subtitle
+    plot_options.subtitle = create_plot_subtitle(lines, plot_subtitle_keys)
 
+    # Plot
+    util.plot_utils.plot_multi_scatter(y_values, z_axis_key, plot_options)
+
+
+def create_plot_subtitle(json_lines, plot_subtitle_keys):
+
+    subtitle = ''
     for sub_key in plot_subtitle_keys:
-        value = lines[0][sub_key]
+        value = json_lines[0][sub_key]
 
         # if key value is a list, convert it to a single
         # string consisting of its elements
@@ -345,10 +318,8 @@ def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
         else:
             curr_string = str(value)
         subtitle += sub_key + ':' + curr_string + ', '
+    return subtitle
 
-    plot_options.subtitle = subtitle
-    # Plot
-    util.plot_utils.plot_multi_scatter(y_values, z_axis_key, plot_options)
 
 # This is for self testing.
 def self_test():
