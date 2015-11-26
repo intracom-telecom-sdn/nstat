@@ -54,9 +54,9 @@ F_TEMP = """{
        }"""
 
 
-def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
-                discovery_deadline_ms, controller_restconf_user,
-                controller_restconf_password):
+def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
+                delete_flows_flag, discovery_deadline_ms,
+                controller_restconf_user, controller_restconf_password):
     """Function executed by flow master thread.
 
     :param ctrl_ip: controller IP
@@ -64,8 +64,8 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     :param nflows: total number of flows to distribute
     :param nworkers: number of worker threads to create
     :param op_delay_ms: delay between thread operations (in milliseconds)
-    :param delete_flag: whether to delete or not the added flows as part of the
-    test
+    :param delete_flows_flag: whether to delete or not the added flows as part
+    of the test
     :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
     :param controller_restconf_user: controller RESTconf username
     :param controller_restconf_password: controller RESTconf password
@@ -74,7 +74,7 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     :type nflows: int
     :type nworkers: int
     :type op_delay_ms: int
-    :type delete_flag: bool
+    :type delete_flows_flag: bool
     :type discovery_deadline_ms: int
     :type controller_restconf_user: str
     :type controller_restconf_password: str
@@ -103,14 +103,14 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     results.append(operation_time_add)
 
     # Calculate time needed for delete flow operations
-    if delete_flag:
+    if delete_flows_flag:
         transmission_interval_del, operation_time_del, failed_flow_ops_del = \
         nb_gen_utils.flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows,
                                                nworkers, op_delay_ms,
                                                discovery_deadline_ms,
                                                node_names, url_template,
                                                flow_template, auth_token,
-                                               delete_flag=True)
+                                               delete_flows_flag=True)
         results.append(transmission_interval_del)
         results.append(operation_time_del)
 
@@ -176,7 +176,7 @@ if __name__ == '__main__':
                               "Example: --operation-delay='5'"))
     parser.add_argument('--delete-flows',
                         required=False,
-                        dest='delete_flag',
+                        dest='delete_flows_flag',
                         action='store_true',
                         default=False,
                         help=("Flag defining if we are going to have the "
@@ -240,7 +240,7 @@ if __name__ == '__main__':
 
     result = flow_master(args.ctrl_ip, args.ctrl_port, int(args.nflows),
         int(args.nworkers), int(args.op_delay_ms),
-        args.delete_flag, int(args.discovery_deadline_ms),
+        args.delete_flows_flag, int(args.discovery_deadline_ms),
         args.restconf_user, args.restconf_password)
 
     print(result)

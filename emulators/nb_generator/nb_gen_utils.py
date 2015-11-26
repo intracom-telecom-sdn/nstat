@@ -21,15 +21,16 @@ def create_workers(nworkers, flow_template, url_template, op_delay_ms,
 
     :param nworkers: number of workers to create
     :param flow_template: template from which flows are created
-    :param url_template: Url in which each worker will issue flows.
+    :param url_template: url in which each worker will issue flows.
     :param op_delay_ms: delay between flow operations in each worker
     (in milliseconds)
     :param auth_token: RESTconf authorization token (username/password tuple)
-    :returns: worker queues and worker threads
+    :returns: worker queues (operational, result) and worker threads
+    :rtype tuple<lst<multiprocessing.Queue()>>
     :type nworkers: int
-    :type flow_templates: str
+    :type flow_template: str
     :type url_template: str
-    :type worker_delay: int
+    :type op_delay_ms: int
     :type auth_token: tuple<str>
     """
 
@@ -48,7 +49,7 @@ def create_workers(nworkers, flow_template, url_template, op_delay_ms,
                                                op_delay_ms, auth_token))
         wthr.append(worker)
 
-    return opqueues, wthr, resqueues
+    return (opqueues, wthr, resqueues)
 
 
 def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
@@ -58,7 +59,7 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
 
     :param wid: worker id
     :param opqueue: queue where flow master will issue operations
-    :param resqueue:
+    :param resqueue:queue where flow master will issue operations
     :param flow_template: template from which flows are created
     :param url_template: template for the url of the REST call
     :param op_delay_ms: delay between thread operations (in milliseconds)
@@ -130,9 +131,9 @@ def distribute_workload(nflows, opqueues, operation, node_names):
     :param operation: operation to perform (Add 'A' or Delete 'D')
     :param node_names: array Name of each node in Opendaylight datastore.
     :type nflows: int
-    :type opqueues: <queue>
+    :type opqueues: list<multiprocessing.Queue>
     :type operation: str
-    :type nodenames: <list>
+    :type nodenames: list<str>
     """
 
     curr_ip = ipaddress.ip_address('0.0.0.0')
@@ -157,6 +158,11 @@ def join_workers(opqueues, resqueues, wthr):
     :param opqueues: workers operation queues
     :param resqueues: workers result queues
     :param wthr: worker thread objects
+    :returns: failed_flow_ops
+    :rtype: failed_flow_ops int
+    :type: opqueues list<multiprocessing.Queue>
+    :type: resqueues list<multiprocessing.Queue>
+    :type: wthr
     """
 
     for curr_queue in opqueues:
@@ -171,6 +177,7 @@ def join_workers(opqueues, resqueues, wthr):
 
     logging.debug('[flow_master_thread] {0} workers terminated.'.
                   format(len(opqueues)))
+
     return failed_flow_ops
 
 def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
@@ -194,6 +201,7 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
     :type ctrl_port: int
     :type discovery_deadline_ms: int
     :type t_start: float
+    :type auth_token: tuple<str>
     """
 
     deadline = float(discovery_deadline_ms)/1000
@@ -229,7 +237,7 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
     :param ctrl_port: controller RESTconf port
     :param auth_token: RESTconf authorization token (username/password tuple)
     :returns: list with node names registered in operational DS
-    :rtype:
+    :rtype: node_names: list<str>
     :type ctrl_ip: str
     :type ctrl_port: int
     :type auth_token: tuple<str>
@@ -258,12 +266,30 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
 
 def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
                        discovery_deadline_ms, auth_token):
-    """Function executed by flow_master method
-    :param
-    :returns
-    :rtype
-    :type
+    """Calculates transmission_interval, operation_time, failed_flow_ops
+    :param opqueues: workers operation queues
+    :param resqueues: workers result queues
+    :param wthr: worker threads
+    :param nflows:
+    :param ctrl_ip:
+    :param ctrl_port:
+    :param discovery_deadline_ms:
+    :param auth_token:
+    :returns (transmission_interval, operation_time, failed_flow_ops):
+    transmission interval: time interval between requested flow operations
+    operation time: total time
+    failed flow operations:
+    :rtype tuple<str>
+    :type opqueues: list<multiprocessing.Queue()>
+    :type resqueues: list<multiprocessing.Queue()>
+    :type wthr: list<multiprocessing.Process()>
+    :type nflows: int
+    :type ctrl_ip: str
+    :type ctrl_port: str
+    :type discovery_deadline_ms: int
+    :type auth_token: tuple<str>
     """
+    failed_flow_ops = 0
 
     logging.info('[flow_master_thread] starting workers')
     t_start = time.time()
@@ -283,9 +309,8 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
     return (transmission_interval, operation_time, failed_flow_ops)
 
 def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
-                              discovery_deadline_ms, node_names,
-                              url_template, flow_template, auth_token,
-                              delete_flag=False):
+                           discovery_deadline_ms, node_names, url_template,
+                           flow_template, auth_token, delete_flows_flag=False):
 
     """Function executed by flow_master method
     :param ctrl_ip: controller IP
@@ -301,7 +326,7 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     controller's operational DS
     :param auth_token: token containing restconf username/password used for
     REST requests in controller's operational DS
-    :param delete_flag: whether to delete or not the added flows as part of the
+    :param delete_flows_flag: whether to delete or not the added flows as part of the
     test
     :returns tuple with transmission_interval, operation_time, failed_flow_ops
     transmission interval: time interval between requested flow operations
@@ -312,20 +337,19 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     :type ctrl_port: str
     :type nflows: int
     :type nworkers: int
-    :type op_delay_ms:
-    :type discovery_deadline_ms:
-    :type node_names:
+    :type op_delay_ms: int
+    :type discovery_deadline_ms: int
+    :type node_names:  list<str>
     :type url_template: str
     :type flow_template: str
     :type auth_token: tuple<str>
-    :type delete_flag: bool
+    :type delete_flows_flag: bool
     """
 
     operations_log_message = 'ADD'
     operations_type = 'A'
-    #failed_flow_ops = 0
 
-    if delete_flag:
+    if delete_flows_flag:
         operations_log_message = 'DEL'
         operation_type = 'D'
 
@@ -345,6 +369,6 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
 
     transmission_interval, operation_time, failed_flow_ops =  \
     flow_ops_calc_time(opqueues, resqueues, wthr,nflows, ctrl_ip, ctrl_port,
-                                discovery_deadline_ms, auth_token)
+                       discovery_deadline_ms, auth_token)
 
     return (transmission_interval, operation_time, failed_flow_ops)

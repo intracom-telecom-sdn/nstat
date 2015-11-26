@@ -27,8 +27,8 @@ def northbound_generator():
     5.  nworkers: number of worker threads to create
 
     7.  op_delay_ms: delay between thread operations (in milliseconds)
-    8.  delete_flag: whether to delete or not the added flows as part of the
-    test
+    8.  delete_flows_flag: whether to delete or not the added flows as part of
+    the test
     9.  discovery_deadline_ms: deadline for flow discovery (in milliseconds)
     10. controller_restconf_user: controller NorthBound RESTconf username
     11. controller_restconf_password: controller NorthBound RESTconf password
