@@ -93,7 +93,7 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
 
     # Calculate time needed for add flow operations
     transmission_interval_add, operation_time_add, failed_flow_ops_add = \
-    nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
+    nb_gen_utils.flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows,
                                            nworkers, op_delay_ms,
                                            discovery_deadline_ms,
                                            node_names, url_template,
@@ -105,7 +105,7 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms, delete_flag,
     # Calculate time needed for delete flow operations
     if delete_flag:
         transmission_interval_del, operation_time_del, failed_flow_ops_del = \
-        nb_gen_utils.flow_operations_calc_time(ctrl_ip, ctrl_port, nflows,
+        nb_gen_utils.flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows,
                                                nworkers, op_delay_ms,
                                                discovery_deadline_ms,
                                                node_names, url_template,

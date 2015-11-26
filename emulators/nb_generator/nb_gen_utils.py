@@ -256,11 +256,37 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
 
     return node_names
 
+def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
+                       discovery_deadline_ms, t_start, auth_token):
+    """Function executed by flow_master method
+    :param
+    :returns
+    :rtype
+    :type
+    """
 
-def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
+    logging.info('[flow_master_thread] starting workers')
+    t_start = time.time()
+
+    for worker_thread in wthr:
+        worker_thread.start()
+
+    logging.info('[flow_operations_calc_time] joining workers')
+    failed_flow_ops += join_workers(opqueues, resqueues, wthr)
+    t_stop = time.time()
+    transmission_interval = t_stop - t_start
+
+    logging.info('[flow_operations_calc_time] initiate flow polling')
+    operation_time = poll_flows(nflows, ctrl_ip, ctrl_port,
+                                discovery_deadline_ms, t_start, auth_token)
+
+    return (transmission_interval, operation_time, failed_flow_ops)
+
+def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
                               discovery_deadline_ms, node_names,
                               url_template, flow_template, auth_token,
                               delete_flag=False):
+
     """Function executed by flow_master method
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
@@ -283,57 +309,41 @@ def flow_operations_calc_time(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     failed flow operations:
     :rtype: tuple:
     :type ctrl_ip: str
-    :type ctrl_port:
-    :type nflows:
-    :type nworkers:
+    :type ctrl_port: str
+    :type nflows: int
+    :type nworkers: int
     :type op_delay_ms:
     :type discovery_deadline_ms:
     :type node_names:
-    :type url_template:
-    :type flow_template:
-    :type auth_token:
-    :type delete_flag:
+    :type url_template: str
+    :type flow_template: str
+    :type auth_token: tuple<str>
+    :type delete_flag: bool
     """
 
     operations_log_message = 'ADD'
     operations_type = 'A'
-    failed_flow_ops = 0
+    #failed_flow_ops = 0
 
     if delete_flag:
         operations_log_message = 'DEL'
         operation_type = 'D'
 
-    logging.info('[flow_operations_calc_time] initializing: will perform {0} flow '
+    logging.info('[flow_ops_calc_time_run] initializing: will perform {0} flow '
                  'operations at {1} openflow nodes with {2} workers'.format(
                  nflows, len(node_names), nworkers))
 
-    logging.info('[flow_operations_calc_time] creating workers for {0} ops'.
+    logging.info('[flow_ops_calc_time_run] creating workers for {0} ops'.
                  format(operations_log_message))
 
     opqueues, wthr, resqueues = create_workers(nworkers,
         flow_template, url_template, op_delay_ms, auth_token)
 
-    logging.info('[flow_operations_calc_time] distributing workload')
-    distribute_workload(nflows, opqueues, operations_type,
-                                     node_names)
+    logging.info('[flow_ops_calc_time_run] distributing workload')
+    distribute_workload(nflows, opqueues, operations_type,node_names)
 
-    logging.info('[flow_master_thread] starting workers')
-    t_start = time.time()
-
-    for worker_thread in wthr:
-        worker_thread.start()
-
-    logging.info('[flow_operations_calc_time] joining workers')
-    failed_flow_ops += join_workers(opqueues, resqueues, wthr)
-
-    t_stop = time.time()
-    transmission_interval = t_stop - t_start
-
-
-    logging.info('[flow_operations_calc_time] initiate flow polling')
-
-    operation_time = poll_flows(nflows, ctrl_ip, ctrl_port,
+    transmission_interval, operation_time, failed_flow_ops =  \
+    flow_ops_calc_time(opqueues, resqueues, wthr,nflows, ctrl_ip, ctrl_port,
                                 discovery_deadline_ms, t_start, auth_token)
-
 
     return (transmission_interval, operation_time, failed_flow_ops)
