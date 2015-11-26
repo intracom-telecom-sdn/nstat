@@ -257,7 +257,7 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
     return node_names
 
 def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
-                       discovery_deadline_ms, t_start, auth_token):
+                       discovery_deadline_ms, auth_token):
     """Function executed by flow_master method
     :param
     :returns
@@ -336,14 +336,15 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     logging.info('[flow_ops_calc_time_run] creating workers for {0} ops'.
                  format(operations_log_message))
 
-    opqueues, wthr, resqueues = create_workers(nworkers,
-        flow_template, url_template, op_delay_ms, auth_token)
+    opqueues, wthr, resqueues = create_workers(nworkers, flow_template,
+                                               url_template, op_delay_ms,
+                                               auth_token)
 
     logging.info('[flow_ops_calc_time_run] distributing workload')
     distribute_workload(nflows, opqueues, operations_type,node_names)
 
     transmission_interval, operation_time, failed_flow_ops =  \
     flow_ops_calc_time(opqueues, resqueues, wthr,nflows, ctrl_ip, ctrl_port,
-                                discovery_deadline_ms, t_start, auth_token)
+                                discovery_deadline_ms, auth_token)
 
     return (transmission_interval, operation_time, failed_flow_ops)
