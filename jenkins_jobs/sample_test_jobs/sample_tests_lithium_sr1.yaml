@@ -344,7 +344,7 @@
 
 - project:
     name: sample_nstat-jenkins-jobs
-    branch: develop_remote_nb_active_mininet
+    branch: develop_code_climate_issues
     jobs:
 
         - 'sample_lithium_DS_sb_active_scalability_mtcbench-{branch}'
