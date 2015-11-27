@@ -308,10 +308,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             os.mkdir(output_dir)
 
         logging.info('{0} saving results to JSON file.'.format(test_type))
-        if len(total_samples) > 0:
-            with open(out_json, 'w') as ojf:
-                json.dump(total_samples, ojf)
-            ojf.close()
+        common.generate_json_results(total_samples, out_json)
 
         try:
             logging.info('{0} stopping controller.'.

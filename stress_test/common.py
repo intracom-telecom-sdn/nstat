@@ -210,3 +210,26 @@ def sample_stats(cpid, ssh_client=None):
     return common_statistics
 
 
+def generate_json_results(results, out_json):
+    """ Creates the result json file and writes test results in it
+
+    :param results A list containing the results.
+    :param out_json: The file path of json file to be created and write
+    results in it
+    :type results: <list<dictionary>>
+    :type out_json: str
+    """
+
+    try:
+        if len(results) > 0:
+            with open(out_json, 'w') as ojf:
+                json.dump(results, ojf)
+                ojf.close()
+                logging.info('[generate_json_results] Results writen to {0}.'.
+                             format(out_json))
+        else:
+            logging.error('[generate_json_results] results parameter was empty.'
+                          ' Nothing to be saved')
+    except:
+        logging.error('[generate_json_results] output json file could not be '
+                      'created. Check privileges.')
