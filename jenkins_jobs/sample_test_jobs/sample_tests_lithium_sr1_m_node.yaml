@@ -161,7 +161,7 @@
                   --test="nb_active_scalability_mininet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-               --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
+               --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
