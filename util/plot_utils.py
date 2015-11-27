@@ -183,12 +183,8 @@ def plot_multi_errorbar(z_axis_key, plot_options):
 
         plots[z_value] = plot_errorbar_helper(plot_options, x_keys_sorted,
                                               z_value)
-
-    plt.legend(list(plots.values()),
-               [z_axis_key + ':' + str(k) for k in list(plots.keys())],
-               scatterpoints=1,
-               loc=plot_options.legend_position,
-               fontsize=8)
+    # Add legend to plot, plt object
+    generate_legend(z_axis_key, plots)
     finish_plotting(plot_options)
 
 
@@ -257,13 +253,15 @@ def plot_multi_scatter(y_values, z_axis_key, plot_options):
         plots[z_value] = plot_scatter_helper(plot_options,
             marker_arg=next(plot_options.markers),
             color=next(plot_options.colors))
-
-    plt.legend(list(plots.values()),
-               [z_axis_key + ':' + str(k) for k in list(plots.keys())],
-               scatterpoints=1, loc=plot_options.legend_position, fontsize=8)
-
+    # Add legend to plot, plt object
+    generate_legend(z_axis_key, plots)
     finish_plotting(plot_options)
 
+
+def generate_legend(z_axis_key, plots):
+    plt.legend(list(plots.values()),
+        [z_axis_key + ':' + str(k) for k in list(plots.keys())],
+        scatterpoints=1, loc=plot_options.legend_position, fontsize=8)
 
 def create_xy_dict_from_file(results_file, x_axis_key, y_axis_key):
     """Reads a json file and returns the contents of the file as a
