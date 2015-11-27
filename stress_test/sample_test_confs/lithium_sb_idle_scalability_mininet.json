@@ -8,7 +8,7 @@
 
 "controller_node_spec":"/nstat/vagrant/node_controller/Vagrantfile",
 "controller_host_ip":"127.0.0.1",
-"controller_node_ip":"127.0.0.1",
+"controller_node_ip":"192.168.64.21",
 "controller_node_ssh_port":"22",
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
