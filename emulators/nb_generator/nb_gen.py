@@ -77,14 +77,15 @@ def flow_master(args):
     :type controller_restconf_user: str
     :type controller_restconf_password: str
     """
-    ctrl_ip = args.ctrl_ip,
-    ctrl_port = args.ctrl_port,
-    nflows = int(args.nflows),
-    nworkers = int(args.nworkers),
-    op_delay_ms = int(args.op_delay_ms),
-    delete_flows_flag = args.delete_flows_flag,
-    discovery_deadline_ms = int(args.discovery_deadline_ms),
-    controller_restconf_user = args.restconf_user,
+
+    ctrl_ip = args.ctrl_ip
+    ctrl_port = args.ctrl_port
+    nflows = int(args.nflows)
+    nworkers = int(args.nworkers)
+    op_delay_ms = int(args.op_delay_ms)
+    delete_flows_flag = args.delete_flows_flag
+    discovery_deadline_ms = int(args.discovery_deadline_ms)
+    controller_restconf_user = args.restconf_user
     controller_restconf_password = args.restconf_password
 
     failed_flow_ops_del=0
