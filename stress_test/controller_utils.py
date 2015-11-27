@@ -284,3 +284,36 @@ def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
     raise Exception('Controller failed to start. '
                     'Status check returned 0 after trying for {0} seconds.'.
                     format(float(interval_ms) / 1000))
+
+
+def generate_controller_xml_files(controller_start_handler,
+        controller_stop_handler, controller_status_handler, controller_port,
+        java_opts, ssh_client):
+    """ Starts and then stops the controller to triger the generation of
+    its XML files.
+
+    :param controller_start_handler: filepath to the controller start handler
+    :param controller_stop_handler: filepath to the controller stop handler
+    :param controller_status_handler: filepath to the controller status handler
+    :param controller_port: controller port to check
+    :param java_opts: A comma separated value string with the javaoptions for
+    the controller
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :type controller_start_handler: str
+    :type controller_stop_handler: str
+    :type controller_status_handler: str
+    :type controller_port: int
+    :type java_opts: str
+    :type ssh_client: paramiko.SSHClient
+    """
+    logging.info('[generate_controller_xml_files] Starting controller')
+    cpid = start_controller(controller_start_handler,
+        controller_status_handler, controller_port, java_opts,
+        ssh_client)
+
+    # Controller status check is done inside start_controller() of the
+    # controller_utils
+    logging.info('[generate_controller_xml_files] OK, controller status is 1.')
+    logging.info('[generate_controller_xml_files] Stopping controller')
+    stop_controller(controller_stop_handler, controller_status_handler, cpid,
+                    ssh_client)

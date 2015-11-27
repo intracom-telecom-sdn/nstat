@@ -148,17 +148,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         logging.info(
             '{0} starting and stopping controller to generate xml files'.
             format(test_type))
-        logging.info('{0} starting controller'.format(test_type))
-        cpid = controller_utils.start_controller(
-            controller_start_handler, controller_status_handler,
-            controller_port, ' '.join(conf['java_opts']),
-            controller_ssh_client)
-
-        # Controller status check is done inside start_controller() of the
-        # controller_utils
-        logging.info('{0} OK, controller status is 1.'.format(test_type))
-        controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid, controller_ssh_client)
+        controller_utils.generate_controller_xml_files(
+            controller_start_handler, controller_stop_handler,
+            controller_status_handler, controller_port,
+            ' '.join(conf['java_opts']), controller_ssh_client)
 
         # Run tests for all possible dimensions
         for (mininet_size.value,
@@ -191,7 +184,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
                 controller_ssh_client)
-            
+
             # Control of controller status
             # is done inside controller_utils.start_controller()
             logging.info('{0} OK, controller status is 1.'.format(test_type))

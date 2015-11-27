@@ -313,16 +313,10 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         logging.info(
             '{0} starting and stopping controller to generate xml files'.
             format(test_type))
-        logging.info('{0} Starting controller'.format(test_type))
-        cpid.value = controller_utils.start_controller(
-            controller_start_handler, controller_status_handler,
-            controller_port.value, ' '.join(conf['java_opts']),
-            controller_ssh_client)
-        # Controller status check is done inside start_controller() of the
-        # controller_utils
-        logging.info('{0} OK, controller status is 1.'.format(test_type))
-        controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid.value, controller_ssh_client)
+        controller_utils.generate_controller_xml_files(
+            controller_start_handler, controller_stop_handler,
+            controller_status_handler, controller_port.value,
+            ' '.join(conf['java_opts']), controller_ssh_client)
 
         # run tests for all possible dimensions
         for (cbench_threads.value,
