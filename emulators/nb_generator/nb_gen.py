@@ -54,9 +54,7 @@ F_TEMP = """{
        }"""
 
 
-def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
-                delete_flows_flag, discovery_deadline_ms,
-                controller_restconf_user, controller_restconf_password):
+def flow_master(args):
     """Function executed by flow master thread.
 
     :param ctrl_ip: controller IP
@@ -79,6 +77,16 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     :type controller_restconf_user: str
     :type controller_restconf_password: str
     """
+    ctrl_ip = args.ctrl_ip,
+    ctrl_port = args.ctrl_port,
+    nflows = int(args.nflows),
+    nworkers = int(args.nworkers),
+    op_delay_ms = int(args.op_delay_ms),
+    delete_flows_flag = args.delete_flows_flag,
+    discovery_deadline_ms = int(args.discovery_deadline_ms),
+    controller_restconf_user = args.restconf_user,
+    controller_restconf_password = args.restconf_password
+
     failed_flow_ops_del=0
     failed_flow_ops_add=0
     failed_flow_ops_total=0
@@ -94,10 +102,10 @@ def flow_master(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     # Calculate time needed for add flow operations
     transmission_interval_add, operation_time_add, failed_flow_ops_add = \
     nb_gen_utils.flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows,
-                                           nworkers, op_delay_ms,
-                                           discovery_deadline_ms,
-                                           node_names, url_template,
-                                           flow_template, auth_token)
+                                        nworkers, op_delay_ms,
+                                        discovery_deadline_ms,
+                                        node_names, url_template,
+                                        flow_template, auth_token)
 
     results.append(transmission_interval_add)
     results.append(operation_time_add)
@@ -238,9 +246,6 @@ if __name__ == '__main__':
     abs_dir_path = os.path.dirname(abs_filename_path)
     os.chdir(abs_dir_path)
 
-    result = flow_master(args.ctrl_ip, args.ctrl_port, int(args.nflows),
-        int(args.nworkers), int(args.op_delay_ms),
-        args.delete_flows_flag, int(args.discovery_deadline_ms),
-        args.restconf_user, args.restconf_password)
+    result = flow_master(args)
 
     print(result)
