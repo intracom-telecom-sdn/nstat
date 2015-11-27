@@ -337,7 +337,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             exit_status , output = util.netutil.ssh_run_command(
                 nb_generator_ssh_client, cmd , '[generator_run_handler]')
-            print(output)
+
             if exit_status!=0:
                 raise Exception('{0} northbound generator failed'.
                                 format(test_type))
