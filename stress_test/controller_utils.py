@@ -16,34 +16,6 @@ import util.netutil
 import util.process
 
 
-def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
-                         data_queue=None):
-    """Executes a command either locally or remotely and returns the result
-
-    :param cmd_list: the command to be executed given in a list format of
-    command and its arguments
-    :param prefix: The prefix to be used for logging of executed command output
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :param data_queue: data queue where generator output is posted line by line
-    the generator process will run.
-    :returns: The commands exit status
-    :rtype: int
-    :type cmd_list: list<str>
-    :type prefix: str
-    :type ssh_client: paramiko.SSHClient
-    :type data_queue: multiprocessing.Queue
-    """
-
-    if ssh_client == None:
-        exit_status = util.customsubprocess.check_output_streaming(cmd_list,
-            prefix, data_queue)
-    else:
-        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            ' '.join(cmd_list), prefix, data_queue)
-    return exit_status
-
-
-
 def rebuild_controller(controller_build_handler, ssh_client=None):
     """ Wrapper to the controller build handler
 
@@ -53,7 +25,7 @@ def rebuild_controller(controller_build_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    command_exec_wrapper([controller_build_handler],
+    common.command_exec_wrapper([controller_build_handler],
                          '[controller_build_handler]', ssh_client)
 
 def start_controller(controller_start_handler, controller_status_handler,
@@ -84,7 +56,7 @@ def start_controller(controller_start_handler, controller_status_handler,
                controller_start_handler]
 
     if check_controller_status(controller_status_handler, ssh_client) == '0':
-        command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
+        common.command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
         logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
         logging.info(
             '[start_controller] Waiting until controller starts listening')
@@ -110,7 +82,7 @@ def cleanup_controller(controller_clean_handler, ssh_client=None):
     :type controller_clean_handler: str
     :type ssh_client: paramiko.SSHClient
     """
-    command_exec_wrapper([controller_clean_handler],
+    common.command_exec_wrapper([controller_clean_handler],
                          '[controller_clean_handler]')
 
 def stop_controller(controller_stop_handler, controller_status_handler, cpid,
@@ -130,7 +102,7 @@ def stop_controller(controller_stop_handler, controller_status_handler, cpid,
 
     if check_controller_status(controller_status_handler, ssh_client) == '1':
         logging.info('[stop_controller] Stopping controller.')
-        command_exec_wrapper(
+        common.command_exec_wrapper(
             [controller_stop_handler], '[controller_stop_handler]', ssh_client)
         util.process.wait_until_process_finishes(cpid, ssh_client)
     else:
@@ -168,7 +140,7 @@ def controller_changestatsperiod(controller_statistics_handler,
     :type curr_stat_period: int
     :type ssh_client: paramiko.SSHClient
     """
-    command_exec_wrapper(
+    common.command_exec_wrapper(
         [controller_statistics_handler, str(stat_period_ms)],
         '[controller_statistics_handler] Changing statistics interval',
         ssh_client)

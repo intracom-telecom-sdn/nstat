@@ -6,37 +6,11 @@
 
 """ Reusable functions for processes that are cbench related """
 
+import common
 import logging
 import subprocess
 import util.customsubprocess
 import util.netutil
-
-
-def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
-                         data_queue=None):
-    """Executes a command either locally or remotely and returns the result
-
-    :param cmd_list: the command to be executed given in a list format of
-    command and its arguments
-    :param prefix: The prefix to be used for logging of executed command output
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :param data_queue: data queue where cbench output is posted line by line
-    the cbench process will run.
-    :returns: The commands exit status
-    :rtype: int
-    :type cmd_list: list<str>
-    :type prefix: str
-    :type ssh_client: paramiko.SSHClient
-    :type data_queue: multiprocessing.Queue
-    """
-
-    if ssh_client == None:
-        exit_status = util.customsubprocess.check_output_streaming(cmd_list,
-                                                     prefix, data_queue)
-    else:
-        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            ' '.join(cmd_list), prefix, data_queue)
-    return exit_status
 
 
 def rebuild_cbench(cbench_build_handler, ssh_client=None):
@@ -48,7 +22,7 @@ def rebuild_cbench(cbench_build_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    command_exec_wrapper([cbench_build_handler],
+    common.command_exec_wrapper([cbench_build_handler],
                          '[cbench_build_handler]', ssh_client)
 
 
@@ -97,7 +71,7 @@ def run_cbench(cbench_run_handler, controller_ip, controller_port, threads,
                 str(threads), str(sw_per_thread), str(switches),
                 str(thr_delay_ms), str(traf_delay_ms), str(ms_per_test),
                 str(internal_repeats), str(hosts), str(warmup), mode]
-    command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
+    common.command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
                          data_queue)
 
 def cleanup_cbench(cbench_clean_handler, ssh_client=None):
@@ -109,7 +83,7 @@ def cleanup_cbench(cbench_clean_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    command_exec_wrapper([cbench_clean_handler],
+    common.command_exec_wrapper([cbench_clean_handler],
                          '[cbench_clean_handler]', ssh_client)
 
 
