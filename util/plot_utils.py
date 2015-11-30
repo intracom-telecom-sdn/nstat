@@ -259,9 +259,20 @@ def plot_multi_scatter(y_values, z_axis_key, plot_options):
 
 
 def generate_legend(z_axis_key, plots, position):
+    """Creates the legend for multi_scatter and multi_errorbar plots
+
+    :param z_axis_key: field names from results to be used for z axis.
+    :param plots: a dictionary of plot objects, one for esch z_axis_key.
+    :param position: the position that the legend will be placed in the plot
+    :type z_axis_key: list<str>
+    :type plots: dictionary<matplotlib.pyplot>
+    :type position: str
+    """
+
     plt.legend(list(plots.values()),
         [z_axis_key + ':' + str(k) for k in list(plots.keys())],
         scatterpoints=1, loc=position, fontsize=8)
+
 
 def create_xy_dict_from_file(results_file, x_axis_key, y_axis_key):
     """Reads a json file and returns the contents of the file as a
