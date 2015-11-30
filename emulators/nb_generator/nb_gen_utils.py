@@ -308,17 +308,19 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
 
     return (transmission_interval, operation_time, failed_flow_ops)
 
-def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
-                           discovery_deadline_ms, node_names, url_template,
-                           flow_template, auth_token, delete_flows_flag=False):
+def flow_ops_calc_time_run(flow_ops_params,
+                           op_delay_ms, node_names,
+                           url_template, flow_template, auth_token,
+                           delete_flows_flag=False):
 
     """Function executed by flow_master method
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
     :param nflows: total number of flows to distribute
     :param nworkers: number of worker threads to create
-    :param op_delay_ms: delay between thread operations (in milliseconds)
     :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
+
+    :param op_delay_ms: delay between thread operations (in milliseconds)
     :param node_names: list with node names registered in operational DS
     :param url_template: url for REST request to add/delete flows in
     controller's operational DS
@@ -326,8 +328,8 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     controller's operational DS
     :param auth_token: token containing restconf username/password used for
     REST requests in controller's operational DS
-    :param delete_flows_flag: whether to delete or not the added flows as part of the
-    test
+    :param delete_flows_flag: whether to delete or not the added flows as part
+    of the test
     :returns tuple with transmission_interval, operation_time, failed_flow_ops
     transmission interval: time interval between requested flow operations
     operation time: total time
@@ -337,8 +339,8 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     :type ctrl_port: str
     :type nflows: int
     :type nworkers: int
-    :type op_delay_ms: int
     :type discovery_deadline_ms: int
+    :type op_delay_ms: int
     :type node_names:  list<str>
     :type url_template: str
     :type flow_template: str
