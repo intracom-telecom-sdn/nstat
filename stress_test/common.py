@@ -13,6 +13,7 @@ import time
 import util.file_ops
 import util.process
 import util.sysstats
+import json
 
 
 def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
