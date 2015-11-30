@@ -6,6 +6,7 @@
 
 """ NorthBound Performance test """
 
+import collections
 import common
 import controller_utils
 import itertools
@@ -152,20 +153,12 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     mininet_start_topo_handler = mininet_base_dir + \
         conf['mininet_start_topo_handler']
 
-    mininet_node_ip = conf['mininet_node_ip']
-    mininet_node_ssh_port = conf['mininet_node_ssh_port']
     mininet_rest_server_port = conf['mininet_rest_server_port']
-    mininet_node_username = conf['mininet_node_username']
-    mininet_node_password = conf['mininet_node_password']
 
     # Northbound generator node parameters
     nb_generator_run_handler = nb_generator_base_dir + \
         conf['nb_generator_run_handler']
     nb_generator_host_ip = conf['nb_generator_host_ip']
-    nb_generator_node_ip = conf['nb_generator_node_ip']
-    nb_generator_node_ssh_port = conf['nb_generator_node_ssh_port']
-    nb_generator_node_username = conf['nb_generator_node_username']
-    nb_generator_node_password = conf['nb_generator_node_password']
 
 
     # Controller parameters
@@ -182,17 +175,28 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     controller_cleanup = conf['controller_cleanup']
     controller_restart = conf['controller_restart']
     controller_port = conf['controller_port']
-    controller_node_username = conf['controller_node_username']
-    controller_node_password = conf['controller_node_password']
-    controller_node_ssh_port = conf['controller_node_ssh_port']
-    controller_node_ip = conf['controller_node_ip']
     controller_restconf_port = conf['controller_restconf_port']
     controller_restconf_user = conf['controller_restconf_user']
     controller_restconf_password = conf['controller_restconf_password']
 
     # Various test parameters
     flow_delete_flag = conf['flow_delete_flag']
-
+    node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_node = node_parameters('Controller',
+                                      conf['controller_node_ip'],
+                                      int(conf['controller_node_ssh_port']),
+                                      conf['controller_node_username'],
+                                      conf['controller_node_password'])
+    mininet_node = node_parameters('Mininet', conf['mininet_node_ip'],
+                                   int(conf['mininet_node_ssh_port']),
+                                   conf['mininet_node_username'],
+                                   conf['mininet_node_password'])
+    nb_generator_node = node_parameters('Generator',
+                                        conf['nb_generator_node_ip'],
+                                        int(conf['nb_generator_node_port']),
+                                        conf['nb_generator_node_username'],
+                                        conf['nb_generator_node_password'])
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -204,37 +208,18 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     try:
         # Before proceeding with the experiments check validity of all
         # handlers
-        util.file_ops.check_filelist([controller_build_handler,
-            controller_start_handler, controller_status_handler,
-            controller_stop_handler, controller_clean_handler,
-            controller_statistics_handler, mininet_rest_server_boot,
-            mininet_stop_switches_handler, mininet_get_switches_handler,
-            mininet_start_topo_handler, mininet_init_topo_handler])
+        util.file_ops.check_filelist([controller_build_handler, controller_start_handler,
+        controller_status_handler, controller_stop_handler,
+        controller_clean_handler, controller_statistics_handler,
+        mininet_rest_server_boot, mininet_stop_switches_handler,
+        mininet_get_switches_handler, mininet_start_topo_handler,
+        mininet_init_topo_handler])
 
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info(
-            '{0} Initiating SSH session with Mininet node.'.format(test_type))
-        mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_node_ip,
-            mininet_node_username, mininet_node_password, 10,
-            int(mininet_node_ssh_port))
-
-        # Opening connection with controller_node_ip and returning
-        # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating controller node session.'.
-                     format(test_type))
-        controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip, controller_node_username,
-            controller_node_password, 10, int(controller_node_ssh_port))
-
-        # Opening connection with northbound generator node
-        # nb_generator_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating northbound generator node session.'.
-                     format(test_type))
-        nb_generator_ssh_client = util.netutil.ssh_connect_or_return(
-            nb_generator_node_ip, nb_generator_node_username,
-            nb_generator_node_password, 10, int(nb_generator_node_ssh_port))
-
+        mininet_ssh_client, controller_ssh_client, nb_generator_ssh_client = \
+            common.open_ssh_connections([mininet_node,
+                controller_node, nb_generator_node])
 
         if controller_rebuild:
             logging.info('{0} building controller'.format(test_type))
@@ -283,7 +268,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             logging.info('{0} booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
-                mininet_rest_server_boot, mininet_node_ip,
+                mininet_rest_server_boot, mininet_node.ip,
                 mininet_rest_server_port)
 
             logging.info('{0} starting controller'.format(test_type))
@@ -297,21 +282,21 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             logging.info(
                 '{0} initializing topology on REST server.'.format(test_type))
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
-                mininet_node_ip, mininet_rest_server_port, controller_node_ip,
+                mininet_node.ip, mininet_rest_server_port, controller_node.ip,
                 controller_port, mininet_topology_type, mininet_size,
                 mininet_group_size, mininet_group_delay_ms,
                 mininet_hosts_per_switch)
 
             logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
-                mininet_node_ip, mininet_rest_server_port)
+                mininet_node.ip, mininet_rest_server_port)
 
             mininet_topo_check_booted(mininet_size, mininet_group_size,
                                       mininet_group_delay_ms,
                                       mininet_get_switches_handler,
-                                      mininet_node_ip,
+                                      mininet_node.ip,
                                       mininet_rest_server_port,
-                                      controller_node_ip,
+                                      controller_node.ip,
                                       controller_restconf_port,
                                       controller_restconf_user,
                                       controller_restconf_password)
@@ -320,7 +305,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
                 format(nb_generator_base_dir, nb_generator_run_handler,
-                       controller_node_ip, controller_restconf_port,
+                       controller_node.ip, controller_restconf_port,
                        total_flows, flow_workers,
                        flow_operations_delay_ms, flow_delete_flag,
                        flow_discovery_deadline_ms, controller_restconf_user,
@@ -341,7 +326,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
-            statistics['controller_node_ip'] = controller_node_ip
+            statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_port)
             statistics['controller_restart'] = controller_restart
             statistics['total_flows'] = total_flows
@@ -368,7 +353,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
 
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
-                mininet_node_ip, mininet_rest_server_port)
+                mininet_node.ip, mininet_rest_server_port)
 
             logging.debug('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_stop_handler,

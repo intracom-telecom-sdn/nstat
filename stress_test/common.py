@@ -6,14 +6,40 @@
 
 """ Reusable functions for stress tests """
 
+import json
 import logging
 import requests
 import subprocess
 import time
 import util.file_ops
+import util.netutil
 import util.process
 import util.sysstats
-import json
+
+
+def open_ssh_connections(connections_list):
+    """Gets a list of named tuples that describes the connections we want to
+    initiate. Each named tuple must have the following fields:
+    ['name', 'ip', 'ssh_port', 'username', 'password'] .
+    It will return a tuple of paramiko.SSHClient objects.
+
+    :param connections_list: A list of named tuples
+    :returns: tuple of paramiko.SSHClient objects
+    :rtype: tuple<paramiko.SSHClient>
+    :type connections_list: list<collections.namedtuple>
+    """
+
+    connection_clients = []
+    for connection in connections_list:
+        logging.info(
+            '[open_ssh_connections] Initiating SSH session with {0} node.'.
+            format(connection.name))
+        connection_clients.append(
+            util.netutil.ssh_connect_or_return(connection.ip,
+                connection.username, connection.password, 10,
+                connection.ssh_port)
+        )
+    return tuple(connection_clients)
 
 
 def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
