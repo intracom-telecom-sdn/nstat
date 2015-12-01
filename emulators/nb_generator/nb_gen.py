@@ -91,8 +91,8 @@ def flow_master(args):
                                         ['controller_restconf_user',
                                          'controller_restconf_password'])
 
-    controller_rest_auth_token = auth_token(args.controller_restconf_user,
-                                            args.controller_restconf_password)
+    controller_rest_auth_token = auth_token(args.restconf_user,
+                                            args.restconf_password)
 
     flow_ops_params_set = flow_ops_params(args.ctrl_ip, args.ctrl_port,
                                           int(args.nflows), int(args.nworkers),
@@ -100,8 +100,8 @@ def flow_master(args):
 
 
     delete_flows_flag = args.delete_flows_flag
-    controller_restconf_user = args.restconf_user
-    controller_restconf_password = args.restconf_password
+    #controller_restconf_user = args.restconf_user
+    #controller_restconf_password = args.restconf_password
 
     failed_flow_ops_del=0
     failed_flow_ops_add=0
