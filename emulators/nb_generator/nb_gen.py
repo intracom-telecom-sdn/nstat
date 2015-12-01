@@ -88,8 +88,8 @@ def flow_master(args):
     flow_ops_params = collections.namedtuple('flow_ops_params', ['cntrl_ip',
         'ctrl_port', 'nflows', 'nworkers', 'discovery_deadline_ms'])
     auth_token = collections.namedtuple('auth_token',
-                                        [controller_restconf_user,
-                                         controller_restconf_password])
+                                        ['controller_restconf_user',
+                                         'controller_restconf_password'])
 
     controller_rest_auth_token = auth_token(controller_restconf_user,
                                             controller_restconf_password)
