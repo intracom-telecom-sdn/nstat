@@ -26,7 +26,7 @@ git branch -a
 # checkout to the 'develop' branch (since you are checked out to the
 # commit with no head pointing to the develop)
 # ------------------------------------------------------------------------------
-git checkout develop_ST_idle_scala
+git checkout develop_release_1.2
 
 # make a git pull to avoid conflicts and get the latest state of the
 # 'develop' branch
