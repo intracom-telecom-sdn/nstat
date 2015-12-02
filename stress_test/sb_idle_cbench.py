@@ -111,9 +111,17 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
+    java_opts = conf['java_opts']
 
+    # Various test parameters
     node_parameters = collections.namedtuple('ssh_connection',
         ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_handlers = collections.namedtuple('controller_handlers',
+        ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
+         'ctrl_stop_handler', 'ctrl_clean_handler'])
+    cbench_handlers = collections.namedtuple('cbench_handlers' ,
+        ['cbench_build_handler','cbench_clean_handler',
+         'cbench_run_handler'])
     controller_node = node_parameters('Controller',
                                       controller_node_ip.value.decode(),
                                       int(controller_node_ssh_port.value.decode()),
@@ -123,6 +131,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                    int(cbench_node_ssh_port.value.decode()),
                                    cbench_node_username.value.decode(),
                                    cbench_node_password.value.decode())
+    controller_handlers_set = controller_handlers(controller_build_handler,
+        controller_start_handler, controller_status_handler,
+        controller_stop_handler, controller_clean_handler)
+    cbench_handlers_set = cbench_handlers(cbench_build_handler,
+        cbench_clean_handler, cbench_run_handler)
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -151,22 +164,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} building cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
-        if controller_rebuild:
-            logging.info('{0} building controller.'.format(test_type))
-            controller_utils.rebuild_controller(controller_build_handler,
-                                                controller_ssh_client)
-
-        logging.info('{0} checking for other active controllers'.
-                     format(test_type))
-        controller_utils.check_for_active_controller(controller_port.value,
-                                                     controller_ssh_client)
-
-        logging.info('{0} starting and stopping controller to '
-                     'generate xml files'.format(test_type))
-        controller_utils.generate_controller_xml_files(
-            controller_start_handler, controller_stop_handler,
-            controller_status_handler, controller_port.value,
-            ' '.join(conf['java_opts']), controller_ssh_client)
+        # Controller common actions: rebuild controller if controller_rebuild is
+        # SET, check_for_active controller, generate_controller_xml_files
+        common.controller_pre_actions(controller_handlers_set,
+                                      controller_rebuild, controller_ssh_client,
+                                      java_opts, controller_port.value)
 
         # Run tests for all possible dimensions
         for (cbench_threads.value,

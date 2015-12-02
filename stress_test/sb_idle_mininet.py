@@ -93,6 +93,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
     node_parameters = collections.namedtuple('ssh_connection',
         ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_handlers = collections.namedtuple('controller_handlers',
+        ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
+         'ctrl_stop_handler', 'ctrl_clean_handler'])
     controller_node = node_parameters('Controller',
                                       controller_node_ip.value.decode(),
                                       int(conf['controller_node_ssh_port']),
@@ -110,6 +113,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     #    - current values of test dimensions (dynamic)
     #    - test configuration options (static)
     total_samples = []
+    java_opts = conf['java_opts']
 
     try:
         # Before proceeding with the experiments check validity
@@ -127,23 +131,11 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         mininet_ssh_client, controller_ssh_client, = \
             common.open_ssh_connections([mininet_node, controller_node])
 
-
-        if controller_rebuild:
-            logging.info('{0} building controller'.format(test_type))
-            controller_utils.rebuild_controller(controller_build_handler,
-                                                controller_ssh_client)
-
-        logging.info('{0} checking for other active controllers'.
-                     format(test_type))
-        controller_utils.check_for_active_controller(controller_port,
-                                                     controller_ssh_client)
-        logging.info(
-            '{0} starting and stopping controller to generate xml files'.
-            format(test_type))
-        controller_utils.generate_controller_xml_files(
-            controller_start_handler, controller_stop_handler,
-            controller_status_handler, controller_port,
-            ' '.join(conf['java_opts']), controller_ssh_client)
+        # Controller common actions: rebuild controller if controller_rebuild is
+        # SET, check_for_active controller, generate_controller_xml_files
+        common.controller_pre_actions(controller_handlers_set,
+                                      controller_rebuild, controller_ssh_client,
+                                      java_opts, controller_port.value)
 
         # Run tests for all possible dimensions
         for (mininet_size.value,
