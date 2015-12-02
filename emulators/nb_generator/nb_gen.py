@@ -57,33 +57,19 @@ F_TEMP = """{
 
 def flow_master(args):
     """Function executed by flow master thread.
+    :param args: object containing ctrl_ip (controller IP),
+    ctrl_port (controller RESTconf port), nflows (total number of flows to
+    distribute), nworkers (number of worker threads to create),
+    op_delay_ms (delay between thread operations (in milliseconds)),
+    delete_flows_flag (whether to delete or not the added flows as part
+    of the test), discovery_deadline_ms (deadline for flow discovery (in
+    milliseconds)), controller_restconf_user (controller RESTconf username),
+    controller_restconf_password (controller RESTconf password)
+    :returns: output_msg
+    :rtype: str
+    :type args: object of argparse.ArgumentParser()
 
-    :param ctrl_ip: controller IP
-    :param ctrl_port: controller RESTconf port
-    :param nflows: total number of flows to distribute
-    :param nworkers: number of worker threads to create
-    :param op_delay_ms: delay between thread operations (in milliseconds)
-    :param delete_flows_flag: whether to delete or not the added flows as part
-    of the test
-    :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
-    :param controller_restconf_user: controller RESTconf username
-    :param controller_restconf_password: controller RESTconf password
-    :type ctrl_ip: str
-    :type ctrl_port: str
-    :type nflows: int
-    :type nworkers: int
-    :type op_delay_ms: int
-    :type delete_flows_flag: bool
-    :type discovery_deadline_ms: int
-    :type controller_restconf_user: str
-    :type controller_restconf_password: str
     """
-
-    #ctrl_ip = args.ctrl_ip
-    #ctrl_port = args.ctrl_port
-    #nflows = int(args.nflows)
-    #nworkers = int(args.nworkers)
-    #discovery_deadline_ms = int(args.discovery_deadline_ms)
 
     flow_ops_params = collections.namedtuple('flow_ops_params', ['ctrl_ip',
         'ctrl_port', 'nflows', 'nworkers', 'discovery_deadline_ms'])
@@ -97,11 +83,7 @@ def flow_master(args):
     flow_ops_params_set = flow_ops_params(args.ctrl_ip, args.ctrl_port,
                                           int(args.nflows), int(args.nworkers),
                                           int(args.discovery_deadline_ms))
-
-
     delete_flows_flag = args.delete_flows_flag
-    #controller_restconf_user = args.restconf_user
-    #controller_restconf_password = args.restconf_password
 
     failed_flow_ops_del=0
     failed_flow_ops_add=0
@@ -110,20 +92,16 @@ def flow_master(args):
     node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
                                              flow_ops_params_set.ctrl_port,
                                              controller_rest_auth_token)
-
-    #auth_token = (controller_restconf_user, controller_restconf_password)
     op_delay_ms = int(args.op_delay_ms)
     flow_template = F_TEMP
     url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
         flow_ops_params_set.ctrl_port + \
         '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
         'table/0/flow/%d'
-
     # Calculate time needed for add flow operations
     transmission_interval_add, operation_time_add, failed_flow_ops_add = \
-    nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set,
-                                        op_delay_ms, node_names,
-                                        url_template, flow_template,
+    nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
+                                        node_names, url_template, flow_template,
                                         controller_rest_auth_token)
 
     results.append(transmission_interval_add)
@@ -132,9 +110,8 @@ def flow_master(args):
     # Calculate time needed for delete flow operations
     if delete_flows_flag:
         transmission_interval_del, operation_time_del, failed_flow_ops_del = \
-        nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set,
-                                            op_delay_ms, node_names,
-                                            url_template, flow_template,
+        nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
+                                            node_names, url_template, flow_template,
                                             controller_rest_auth_token,
                                             delete_flows_flag=True)
         results.append(transmission_interval_del)

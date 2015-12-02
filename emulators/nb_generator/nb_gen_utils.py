@@ -309,18 +309,15 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
 
     return (transmission_interval, operation_time, failed_flow_ops)
 
-def flow_ops_calc_time_run(flow_ops_params,
-                           op_delay_ms, node_names,
+def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
                            url_template, flow_template, auth_token,
                            delete_flows_flag=False):
 
     """Function executed by flow_master method
-    :param ctrl_ip: controller IP
-    :param ctrl_port: controller RESTconf port
-    :param nflows: total number of flows to distribute
-    :param nworkers: number of worker threads to create
-    :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
-
+    :param flow_ops_params: namedtuple ['ctrl_ip', 'ctrl_port', 'nflows',
+    'nworkers', 'discovery_deadline_ms'], (controller IP, controller RESTconf port,
+    total number of flows to distribute, number of worker threads to create,
+    deadline for flow discovery (in milliseconds)
     :param op_delay_ms: delay between thread operations (in milliseconds)
     :param node_names: list with node names registered in operational DS
     :param url_template: url for REST request to add/delete flows in
