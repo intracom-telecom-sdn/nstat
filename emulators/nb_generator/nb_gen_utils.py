@@ -253,7 +253,8 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
         logging.debug(
             '[flow_master_thread] Trying to fetch node names from datastore')
         request = session.get(url_request, headers=getheaders, stream=False,
-                              auth=auth_token)
+                              auth=(auth_token.controller_restconf_user,
+                                    auth_token.controller_restconf_password))
         json_topology = json.loads(request.text)
         nodes = json_topology.get('topology')[0].get('node')
         if nodes is not None:
