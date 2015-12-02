@@ -85,7 +85,7 @@ def flow_master(args):
     #nworkers = int(args.nworkers)
     #discovery_deadline_ms = int(args.discovery_deadline_ms)
 
-    flow_ops_params = collections.namedtuple('flow_ops_params', ['cntrl_ip',
+    flow_ops_params = collections.namedtuple('flow_ops_params', ['ctrl_ip',
         'ctrl_port', 'nflows', 'nworkers', 'discovery_deadline_ms'])
     auth_token = collections.namedtuple('auth_token',
                                         ['controller_restconf_user',
@@ -107,14 +107,14 @@ def flow_master(args):
     failed_flow_ops_add=0
     failed_flow_ops_total=0
     results = []
-    node_names = nb_gen_utils.get_node_names(flow_ops_params_set.cntrl_ip,
+    node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
                                              flow_ops_params_set.ctrl_port,
                                              controller_rest_auth_token)
 
     #auth_token = (controller_restconf_user, controller_restconf_password)
     op_delay_ms = int(args.op_delay_ms)
     flow_template = F_TEMP
-    url_template = 'http://' + flow_ops_params_set.cntrl_ip + ':' + \
+    url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
         flow_ops_params_set.ctrl_port + \
         '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
         'table/0/flow/%d'
