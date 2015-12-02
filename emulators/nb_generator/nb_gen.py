@@ -114,7 +114,8 @@ def flow_master(args):
     #auth_token = (controller_restconf_user, controller_restconf_password)
     op_delay_ms = int(args.op_delay_ms)
     flow_template = F_TEMP
-    url_template = 'http://' + ctrl_ip + ':' + ctrl_port + \
+    url_template = 'http://' + flow_ops_params_set.cntrl_ip + ':' + \
+        flow_ops_params_set.ctrl_port + \
         '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
         'table/0/flow/%d'
 
