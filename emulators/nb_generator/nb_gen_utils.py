@@ -358,20 +358,23 @@ def flow_ops_calc_time_run(flow_ops_params,
 
     logging.info('[flow_ops_calc_time_run] initializing: will perform {0} flow '
                  'operations at {1} openflow nodes with {2} workers'.format(
-                 nflows, len(node_names), nworkers))
+                 flow_ops_params.nflows, len(node_names),
+                 flow_ops_params.nworkers))
 
     logging.info('[flow_ops_calc_time_run] creating workers for {0} ops'.
                  format(operations_log_message))
 
-    opqueues, wthr, resqueues = create_workers(nworkers, flow_template,
-                                               url_template, op_delay_ms,
-                                               auth_token)
+    opqueues, wthr, resqueues = create_workers(flow_ops_params.nworkers,
+                                               flow_template, url_template,
+                                               op_delay_ms, auth_token)
 
     logging.info('[flow_ops_calc_time_run] distributing workload')
-    distribute_workload(nflows, opqueues, operations_type,node_names)
+    distribute_workload(flow_ops_params.nflows, opqueues,
+                        operations_type, node_names)
 
     transmission_interval, operation_time, failed_flow_ops =  \
-    flow_ops_calc_time(opqueues, resqueues, wthr,nflows, ctrl_ip, ctrl_port,
-                       discovery_deadline_ms, auth_token)
+    flow_ops_calc_time(opqueues, resqueues, wthr, flow_ops_params.nflows,
+                       flow_ops_params.ctrl_ip, flow_ops_params.ctrl_port,
+                       flow_ops_params.discovery_deadline_ms, auth_token)
 
     return (transmission_interval, operation_time, failed_flow_ops)
