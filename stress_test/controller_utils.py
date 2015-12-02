@@ -181,8 +181,8 @@ def check_for_active_controller(controller_port, ssh_client=None):
     """Checks for processes listening on the specified port
 
     :param controller_port: controller port to check
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :raises Exception: When another process Listens on controller's port.
+    :param ssh_client : paramiko SSH client object when opening a connection
+    :raises Exception: when another process listens on controller's port.
     :type controller_port: int
     :type ssh_client: paramiko.SSHClient
     """
