@@ -112,6 +112,18 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
 
+    node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_node = node_parameters('Controller',
+                                      controller_node_ip.value.decode(),
+                                      int(controller_node_ssh_port.value.decode()),
+                                      controller_node_username.value.decode(),
+                                      controller_node_password.value.decode())
+    cbench_node = node_parameters('MT-Cbench', cbench_node_ip.value.decode(),
+                                   int(cbench_node_ssh_port.value.decode()),
+                                   cbench_node_username.value.decode(),
+                                   cbench_node_password.value.decode())
+
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -130,24 +142,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_statistics_handler, cbench_build_handler,
             cbench_run_handler.value.decode(), cbench_clean_handler])
 
-        # Opening connection with cbench_node_ip and returning
+        # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating cbench node session.'.format(test_type))
-        cbench_ssh_client = util.netutil.ssh_connect_or_return(
-            cbench_node_ip.value.decode(),
-            cbench_node_username.value.decode(),
-            cbench_node_password.value.decode(), 10,
-            int(cbench_node_ssh_port.value.decode()))
-
-        # Opening connection with controller_node_ip and returning
-        # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating controller node session.'.
-                     format(test_type))
-        controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip.value.decode(),
-            controller_node_username.value.decode(),
-            controller_node_password.value.decode(), 10,
-            int(controller_node_ssh_port.value.decode()))
+        cbench_ssh_client, controller_ssh_client, = \
+            common.open_ssh_connections([cbench_node, controller_node])
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
@@ -273,7 +271,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 controller_statistics_period_ms
             statistics['cbench_delay_before_traffic_ms'] = \
                 conf['cbench_delay_before_traffic_ms']
-            statistics['controller_node_ip'] = controller_node_ip.value.decode()
+            statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_port.value)
             statistics['cbench_mode'] = cbench_mode.value.decode()
             statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
@@ -321,11 +319,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         try:
             logging.info('{0} collecting logs'.format(test_type))
             util.netutil.copy_remote_directory(
-                controller_node_ip.value.decode(),
-                controller_node_username.value.decode(),
-                controller_node_password.value.decode(),
-                controller_logs_dir, output_dir+'/log',
-                int(controller_node_ssh_port.value.decode()))
+                controller_node.ip, controller_node.username,
+                controller_node.password, controller_logs_dir,
+                output_dir+'/log', controller_node.ssh_port)
         except:
             logging.error('{0} {1}'.format(
                 test_type, 'failed transferring controller logs dir.'))
