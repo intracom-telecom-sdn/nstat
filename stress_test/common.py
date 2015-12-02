@@ -292,7 +292,7 @@ def generate_json_results(results, out_json):
 def controller_pre_actions(controller_handlers_set, controller_rebuild,
                            controller_ssh_client, java_opts, controller_port):
     """
-    :param controller_handlers_set: namedtuple
+    :param controller_handlers_set:
     :param controller_rebuild
     :param controller_ssh_client
     :param java_opts
@@ -303,21 +303,16 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     :type
     :type
     """
-    try:
-        if controller_rebuild:
-            logging.info('{0} building controller'.format(test_type))
-            controller_utils.rebuild_controller(controller_build_handler,
+    if controller_rebuild:
+        logging.info('[controller_pre_actions] building controller')
+        controller_utils.rebuild_controller(controller_build_handler,
                                                     controller_ssh_client)
 
-        logging.info('{0} checking for other active controllers'.
-                     format(test_type))
-        controller_utils.check_for_active_controller(controller_port,
-            controller_ssh_client)
-        logging.info('{0} starting and stopping controller to generate xml '
-                     'files'.format(test_type))
-        controller_utils.generate_controller_xml_files(controller_start_handler,
-            controller_stop_handler, controller_status_handler, controller_port,
-                ' '.join(java_opts), controller_ssh_client)
-    except:
-        logging.error('[controller_pre_actions] controller pre actions could'
-                      ' not be completed.')
+    logging.info('[controller_pre_actions] checking for other active controllers')
+    controller_utils.check_for_active_controller(controller_port,
+        controller_ssh_client)
+    logging.info('controller_pre_actions starting and stopping controller to generate xml '
+                 'files')
+    controller_utils.generate_controller_xml_files(controller_start_handler,
+        controller_stop_handler, controller_status_handler, controller_port,
+            ' '.join(java_opts), controller_ssh_client)
