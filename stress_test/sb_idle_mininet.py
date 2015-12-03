@@ -6,6 +6,7 @@
 
 """ Idle Southbound Performance test """
 
+import collections
 import common
 import controller_utils
 import itertools
@@ -133,7 +134,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
-        common.controller_pre_actions(controller_handlers_set,
+        controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_port.value)
 

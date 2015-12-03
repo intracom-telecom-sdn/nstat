@@ -6,6 +6,7 @@
 
 """ Reusable functions for processes that are cbench related """
 
+import collections
 import common
 import logging
 import subprocess
@@ -139,11 +140,14 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
     try:
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        cbench_ssh_client = \
-            util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
-                cbench_node_username.value.decode(),
-                cbench_node_password.value.decode(), 10,
-            int(cbench_node_ssh_port.value.decode()))
+        node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+        cbench_node = node_parameters('MT-Cbench', cbench_node_ip.value.decode(),
+                                   int(cbench_node_ssh_port.value.decode()),
+                                   cbench_node_username.value.decode(),
+                                   cbench_node_password.value.decode())
+
+        cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
         run_cbench(cbench_run_handler.value.decode(),
                    controller_ip.value.decode(),
@@ -161,7 +165,7 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
         if data_queue is not None:
             data_queue.put(fail_msg.value.decode(), block=True)
         logging.error('[cbench_thread] Exception:{0}'.format(str(err)))
-    except:
+    """except:
         logging.error('[cbench_thread] General exception: cbench thread.')
-
+    """
     return

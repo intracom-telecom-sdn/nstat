@@ -289,3 +289,36 @@ def generate_controller_xml_files(controller_start_handler,
     logging.info('[generate_controller_xml_files] Stopping controller')
     stop_controller(controller_stop_handler, controller_status_handler, cpid,
                     ssh_client)
+
+def controller_pre_actions(controller_handlers_set, controller_rebuild,
+                           controller_ssh_client, java_opts, controller_port):
+    """ Performs all necessary actions before starting a test. Pre actions
+    are 1) rebuild_controller 2) check_for_active_controller
+    3) generate_controller_xml_files
+
+    :param controller_handlers_set: tuple containing
+    :param controller_rebuild: if SET controller rebuild is performed
+    :param controller_ssh_client: paramiko.SSHClient object
+    :param java_opts: controller JAVA options
+    :param controller_port: controller port to check
+    :type controller_handlers_set: collections.namedtuple<str>
+    :type controller_rebuild: boolean
+    :type controller_ssh_client: paramiko.SSHClient
+    :type java_opts: str
+    :type controller_port: int
+    """
+    if controller_rebuild:
+        logging.info('[controller_pre_actions] building controller')
+        rebuild_controller(controller_handlers_set.ctrl_build_handler,
+            controller_ssh_client)
+
+    logging.info('[controller_pre_actions] checking for other active '
+                 'controllers')
+    check_for_active_controller(controller_port,controller_ssh_client)
+    logging.info('[controller_pre_actions] starting and stopping controller'
+                 ' to generate xml files')
+    generate_controller_xml_files(
+        controller_handlers_set.ctrl_start_handler,
+        controller_handlers_set.ctrl_stop_handler,
+        controller_handlers_set.ctrl_status_handler,
+        controller_port,' '.join(java_opts), controller_ssh_client)

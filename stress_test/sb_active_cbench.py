@@ -7,6 +7,7 @@
 """ Active Southbound Performance test """
 
 import cbench_utils
+import collections
 import common
 import controller_utils
 import ctypes
@@ -98,12 +99,17 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
 
     # will hold samples taken in the lifetime of this thread
     samples = []
+        # Opening connection with mininet_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
+    node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_node = node_parameters('Controller',
+                                      controller_node_ip.value.decode(),
+                                      int(controller_node_ssh_port.value.decode()),
+                                      controller_node_username.value.decode(),
+                                      controller_node_password.value.decode())
 
-    controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip.value.decode(),
-            controller_node_username.value.decode(),
-            controller_node_password.value.decode(), 10,
-            int(controller_node_ssh_port.value.decode()))
+    controller_ssh_client =  common.open_ssh_connections([controller_node])[0]
 
     while True:
         try:
@@ -197,7 +203,6 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    cbench_rebuild = conf['cbench_rebuild']
 
     cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
         conf['cbench_run_handler']).encode())
@@ -273,7 +278,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         controller_start_handler, controller_status_handler,
         controller_stop_handler, controller_clean_handler)
     cbench_handlers_set = cbench_handlers(cbench_build_handler,
-        cbench_clean_handler, cbench_run_handler)
+        cbench_clean_handler, cbench_run_handler.value.decode())
 
     # termination message sent to monitor thread when Cbench is finished
     term_success = multiprocessing.Array('c',
@@ -303,7 +308,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        cbench_ssh_client, controller_ssh_client, = \
+        cbench_ssh_client, controller_ssh_client = \
             common.open_ssh_connections([cbench_node, controller_node])
 
         if cbench_rebuild:
@@ -312,7 +317,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
-        common.controller_pre_actions(controller_handlers_set,
+        controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_port.value)
 
