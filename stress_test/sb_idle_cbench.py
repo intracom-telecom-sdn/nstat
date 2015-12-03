@@ -136,7 +136,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         controller_start_handler, controller_status_handler,
         controller_stop_handler, controller_clean_handler)
     cbench_handlers_set = cbench_handlers(cbench_build_handler,
-        cbench_clean_handler, cbench_run_handler)
+        cbench_clean_handler, cbench_run_handler.value.decode())
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -167,7 +167,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
-        common.controller_pre_actions(controller_handlers_set,
+        controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_port.value)
 

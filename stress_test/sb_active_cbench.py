@@ -310,7 +310,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
         cbench_ssh_client, controller_ssh_client, = \
-            common.open_ssh_connections([cbench_node, controller_node])
+            controller_utils.open_ssh_connections([cbench_node, controller_node])
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
