@@ -65,6 +65,7 @@ apt-get install -y \
 #-------------------------------------------------------------------------------
 easy_install3 pip
 pip3 install paramiko
+pip3 install collections-extended
 
 # Install Mininet
 #-------------------------------------------------------------------------------
