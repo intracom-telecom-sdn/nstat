@@ -65,19 +65,18 @@ def ssh_connect_or_return(ipaddr, user, passwd, maxretries, remote_port=22):
     return None
 
 def ssh_connection_open(ipaddr, user, passwd, remote_port=22):
-    """
-    :param ipaddr:
-    :param user:
-    :param passwd
-    :param remote_port:
-    :returns sftp
-    :returns transport_layer
-    :rtype
-    :rtype
-    :type ipaddr:
-    :type user:
-    :type passwd:
-    :type remote_port:
+    """ Opens an ssh connection
+
+    :param ipaddr: IP address of the remote machine
+    :param user: username of the remote user
+    :param passwd: password of the remote user
+    :param remote_port: port to perform sftp from
+    :returns sftp, transport_layer paramiko objects
+    :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
+    :type ipaddr: str
+    :type user: str
+    :type passwd: str
+    :type remote_port: int
     """
     transport_layer = paramiko.Transport((ipaddr, remote_port))
     transport_layer.connect(username=user, password=passwd)
@@ -86,7 +85,12 @@ def ssh_connection_open(ipaddr, user, passwd, remote_port=22):
     return (sftp, transport_layer)
 
 def ssh_connection_close(sftp, transport_layer):
-    """ Closes an ssh connection"""
+    """ Closes an ssh connection
+    :param sftp:
+    :param transport_layer:
+    :type sftp: paramiko.SFTPClient
+    :type transport_layer: paramiko.Transport
+    """
     try:
         sftp.close()
         transport_layer.close()
