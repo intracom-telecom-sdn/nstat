@@ -147,7 +147,7 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
                                    cbench_node_username.value.decode(),
                                    cbench_node_password.value.decode())
 
-        cbench_ssh_client =  common.open_ssh_connections([cbench_node])
+        cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
         run_cbench(cbench_run_handler.value.decode(),
                    controller_ip.value.decode(),
@@ -165,7 +165,7 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
         if data_queue is not None:
             data_queue.put(fail_msg.value.decode(), block=True)
         logging.error('[cbench_thread] Exception:{0}'.format(str(err)))
-    except:
+    """except:
         logging.error('[cbench_thread] General exception: cbench thread.')
-
+    """
     return
