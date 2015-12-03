@@ -25,4 +25,4 @@ export no_proxy='localhost,127.0.0.1'
 echo "Starting new test with Build Number= "$BUILD_NUMBER
 export RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
 export OUTPUT_FILENAME=$CONFIG_FILENAME
-export COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+export COMMIT_MESSAGE="Adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
