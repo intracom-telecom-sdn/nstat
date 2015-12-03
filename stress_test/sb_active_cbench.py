@@ -309,8 +309,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        cbench_ssh_client, controller_ssh_client, = \
-            controller_utils.open_ssh_connections([cbench_node, controller_node])
+        cbench_ssh_client, controller_ssh_client = \
+            common.open_ssh_connections([cbench_node, controller_node])
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
@@ -318,7 +318,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
-        common.controller_pre_actions(controller_handlers_set,
+        controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_port.value)
 

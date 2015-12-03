@@ -319,6 +319,6 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
                  ' to generate xml files')
     generate_controller_xml_files(
         controller_handlers_set.ctrl_start_handler,
-        controller_handlers_set.controller_stop_handler,
-        controller_handlers_set.controller_status_handler,
+        controller_handlers_set.ctrl_stop_handler,
+        controller_handlers_set.ctrl_status_handler,
         controller_port,' '.join(java_opts), controller_ssh_client)
