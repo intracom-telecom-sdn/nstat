@@ -12,7 +12,6 @@
 "controller_node_ssh_port":"22",
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
-"controller_port":6653,
 
 "mininet_node_spec":"/nstat/vagrant/node_mininet/Vagrantfile",
 "mininet_host_ip":"127.0.0.1",
