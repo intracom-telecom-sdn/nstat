@@ -279,7 +279,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         controller_start_handler, controller_status_handler,
         controller_stop_handler, controller_clean_handler)
     cbench_handlers_set = cbench_handlers(cbench_build_handler,
-        cbench_clean_handler, cbench_run_handler)
+        cbench_clean_handler, cbench_run_handler.value.decode())
 
     # termination message sent to monitor thread when Cbench is finished
     term_success = multiprocessing.Array('c',
