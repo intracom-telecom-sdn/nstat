@@ -148,11 +148,6 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
                                    cbench_node_password.value.decode())
 
         cbench_ssh_client =  common.open_ssh_connections([cbench_node])
-        cbench_ssh_client = \
-            util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
-                cbench_node_username.value.decode(),
-                cbench_node_password.value.decode(), 10,
-            int(cbench_node_ssh_port.value.decode()))
 
         run_cbench(cbench_run_handler.value.decode(),
                    controller_ip.value.decode(),
