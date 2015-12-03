@@ -109,7 +109,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                                       controller_node_username.value.decode(),
                                       controller_node_password.value.decode())
 
-    controller_ssh_client =  common.open_ssh_connections([controller_node])
+    controller_ssh_client =  common.open_ssh_connections([controller_node])[0]
 
     while True:
         try:
