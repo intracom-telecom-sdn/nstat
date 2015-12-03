@@ -203,7 +203,6 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    cbench_rebuild = conf['cbench_rebuild']
 
     cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
         conf['cbench_run_handler']).encode())
