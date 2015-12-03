@@ -5,11 +5,9 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 # ------------------------------------------------------------------------------
-# github-stress:
-#     stress_tests_lithium_sr1.yaml
-#     stress_tests_helium_sr3.yaml
+# github-sample:
+#     stress_tests_lithium_sr2.yaml
 # ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 # defaults:github-stress
@@ -24,8 +22,7 @@
     node: test-server
     scm:
     - git:
-        url: git@<git_url>
-        credentials-id: <provide with API token>
+        url: https://github.com/intracom-telecom-sdn/nstat.git
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
@@ -37,4 +34,4 @@
         keep-all: true
         allow-missing: true
     - email:
-        recipients: <name>@<domain>
+        recipients: nstat@intracom-telecom.com
