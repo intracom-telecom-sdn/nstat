@@ -7,6 +7,7 @@
 """ Idle Southbound Performance test """
 
 import cbench_utils
+import collections
 import common
 import controller_utils
 import itertools

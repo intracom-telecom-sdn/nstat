@@ -6,6 +6,7 @@
 
 """ Idle Southbound Performance test """
 
+import collections
 import common
 import controller_utils
 import itertools
