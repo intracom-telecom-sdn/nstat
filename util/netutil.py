@@ -19,7 +19,7 @@ def ssh_connect_or_return(connection, maxretries):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
 
-    :param connection: A named tuple with all the connection information.
+    :param connection: a named tuple with all the connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
     :param maxretries: maximum number of times to connect
@@ -42,35 +42,34 @@ def ssh_connect_or_return(connection, maxretries):
             ssh.connect(hostname=connection.ip, port=connection.ssh_port,
                         username=connection.username,
                         password=connection.password)
-            logging.info('[netutil] Connected to {0} '.format(connection.ip))
+            logging.info('[netutil] connected to {0} '.format(connection.ip))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[netutil] Authentication failed when connecting to {0}'.
+                '[netutil] authentication failed when connecting to {0}'.
                 format(connection.ip))
 
         except:
             logging.error(
-                '[netutil] Could not SSH to {0}, waiting for it to start'.
+                '[netutil] could not SSH to {0}, waiting for it to start'.
                 format(connection.ip))
 
         retries += 1
         time.sleep(2)
     # If we exit while without ssh object been returned, then return -1
-    logging.info('[netutil] Could not connect to {0}. Returning'
+    logging.info('[netutil] could not connect to {0}. Returning'
                  .format(connection.ip))
     return None
 
 
 def ssh_connection_open(connection):
-    """
-    :param connection: A named tuple with all the connection information.
+    """ Opens an ssh connection on a remote node
+
+    :param connection: a named tuple with all the connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
-    :returns sftp
-    :returns transport_layer
-    :rtype
-    :rtype
+    :returns sftp, transport_layer
+    :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
     :type connection: collections.namedtuple
     """
 
@@ -82,7 +81,8 @@ def ssh_connection_open(connection):
     return (sftp, transport_layer)
 
 def ssh_connection_close(sftp, transport_layer):
-    """ Closes an ssh connection
+    """ Closes an ssh connection with a remote node
+
     :param sftp:
     :param transport_layer:
     :type sftp: paramiko.SFTPClient
@@ -98,7 +98,7 @@ def ssh_connection_close(sftp, transport_layer):
 def ssh_copy_file_to_target(connection, local_file, remote_file):
     """Copies local file on a remote machine target.
 
-    :param connection: A named tuple with all the connection information.
+    :param connection: a named tuple with all the connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
     :param local_file: file from local machine to copy,full location required
@@ -131,9 +131,6 @@ def copy_directory_to_target(connection, local_path, remote_path):
     #  recursively upload a full directory
     if local_path.endswith('/'):
         local_path = local_path[:-1]
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(connection)
     os.chdir(os.path.split(local_path)[0])
     parent = os.path.split(local_path)[1]
@@ -162,10 +159,6 @@ def make_remote_file_executable(connection, remote_file):
     :type connection: collections.namedtuple
     :type remote_file: str
     """
-
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(connection)
     sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
     ssh_connection_close(sftp, transport_layer)
@@ -182,9 +175,6 @@ def create_remote_directory(connection, remote_path):
     :type remote_path: str
     """
 
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(connection)
     try:
         # Test if remote_path exists
@@ -225,11 +215,7 @@ def remove_remote_directory(connection, path):
     :type path: str
     """
 
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(connection)
-
     files = sftp.listdir(path=path)
 
     for file_item in files:
@@ -294,9 +280,9 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
 
 
 def ssh_delete_file_if_exists(connection, remote_file):
-    """Deletes the file on e remote machine, if it exists
+    """Deletes the file on a remote machine, if exists
 
-    :param connection: A named tuple with all the connection information.
+    :param connection: a named tuple with all connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
     :param remote_file: remote file to remove, full path must be used.
@@ -304,9 +290,6 @@ def ssh_delete_file_if_exists(connection, remote_file):
     :type remote_file: str
     """
 
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(connection)
     try:
         sftp.remove(remote_file)
@@ -325,14 +308,14 @@ def ssh_delete_file_if_exists(connection, remote_file):
 
 
 def copy_remote_directory(connection, remote_path, local_path):
-    """Copy recursively remote directories (Copies all files and
-    other sub-directories).
+    """Copy recursively remote directories (Copies all files and other
+    sub-directories).
 
-    :param connection: A named tuple with all the connection information.
+    :param connection: a named tuple with all connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_path: A string with the full remote path we want to copy
-    :param local_path: A string with the full local path we want to copy
+    :param remote_path: a string with the full remote path we want to copy
+    :param local_path: a string with the full local path we want to copy
     :type connection: collections.namedtuple
     :type remote_path: str
     :type local_path: str
