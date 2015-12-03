@@ -99,12 +99,17 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
 
     # will hold samples taken in the lifetime of this thread
     samples = []
+        # Opening connection with mininet_node_ip and returning
+        # cbench_ssh_client to be utilized in the sequel
+    node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_node = node_parameters('Controller',
+                                      controller_node_ip.value.decode(),
+                                      int(controller_node_ssh_port.value.decode()),
+                                      controller_node_username.value.decode(),
+                                      controller_node_password.value.decode())
 
-    controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip.value.decode(),
-            controller_node_username.value.decode(),
-            controller_node_password.value.decode(), 10,
-            int(controller_node_ssh_port.value.decode()))
+    controller_ssh_client =  common.open_ssh_connections([controller_node])
 
     while True:
         try:
