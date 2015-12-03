@@ -35,9 +35,7 @@ def open_ssh_connections(connections_list):
             '[open_ssh_connections] Initiating SSH session with {0} node.'.
             format(connection.name))
         connection_clients.append(
-            util.netutil.ssh_connect_or_return(connection.ip,
-                connection.username, connection.password, 10,
-                connection.ssh_port)
+            util.netutil.ssh_connect_or_return(connection, 10)
         )
     return tuple(connection_clients)
 

@@ -440,10 +440,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         try:
             logging.info('{0} collecting logs'.format(test_type))
-            util.netutil.copy_remote_directory(
-                controller_node.ip, controller_node.username,
-                controller_node.password, controller_logs_dir,
-                output_dir + '/log', controller_node.ssh_port)
+            util.netutil.copy_remote_directory(controller_node,
+                controller_logs_dir, output_dir + '/log')
         except:
             logging.error('{0} {1}'.format(
                 test_type, 'failed transferring controller logs directory.'))

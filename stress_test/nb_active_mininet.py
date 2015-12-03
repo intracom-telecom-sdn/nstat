@@ -387,10 +387,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
         try:
             logging.info('{0} collecting logs'.format(test_type))
-            util.netutil.copy_remote_directory( controller_node_ip,
-                controller_node_username, controller_node_password,
-                controller_logs_dir, output_dir+'/log',
-                int(controller_node_ssh_port))
+            util.netutil.copy_remote_directory(controller_node,
+                controller_logs_dir, output_dir+'/log')
         except:
             logging.error('{0} {1}'.format(
                 test_type, 'failed transferring controller logs dir.'))
