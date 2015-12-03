@@ -6,6 +6,7 @@
 
 """ Reusable functions for processes that are cbench related """
 
+import collections
 import common
 import logging
 import subprocess
@@ -139,6 +140,14 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
     try:
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
+        node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+        cbench_node = node_parameters('MT-Cbench', cbench_node_ip.value.decode(),
+                                   int(cbench_node_ssh_port.value.decode()),
+                                   cbench_node_username.value.decode(),
+                                   cbench_node_password.value.decode())
+
+        cbench_ssh_client =  common.open_ssh_connections([cbench_node])
         cbench_ssh_client = \
             util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
                 cbench_node_username.value.decode(),
