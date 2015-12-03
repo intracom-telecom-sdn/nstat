@@ -113,16 +113,10 @@ def ssh_copy_file_to_target(ipaddr, user, passwd, local_file, remote_file,
     :type remote_file: str
     :type remote_port: int
     """
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
                                                   remote_port=22)
     sftp.put(local_file, remote_file)
     ssh_connection_close(sftp, transport_layer)
-    #sftp.close()
-    #transport_layer.close()
-
 
 def copy_directory_to_target(ipaddr, user, passwd, local_path, remote_path,
                              remote_port=22):
@@ -142,14 +136,10 @@ def copy_directory_to_target(ipaddr, user, passwd, local_path, remote_path,
     :type remote_path: str
     :type remote_port: int
     """
-
     #  recursively upload a full directory
     if local_path.endswith('/'):
         local_path = local_path[:-1]
 
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
                                                   remote_port=22)
     os.chdir(os.path.split(local_path)[0])
@@ -165,8 +155,7 @@ def copy_directory_to_target(ipaddr, user, passwd, local_path, remote_path,
             local_file = os.path.join(walker[0], curr_file)
             remote_file = os.path.join(remote_path, walker[0], curr_file)
             sftp.put(local_file, remote_file)
-    #sftp.close()
-    #transport_layer.close()
+
     ssh_connection_close(sftp, transport_layer)
 
 
@@ -185,17 +174,11 @@ def make_remote_file_executable(ipaddr, user, passwd, remote_file,
     :type remote_file: str
     :type remote_port: int
     """
-
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
                                                   remote_port=22)
 
     sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
     ssh_connection_close(sftp, transport_layer)
-    #sftp.close()
-    #transport_layer.close()
 
 def create_remote_directory(ipaddr, user, passwd, remote_path, remote_port=22):
     """Opens an ssh connection to a remote machine and creates a new directory.
@@ -211,10 +194,6 @@ def create_remote_directory(ipaddr, user, passwd, remote_path, remote_port=22):
     :type remote_path: str
     :type remote_port: int
     """
-
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
                                                   remote_port=22)
     try:
@@ -225,9 +204,6 @@ def create_remote_directory(ipaddr, user, passwd, remote_path, remote_port=22):
         sftp.mkdir(remote_path)
         sftp.chdir(remote_path)
     ssh_connection_close(sftp, transport_layer)
-    #sftp.close()
-    #transport_layer.close()
-
 
 def isdir(path, sftp):
     """Checks if a given remote path is a directory
@@ -245,7 +221,6 @@ def isdir(path, sftp):
     except IOError:
         return False
 
-
 def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
     """Removes recursively remote directories (removes all files and
     other sub-directories).
@@ -261,9 +236,6 @@ def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
     :type path: str
     :type remote_port: int
     """
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
                                                   remote_port=22)
 
@@ -279,9 +251,6 @@ def remove_remote_directory(ipaddr, user, passwd, path, remote_port=22):
 
     sftp.rmdir(path)
     ssh_connection_close(sftp, transport_layer)
-    #sftp.close()
-    #transport_layer.close()
-
 
 def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
                     print_flag=True, block_flag=True):
@@ -348,9 +317,6 @@ def ssh_delete_file_if_exists(ipaddr, user, passwd, remote_file,
     :type remote_file: str
     :type remote_port: int
     """
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
     (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
                                                   remote_port=22)
 
@@ -367,9 +333,7 @@ def ssh_delete_file_if_exists(ipaddr, user, passwd, remote_file,
             '[netutil] [delete_file_if_exists] Error: Unknown Error occured '
             'while was trying to remove remote file.')
 
-    transport_layer.close()
-    logging.error(
-        '[netutil] [ssh_delete_file_if_exists]: transport layer closed')
+    ssh_connection_close(sftp, transport_layer)
 
 
 def copy_remote_directory(ipaddr, user, passwd, remote_path, local_path,
@@ -393,10 +357,6 @@ def copy_remote_directory(ipaddr, user, passwd, remote_path, local_path,
     (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
                                                   remote_port=22)
 
-    #transport_layer = paramiko.Transport((ipaddr, remote_port))
-    #transport_layer.connect(username=user, password=passwd)
-    #sftp = paramiko.SFTPClient.from_transport(transport_layer)
-
     files = sftp.listdir(path=remote_path)
 
     for file_item in files:
@@ -410,6 +370,3 @@ def copy_remote_directory(ipaddr, user, passwd, remote_path, local_path,
         else:
             sftp.get(remote_filepath, os.path.join(local_path, file_item))
     ssh_connection_close(sftp, transport_layer)
-    #sftp.close()
-    #transport_layer.close()
-
