@@ -297,7 +297,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     finally:
         logging.info('{0} finalizing test'.format(test_type))
 
-        logging.info('{0} creating test output directory if not exist.'.
+        logging.info('{0} creating test output directory if not present.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
