@@ -6,7 +6,7 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-# If Helium SR3 zip exists in /opt, it extracts it in the
+# If Lithium SR1 zip exists in /opt, it extracts it in the
 # current directory (the "fast" path).
 # If it doesn't exist, it downloads it in /opt and them extracts it.
 
