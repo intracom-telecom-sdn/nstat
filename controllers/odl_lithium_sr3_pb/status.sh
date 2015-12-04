@@ -11,7 +11,7 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $SCRIPT_DIR
 
-KARAF_PATH="distribution-karaf-0.3.2-Lithium-SR2"
+KARAF_PATH="distribution-karaf-0.3.3-Lithium-SR3"
 
 if [ -d $KARAF_PATH"/bin" ]; then
     cd $KARAF_PATH"/bin"

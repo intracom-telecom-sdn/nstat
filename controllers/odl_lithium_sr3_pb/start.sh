@@ -13,7 +13,7 @@ UNTIL_MAX_TRIES=120
 UNTIL_SLEEP_TIME=5
 UNTIL_COUNTER=0
 INIT_CONTROLLER=60
-KARAF_PATH="distribution-karaf-0.3.2-Lithium-SR2"
+KARAF_PATH="distribution-karaf-0.3.3-Lithium-SR3"
 
 function exec_client_command()
 {
