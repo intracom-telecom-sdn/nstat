@@ -72,10 +72,10 @@
   {
       "x_axis_key":"mininet_size",
       "y_axis_key":"used_memory_bytes",
-      "z_axis_key":null,
+      "z_axis_key":"mininet_group_delay_ms",
       "x_axis_label":"# Total switches",
       "y_axis_label":"Used memory (MB)",
-      "plot_type":"errorbar",
+      "plot_type":"multi_errorbar_connected",
       "plot_title":"Controller memory usage for varying switches",
       "plot_subtitle_keys":["controller_java_xopts", "mininet_group_size"],
       "plot_filename":"memory_usage",
