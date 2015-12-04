@@ -135,7 +135,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         # SET, check_for_active controller, generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
-                                      java_opts, controller_port.value)
+                                      java_opts, controller_port)
 
         # Run tests for all possible dimensions
         for (mininet_size.value,
@@ -360,7 +360,7 @@ def get_report_spec(test_type, config_json, results_json):
               'Mininet initialize topology handler'),
              ('mininet_start_topo_handler', 'Mininet start topology handler'),
              ('mininet_node_ip', 'Mininet IP address'),
-             ('mininet_server_rest_port', 'Mininet port'),
+             ('mininet_rest_server_port', 'Mininet port'),
              ('mininet_size', 'Mininet network size'),
              ('mininet_topology_type', 'Mininet topology type'),
              ('mininet_hosts_per_switch', 'Mininet hosts per switch'),

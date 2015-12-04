@@ -37,9 +37,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_active_scalability_mtcbench" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -68,9 +68,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_active_stability_mtcbench" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -98,10 +98,10 @@
 
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="nb_active_scalability_mininet" \
-               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
+               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
                --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
-               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
                --html-report=/home/vagrant/nstat/report.html \
                --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
@@ -126,10 +126,10 @@
 
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="nb_active_scalability_mininet" \
-               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
+               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
                --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
-               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
                --html-report=/home/vagrant/nstat/report.html \
                --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
@@ -156,9 +156,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_active_scalability_mtcbench" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -187,9 +187,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_active_stability_mtcbench" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -218,9 +218,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_idle_scalability_mtcbench" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -249,9 +249,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_idle_scalability_mininet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -280,9 +280,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_idle_scalability_mininet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -310,9 +310,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_idle_scalability_mininet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
