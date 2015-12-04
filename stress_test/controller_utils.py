@@ -6,7 +6,6 @@
 
 """ Reusable functions for processes that are controller related """
 
-import common
 import logging
 import os
 import subprocess

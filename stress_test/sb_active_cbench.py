@@ -10,7 +10,6 @@ import cbench_utils
 import collections
 import common
 import controller_utils
-import ctypes
 import itertools
 import json
 import logging
@@ -19,7 +18,6 @@ import os
 import queue
 import re
 import report_spec
-import shutil
 import sys
 import util.file_ops
 import util.netutil
