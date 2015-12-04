@@ -44,7 +44,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
@@ -75,7 +75,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 
 # ------------------------------------------------------------------------------
@@ -163,7 +163,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
@@ -194,7 +194,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_RPC_sb_idle_scalability_mtcbench
@@ -225,7 +225,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_sb_idle_scalability_mininet_DisconnectedTopo
@@ -256,7 +256,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_sb_idle_scalability_mininet_LinearTopo
@@ -287,7 +287,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 # ------------------------------------------------------------------------------
 # lithium_sb_idle_scalability_mininet_MeshTopo
 # ------------------------------------------------------------------------------
@@ -317,7 +317,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # job instances
