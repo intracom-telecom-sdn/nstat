@@ -4,7 +4,7 @@ from lxml import etree
 import sys
 import os
 
-#the path for this file is /odl_lithium_sr2_pb/controller/opendaylight/distribution/opendaylight-karaf/target/assembly/etc/opendaylight/karaf/
+
 def manipulate_xml(input_filename, output_filename,
                    string_to_find, target_value):
     """It gets a configuration (.xml in our case) file, defined by the
@@ -40,7 +40,7 @@ def change_stats_period_main():
 
     string_to_find = 'min-request-net-monitor-interval'
     input_file = os.path.dirname(os.path.realpath(__file__)) + \
-        '/distribution-karaf-0.3.2-Lithium-SR2/etc/opendaylight/karaf/30-statistics-manager.xml'
+        '/distribution-karaf-0.3.3-Lithium-SR3/etc/opendaylight/karaf/30-statistics-manager.xml'
     manipulate_xml(input_file, input_file, string_to_find,
                    str(int(sys.argv[1])))
 
