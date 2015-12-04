@@ -16,12 +16,9 @@ import mininet_utils
 import multiprocessing
 import os
 import report_spec
-import requests
-import shutil
 import sys
 import time
 import util.customsubprocess
-import util.process
 import util.file_ops
 import util.netutil
 

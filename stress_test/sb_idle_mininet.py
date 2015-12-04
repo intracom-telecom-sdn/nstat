@@ -16,12 +16,9 @@ import mininet_utils
 import multiprocessing
 import os
 import report_spec
-import shutil
 import sys
 import time
-import util.customsubprocess
 import util.file_ops
-import util.process
 import util.netutil
 
 def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
