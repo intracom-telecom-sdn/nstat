@@ -6,7 +6,6 @@
 
 """ Process-related utilities """
 
-import logging
 import subprocess
 import sys
 import time

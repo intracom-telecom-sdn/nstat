@@ -15,7 +15,6 @@ import logging
 import multiprocessing
 import os
 import report_spec
-import shutil
 import sys
 import time
 import util.file_ops
@@ -209,10 +208,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             bootup_time_ms.value = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
 
-            total_cbench_switches = \
-                cbench_threads.value * cbench_switches_per_thread.value
-            total_cbench_hosts = \
-                cbench_simulated_hosts.value * total_cbench_switches
             discovery_deadline_ms.value = 120000
 
             t_start.value = time.time()

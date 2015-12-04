@@ -7,7 +7,6 @@
 """Methods that implement plotting functionality in NSTAT"""
 
 import util.plot_utils
-import util.stats
 
 
 def plot_json(results_file, x_axis_key, y_axis_key, z_axis_key, plot_type,

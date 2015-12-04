@@ -15,12 +15,9 @@ import mininet_utils
 import multiprocessing
 import os
 import report_spec
-import shutil
 import sys
 import time
-import util.customsubprocess
 import util.file_ops
-import util.process
 import util.netutil
 
 def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
@@ -191,7 +188,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
                 controller_ssh_client)
-            
+
             # Control of controller status
             # is done inside controller_utils.start_controller()
             logging.info('{0} OK, controller status is 1.'.format(test_type))
