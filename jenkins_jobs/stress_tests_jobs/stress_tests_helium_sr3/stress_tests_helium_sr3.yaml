@@ -57,7 +57,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_DS_sb_active_scalability_mtcbench_largescale
@@ -99,7 +99,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_DS_sb_active_stability_mtcbench_no_restart_16Switches
@@ -141,7 +141,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
@@ -183,7 +183,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_DS_sb_active_stability_mtcbench_no_restart_500Switches
@@ -225,7 +225,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_RPC_sb_active_scalability_mtcbench
@@ -267,7 +267,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_16Switches
@@ -309,7 +309,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_RPC_sb_active_stability_mtcbench_no_restart_500Switches
@@ -351,7 +351,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_RPC_sb_active_stability_mtcbench_restart_16Switches_restart
@@ -393,7 +393,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # helium_sr3_RPC_sb_idle_scalability_mtcbench
@@ -435,7 +435,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions_git.sh
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # job instances

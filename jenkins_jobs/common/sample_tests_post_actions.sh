@@ -8,7 +8,7 @@
 
 # copy results back to test-server
 # ------------------------------------------------------------------------------
-cp -r $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER /home/jenkins/sample_tests/
+cp -r $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER /home/jenkins/ODLP_Results/sample_tests/
 
 # copy results under 'publisher' folder so that HTML publisher can
 # archive the results

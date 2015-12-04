@@ -1,0 +1,341 @@
+# Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License v1.0 which accompanies this distribution,
+# and is available at http://www.eclipse.org/legal/epl-v10.html
+
+# ------------------------------------------------------------------------------
+# 01. lithium_DS_sb_active_scalability_mtcbench.json
+# 02. lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
+# 03. lithium_nb_active_scalability_mininet_100sw.json
+# 04. lithium_nb_active_scalability_mininet_10sw.json
+# 05. lithium_RPC_sb_active_scalability_mtcbench.json
+# 06. lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
+# 07. lithium_RPC_sb_idle_scalability_mtcbench.json
+# 08. lithium_sb_idle_scalability_mininet_DisconnectedTopo.json
+# 09. lithium_sb_idle_scalability_mininet_LinearTopo.json
+# 10. lithium_sb_idle_scalability_mininet_MeshTopo.json
+
+# ------------------------------------------------------------------------------
+# lithium_DS_sb_active_scalability_mtcbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: lithium_DS_sb_active_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_DS_sb_active_scalability_mtcbench"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+
+# ------------------------------------------------------------------------------
+# lithium_nb_active_scalability_mininet_100sw
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_nb_active_scalability_mininet_100sw-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_nb_active_scalability_mininet_100sw"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          python3.4 ./stress_test/nstat_orchestrator.py \
+               --test="nb_active_scalability_mininet" \
+               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
+               --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
+               --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
+               --json-config=/home/vagrant/nstat/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
+               --html-report=/home/vagrant/nstat/report.html \
+               --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
+
+# ------------------------------------------------------------------------------
+# lithium_nb_active_scalability_mininet_10sw
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_nb_active_scalability_mininet_10sw-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_nb_active_scalability_mininet_10sw"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          python3.4 ./stress_test/nstat_orchestrator.py \
+               --test="nb_active_scalability_mininet" \
+               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
+               --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
+               --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
+               --json-config=/home/vagrant/nstat/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
+               --html-report=/home/vagrant/nstat/report.html \
+               --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
+
+# ------------------------------------------------------------------------------
+# lithium_RPC_sb_active_scalability_mtcbench
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_RPC_sb_active_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_RPC_sb_active_scalability_mtcbench"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# lithium_RPC_sb_idle_scalability_mtcbench
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_RPC_sb_idle_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_RPC_sb_idle_scalability_mtcbench"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# lithium_sb_idle_scalability_mininet_DisconnectedTopo
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_DisconnectedTopo"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mininet" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# lithium_sb_idle_scalability_mininet_LinearTopo
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_sb_idle_scalability_mininet_LinearTopo-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_LinearTopo"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mininet" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+# ------------------------------------------------------------------------------
+# lithium_sb_idle_scalability_mininet_MeshTopo
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_sb_idle_scalability_mininet_MeshTopo-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_MeshTopo"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mininet" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# job instances
+# ------------------------------------------------------------------------------
+
+- project:
+    name: lithium_nstat-stress-jenkins-jobs
+    description: 'Enter the job description here'
+    branch: 'develop_release_1.2'
+    jobs:
+
+        - 'lithium_DS_sb_active_scalability_mtcbench-{branch}'
+        - 'lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
+        - 'lithium_nb_active_scalability_mininet_100sw-{branch}'
+        - 'lithium_nb_active_scalability_mininet_10sw-{branch}'
+        - 'lithium_RPC_sb_active_scalability_mtcbench-{branch}'
+        - 'lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
+        - 'lithium_RPC_sb_idle_scalability_mtcbench-{branch}'
+        - 'lithium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}'
+        - 'lithium_sb_idle_scalability_mininet_LinearTopo-{branch}'
+        - 'lithium_sb_idle_scalability_mininet_MeshTopo-{branch}'
