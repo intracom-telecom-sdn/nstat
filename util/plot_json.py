@@ -176,14 +176,8 @@ def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
     :type plot_options: PlotOptions
     """
 
-    lines, y_values = util.plot_utils.create_xyz_dict_from_file(results_file,
-                                                                x_axis_key,
-                                                                y_axis_key,
-                                                                z_axis_key)
-
-    # Create plot subtitle
-    plot_options.subtitle = create_plot_subtitle(lines, plot_subtitle_keys)
-    plot_options.cords = y_values
+    multiplot_prepare(results_file, x_axis_key, y_axis_key, z_axis_key,
+                      plot_subtitle_keys, plot_options)
     # Plot
     util.plot_utils.plot_multi_errorbar(z_axis_key, plot_options)
 
@@ -292,6 +286,15 @@ def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
     :type plot_options: PlotOptions
     """
 
+    multiplot_prepare(results_file, x_axis_key, y_axis_key, z_axis_key,
+                      plot_subtitle_keys, plot_options)
+    # Plot
+    util.plot_utils.plot_multi_scatter(z_axis_key, plot_options)
+
+
+def multiplot_prepare(results_file, x_axis_key, y_axis_key, z_axis_key,
+                      plot_subtitle_keys, plot_options):
+
     lines, y_values = util.plot_utils.create_xyz_dict_from_file(results_file,
                                                                 x_axis_key,
                                                                 y_axis_key,
@@ -300,8 +303,6 @@ def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
     # Create plot subtitle
     plot_options.subtitle = create_plot_subtitle(lines, plot_subtitle_keys)
     plot_options.cords = y_values
-    # Plot
-    util.plot_utils.plot_multi_scatter(z_axis_key, plot_options)
 
 
 def create_plot_subtitle(json_lines, plot_subtitle_keys):

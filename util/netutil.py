@@ -31,7 +31,7 @@ def ssh_connect_or_return(connection, maxretries):
 
     while retries <= maxretries:
         logging.info(
-            '[netutil] Trying to connect to {0}:{1} ({2}/{3})'.
+            '[ssh_connect_or_return] Trying to connect to {0}:{1} ({2}/{3})'.
             format(connection.ip, connection.ssh_port, retries, maxretries))
 
         try:
@@ -40,24 +40,19 @@ def ssh_connect_or_return(connection, maxretries):
             ssh.connect(hostname=connection.ip, port=connection.ssh_port,
                         username=connection.username,
                         password=connection.password)
-            logging.info('[netutil] connected to {0} '.format(connection.ip))
+            logging.info('[ssh_connect_or_return] connected to {0} '.
+                         format(connection.ip))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[netutil] authentication failed when connecting to {0}'.
-                format(connection.ip))
-
-        except:
-            logging.error(
-                '[netutil] could not SSH to {0}, waiting for it to start'.
+                '[ssh_connect_or_return] authentication failed when connecting to {0}'.
                 format(connection.ip))
 
         retries += 1
         time.sleep(2)
     # If we exit while without ssh object been returned, then return -1
-    logging.info('[netutil] could not connect to {0}. Returning'
+    raise Exception('[netutil] could not connect to {0}. Returning'
                  .format(connection.ip))
-    return None
 
 
 def ssh_connection_open(connection):
