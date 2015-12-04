@@ -360,7 +360,7 @@ def get_report_spec(test_type, config_json, results_json):
               'Mininet initialize topology handler'),
              ('mininet_start_topo_handler', 'Mininet start topology handler'),
              ('mininet_node_ip', 'Mininet IP address'),
-             ('mininet_server_rest_port', 'Mininet port'),
+             ('mininet_rest_server_port', 'Mininet port'),
              ('mininet_size', 'Mininet network size'),
              ('mininet_topology_type', 'Mininet topology type'),
              ('mininet_hosts_per_switch', 'Mininet hosts per switch'),
