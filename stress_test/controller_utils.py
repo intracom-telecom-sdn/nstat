@@ -6,11 +6,11 @@
 
 """ Reusable functions for processes that are controller related """
 
+import common
 import logging
 import os
 import subprocess
 import time
-import util.customsubprocess
 import util.netutil
 import util.process
 
@@ -123,8 +123,8 @@ def check_controller_status(controller_status_handler, ssh_client=None):
         return subprocess.check_output([controller_status_handler],
                                        universal_newlines=True).strip()
     else:
-        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            controller_status_handler)
+        cmd_output = util.netutil.ssh_run_command(ssh_client,
+            controller_status_handler)[1]
         return cmd_output.strip()
 
 def controller_changestatsperiod(controller_statistics_handler,

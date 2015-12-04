@@ -176,10 +176,10 @@ def plot_multi_errorbar(z_axis_key, plot_options):
 
     plots = {}
 
-    for z_value in y_values:
+    for z_value in plot_options.cords:
 
         # Compute mean and +/- diff values
-        x_keys_sorted = sorted(y_values[z_value].keys())
+        x_keys_sorted = sorted(plot_options.cords[z_value].keys())
 
         plots[z_value] = plot_errorbar_helper(plot_options, x_keys_sorted,
                                               z_value)

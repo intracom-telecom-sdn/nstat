@@ -299,9 +299,9 @@ def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
 
     # Create plot subtitle
     plot_options.subtitle = create_plot_subtitle(lines, plot_subtitle_keys)
-
+    plot_options.cords = y_values
     # Plot
-    util.plot_utils.plot_multi_scatter(y_values, z_axis_key, plot_options)
+    util.plot_utils.plot_multi_scatter(z_axis_key, plot_options)
 
 
 def create_plot_subtitle(json_lines, plot_subtitle_keys):

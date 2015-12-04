@@ -106,8 +106,7 @@ def ssh_copy_file_to_target(connection, local_file, remote_file):
     :type local_file: str
     :type remote_file: str
     """
-    (sftp, transport_layer) = ssh_connection_open(ipaddr, user, passwd,
-                                                  remote_port=22)
+    (sftp, transport_layer) = ssh_connection_open(connection)
     sftp.put(local_file, remote_file)
     ssh_connection_close(sftp, transport_layer)
 

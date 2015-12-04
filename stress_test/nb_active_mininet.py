@@ -183,6 +183,9 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     controller_handlers = collections.namedtuple('controller_handlers',
         ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
          'ctrl_stop_handler', 'ctrl_clean_handler'])
+    controller_handlers_set = controller_handlers(controller_build_handler,
+        controller_start_handler, controller_status_handler,
+        controller_stop_handler, controller_clean_handler)
     controller_node = node_parameters('Controller',
                                       conf['controller_node_ip'],
                                       int(conf['controller_node_ssh_port']),

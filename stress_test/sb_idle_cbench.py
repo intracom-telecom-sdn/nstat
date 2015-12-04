@@ -11,7 +11,6 @@ import collections
 import common
 import controller_utils
 import itertools
-import json
 import logging
 import multiprocessing
 import os

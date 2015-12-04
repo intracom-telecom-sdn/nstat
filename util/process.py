@@ -30,8 +30,7 @@ def getpid_listeningonport(port, ssh_client=None):
     cmd = 'netstat -tulpn --numeric-ports  2>&1 | grep \"LISTEN\" | grep \":{0} \"'.format(port)
     try:
         if ssh_client is not None:
-            cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-                cmd)
+            cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)[1]
         else:
             cmd_output = subprocess.check_output(cmd, shell=True,
                                                  universal_newlines=True)
@@ -63,8 +62,7 @@ def is_process_running(pid, ssh_client=None):
     cmd = 'kill -s 0 {0}'.format(pid)
     try:
         if ssh_client is not None:
-            cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-                                                                  cmd)
+            cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)[1]
         else:
             p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

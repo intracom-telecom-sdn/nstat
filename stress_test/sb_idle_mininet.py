@@ -10,7 +10,6 @@ import collections
 import common
 import controller_utils
 import itertools
-import json
 import logging
 import mininet_utils
 import multiprocessing
@@ -56,7 +55,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     mininet_start_topo_handler = mininet_base_dir + \
         conf['mininet_start_topo_handler']
     mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
-
+    mininet_rest_server_port = conf['mininet_rest_server_port']
     mininet_size = multiprocessing.Value('i', 0)
     mininet_hosts_per_switch = multiprocessing.Value('i', 0)
 
@@ -94,6 +93,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_handlers = collections.namedtuple('controller_handlers',
         ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
          'ctrl_stop_handler', 'ctrl_clean_handler'])
+    controller_handlers_set = controller_handlers(controller_build_handler,
+        controller_start_handler, controller_status_handler,
+        controller_stop_handler, controller_clean_handler)
     controller_node = node_parameters('Controller',
                                       controller_node_ip.value.decode(),
                                       int(conf['controller_node_ssh_port']),
@@ -159,7 +161,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
                 mininet_server_remote_path, mininet_node.ip,
-                mininet_server_rest_port)
+                mininet_rest_server_port)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
@@ -192,7 +194,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                          format(test_type))
 
             mininet_utils.init_mininet_topo(mininet_init_topo_handler,
-                mininet_node.ip, mininet_server_rest_port,
+                mininet_node.ip, mininet_rest_server_port,
                 controller_node.ip, controller_port,
                 mininet_topology_type, mininet_size.value,
                 mininet_group_size, mininet_group_delay_ms,
@@ -203,7 +205,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(mininet_start_topo_handler,
-                mininet_node.ip, mininet_server_rest_port)
+                mininet_node.ip, mininet_rest_server_port)
 
             # Parallel section
             logging.info('{0} creating monitor thread'.format(test_type))
@@ -242,12 +244,12 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             logging.info('{0} stopping Mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(mininet_stop_switches_handler,
-                mininet_node.ip, mininet_server_rest_port)
+                mininet_node.ip, mininet_rest_server_port)
 
             logging.info('{0} stopping REST daemon in Mininet node'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
-                                              mininet_server_rest_port)
+                                              mininet_rest_server_port)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -297,7 +299,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 '{0} stopping REST daemon in Mininet node.'.
                 format(test_type))
             mininet_utils.stop_mininet_server(mininet_ssh_client,
-                                              mininet_server_rest_port)
+                                              mininet_rest_server_port)
         except:
             pass
 

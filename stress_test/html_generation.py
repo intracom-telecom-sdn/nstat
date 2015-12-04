@@ -371,7 +371,7 @@ def self_test():
     opt_parser.add_option('--html-report', dest='report_filename',
                           action='store', default='report.html',
                           help='name of the filename of html report')
-    (json_opts, args_remainder) = opt_parser.parse_args()
+    json_opts = opt_parser.parse_args()[0]
     report_test = report_spec.ReportSpec(json_opts.PARAMETERS_JSON,
                       json_opts.RESULTS_JSON, 'test',
                           [report_spec.TableSpec('1d', 'config',
