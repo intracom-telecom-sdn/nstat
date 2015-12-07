@@ -8,16 +8,16 @@
 
 # copy results back to test-server
 # ------------------------------------------------------------------------------
-cp -r $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER /home/jenkins/ODLP_Results/sample_tests/
+cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/sample_tests/
 
 # copy results under 'publisher' folder so that HTML publisher can
 # archive the results
 # ------------------------------------------------------------------------------
 if [ -d "/tmp/publisher" ]; then
-  cp -a $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER/*.* /tmp/publisher
+  cp -a $WORKSPACE/$RESULTS_DIR/*.* /tmp/publisher
 else
   mkdir -p "/tmp/publisher"
-  cp -a $WORKSPACE/$JOB_NAME"_"$BUILD_NUMBER/*.* /tmp/publisher
+  cp -a $WORKSPACE/$RESULTS_DIR/*.* /tmp/publisher
 fi
 
 # cleanup the machine
