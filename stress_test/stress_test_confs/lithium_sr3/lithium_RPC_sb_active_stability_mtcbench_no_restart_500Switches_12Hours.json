@@ -49,7 +49,7 @@
 "cbench_mode":"Latency",
 "cbench_warmup":0,
 "cbench_ms_per_test":10000,
-"cbench_internal_repeats":4320,
+"cbench_internal_repeats":360,
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 
