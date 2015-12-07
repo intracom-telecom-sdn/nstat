@@ -197,7 +197,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                                    conf['mininet_node_password'])
     nb_generator_node = node_parameters('Generator',
                                         conf['nb_generator_node_ip'],
-                                        int(conf['nb_generator_node_port']),
+                                        int(conf['nb_generator_node_ssh_port']),
                                         conf['nb_generator_node_username'],
                                         conf['nb_generator_node_password'])
     # list of samples: each sample is a dictionary that contains
