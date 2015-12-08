@@ -52,6 +52,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
+    cbench_cpu_shares = conf['cbench_cpu_shares']
 
     cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
@@ -275,8 +276,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats.value
-            statistics['cbench_internal_repeats'] = \
-                cbench_internal_repeats.value
+            statistics['cbench_cpu_shares'] = \
+                '{0}%'.format(cbench_cpu_shares)
             statistics['controller_cpu_shares'] = \
                 '{0}%'.format(controller_cpu_shares)
 
@@ -424,6 +425,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_ms_per_test', 'Internal repeats interval'),
              ('cbench_warmup', 'Generator warmup repeats'),
              ('cbench_mode', 'Generator test mode'),
+             ('cbench_cpu_shares', 'Cbench CPU percentage'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
