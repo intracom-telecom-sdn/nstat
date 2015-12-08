@@ -89,6 +89,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    controller_cpu_shares = conf['controller_cpu_shares']
 
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
@@ -274,6 +275,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats.value
+            statistics['cbench_internal_repeats'] = \
+                cbench_internal_repeats.value
+            statistics['controller_cpu_shares'] = \
+                '{0}%'.format(controller_cpu_shares)
+
 
             statistics['cbench_warmup'] = cbench_warmup.value
             statistics['bootup_time_secs'] = res[0]
@@ -426,6 +432,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('fifteen_minute_load', 'fifteen minutes load'),
              ('used_memory_bytes', 'System used memory (Bytes)'),
              ('total_memory_bytes', 'Total system memory'),
+             ('controller_cpu_shares', 'Controller CPU percentage'),
              ('controller_cpu_system_time', 'Controller CPU system time'),
              ('controller_cpu_user_time', 'Controller CPU user time'),
              ('controller_num_threads', 'Controller threads'),
