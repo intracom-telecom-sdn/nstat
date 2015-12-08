@@ -175,6 +175,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     controller_restconf_port = conf['controller_restconf_port']
     controller_restconf_user = conf['controller_restconf_user']
     controller_restconf_password = conf['controller_restconf_password']
+    controller_cpu_shares = conf['controller_cpu_shares']
 
     # Various test parameters
     flow_delete_flag = conf['flow_delete_flag']

@@ -141,15 +141,21 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                         cbench_thread_creation_delay_ms.value
                     statistics['cbench_delay_before_traffic_ms'] = \
                         cbench_delay_before_traffic_ms.value
+                    statistics['generator_cpu_shares'] = \
+                        '{0}%'.format(conf['generator_cpu_shares'])
                     statistics['controller_statistics_period_ms'] = \
                         controller_statistics_period_ms.value
                     statistics['test_repeats'] = test_repeats.value
                     statistics['controller_node_ip'] = controller_node.ip
                     statistics['controller_port'] = str(controller_port.value)
+                    statistics['controller_cpu_shares'] = \
+                        '{0}%'.format(controller_cpu_shares)
                     statistics['cbench_mode'] = cbench_mode.value.decode()
                     statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
                     statistics['cbench_internal_repeats'] = \
                         cbench_internal_repeats.value
+                    statistics['cbench_cpu_shares'] = \
+                        '{0}%'.format(cbench_cpu_shares)
                     statistics['cbench_warmup'] = cbench_warmup.value
                     if line == term_fail.value.decode():
                         logging.info(
@@ -200,6 +206,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
+    cbench_cpu_shares = conf['cbench_cpu_shares']
 
     cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
         conf['cbench_run_handler']).encode())
@@ -245,6 +252,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         str(conf['controller_node_password']).encode())
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    controller_cpu_shares = conf['controller_cpu_shares']
 
     # Shared read-write variables between monitor-main thread and
     # Cbench thread.
@@ -548,8 +556,9 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_delay_before_traffic_ms',
               'Delay between switches requests (ms)'),
              ('cbench_ms_per_test', 'Internal repeats interval'),
-             ('cbench_warmup', 'Generator warmup repeats'),
-             ('cbench_mode', 'Generator test mode'),
+             ('cbench_warmup', 'Cbench warmup repeats'),
+             ('cbench_mode', 'Cbench test mode'),
+             ('cbench_cpu_shares', 'Cbench CPU percentage'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
@@ -558,6 +567,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('fifteen_minute_load', 'fifteen minutes load'),
              ('used_memory_bytes', 'System used memory (Bytes)'),
              ('total_memory_bytes', 'Total system memory'),
+             ('controller_cpu_shares', 'Controller CPU percentage'),
              ('controller_cpu_system_time', 'Controller CPU system time'),
              ('controller_cpu_user_time', 'Controller CPU user time'),
              ('controller_num_threads', 'Controller threads'),
