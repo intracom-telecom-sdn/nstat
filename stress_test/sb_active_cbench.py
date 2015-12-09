@@ -341,7 +341,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_port.value,
-                                      controller_cpus.value)
+                                      controller_cpus)
 
         # run tests for all possible dimensions
         for (cbench_threads.value,
