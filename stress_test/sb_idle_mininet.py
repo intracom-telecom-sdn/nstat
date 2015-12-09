@@ -141,7 +141,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         # SET, check_for_active controller, generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
-                                      java_opts, controller_port)
+                                      java_opts, controller_port,
+                                      controller_cpus)
 
         # Run tests for all possible dimensions
         for (mininet_size.value,

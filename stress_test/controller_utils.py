@@ -260,7 +260,7 @@ def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
 
 def generate_controller_xml_files(controller_start_handler,
         controller_stop_handler, controller_status_handler, controller_port,
-        java_opts, ssh_client):
+        java_opts, ssh_client, controller_cpus):
     """ Starts and then stops the controller to triger the generation of
     its XML files.
 
@@ -271,17 +271,19 @@ def generate_controller_xml_files(controller_start_handler,
     :param java_opts: A comma separated value string with the javaoptions for
     the controller
     :param ssh_client : SSH client provided by paramiko to run the command
+    :param controller_cpus:
     :type controller_start_handler: str
     :type controller_stop_handler: str
     :type controller_status_handler: str
     :type controller_port: int
     :type java_opts: str
     :type ssh_client: paramiko.SSHClient
+    :type controller_cpus: str
     """
     logging.info('[generate_controller_xml_files] Starting controller')
     cpid = start_controller(controller_start_handler,
         controller_status_handler, controller_port, java_opts,
-        ssh_client)
+        controller_cpus, ssh_client)
 
     # Controller status check is done inside start_controller() of the
     # controller_utils
@@ -291,7 +293,8 @@ def generate_controller_xml_files(controller_start_handler,
                     ssh_client)
 
 def controller_pre_actions(controller_handlers_set, controller_rebuild,
-                           controller_ssh_client, java_opts, controller_port):
+                           controller_ssh_client, java_opts, controller_port,
+                           controller_cpus):
     """ Performs all necessary actions before starting a test. Pre actions
     are 1) rebuild_controller 2) check_for_active_controller
     3) generate_controller_xml_files
@@ -301,11 +304,13 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     :param controller_ssh_client: paramiko.SSHClient object
     :param java_opts: controller JAVA options
     :param controller_port: controller port to check
+    :param controller_cpus
     :type controller_handlers_set: collections.namedtuple<str>
     :type controller_rebuild: boolean
     :type controller_ssh_client: paramiko.SSHClient
     :type java_opts: str
     :type controller_port: int
+    :type controller_cpus: str
     """
     if controller_rebuild:
         logging.info('[controller_pre_actions] building controller')
@@ -321,4 +326,5 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
         controller_handlers_set.ctrl_start_handler,
         controller_handlers_set.ctrl_stop_handler,
         controller_handlers_set.ctrl_status_handler,
-        controller_port,' '.join(java_opts), controller_ssh_client)
+        controller_port,' '.join(java_opts), controller_ssh_client,
+        controller_cpus)

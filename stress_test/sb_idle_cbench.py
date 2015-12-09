@@ -180,7 +180,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # SET, check_for_active controller, generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
-                                      java_opts, controller_port.value)
+                                      java_opts, controller_port.value,
+                                      controller_cpus.value)
 
         # Run tests for all possible dimensions
         for (cbench_threads.value,
