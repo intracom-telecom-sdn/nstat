@@ -134,8 +134,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         mininet_ssh_client, controller_ssh_client, = \
             common.open_ssh_connections([mininet_node, controller_node])
 
-        controller_cpus, generator_cpus = common.create_cpu_shares(
-            controller_cpu_shares, 100)
+        controller_cpus = common.create_cpu_shares(
+            controller_cpu_shares, 100)[0]
 
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
