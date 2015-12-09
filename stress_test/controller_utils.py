@@ -28,7 +28,7 @@ def rebuild_controller(controller_build_handler, ssh_client=None):
                          '[controller_build_handler]', ssh_client)
 
 def start_controller(controller_start_handler, controller_status_handler,
-                     controller_port, java_opts,
+                     controller_port, java_opts, controller_cpus,
                      ssh_client=None):
     """Wrapper to the controller start handler
 
@@ -52,6 +52,7 @@ def start_controller(controller_start_handler, controller_status_handler,
         cmd = [controller_start_handler]
     else:
         cmd = ['export JAVA_OPTS="{0}";'.format(java_opts),
+               'taskset', '-c', '{0}'.format(controller_cpus),
                controller_start_handler]
 
     if check_controller_status(controller_status_handler, ssh_client) == '0':

@@ -28,10 +28,10 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
             cbench_ms_per_test, cbench_internal_repeats, cbench_warmup,
-            cbench_mode, controller_statistics_period_ms, controller_port,
-            controller_node_ip, controller_node_ssh_port,
-            controller_node_username, controller_node_password, term_success,
-            term_fail):
+            cbench_mode, cbench_cpu_shares, controller_statistics_period_ms,
+            controller_port, controller_node_ip, controller_node_ssh_port,
+            controller_node_username, controller_node_password,
+            controller_cpu_shares, term_success, term_fail):
     """ Function executed by the monitor thread
 
     :param data_queue: data queue where monitor receives Cbench output line
@@ -57,6 +57,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     performance results
     :param cbench_mode: (one of "Latency" or "Throughput", see Cbench
     documentation)
+    :param cbench_cpu_shares: the percentage of CPU resources to be used for
+    cbench
     :param controller_statistics_period_ms: Interval that controller sends
     statistics flow requests to the switches (in milliseconds)
     :param controller_port: controller port number where OF switches should
@@ -66,6 +68,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     (controller_node_ip)
     :param controller_node_username: username of the controller node
     :param controller_node_password: password of the controller node
+    :param controller_cpu_shares: the percentage of CPU resources to be used for
+    controller
     :param term_success: The success message when we have success in Cbench thread
     :param term_fail: The fail message
     :type data_queue: multiprocessing.Queue
@@ -83,12 +87,16 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :type cbench_internal_repeats: int
     :type cbench_warmup: int
     :type cbench_mode: str
+    :type cbench_cpu_shares: int
     :type controller_statistics_period_ms: int
     :type controller_port: str
     :type controller_node_ip: str
     :type controller_node_ssh_port: str
     :type controller_node_username: str
     :type controller_node_password: str
+    :type controller_cpu_shares: int
+    :type term_success: str
+    :type term_fail: str
     """
 
     internal_repeat_id = 0
@@ -141,21 +149,19 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                         cbench_thread_creation_delay_ms.value
                     statistics['cbench_delay_before_traffic_ms'] = \
                         cbench_delay_before_traffic_ms.value
-                    statistics['generator_cpu_shares'] = \
-                        '{0}%'.format(conf['generator_cpu_shares'])
                     statistics['controller_statistics_period_ms'] = \
                         controller_statistics_period_ms.value
                     statistics['test_repeats'] = test_repeats.value
                     statistics['controller_node_ip'] = controller_node.ip
                     statistics['controller_port'] = str(controller_port.value)
                     statistics['controller_cpu_shares'] = \
-                        '{0}%'.format(controller_cpu_shares)
+                        '{0}%'.format(controller_cpu_shares.value)
                     statistics['cbench_mode'] = cbench_mode.value.decode()
                     statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
                     statistics['cbench_internal_repeats'] = \
                         cbench_internal_repeats.value
                     statistics['cbench_cpu_shares'] = \
-                        '{0}%'.format(cbench_cpu_shares)
+                        '{0}%'.format(cbench_cpu_shares.value)
                     statistics['cbench_warmup'] = cbench_warmup.value
                     if line == term_fail.value.decode():
                         logging.info(
@@ -206,7 +212,10 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    cbench_cpu_shares = conf['cbench_cpu_shares']
+    if conf.has_key('cbench_cpu_shares'):
+        cbench_cpu_shares = multiprocessing.Value('i', conf['cbench_cpu_shares'])
+    else:
+        cbench_cpu_shares = multiprocessing.Value('i', 100)
 
     cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
         conf['cbench_run_handler']).encode())
@@ -252,7 +261,10 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         str(conf['controller_node_password']).encode())
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
-    controller_cpu_shares = conf['controller_cpu_shares']
+    if conf.has_key('controller_cpu_shares'):
+        controller_cpu_shares = multiprocessing.Value('i', conf['controller_cpu_shares'])
+    else:
+        controller_cpu_shares = multiprocessing.Value('i', 100)
 
     # Shared read-write variables between monitor-main thread and
     # Cbench thread.
@@ -316,6 +328,10 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         cbench_ssh_client, controller_ssh_client = \
             common.open_ssh_connections([cbench_node, controller_node])
 
+        controller_cpus, cbench_cpus = common.create_cpu_shares(
+            controller_cpu_shares.value, cbench_cpu_shares.value)
+        cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
+
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
@@ -352,7 +368,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cpid.value = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port.value, ' '.join(conf['java_opts']),
-                controller_ssh_client)
+                controller_cpus, controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
             cbench_switches.value = \
@@ -377,18 +393,20 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       cbench_ms_per_test,
                                       cbench_internal_repeats,
                                       cbench_warmup, cbench_mode,
+                                      cbench_cpu_shares,
                                       controller_statistics_period_ms,
                                       controller_port,
                                       controller_node_ip,
                                       controller_node_ssh_port,
                                       controller_node_username,
                                       controller_node_password,
+                                      controller_cpu_shares,
                                       term_success, term_fail))
 
             logging.info('{0} creating cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
-                args=(cbench_run_handler, controller_node_ip,
+                args=(cbench_run_handler, cbench_cpus, controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,

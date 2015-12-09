@@ -72,7 +72,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_port = conf['controller_port']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
-    controller_cpu_shares = conf['controller_cpu_shares']
+    if conf.has_key('controller_cpu_shares'):
+        controller_cpu_shares = conf['controller_cpu_shares']
+    else:
+        controller_cpu_shares = 100
 
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
@@ -131,6 +134,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         mininet_ssh_client, controller_ssh_client, = \
             common.open_ssh_connections([mininet_node, controller_node])
 
+        controller_cpus, generator_cpus = common.create_cpu_shares(
+            controller_cpu_shares, 100)
+
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
@@ -167,7 +173,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
-                controller_ssh_client)
+                controller_cpus, controller_ssh_client)
 
             # Control of controller status
             # is done inside controller_utils.start_controller()
@@ -235,6 +241,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_statistics_period_ms
             statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_port)
+            statistics['controller_cpu_shares'] = \
+                '{0}'.format(controller_cpu_shares)
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
             total_samples.append(statistics)

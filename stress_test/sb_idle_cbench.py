@@ -52,7 +52,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    cbench_cpu_shares = conf['cbench_cpu_shares']
+    if conf.has_key('cbench_cpu_shares'):
+        cbench_cpu_shares = conf['cbench_cpu_shares']
+    else:
+        cbench_cpu_shares = 100
+
 
     cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
@@ -90,7 +94,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
-    controller_cpu_shares = conf['controller_cpu_shares']
+    if conf.has_key('controller_cpu_shares'):
+        controller_cpu_shares = conf['controller_cpu_shares']
+    else:
+        controller_cpu_shares = 100
 
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
@@ -161,6 +168,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         cbench_ssh_client, controller_ssh_client, = \
             common.open_ssh_connections([cbench_node, controller_node])
 
+        controller_cpus, cbench_cpus = common.create_cpu_shares(
+            controller_cpu_shares, cbench_cpu_shares.value)
+        cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
+
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
@@ -191,7 +202,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port.value, ' '.join(conf['java_opts']),
-                controller_ssh_client)
+                controller_cpus, controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
             cbench_switches.value = \
@@ -221,7 +232,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} creating Cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
-                args=(cbench_run_handler, controller_node_ip,
+                args=(cbench_run_handler, cbench_cpus, controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,
@@ -277,7 +288,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats.value
             statistics['cbench_cpu_shares'] = \
-                '{0}%'.format(cbench_cpu_shares)
+                '{0}%'.format(cbench_cpu_shares.value)
             statistics['controller_cpu_shares'] = \
                 '{0}%'.format(controller_cpu_shares)
 

@@ -28,10 +28,11 @@ def rebuild_cbench(cbench_build_handler, ssh_client=None):
 
 
 
-def run_cbench(cbench_run_handler, controller_ip, controller_port, threads,
-               sw_per_thread, switches, thr_delay_ms, traf_delay_ms,
-               ms_per_test, internal_repeats, hosts, warmup, mode,
-               data_queue=None, ssh_client=None):
+def run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
+               controller_port, threads, sw_per_thread, switches,
+               thr_delay_ms, traf_delay_ms, ms_per_test,
+               internal_repeats, hosts, warmup, mode, data_queue=None,
+               ssh_client=None):
     """Runs a cbench instance
 
     :param cbench_run_handler: cbench run handler
@@ -68,7 +69,8 @@ def run_cbench(cbench_run_handler, controller_ip, controller_port, threads,
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd_list = [cbench_run_handler, controller_ip, str(controller_port),
+    cmd_list = ['taskset', '-c', '{0}'.format(cbench_cpus),
+                cbench_run_handler, controller_ip, str(controller_port),
                 str(threads), str(sw_per_thread), str(switches),
                 str(thr_delay_ms), str(traf_delay_ms), str(ms_per_test),
                 str(internal_repeats), str(hosts), str(warmup), mode]
@@ -88,10 +90,11 @@ def cleanup_cbench(cbench_clean_handler, ssh_client=None):
                          '[cbench_clean_handler]', ssh_client)
 
 
-def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
-                  sw_per_thread, switches, thr_delay_ms, traf_delay_ms,
-                  ms_per_test, internal_repeats, hosts, warmup, mode,
-                  cbench_node_ip, cbench_node_ssh_port, cbench_node_username,
+def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
+                  controller_port, threads, sw_per_thread, switches,
+                  thr_delay_ms, traf_delay_ms, ms_per_test,
+                  internal_repeats, hosts, warmup, mode, cbench_node_ip,
+                  cbench_node_ssh_port, cbench_node_username,
                   cbench_node_password, succ_msg='', fail_msg='',
                   data_queue=None):
 
@@ -150,7 +153,7 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
         cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
         run_cbench(cbench_run_handler.value.decode(),
-                   controller_ip.value.decode(),
+                   cbench_cpus.value.decode(), controller_ip.value.decode(),
                    controller_port.value, threads.value,
                    sw_per_thread.value, switches.value, thr_delay_ms.value,
                    traf_delay_ms.value, ms_per_test.value,
