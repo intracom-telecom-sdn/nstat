@@ -72,7 +72,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_port = conf['controller_port']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
-    if conf.has_key('controller_cpu_shares'):
+    if 'controller_cpu_shares' in conf:
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
         controller_cpu_shares = 100

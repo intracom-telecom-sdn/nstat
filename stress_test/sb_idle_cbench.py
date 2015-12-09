@@ -52,7 +52,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    if conf.has_key('cbench_cpu_shares'):
+    if 'cbench_cpu_shares' in conf:
         cbench_cpu_shares = conf['cbench_cpu_shares']
     else:
         cbench_cpu_shares = 100
@@ -94,7 +94,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
-    if conf.has_key('controller_cpu_shares'):
+    if 'controller_cpu_shares' in conf:
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
         controller_cpu_shares = 100

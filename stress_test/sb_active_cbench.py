@@ -212,7 +212,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    if conf.has_key('cbench_cpu_shares'):
+    if 'cbench_cpu_shares' in conf:
         cbench_cpu_shares = multiprocessing.Value('i', conf['cbench_cpu_shares'])
     else:
         cbench_cpu_shares = multiprocessing.Value('i', 100)
@@ -261,7 +261,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         str(conf['controller_node_password']).encode())
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
-    if conf.has_key('controller_cpu_shares'):
+    if 'controller_cpu_shares' in conf:
         controller_cpu_shares = multiprocessing.Value('i', conf['controller_cpu_shares'])
     else:
         controller_cpu_shares = multiprocessing.Value('i', 100)

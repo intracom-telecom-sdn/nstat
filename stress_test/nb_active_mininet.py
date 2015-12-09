@@ -156,7 +156,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     nb_generator_run_handler = nb_generator_base_dir + \
         conf['nb_generator_run_handler']
     nb_generator_host_ip = conf['nb_generator_host_ip']
-    if conf.has_key('nb_generator_cpu_shares'):
+    if 'nb_generator_cpu_shares' in conf:
         nb_generator_cpu_shares = conf['nb_generator_cpu_shares']
 
     # Controller parameters
@@ -176,7 +176,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     controller_restconf_port = conf['controller_restconf_port']
     controller_restconf_user = conf['controller_restconf_user']
     controller_restconf_password = conf['controller_restconf_password']
-    if conf.has_key('controller_cpu_shares'):
+    if 'controller_cpu_shares' in conf:
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
         controller_cpu_shares = 100
