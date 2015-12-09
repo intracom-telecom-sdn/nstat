@@ -11,6 +11,7 @@ import logging
 import requests
 import subprocess
 import time
+import util.cpu
 import util.netutil
 import util.sysstats
 
