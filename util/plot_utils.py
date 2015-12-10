@@ -241,12 +241,13 @@ def plot_multi_scatter(z_axis_key, plot_options):
     setup_plot(plot_options)
 
     plots = {}
-    for z_value in plot_options.cords:
+    y_values = plot_options.cords
+    for z_value in y_values:
         x_coords = []
         y_coords = []
 
-        for key in list(plot_options.cords[z_value].keys()):
-            for val in plot_options.cords[z_value][key]:
+        for key in list(y_values[z_value].keys()):
+            for val in y_values[z_value][key]:
                 x_coords.append(key)
                 y_coords.append(val)
         plot_options.cords = dict(zip(x_coords, y_coords))
