@@ -289,7 +289,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats.value
             statistics['cbench_cpu_shares'] = \
-                '{0}%'.format(cbench_cpu_shares.value)
+                '{0}%'.format(cbench_cpu_shares)
             statistics['controller_cpu_shares'] = \
                 '{0}%'.format(controller_cpu_shares)
 
