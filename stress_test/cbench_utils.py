@@ -77,6 +77,7 @@ def run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
     common.command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
                          data_queue)
 
+
 def cleanup_cbench(cbench_clean_handler, ssh_client=None):
     """Shuts down the Generator.
 
