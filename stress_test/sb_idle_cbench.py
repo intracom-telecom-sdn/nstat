@@ -169,7 +169,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             common.open_ssh_connections([cbench_node, controller_node])
 
         controller_cpus, cbench_cpus = common.create_cpu_shares(
-            controller_cpu_shares, cbench_cpu_shares.value)
+            controller_cpu_shares, cbench_cpu_shares)
         cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
 
         if cbench_rebuild:
