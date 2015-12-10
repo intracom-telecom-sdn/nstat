@@ -28,6 +28,8 @@
 "nb_generator_node_username":"vagrant",
 "nb_generator_node_password":"vagrant",
 
+"nb_generator_cpu_shares":25
+
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start_no_dlux.sh",
 "controller_stop_handler":"./stop.sh",
