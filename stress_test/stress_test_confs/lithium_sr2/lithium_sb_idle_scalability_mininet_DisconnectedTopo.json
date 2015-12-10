@@ -43,7 +43,7 @@
 "mininet_get_switches_handler":"./get_switches_handler.py",
 "mininet_start_topo_handler":"./start_topology_handler.py",
 "mininet_init_topo_handler":"./init_topology_handler.py",
-"mininet_server_rest_port":3333,
+"mininet_rest_server_port":3333,
 "mininet_size":[50, 100, 200, 500],
 "mininet_topology_type":["DisconnectedTopo"],
 "mininet_hosts_per_switch":[1],

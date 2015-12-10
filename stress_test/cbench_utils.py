@@ -6,37 +6,12 @@
 
 """ Reusable functions for processes that are cbench related """
 
+import collections
+import common
 import logging
 import subprocess
 import util.customsubprocess
 import util.netutil
-
-
-def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
-                         data_queue=None):
-    """Executes a command either locally or remotely and returns the result
-
-    :param cmd_list: the command to be executed given in a list format of
-    command and its arguments
-    :param prefix: The prefix to be used for logging of executed command output
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :param data_queue: data queue where cbench output is posted line by line
-    the cbench process will run.
-    :returns: The commands exit status
-    :rtype: int
-    :type cmd_list: list<str>
-    :type prefix: str
-    :type ssh_client: paramiko.SSHClient
-    :type data_queue: multiprocessing.Queue
-    """
-
-    if ssh_client == None:
-        exit_status = util.customsubprocess.check_output_streaming(cmd_list,
-                                                     prefix, data_queue)
-    else:
-        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            ' '.join(cmd_list), prefix, data_queue)
-    return exit_status
 
 
 def rebuild_cbench(cbench_build_handler, ssh_client=None):
@@ -48,15 +23,16 @@ def rebuild_cbench(cbench_build_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    command_exec_wrapper([cbench_build_handler],
+    common.command_exec_wrapper([cbench_build_handler],
                          '[cbench_build_handler]', ssh_client)
 
 
 
-def run_cbench(cbench_run_handler, controller_ip, controller_port, threads,
-               sw_per_thread, switches, thr_delay_ms, traf_delay_ms,
-               ms_per_test, internal_repeats, hosts, warmup, mode,
-               data_queue=None, ssh_client=None):
+def run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
+               controller_port, threads, sw_per_thread, switches,
+               thr_delay_ms, traf_delay_ms, ms_per_test,
+               internal_repeats, hosts, warmup, mode, data_queue=None,
+               ssh_client=None):
     """Runs a cbench instance
 
     :param cbench_run_handler: cbench run handler
@@ -93,11 +69,12 @@ def run_cbench(cbench_run_handler, controller_ip, controller_port, threads,
     :type ssh_client: paramiko.SSHClient
     """
 
-    cmd_list = [cbench_run_handler, controller_ip, str(controller_port),
+    cmd_list = ['taskset', '-c', '{0}'.format(cbench_cpus),
+                cbench_run_handler, controller_ip, str(controller_port),
                 str(threads), str(sw_per_thread), str(switches),
                 str(thr_delay_ms), str(traf_delay_ms), str(ms_per_test),
                 str(internal_repeats), str(hosts), str(warmup), mode]
-    command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
+    common.command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
                          data_queue)
 
 def cleanup_cbench(cbench_clean_handler, ssh_client=None):
@@ -109,14 +86,15 @@ def cleanup_cbench(cbench_clean_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    command_exec_wrapper([cbench_clean_handler],
+    common.command_exec_wrapper([cbench_clean_handler],
                          '[cbench_clean_handler]', ssh_client)
 
 
-def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
-                  sw_per_thread, switches, thr_delay_ms, traf_delay_ms,
-                  ms_per_test, internal_repeats, hosts, warmup, mode,
-                  cbench_node_ip, cbench_node_ssh_port, cbench_node_username,
+def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
+                  controller_port, threads, sw_per_thread, switches,
+                  thr_delay_ms, traf_delay_ms, ms_per_test,
+                  internal_repeats, hosts, warmup, mode, cbench_node_ip,
+                  cbench_node_ssh_port, cbench_node_username,
                   cbench_node_password, succ_msg='', fail_msg='',
                   data_queue=None):
 
@@ -165,14 +143,17 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
     try:
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        cbench_ssh_client = \
-            util.netutil.ssh_connect_or_return(cbench_node_ip.value.decode(),
-                cbench_node_username.value.decode(),
-                cbench_node_password.value.decode(), 10,
-            int(cbench_node_ssh_port.value.decode()))
+        node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+        cbench_node = node_parameters('MT-Cbench', cbench_node_ip.value.decode(),
+                                   int(cbench_node_ssh_port.value.decode()),
+                                   cbench_node_username.value.decode(),
+                                   cbench_node_password.value.decode())
+
+        cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
         run_cbench(cbench_run_handler.value.decode(),
-                   controller_ip.value.decode(),
+                   cbench_cpus.value.decode(), controller_ip.value.decode(),
                    controller_port.value, threads.value,
                    sw_per_thread.value, switches.value, thr_delay_ms.value,
                    traf_delay_ms.value, ms_per_test.value,
@@ -187,7 +168,7 @@ def cbench_thread(cbench_run_handler, controller_ip, controller_port, threads,
         if data_queue is not None:
             data_queue.put(fail_msg.value.decode(), block=True)
         logging.error('[cbench_thread] Exception:{0}'.format(str(err)))
-    except:
+    """except:
         logging.error('[cbench_thread] General exception: cbench thread.')
-
+    """
     return

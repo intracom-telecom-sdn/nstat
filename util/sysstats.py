@@ -30,7 +30,7 @@ def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
     cmd_output = None
     while (not cmd_output) and max_exec_tries>0:
         if ssh_client is not None:
-            cmd_status, cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)
+            cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)[1]
         else:
             cmd_output = str(subprocess.check_output(cmd, shell=True).
                              decode(sys.stdout.encoding))

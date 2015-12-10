@@ -157,8 +157,8 @@ def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
                   str(mininet_rest_server_port) + \
                   """ ' | awk '{print $NF}' | awk -F '/' '{print $1}'"""
 
-    cmd_exit_status, cmd_output = util.netutil.ssh_run_command(
-        mininet_ssh_session, get_pid_cmd, prefix='[stop_mininet_server]')
+    cmd_output = util.netutil.ssh_run_command(
+        mininet_ssh_session, get_pid_cmd, prefix='[stop_mininet_server]')[1]
 
     mininet_server_pid = cmd_output.strip()
     mininet_server_pid = mininet_server_pid.strip('-')

@@ -6,41 +6,13 @@
 
 """ Reusable functions for processes that are controller related """
 
+import common
 import logging
 import os
 import subprocess
 import time
-import util.customsubprocess
 import util.netutil
 import util.process
-
-
-def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
-                         data_queue=None):
-    """Executes a command either locally or remotely and returns the result
-
-    :param cmd_list: the command to be executed given in a list format of
-    command and its arguments
-    :param prefix: The prefix to be used for logging of executed command output
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :param data_queue: data queue where generator output is posted line by line
-    the generator process will run.
-    :returns: The commands exit status
-    :rtype: int
-    :type cmd_list: list<str>
-    :type prefix: str
-    :type ssh_client: paramiko.SSHClient
-    :type data_queue: multiprocessing.Queue
-    """
-
-    if ssh_client == None:
-        exit_status = util.customsubprocess.check_output_streaming(cmd_list,
-            prefix, data_queue)
-    else:
-        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            ' '.join(cmd_list), prefix, data_queue)
-    return exit_status
-
 
 
 def rebuild_controller(controller_build_handler, ssh_client=None):
@@ -52,11 +24,11 @@ def rebuild_controller(controller_build_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    command_exec_wrapper([controller_build_handler],
+    common.command_exec_wrapper([controller_build_handler],
                          '[controller_build_handler]', ssh_client)
 
 def start_controller(controller_start_handler, controller_status_handler,
-                     controller_port, java_opts,
+                     controller_port, java_opts, controller_cpus,
                      ssh_client=None):
     """Wrapper to the controller start handler
 
@@ -80,10 +52,11 @@ def start_controller(controller_start_handler, controller_status_handler,
         cmd = [controller_start_handler]
     else:
         cmd = ['export JAVA_OPTS="{0}";'.format(java_opts),
+               'taskset', '-c', '{0}'.format(controller_cpus),
                controller_start_handler]
 
     if check_controller_status(controller_status_handler, ssh_client) == '0':
-        command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
+        common.command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
         logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
         logging.info(
             '[start_controller] Waiting until controller starts listening')
@@ -109,7 +82,7 @@ def cleanup_controller(controller_clean_handler, ssh_client=None):
     :type controller_clean_handler: str
     :type ssh_client: paramiko.SSHClient
     """
-    command_exec_wrapper([controller_clean_handler],
+    common.command_exec_wrapper([controller_clean_handler],
                          '[controller_clean_handler]')
 
 def stop_controller(controller_stop_handler, controller_status_handler, cpid,
@@ -129,7 +102,7 @@ def stop_controller(controller_stop_handler, controller_status_handler, cpid,
 
     if check_controller_status(controller_status_handler, ssh_client) == '1':
         logging.info('[stop_controller] Stopping controller.')
-        command_exec_wrapper(
+        common.command_exec_wrapper(
             [controller_stop_handler], '[controller_stop_handler]', ssh_client)
         util.process.wait_until_process_finishes(cpid, ssh_client)
     else:
@@ -151,8 +124,8 @@ def check_controller_status(controller_status_handler, ssh_client=None):
         return subprocess.check_output([controller_status_handler],
                                        universal_newlines=True).strip()
     else:
-        exit_status, cmd_output = util.netutil.ssh_run_command(ssh_client,
-            controller_status_handler)
+        cmd_output = util.netutil.ssh_run_command(ssh_client,
+            controller_status_handler)[1]
         return cmd_output.strip()
 
 def controller_changestatsperiod(controller_statistics_handler,
@@ -167,7 +140,7 @@ def controller_changestatsperiod(controller_statistics_handler,
     :type curr_stat_period: int
     :type ssh_client: paramiko.SSHClient
     """
-    command_exec_wrapper(
+    common.command_exec_wrapper(
         [controller_statistics_handler, str(stat_period_ms)],
         '[controller_statistics_handler] Changing statistics interval',
         ssh_client)
@@ -208,8 +181,8 @@ def check_for_active_controller(controller_port, ssh_client=None):
     """Checks for processes listening on the specified port
 
     :param controller_port: controller port to check
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :raises Exception: When another process Listens on controller's port.
+    :param ssh_client : paramiko SSH client object when opening a connection
+    :raises Exception: when another process listens on controller's port.
     :type controller_port: int
     :type ssh_client: paramiko.SSHClient
     """
@@ -283,3 +256,75 @@ def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
     raise Exception('Controller failed to start. '
                     'Status check returned 0 after trying for {0} seconds.'.
                     format(float(interval_ms) / 1000))
+
+
+def generate_controller_xml_files(controller_start_handler,
+        controller_stop_handler, controller_status_handler, controller_port,
+        java_opts, ssh_client, controller_cpus):
+    """ Starts and then stops the controller to triger the generation of
+    its XML files.
+
+    :param controller_start_handler: filepath to the controller start handler
+    :param controller_stop_handler: filepath to the controller stop handler
+    :param controller_status_handler: filepath to the controller status handler
+    :param controller_port: controller port to check
+    :param java_opts: A comma separated value string with the javaoptions for
+    the controller
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :param controller_cpus:
+    :type controller_start_handler: str
+    :type controller_stop_handler: str
+    :type controller_status_handler: str
+    :type controller_port: int
+    :type java_opts: str
+    :type ssh_client: paramiko.SSHClient
+    :type controller_cpus: str
+    """
+    logging.info('[generate_controller_xml_files] Starting controller')
+    cpid = start_controller(controller_start_handler,
+        controller_status_handler, controller_port, java_opts,
+        controller_cpus, ssh_client)
+
+    # Controller status check is done inside start_controller() of the
+    # controller_utils
+    logging.info('[generate_controller_xml_files] OK, controller status is 1.')
+    logging.info('[generate_controller_xml_files] Stopping controller')
+    stop_controller(controller_stop_handler, controller_status_handler, cpid,
+                    ssh_client)
+
+def controller_pre_actions(controller_handlers_set, controller_rebuild,
+                           controller_ssh_client, java_opts, controller_port,
+                           controller_cpus):
+    """ Performs all necessary actions before starting a test. Pre actions
+    are 1) rebuild_controller 2) check_for_active_controller
+    3) generate_controller_xml_files
+
+    :param controller_handlers_set: tuple containing
+    :param controller_rebuild: if SET controller rebuild is performed
+    :param controller_ssh_client: paramiko.SSHClient object
+    :param java_opts: controller JAVA options
+    :param controller_port: controller port to check
+    :param controller_cpus
+    :type controller_handlers_set: collections.namedtuple<str>
+    :type controller_rebuild: boolean
+    :type controller_ssh_client: paramiko.SSHClient
+    :type java_opts: str
+    :type controller_port: int
+    :type controller_cpus: str
+    """
+    if controller_rebuild:
+        logging.info('[controller_pre_actions] building controller')
+        rebuild_controller(controller_handlers_set.ctrl_build_handler,
+            controller_ssh_client)
+
+    logging.info('[controller_pre_actions] checking for other active '
+                 'controllers')
+    check_for_active_controller(controller_port,controller_ssh_client)
+    logging.info('[controller_pre_actions] starting and stopping controller'
+                 ' to generate xml files')
+    generate_controller_xml_files(
+        controller_handlers_set.ctrl_start_handler,
+        controller_handlers_set.ctrl_stop_handler,
+        controller_handlers_set.ctrl_status_handler,
+        controller_port,' '.join(java_opts), controller_ssh_client,
+        controller_cpus)

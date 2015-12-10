@@ -6,10 +6,10 @@
 
 """ Idle Southbound Performance test """
 
+import collections
 import common
 import controller_utils
 import itertools
-import json
 import logging
 import mininet_utils
 import multiprocessing
@@ -55,6 +55,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     mininet_start_topo_handler = mininet_base_dir + \
         conf['mininet_start_topo_handler']
     mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
+
     mininet_node_ip = conf['mininet_node_ip']
     mininet_node_ssh_port = conf['mininet_node_ssh_port']
     mininet_rest_server_port = conf['mininet_rest_server_port']
@@ -77,10 +78,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_port = conf['controller_port']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
-    controller_node_username = conf['controller_node_username']
-    controller_node_password = conf['controller_node_password']
-    controller_node_ssh_port = conf['controller_node_ssh_port']
-
+    if 'controller_cpu_shares' in conf:
+        controller_cpu_shares = conf['controller_cpu_shares']
+    else:
+        controller_cpu_shares = 100
 
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
@@ -96,6 +97,24 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
 
+    node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_handlers = collections.namedtuple('controller_handlers',
+        ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
+         'ctrl_stop_handler', 'ctrl_clean_handler'])
+    controller_handlers_set = controller_handlers(controller_build_handler,
+        controller_start_handler, controller_status_handler,
+        controller_stop_handler, controller_clean_handler)
+    controller_node = node_parameters('Controller',
+                                      controller_node_ip.value.decode(),
+                                      int(conf['controller_node_ssh_port']),
+                                      conf['controller_node_username'],
+                                      conf['controller_node_password'])
+    mininet_node = node_parameters('Mininet', conf['mininet_node_ip'],
+                                   int(conf['mininet_node_ssh_port']),
+                                   conf['mininet_node_username'],
+                                   conf['mininet_node_password'])
+
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -103,6 +122,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     #    - current values of test dimensions (dynamic)
     #    - test configuration options (static)
     total_samples = []
+    java_opts = conf['java_opts']
 
     try:
         # Before proceeding with the experiments check validity
@@ -116,46 +136,19 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             mininet_start_topo_handler, mininet_init_topo_handler])
 
         # Opening connection with mininet_node_ip and returning
-        # mininet_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating Mininet node session.'.format(test_type))
-        mininet_ssh_client = util.netutil.ssh_connect_or_return(mininet_node_ip,
-            mininet_node_username, mininet_node_password, 10,
-            int(mininet_node_ssh_port))
+        # cbench_ssh_client to be utilized in the sequel
+        mininet_ssh_client, controller_ssh_client, = \
+            common.open_ssh_connections([mininet_node, controller_node])
 
-        # Opening connection with controller_node_ip and returning
-        # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating controller node session.'.
-                     format(test_type))
-        controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip.value.decode(),
-            controller_node_username,
-            controller_node_password, 10,
-            int(controller_node_ssh_port))
+        controller_cpus = common.create_cpu_shares(
+            controller_cpu_shares, 100)[0]
 
-
-        if controller_rebuild:
-            logging.info('{0} building controller'.format(test_type))
-            controller_utils.rebuild_controller(controller_build_handler,
-                                                controller_ssh_client)
-
-        logging.info('{0} checking for other active controllers'.
-                     format(test_type))
-        controller_utils.check_for_active_controller(controller_port,
-                                                     controller_ssh_client)
-        logging.info(
-            '{0} starting and stopping controller to generate xml files'.
-            format(test_type))
-        logging.info('{0} starting controller'.format(test_type))
-        cpid = controller_utils.start_controller(
-            controller_start_handler, controller_status_handler,
-            controller_port, ' '.join(conf['java_opts']),
-            controller_ssh_client)
-
-        # Controller status check is done inside start_controller() of the
-        # controller_utils
-        logging.info('{0} OK, controller status is 1.'.format(test_type))
-        controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid, controller_ssh_client)
+        # Controller common actions: rebuild controller if controller_rebuild is
+        # SET, check_for_active controller, generate_controller_xml_files
+        controller_utils.controller_pre_actions(controller_handlers_set,
+                                      controller_rebuild, controller_ssh_client,
+                                      java_opts, controller_port,
+                                      controller_cpus)
 
         # Run tests for all possible dimensions
         for (mininet_size.value,
@@ -187,7 +180,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
-                controller_ssh_client)
+                controller_cpus, controller_ssh_client)
 
             # Control of controller status
             # is done inside controller_utils.start_controller()
@@ -253,8 +246,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['mininet_group_delay_ms'] = mininet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
-            statistics['controller_node_ip'] = controller_node_ip.value.decode()
+            statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_port)
+            statistics['controller_cpu_shares'] = \
+                '{0}'.format(controller_cpu_shares)
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
             total_samples.append(statistics)
@@ -291,10 +286,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             os.mkdir(output_dir)
 
         logging.info('{0} saving results to JSON file.'.format(test_type))
-        if len(total_samples) > 0:
-            with open(out_json, 'w') as ojf:
-                json.dump(total_samples, ojf)
-            ojf.close()
+        common.generate_json_results(total_samples, out_json)
 
         try:
             logging.info('{0} stopping controller.'.
@@ -306,12 +298,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         try:
             logging.info('{0} collecting logs'.format(test_type))
-            util.netutil.copy_remote_directory(
-                controller_node_ip.value.decode(),
-                controller_node_username,
-                controller_node_password,
-                controller_logs_dir, output_dir+'/log',
-                int(controller_node_ssh_port))
+            util.netutil.copy_remote_directory(controller_node,
+                controller_logs_dir, output_dir+'/log')
         except:
             logging.error('{0} {1}'.format(
                 test_type, 'failed transferring controller logs dir.'))

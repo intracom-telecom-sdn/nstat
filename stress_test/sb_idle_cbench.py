@@ -7,10 +7,10 @@
 """ Idle Southbound Performance test """
 
 import cbench_utils
+import collections
 import common
 import controller_utils
 import itertools
-import json
 import logging
 import multiprocessing
 import os
@@ -52,6 +52,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
+    if 'cbench_cpu_shares' in conf:
+        cbench_cpu_shares = conf['cbench_cpu_shares']
+    else:
+        cbench_cpu_shares = 100
+
 
     cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
@@ -89,6 +94,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    if 'controller_cpu_shares' in conf:
+        controller_cpu_shares = conf['controller_cpu_shares']
+    else:
+        controller_cpu_shares = 100
 
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
@@ -110,6 +119,31 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
+    java_opts = conf['java_opts']
+
+    # Various test parameters
+    node_parameters = collections.namedtuple('ssh_connection',
+        ['name', 'ip', 'ssh_port', 'username', 'password'])
+    controller_handlers = collections.namedtuple('controller_handlers',
+        ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
+         'ctrl_stop_handler', 'ctrl_clean_handler'])
+    cbench_handlers = collections.namedtuple('cbench_handlers' ,
+        ['cbench_build_handler','cbench_clean_handler',
+         'cbench_run_handler'])
+    controller_node = node_parameters('Controller',
+                                      controller_node_ip.value.decode(),
+                                      int(controller_node_ssh_port.value.decode()),
+                                      controller_node_username.value.decode(),
+                                      controller_node_password.value.decode())
+    cbench_node = node_parameters('MT-Cbench', cbench_node_ip.value.decode(),
+                                   int(cbench_node_ssh_port.value.decode()),
+                                   cbench_node_username.value.decode(),
+                                   cbench_node_password.value.decode())
+    controller_handlers_set = controller_handlers(controller_build_handler,
+        controller_start_handler, controller_status_handler,
+        controller_stop_handler, controller_clean_handler)
+    cbench_handlers_set = cbench_handlers(cbench_build_handler,
+        cbench_clean_handler, cbench_run_handler.value.decode())
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -129,52 +163,25 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_statistics_handler, cbench_build_handler,
             cbench_run_handler.value.decode(), cbench_clean_handler])
 
-        # Opening connection with cbench_node_ip and returning
+        # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating cbench node session.'.format(test_type))
-        cbench_ssh_client = util.netutil.ssh_connect_or_return(
-            cbench_node_ip.value.decode(),
-            cbench_node_username.value.decode(),
-            cbench_node_password.value.decode(), 10,
-            int(cbench_node_ssh_port.value.decode()))
+        cbench_ssh_client, controller_ssh_client, = \
+            common.open_ssh_connections([cbench_node, controller_node])
 
-        # Opening connection with controller_node_ip and returning
-        # controller_ssh_client to be utilized in the sequel
-        logging.info('{0} initiating controller node session.'.
-                     format(test_type))
-        controller_ssh_client = util.netutil.ssh_connect_or_return(
-            controller_node_ip.value.decode(),
-            controller_node_username.value.decode(),
-            controller_node_password.value.decode(), 10,
-            int(controller_node_ssh_port.value.decode()))
+        controller_cpus, cbench_cpus = common.create_cpu_shares(
+            controller_cpu_shares, cbench_cpu_shares.value)
+        cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
 
-        if controller_rebuild:
-            logging.info('{0} building controller.'.format(test_type))
-            controller_utils.rebuild_controller(controller_build_handler,
-                                                controller_ssh_client)
-
-        logging.info('{0} checking for other active controllers'.
-                     format(test_type))
-        controller_utils.check_for_active_controller(controller_port.value,
-                                                     controller_ssh_client)
-
-        logging.info('{0} starting and stopping controller to '
-                     'generate xml files'.format(test_type))
-        logging.info('{0} starting controller'.format(test_type))
-        cpid = controller_utils.start_controller(
-            controller_start_handler, controller_status_handler,
-            controller_port.value, ' '.join(conf['java_opts']),
-            controller_ssh_client)
-
-        # Controller status check is done inside start_controller() of the
-        # controller_utils
-        logging.info('{0} OK, controller status is 1.'.format(test_type))
-        controller_utils.stop_controller(controller_stop_handler,
-            controller_status_handler, cpid, controller_ssh_client)
+        # Controller common actions: rebuild controller if controller_rebuild is
+        # SET, check_for_active controller, generate_controller_xml_files
+        controller_utils.controller_pre_actions(controller_handlers_set,
+                                      controller_rebuild, controller_ssh_client,
+                                      java_opts, controller_port.value,
+                                      controller_cpus)
 
         # Run tests for all possible dimensions
         for (cbench_threads.value,
@@ -196,7 +203,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port.value, ' '.join(conf['java_opts']),
-                controller_ssh_client)
+                controller_cpus, controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
             cbench_switches.value = \
@@ -226,7 +233,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} creating Cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
-                args=(cbench_run_handler, controller_node_ip,
+                args=(cbench_run_handler, cbench_cpus, controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,
@@ -275,12 +282,17 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 controller_statistics_period_ms
             statistics['cbench_delay_before_traffic_ms'] = \
                 conf['cbench_delay_before_traffic_ms']
-            statistics['controller_node_ip'] = controller_node_ip.value.decode()
+            statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_port.value)
             statistics['cbench_mode'] = cbench_mode.value.decode()
             statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats.value
+            statistics['cbench_cpu_shares'] = \
+                '{0}%'.format(cbench_cpu_shares.value)
+            statistics['controller_cpu_shares'] = \
+                '{0}%'.format(controller_cpu_shares)
+
 
             statistics['cbench_warmup'] = cbench_warmup.value
             statistics['bootup_time_secs'] = res[0]
@@ -304,16 +316,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     finally:
         logging.info('{0} finalizing test'.format(test_type))
 
-        logging.info('{0} creating test output directory if not exist.'.
+        logging.info('{0} creating test output directory if not present.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
         logging.info('{0} saving results to JSON file.'.format(test_type))
-        if len(total_samples) > 0:
-            with open(out_json, 'w') as ojf:
-                json.dump(total_samples, ojf)
-            ojf.close()
+        common.generate_json_results(total_samples, out_json)
 
         try:
             logging.info('{0} stopping controller.'.
@@ -325,12 +334,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         try:
             logging.info('{0} collecting logs'.format(test_type))
-            util.netutil.copy_remote_directory(
-                controller_node_ip.value.decode(),
-                controller_node_username.value.decode(),
-                controller_node_password.value.decode(),
-                controller_logs_dir, output_dir+'/log',
-                int(controller_node_ssh_port.value.decode()))
+            util.netutil.copy_remote_directory(controller_node,
+                controller_logs_dir, output_dir+'/log')
         except:
             logging.error('{0} {1}'.format(
                 test_type, 'failed transferring controller logs dir.'))
@@ -432,6 +437,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_ms_per_test', 'Internal repeats interval'),
              ('cbench_warmup', 'Generator warmup repeats'),
              ('cbench_mode', 'Generator test mode'),
+             ('cbench_cpu_shares', 'Cbench CPU percentage'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
@@ -440,6 +446,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('fifteen_minute_load', 'fifteen minutes load'),
              ('used_memory_bytes', 'System used memory (Bytes)'),
              ('total_memory_bytes', 'Total system memory'),
+             ('controller_cpu_shares', 'Controller CPU percentage'),
              ('controller_cpu_system_time', 'Controller CPU system time'),
              ('controller_cpu_user_time', 'Controller CPU user time'),
              ('controller_num_threads', 'Controller threads'),

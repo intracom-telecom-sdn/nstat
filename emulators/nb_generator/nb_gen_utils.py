@@ -253,7 +253,8 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
         logging.debug(
             '[flow_master_thread] Trying to fetch node names from datastore')
         request = session.get(url_request, headers=getheaders, stream=False,
-                              auth=auth_token)
+                              auth=(auth_token.controller_restconf_user,
+                                    auth_token.controller_restconf_password))
         json_topology = json.loads(request.text)
         nodes = json_topology.get('topology')[0].get('node')
         if nodes is not None:
@@ -308,17 +309,16 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
 
     return (transmission_interval, operation_time, failed_flow_ops)
 
-def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
-                           discovery_deadline_ms, node_names, url_template,
-                           flow_template, auth_token, delete_flows_flag=False):
+def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
+                           url_template, flow_template, auth_token,
+                           delete_flows_flag=False):
 
     """Function executed by flow_master method
-    :param ctrl_ip: controller IP
-    :param ctrl_port: controller RESTconf port
-    :param nflows: total number of flows to distribute
-    :param nworkers: number of worker threads to create
+    :param flow_ops_params: namedtuple ['ctrl_ip', 'ctrl_port', 'nflows',
+    'nworkers', 'discovery_deadline_ms'], (controller IP, controller RESTconf port,
+    total number of flows to distribute, number of worker threads to create,
+    deadline for flow discovery (in milliseconds)
     :param op_delay_ms: delay between thread operations (in milliseconds)
-    :param discovery_deadline_ms: deadline for flow discovery (in milliseconds)
     :param node_names: list with node names registered in operational DS
     :param url_template: url for REST request to add/delete flows in
     controller's operational DS
@@ -326,8 +326,8 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     controller's operational DS
     :param auth_token: token containing restconf username/password used for
     REST requests in controller's operational DS
-    :param delete_flows_flag: whether to delete or not the added flows as part of the
-    test
+    :param delete_flows_flag: whether to delete or not the added flows as part
+    of the test
     :returns tuple with transmission_interval, operation_time, failed_flow_ops
     transmission interval: time interval between requested flow operations
     operation time: total time
@@ -337,8 +337,8 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
     :type ctrl_port: str
     :type nflows: int
     :type nworkers: int
-    :type op_delay_ms: int
     :type discovery_deadline_ms: int
+    :type op_delay_ms: int
     :type node_names:  list<str>
     :type url_template: str
     :type flow_template: str
@@ -355,20 +355,23 @@ def flow_ops_calc_time_run(ctrl_ip, ctrl_port, nflows, nworkers, op_delay_ms,
 
     logging.info('[flow_ops_calc_time_run] initializing: will perform {0} flow '
                  'operations at {1} openflow nodes with {2} workers'.format(
-                 nflows, len(node_names), nworkers))
+                 flow_ops_params.nflows, len(node_names),
+                 flow_ops_params.nworkers))
 
     logging.info('[flow_ops_calc_time_run] creating workers for {0} ops'.
                  format(operations_log_message))
 
-    opqueues, wthr, resqueues = create_workers(nworkers, flow_template,
-                                               url_template, op_delay_ms,
-                                               auth_token)
+    opqueues, wthr, resqueues = create_workers(flow_ops_params.nworkers,
+                                               flow_template, url_template,
+                                               op_delay_ms, auth_token)
 
     logging.info('[flow_ops_calc_time_run] distributing workload')
-    distribute_workload(nflows, opqueues, operations_type,node_names)
+    distribute_workload(flow_ops_params.nflows, opqueues,
+                        operations_type, node_names)
 
     transmission_interval, operation_time, failed_flow_ops =  \
-    flow_ops_calc_time(opqueues, resqueues, wthr,nflows, ctrl_ip, ctrl_port,
-                       discovery_deadline_ms, auth_token)
+    flow_ops_calc_time(opqueues, resqueues, wthr, flow_ops_params.nflows,
+                       flow_ops_params.ctrl_ip, flow_ops_params.ctrl_port,
+                       flow_ops_params.discovery_deadline_ms, auth_token)
 
     return (transmission_interval, operation_time, failed_flow_ops)

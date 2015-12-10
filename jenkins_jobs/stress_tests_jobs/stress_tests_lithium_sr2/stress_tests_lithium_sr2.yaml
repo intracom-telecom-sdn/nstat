@@ -101,7 +101,7 @@
                --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
                --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
                --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
-               --json-config=/home/vagrant/nstat/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
                --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
                --html-report=/home/vagrant/nstat/report.html \
                --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
@@ -129,7 +129,7 @@
                --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
                --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
                --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
-               --json-config=/home/vagrant/nstat/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
                --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
                --html-report=/home/vagrant/nstat/report.html \
                --output-dir=/home/vagrant/nstat/$RESULTS_DIR/

@@ -6,11 +6,64 @@
 
 """ Reusable functions for stress tests """
 
+import json
 import logging
 import requests
 import subprocess
 import time
+import util.cpu
+import util.netutil
 import util.sysstats
+
+
+def open_ssh_connections(connections_list):
+    """Gets a list of named tuples that describes the connections we want to
+    initiate. Each named tuple must have the following fields:
+    ['name', 'ip', 'ssh_port', 'username', 'password'] .
+    It will return a tuple of paramiko.SSHClient objects.
+
+    :param connections_list: A list of named tuples
+    :returns: tuple of paramiko.SSHClient objects
+    :rtype: tuple<paramiko.SSHClient>
+    :type connections_list: list<collections.namedtuple>
+    """
+
+    connection_clients = []
+    for connection in connections_list:
+        logging.info(
+            '[open_ssh_connections] Initiating SSH session with {0} node.'.
+            format(connection.name))
+        connection_clients.append(
+            util.netutil.ssh_connect_or_return(connection, 10)
+        )
+    return tuple(connection_clients)
+
+
+def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
+                         data_queue=None):
+    """Executes a command either locally or remotely and returns the result
+
+    :param cmd_list: the command to be executed given in a list format of
+    command and its arguments
+    :param prefix: The prefix to be used for logging of executed command output
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :param data_queue: data queue where generator output is posted line by line
+    the generator process will run.
+    :returns: The commands exit status
+    :rtype: int
+    :type cmd_list: list<str>
+    :type prefix: str
+    :type ssh_client: paramiko.SSHClient
+    :type data_queue: multiprocessing.Queue
+    """
+
+    if ssh_client == None:
+        exit_status = util.customsubprocess.check_output_streaming(cmd_list,
+            prefix, data_queue)
+    else:
+        exit_status = util.netutil.ssh_run_command(ssh_client,
+            ' '.join(cmd_list), prefix, data_queue)[0]
+    return exit_status
 
 
 def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
@@ -208,3 +261,47 @@ def sample_stats(cpid, ssh_client=None):
     return common_statistics
 
 
+def generate_json_results(results, out_json):
+    """ Creates the result json file and writes test results in it
+
+    :param results A list containing the results.
+    :param out_json: The file path of json file to be created and write
+    results in it
+    :type results: <list<dictionary>>
+    :type out_json: str
+    """
+
+    try:
+        if len(results) > 0:
+            with open(out_json, 'w') as ojf:
+                json.dump(results, ojf)
+                ojf.close()
+                logging.info('[generate_json_results] Results writen to {0}.'.
+                             format(out_json))
+        else:
+            logging.error('[generate_json_results] results parameter was empty.'
+                          ' Nothing to be saved')
+    except:
+        logging.error('[generate_json_results] output json file could not be '
+                      'created. Check privileges.')
+
+
+def create_cpu_shares(controller_cpu_shares, generator_cpu_shares):
+    """Returns a tuple of 2 strings, in which we have the controller and
+    generator CPU shares as a comma separated values.
+
+    :param controller_cpu_shares: Percentage of CPU resources to be used by
+    controller.
+    :param generator_cpu_shares: Percentage of CPU resources to be used by
+    generator.
+    :type controller_cpu_shares: int
+    :type generator_cpu_shares: int
+    """
+
+    # Define CPU affinity for controller and generator
+    cpu_lists = util.cpu.compute_cpu_shares([controller_cpu_shares,
+                                             generator_cpu_shares],
+                                            util.sysstats.sys_nprocs())
+    controller_cpus_str = ','.join(str(e) for e in cpu_lists[0])
+    generator_cpus_str = ','.join(str(e) for e in cpu_lists[1])
+    return (controller_cpus_str, generator_cpus_str)
