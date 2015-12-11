@@ -27,8 +27,7 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
-"controller_logs_dir":"./distribution-karaf-0.3.2-Lithium-SR2/data/log/",
-
+"controller_logs_dir":"./distribution-karaf-0.3.3-Lithium-SR3/data/log/",
 "controller_rebuild":true,
 "controller_cleanup":false,
 "controller_name":"ODL",
@@ -38,6 +37,7 @@
 "controller_restconf_user":"admin",
 "controller_restconf_password":"admin",
 "controller_statistics_period_ms":[5000],
+"controller_cpu_shares":75,
 
 "cbench_build_handler":"./build.sh",
 "cbench_run_handler":"./run.sh",
@@ -55,6 +55,7 @@
 "cbench_warmup":0,
 "cbench_ms_per_test":100000,
 "cbench_internal_repeats":1,
+"cbench_cpu_shares":25,
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 

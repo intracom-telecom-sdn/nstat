@@ -156,7 +156,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     nb_generator_run_handler = nb_generator_base_dir + \
         conf['nb_generator_run_handler']
     nb_generator_host_ip = conf['nb_generator_host_ip']
-
+    if 'nb_generator_cpu_shares' in conf:
+        nb_generator_cpu_shares = conf['nb_generator_cpu_shares']
 
     # Controller parameters
     controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
@@ -175,6 +176,10 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     controller_restconf_port = conf['controller_restconf_port']
     controller_restconf_user = conf['controller_restconf_user']
     controller_restconf_password = conf['controller_restconf_password']
+    if 'controller_cpu_shares' in conf:
+        controller_cpu_shares = conf['controller_cpu_shares']
+    else:
+        controller_cpu_shares = 100
 
     # Various test parameters
     flow_delete_flag = conf['flow_delete_flag']
@@ -225,11 +230,15 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             common.open_ssh_connections([mininet_node,
                 controller_node, nb_generator_node])
 
+        controller_cpus, nb_generator_cpus = common.create_cpu_shares(
+            controller_cpu_shares, nb_generator_cpu_shares)
+
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
-                                      java_opts, controller_port)
+                                      java_opts, controller_port,
+                                      controller_cpus)
 
         # Run tests for all possible dimensions
         for (total_flows,
@@ -267,7 +276,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port, ' '.join(conf['java_opts']),
-                controller_ssh_client)
+                controller_cpus, controller_ssh_client)
 
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
@@ -295,10 +304,10 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             flow_discovery_deadline_ms = 240000
 
-            cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
-                format(nb_generator_base_dir, nb_generator_run_handler,
-                       controller_node.ip, controller_restconf_port,
-                       total_flows, flow_workers,
+            cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}'.
+                format(nb_generator_base_dir, nb_generator_cpus,
+                       nb_generator_run_handler, controller_node.ip,
+                       controller_restconf_port, total_flows, flow_workers,
                        flow_operations_delay_ms, flow_delete_flag,
                        flow_discovery_deadline_ms, controller_restconf_user,
                        controller_restconf_password, log_level))
@@ -321,6 +330,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_port)
             statistics['controller_restart'] = controller_restart
+            statistics['controller_cpu_shares'] = \
+                '{0}'.format(controller_cpu_shares)
             statistics['total_flows'] = total_flows
             statistics['mininet_size'] = mininet_size
             statistics['mininet_topology_type'] = mininet_topology_type
@@ -330,6 +341,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             statistics['mininet_group_delay_ms'] = mininet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
+            statistics['nb_generator_cpu_shares'] = \
+                '{0}'.format(nb_generator_cpu_shares)
             statistics['flow_operation_delay_ms'] = flow_operations_delay_ms
             statistics['flow_workers'] = flow_workers
             statistics['add_flows_transmission_time'] = results[0]
@@ -483,6 +496,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('delete_flows_transmission_time',
               'Total time of NB Restconf calls for flows deletion (seconds)'),
              ('delete_flows_time', 'Delete flows time (seconds)'),
+             ('nb_generator_cpu_shares', 'NB traffic generator CPU percentage')
              ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
              ('flow_workers', 'Flow workers'),
              ('flow_delete_flag', 'Deletion flag'),
@@ -501,6 +515,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('one_minute_load', 'One minute load'),
              ('five_minute_load', 'Five minutes load'),
              ('fifteen_minute_load', 'Fifteen minutes load'),
+             ('controller_cpu_shares', 'Controller CPU percentage'),
              ('controller_cpu_system_time', 'Controller CPU system time'),
              ('controller_cpu_user_time', 'Controller CPU user time'),
              ('controller_num_threads', 'Controller num of threads'),

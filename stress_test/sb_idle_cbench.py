@@ -52,6 +52,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
+    if 'cbench_cpu_shares' in conf:
+        cbench_cpu_shares = conf['cbench_cpu_shares']
+    else:
+        cbench_cpu_shares = 100
+
 
     cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
     cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
@@ -89,6 +94,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    if 'controller_cpu_shares' in conf:
+        controller_cpu_shares = conf['controller_cpu_shares']
+    else:
+        controller_cpu_shares = 100
 
     controller_node_ip = multiprocessing.Array('c',
         str(conf['controller_node_ip']).encode())
@@ -159,6 +168,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         cbench_ssh_client, controller_ssh_client, = \
             common.open_ssh_connections([cbench_node, controller_node])
 
+        controller_cpus, cbench_cpus = common.create_cpu_shares(
+            controller_cpu_shares, cbench_cpu_shares)
+        cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
+
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
             cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
@@ -167,7 +180,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # SET, check_for_active controller, generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
-                                      java_opts, controller_port.value)
+                                      java_opts, controller_port.value,
+                                      controller_cpus)
 
         # Run tests for all possible dimensions
         for (cbench_threads.value,
@@ -189,7 +203,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cpid = controller_utils.start_controller(
                 controller_start_handler, controller_status_handler,
                 controller_port.value, ' '.join(conf['java_opts']),
-                controller_ssh_client)
+                controller_cpus, controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
             cbench_switches.value = \
@@ -219,7 +233,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} creating Cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
-                args=(cbench_run_handler, controller_node_ip,
+                args=(cbench_run_handler, cbench_cpus, controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,
@@ -274,6 +288,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats.value
+            statistics['cbench_cpu_shares'] = \
+                '{0}%'.format(cbench_cpu_shares)
+            statistics['controller_cpu_shares'] = \
+                '{0}%'.format(controller_cpu_shares)
+
 
             statistics['cbench_warmup'] = cbench_warmup.value
             statistics['bootup_time_secs'] = res[0]
@@ -418,6 +437,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_ms_per_test', 'Internal repeats interval'),
              ('cbench_warmup', 'Generator warmup repeats'),
              ('cbench_mode', 'Generator test mode'),
+             ('cbench_cpu_shares', 'Cbench CPU percentage'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
@@ -426,6 +446,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('fifteen_minute_load', 'fifteen minutes load'),
              ('used_memory_bytes', 'System used memory (Bytes)'),
              ('total_memory_bytes', 'Total system memory'),
+             ('controller_cpu_shares', 'Controller CPU percentage'),
              ('controller_cpu_system_time', 'Controller CPU system time'),
              ('controller_cpu_user_time', 'Controller CPU user time'),
              ('controller_num_threads', 'Controller threads'),
