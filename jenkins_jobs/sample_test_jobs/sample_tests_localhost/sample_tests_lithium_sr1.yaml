@@ -344,7 +344,7 @@
 
 - project:
     name: sample_nstat-jenkins-jobs
-    branch: develop_code_climate_issues
+    branch: develop_release_1.2
     jobs:
 
         - 'sample_lithium_DS_sb_active_scalability_mtcbench-{branch}'
