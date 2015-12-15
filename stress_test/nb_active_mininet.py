@@ -496,7 +496,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('delete_flows_transmission_time',
               'Total time of NB Restconf calls for flows deletion (seconds)'),
              ('delete_flows_time', 'Delete flows time (seconds)'),
-             ('nb_generator_cpu_shares', 'NB traffic generator CPU percentage')
+             ('nb_generator_cpu_shares', 'NB traffic generator CPU percentage'),
              ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
              ('flow_workers', 'Flow workers'),
              ('flow_delete_flag', 'Deletion flag'),
