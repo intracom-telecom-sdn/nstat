@@ -27,15 +27,14 @@ def rebuild_cbench(cbench_build_handler, ssh_client=None):
                          '[cbench_build_handler]', ssh_client)
 
 
-
-def run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
-               controller_port, threads, sw_per_thread, switches,
-               thr_delay_ms, traf_delay_ms, ms_per_test,
-               internal_repeats, hosts, warmup, mode, data_queue=None,
-               ssh_client=None):
+def run_cbench(cbench_run_handler, cbench_cpus, controller_ip, controller_port,
+               threads, sw_per_thread, switches, thr_delay_ms, traf_delay_ms,
+               ms_per_test, internal_repeats, hosts, warmup, mode,
+               data_queue=None, ssh_client=None):
     """Runs a cbench instance
 
     :param cbench_run_handler: cbench run handler
+    :param cbench_cpus
     :param controller_ip: controller IP for OpenFlow connection
     :param controller_port: controller port for OpenFlow connection
     :param threads: number of cbench threads
@@ -53,6 +52,7 @@ def run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
     the cbench process will run.
     :param ssh_client : SSH client provided by paramiko to run the command
     :type cbench_run_handler: str
+    :type cbench_cpus:
     :type controller_ip: str
     :type controller_port: int
     :type threads: int
@@ -79,7 +79,7 @@ def run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
 
 
 def cleanup_cbench(cbench_clean_handler, ssh_client=None):
-    """Shuts down the Generator.
+    """Kills and cleans up cbench built files.
 
     :param cbench_clean_handler: cleanup handler filepath for cbench.
     :param ssh_client : SSH client provided by paramiko to run the command
@@ -93,15 +93,15 @@ def cleanup_cbench(cbench_clean_handler, ssh_client=None):
 
 def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
                   controller_port, threads, sw_per_thread, switches,
-                  thr_delay_ms, traf_delay_ms, ms_per_test,
-                  internal_repeats, hosts, warmup, mode, cbench_node_ip,
-                  cbench_node_ssh_port, cbench_node_username,
-                  cbench_node_password, succ_msg='', fail_msg='',
-                  data_queue=None):
+                  thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
+                  hosts, warmup, mode, cbench_node_ip, cbench_node_ssh_port,
+                  cbench_node_username, cbench_node_password, succ_msg='',
+                  fail_msg='', data_queue=None):
 
     """ Function executed by cbench thread.
 
     :param cbench_run_handler: cbench run handler
+    :param cbench_cpus
     :param controller_ip: controller IP
     :param controller_port: controller port
     :param threads: number of cbench threads
@@ -118,9 +118,10 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
     :param data_queue: data queue where cbench output is posted line by line
     :parar succ_msg: message written to data queue when cbench_thread
     succeeds
-    :parar fail_msg: message written to data queue when cbench_thread fails
+    :parar fail_msg: message written to         data queue when cbench_thread fails
     :param ssh_client : SSH client provided by paramiko to run the command
     :type cbench_run_handler: str
+    :type cbench_cpus:
     :type controller_ip: str
     :type controller_port: int
     :type threads: int
@@ -169,7 +170,5 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
         if data_queue is not None:
             data_queue.put(fail_msg.value.decode(), block=True)
         logging.error('[cbench_thread] Exception:{0}'.format(str(err)))
-    """except:
-        logging.error('[cbench_thread] General exception: cbench thread.')
-    """
+
     return

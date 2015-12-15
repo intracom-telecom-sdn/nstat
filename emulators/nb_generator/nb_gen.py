@@ -121,8 +121,7 @@ def flow_master(args):
     failed_flow_ops_total = failed_flow_ops_add + failed_flow_ops_del
     results.append(failed_flow_ops_total)
 
-    output_msg = 'Results:\n'
-    output_msg += 'Add_flows_transmission_time/Add_flows_time/'
+    output_msg = 'Results:\nAdd_flows_transmission_time/Add_flows_time/'
     if len(results) == 5:
         output_msg += 'Delete_flows_transmission_time/Delete_flows_time/'
     output_msg += 'Total_failed_flows = '

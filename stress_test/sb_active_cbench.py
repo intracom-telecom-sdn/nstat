@@ -40,6 +40,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :param cpid: controller PID
     :param global_sample_id: unique ascending ID for the next sample
     :param repeat_id: ID of the test repeat
+    :param test_repeats:
     :param cbench_switches: total number of simulated switches
     :param cbench_switches_per_thread: number of sim. switches per thread
     :param cbench_threads: total number of Cbench threads
