@@ -93,6 +93,19 @@ class NetUtilTest(unittest.TestCase):
             self.remote_node.ip, username_new, self.remote_node.password,
             self.constants_set.maxretries))
 
+    def test03_ssh_connect_or_return(self):
+        """ssh_connect_or_return() false "password" provided
+        """
+        chars = string.ascii_uppercase + string.digits
+        sizeofnewpassword = 6
+        password_new = ''.join(random.choice(chars)
+                                     for _ in range(sizeofnewpassword))
+        logging.info('[netutil-test] remote password new: {0} '.
+                     format(password_new))
+        self.assertIsNone(util.netutil.ssh_connect_or_return(
+            self.remote_node.ip, self.remote_node.username, password_new,
+            self.constants_set.maxretries))
+
     @classmethod
     def tearDownClass(cls):
         """Kills the environment prepared at setUpClass
