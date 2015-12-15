@@ -47,7 +47,7 @@ class NetUtilTest(unittest.TestCase):
         ['name', 'ip', 'ssh_port', 'username', 'password'])
         cls.remote_node = node_parameters('remote_node', '127.0.0.1', 22,
                                           'jenkins', 'jenkins')
-        cls.remote_node_false_ip = node_parameters('remote_node', '127.0.0.2',
+        cls.remote_node_false_ip = node_parameters('remote_node', '127.0.0.1',
                                                    22, 'jenkins', 'jenkins')
         constants = collections.namedtuple('constants',
             ['retries','maxretries','sleeptime'])
@@ -64,7 +64,29 @@ class NetUtilTest(unittest.TestCase):
                                 shell=True)
 
     def test01_ssh_connection_open(self):
-       (sftp, transport_layer) = util.netutil.ssh_connection_open(self.remote_node_false_ip)
+        """ssh_connection_open() false "remote ip" provided
+        """
+        logging.info('[netutil-test] remote address: {0} '.
+                     format(self.remote_node_false_ip.ip))
+
+
+    def test02_ssh_connect_or_return(self):
+        """ssh_connect_or_return() check returned ssh object
+        """
+        logging.info('[netutil-test] remote address: {0} '.
+                     format(self.remote_node.ip))
+        self.assertIsNotNone(util.netutil.ssh_connect_or_return(
+             self.remote_node, self.constants_set.maxretries))
+
+    def test04_isdir(self):
+        """Testing isdir() when checking for an existing remote directory
+        """
+        (sftp, transport_layer) = util.netutil.ssh_connection_open(self.remote_node)
+        logging.info('[netutil-test] opened connection with: {0} - {1} '.
+                     format(self.remote_node.ip, self.remote_node.username))
+        self.assertTrue(util.netutil.isdir(self.file_paths_set.rem_node_path,
+                                           sftp))
+        util.netutil.ssh_connection_close(sftp, transport_layer)
 
 
     @classmethod
