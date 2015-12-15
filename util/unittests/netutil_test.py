@@ -49,7 +49,7 @@ class NetUtilTest(unittest.TestCase):
                                           'jenkins', 'jenkins')
         constants = collections.namedtuple('constants',
             ['retries','maxretries','sleeptime'])
-        cls.constants_set = constants(1,5,2)
+        cls.constants_set = constants(1,1,2)
         file_paths = collections.namedtuple('file_paths',
             ['rem_node_file_name','rem_node_file_name_false','rem_node_path',
              'rem_node_path_false'])
@@ -74,6 +74,23 @@ class NetUtilTest(unittest.TestCase):
                      format(ipaddress_new))
         self.assertIsNone(util.netutil.ssh_connect_or_return( ipaddress_new,
             self.remote_node.username, self.remote_node.password,
+            self.constants_set.maxretries))
+
+    def test02_ssh_connect_or_return(self):
+        """ssh_connect_or_return() false "username" provided
+        """
+        logging.info('[netutil-test] remote address: {0} '.
+                     format(self.remote_node.ip))
+        logging.info('[netutil-test] remote user name: {0} '.
+                     format(self.remote_node.username))
+        sizeofnewusername = 6
+        chars = string.ascii_uppercase + string.digits
+        username_new = ''.join(random.choice(chars)
+                                     for _ in range(sizeofnewusername))
+        logging.info('[netutil-test] remote username new: {0} '.
+                     format(username_new))
+        self.assertIsNone(util.netutil.ssh_connect_or_return(
+            self.remote_node.ip, username_new, self.remote_node.password,
             self.constants_set.maxretries))
 
     @classmethod
