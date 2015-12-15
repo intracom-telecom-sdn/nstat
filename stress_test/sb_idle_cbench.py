@@ -49,6 +49,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_threads = multiprocessing.Value('i', 0)
     cbench_switches_per_thread = multiprocessing.Value('i', 0)
     cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
+    cbench_switches = multiprocessing.Value('i', 0)
+    t_start = multiprocessing.Value('d', 0.0)
+    bootup_time_ms = multiprocessing.Value('i', 0)
+    discovery_deadline_ms = multiprocessing.Value('i', 0)
 
     # Cbench parameters
     cbench_rebuild = conf['cbench_rebuild']
@@ -59,19 +63,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     else:
         cbench_cpu_shares = 100
 
-
     cbench_mode = conf['cbench_mode']
     cbench_warmup = conf['cbench_warmup']
     cbench_ms_per_test = conf['cbench_ms_per_test']
-    cbench_internal_repeats = multiprocessing.Value('i',
-        conf['cbench_internal_repeats'])
+    cbench_internal_repeats = conf['cbench_internal_repeats']
 
-    cbench_switches = multiprocessing.Value('i', 0)
-
-    cbench_simulated_hosts = multiprocessing.Value('i',
-        conf['cbench_simulated_hosts'])
-    cbench_delay_before_traffic_ms = multiprocessing.Value('i',
-        conf['cbench_delay_before_traffic_ms'])
+    cbench_simulated_hosts = conf['cbench_simulated_hosts']
+    cbench_delay_before_traffic_ms = conf['cbench_delay_before_traffic_ms']
 
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -82,18 +80,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     else:
         controller_cpu_shares = 100
 
-    controller_port = multiprocessing.Value('i', conf['controller_port'])
-    controller_restconf_port = multiprocessing.Value('i',
-        conf['controller_restconf_port'])
-    controller_restconf_user = multiprocessing.Array('c',
-        str(conf['controller_restconf_user']).encode())
-    controller_restconf_password = multiprocessing.Array('c',
-        str(conf['controller_restconf_password']).encode())
+    controller_port = conf['controller_port']
+    controller_restconf_port = conf['controller_restconf_port']
+    controller_restconf_user = conf['controller_restconf_user']
+    controller_restconf_password =conf['controller_restconf_password']
 
     # Various test parameters
-    t_start = multiprocessing.Value('d', 0.0)
-    bootup_time_ms = multiprocessing.Value('i', 0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
+
     java_opts = conf['java_opts']
 
     # Various test parameters
@@ -139,7 +132,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # Before proceeding with the experiments check validity of all
         # handlers
         logging.info('{0} checking handler files.'.format(test_type))
-        util.file_ops.check_filelist([controller_handlers_set.ctrl_build_handler,
+        util.file_ops.check_filelist([
+            controller_handlers_set.ctrl_build_handler,
             controller_handlers_set.ctrl_start_handler,
             controller_handlers_set.ctrl_status_handler,
             controller_handlers_set.ctrl_stop_handler,
@@ -211,11 +205,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
 
-                args=(controller_node.controller_node_ip, controller_restconf_port,
-                      controller_restconf_user,
-                      controller_restconf_password,
-                      t_start, bootup_time_ms, cbench_switches,
-                      discovery_deadline_ms, result_queue))
+                args=(controller_node.controller_node_ip,
+                      controller_restconf_port, controller_restconf_user,
+                      controller_restconf_password, t_start, bootup_time_ms,
+                      cbench_switches, discovery_deadline_ms, result_queue))
 
 
             logging.info('{0} creating Cbench thread'.format(test_type))
