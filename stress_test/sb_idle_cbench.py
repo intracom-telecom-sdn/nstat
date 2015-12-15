@@ -46,9 +46,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cpid = 0
     global_sample_id = 0
 
+    cbench_threads = multiprocessing.Value('i', 0)
+    cbench_switches_per_thread = multiprocessing.Value('i', 0)
+    cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
+
     # Cbench parameters
-    cbench_build_handler = sb_gen_base_dir + conf['cbench_build_handler']
-    cbench_clean_handler = sb_gen_base_dir + conf['cbench_clean_handler']
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
@@ -58,39 +60,20 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         cbench_cpu_shares = 100
 
 
-    cbench_mode = multiprocessing.Array('c', str(conf['cbench_mode']).encode())
-    cbench_warmup = multiprocessing.Value('i', conf['cbench_warmup'])
-    cbench_ms_per_test = multiprocessing.Value('i', conf['cbench_ms_per_test'])
+    cbench_mode = conf['cbench_mode']
+    cbench_warmup = conf['cbench_warmup']
+    cbench_ms_per_test = conf['cbench_ms_per_test']
     cbench_internal_repeats = multiprocessing.Value('i',
         conf['cbench_internal_repeats'])
-    cbench_node_ip = multiprocessing.Array('c',
-        str(conf['cbench_node_ip']).encode())
-    cbench_node_ssh_port = multiprocessing.Array('c',
-        str(conf['cbench_node_ssh_port']).encode())
-    cbench_node_username = multiprocessing.Array('c',
-        str(conf['cbench_node_username']).encode())
-    cbench_node_password = multiprocessing.Array('c',
-        str(conf['cbench_node_password']).encode())
-    cbench_run_handler  = multiprocessing.Array('c', str(sb_gen_base_dir + \
-        conf['cbench_run_handler']).encode())
-    cbench_threads = multiprocessing.Value('i', 0)
-    cbench_switches_per_thread = multiprocessing.Value('i', 0)
+
     cbench_switches = multiprocessing.Value('i', 0)
-    cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
+
     cbench_simulated_hosts = multiprocessing.Value('i',
         conf['cbench_simulated_hosts'])
     cbench_delay_before_traffic_ms = multiprocessing.Value('i',
         conf['cbench_delay_before_traffic_ms'])
 
     # Controller parameters
-    controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
-    controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
-    controller_status_handler = \
-        ctrl_base_dir + conf['controller_status_handler']
-    controller_stop_handler = ctrl_base_dir + conf['controller_stop_handler']
-    controller_clean_handler = ctrl_base_dir + conf['controller_clean_handler']
-    controller_statistics_handler = \
-        ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
@@ -99,14 +82,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     else:
         controller_cpu_shares = 100
 
-    controller_node_ip = multiprocessing.Array('c',
-        str(conf['controller_node_ip']).encode())
-    controller_node_ssh_port = multiprocessing.Array('c',
-        str(conf['controller_node_ssh_port']).encode())
-    controller_node_username = multiprocessing.Array('c',
-        str(conf['controller_node_username']).encode())
-    controller_node_password = multiprocessing.Array('c',
-        str(conf['controller_node_password']).encode())
     controller_port = multiprocessing.Value('i', conf['controller_port'])
     controller_restconf_port = multiprocessing.Value('i',
         conf['controller_restconf_port'])
@@ -126,24 +101,31 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         ['name', 'ip', 'ssh_port', 'username', 'password'])
     controller_handlers = collections.namedtuple('controller_handlers',
         ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
-         'ctrl_stop_handler', 'ctrl_clean_handler'])
+         'ctrl_stop_handler', 'ctrl_clean_handler', 'ctrl_statistics_handler'])
     cbench_handlers = collections.namedtuple('cbench_handlers' ,
         ['cbench_build_handler','cbench_clean_handler',
          'cbench_run_handler'])
     controller_node = node_parameters('Controller',
-                                      controller_node_ip.value.decode(),
-                                      int(controller_node_ssh_port.value.decode()),
-                                      controller_node_username.value.decode(),
-                                      controller_node_password.value.decode())
-    cbench_node = node_parameters('MT-Cbench', cbench_node_ip.value.decode(),
-                                   int(cbench_node_ssh_port.value.decode()),
-                                   cbench_node_username.value.decode(),
-                                   cbench_node_password.value.decode())
-    controller_handlers_set = controller_handlers(controller_build_handler,
-        controller_start_handler, controller_status_handler,
-        controller_stop_handler, controller_clean_handler)
-    cbench_handlers_set = cbench_handlers(cbench_build_handler,
-        cbench_clean_handler, cbench_run_handler.value.decode())
+                                      conf['controller_node_ip'],
+                                      int(conf['controller_node_ssh_port']),
+                                      conf['controller_node_username'],
+                                      conf['controller_node_password'])
+    cbench_node = node_parameters('MT-Cbench', conf['cbench_node_ip'],
+                                   int(conf['cbench_node_ssh_port']),
+                                   conf['cbench_node_username'],
+                                   conf['cbench_node_password'])
+    controller_handlers_set = controller_handlers(
+        ctrl_base_dir + conf['controller_build_handler'],
+        ctrl_base_dir + conf['controller_start_handler'],
+        ctrl_base_dir + conf['controller_status_handler'],
+        ctrl_base_dir + conf['controller_stop_handler'],
+        ctrl_base_dir + conf['controller_clean_handler'],
+        ctrl_base_dir + conf['controller_statistics_handler']
+        )
+    cbench_handlers_set = cbench_handlers(
+        sb_gen_base_dir + conf['cbench_build_handler'],
+        sb_gen_base_dir + conf['cbench_clean_handler'],
+        sb_gen_base_dir + conf['cbench_run_handler'])
 
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
@@ -157,11 +139,15 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # Before proceeding with the experiments check validity of all
         # handlers
         logging.info('{0} checking handler files.'.format(test_type))
-        util.file_ops.check_filelist([controller_build_handler,
-            controller_start_handler, controller_status_handler,
-            controller_stop_handler, controller_clean_handler,
-            controller_statistics_handler, cbench_build_handler,
-            cbench_run_handler.value.decode(), cbench_clean_handler])
+        util.file_ops.check_filelist([controller_handlers_set.ctrl_build_handler,
+            controller_handlers_set.ctrl_start_handler,
+            controller_handlers_set.ctrl_status_handler,
+            controller_handlers_set.ctrl_stop_handler,
+            controller_handlers_set.ctrl_clean_handler,
+            controller_handlers_set.ctrl_statistics_handler,
+            cbench_handlers_set.cbench_build_handler,
+            cbench_handlers_set.cbench_run_handler,
+            cbench_handlers_set.cbench_clean_handler])
 
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
@@ -174,7 +160,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
-            cbench_utils.rebuild_cbench(cbench_build_handler, cbench_ssh_client)
+            cbench_utils.rebuild_cbench(
+                cbench_handlers_set.cbench_build_handler, cbench_ssh_client)
 
         # Controller common actions: rebuild controller if controller_rebuild is
         # SET, check_for_active controller, generate_controller_xml_files
@@ -196,12 +183,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))
             controller_utils.controller_changestatsperiod(
-                controller_statistics_handler,
+                controller_handlers_set.ctrl_statistics_handler,
                 controller_statistics_period_ms, controller_ssh_client)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
-                controller_start_handler, controller_status_handler,
+                controller_handlers_set.ctrl_start_handler,
+                controller_handlers_set.ctrl_status_handler,
                 controller_port.value, ' '.join(conf['java_opts']),
                 controller_cpus, controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -223,7 +211,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
 
-                args=(controller_node_ip, controller_restconf_port,
+                args=(controller_node.controller_node_ip, controller_restconf_port,
                       controller_restconf_user,
                       controller_restconf_password,
                       t_start, bootup_time_ms, cbench_switches,
@@ -233,7 +221,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} creating Cbench thread'.format(test_type))
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
-                args=(cbench_run_handler, cbench_cpus, controller_node_ip,
+                args=(cbench_handlers_set.cbench_run_handler,
+                      cbench_cpus, controller_node.controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,
@@ -242,10 +231,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       cbench_ms_per_test, cbench_internal_repeats,
                       cbench_simulated_hosts, cbench_warmup,
                       cbench_mode,
-                      cbench_node_ip,
-                      cbench_node_ssh_port,
-                      cbench_node_username,
-                      cbench_node_password))
+                      cbench_node.cbench_node_ip,
+                      cbench_node.cbench_node_ssh_port,
+                      cbench_node.cbench_node_username,
+                      cbench_node.cbench_node_password))
 
             # Parallel section
             monitor_thread.start()
@@ -284,8 +273,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 conf['cbench_delay_before_traffic_ms']
             statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_port.value)
-            statistics['cbench_mode'] = cbench_mode.value.decode()
-            statistics['cbench_ms_per_test'] = cbench_ms_per_test.value
+            statistics['cbench_mode'] = cbench_mode
+            statistics['cbench_ms_per_test'] = cbench_ms_per_test
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats.value
             statistics['cbench_cpu_shares'] = \
@@ -294,13 +283,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 '{0}%'.format(controller_cpu_shares)
 
 
-            statistics['cbench_warmup'] = cbench_warmup.value
+            statistics['cbench_warmup'] = cbench_warmup
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
             total_samples.append(statistics)
 
-            controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid, controller_ssh_client)
+            controller_utils.stop_controller(controller_handlers_set.ctrl_stop_handler,
+                controller_handlers_set.ctrl_status_handler, cpid, controller_ssh_client)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -327,8 +316,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         try:
             logging.info('{0} stopping controller.'.
                          format(test_type))
-            controller_utils.stop_controller(controller_stop_handler,
-                controller_status_handler, cpid, controller_ssh_client)
+            controller_utils.stop_controller(
+                controller_handlers_set.ctrl_stop_handler,
+                controller_handlers_set.ctrl_status_handler, cpid,
+                controller_ssh_client)
         except:
             pass
 
@@ -342,12 +333,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         if controller_cleanup:
             logging.info('{0} cleaning controller.'.format(test_type))
-            controller_utils.cleanup_controller(controller_clean_handler,
-                                                controller_ssh_client)
+            controller_utils.cleanup_controller(
+                controller_handlers_set.ctrl_clean_handler,
+                controller_ssh_client)
 
         if cbench_cleanup:
             logging.info('{0} cleaning cbench.'.format(test_type))
-            cbench_utils.cleanup_cbench(cbench_clean_handler, cbench_ssh_client)
+            cbench_utils.cleanup_cbench(cbench_handlers_set.cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
         if controller_ssh_client:
