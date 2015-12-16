@@ -66,7 +66,7 @@ def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
     return exit_status
 
 
-def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
+def check_ds_switches(controller_nb_interface):
     """Query number of switches registered in ODL operational DS
 
     :param controller_ip: controller IP address
@@ -83,8 +83,9 @@ def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
-           format(controller_ip, controller_restconf_port))
-
+           format(controller_nb_interface.ip, controller_nb_interface.port))
+    auth_token = (controller_nb_interface.username,
+                  controller_nb_interface.password)
     try:
         datastore = requests.get(url=url,
             auth=auth_token).json()['topology'][0]
@@ -95,7 +96,7 @@ def check_ds_switches(controller_ip, controller_restconf_port, auth_token):
     return len(switches)
 
 
-def check_ds_hosts(controller_ip, controller_restconf_port, auth_token):
+def check_ds_hosts(controller_nb_interface):
     """Query number of hosts registered in ODL operational DS
 
     :param controller_ip: controller IP address
@@ -112,8 +113,9 @@ def check_ds_hosts(controller_ip, controller_restconf_port, auth_token):
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
-           format(controller_ip, controller_restconf_port))
-
+           format(controller_nb_interface.ip, controller_nb_interface.port))
+    auth_token = (controller_nb_interface.username,
+                  controller_nb_interface.password)
     try:
         datastore = requests.get(url=url,
             auth=auth_token).json()['topology'][0]
@@ -124,7 +126,7 @@ def check_ds_hosts(controller_ip, controller_restconf_port, auth_token):
     return len(hosts)
 
 
-def check_ds_links(controller_ip, controller_restconf_port, auth_token):
+def check_ds_links(controller_nb_interface):
     """Query number of links registered in ODL operational DS
 
     :param controller_ip: controller IP address
@@ -140,8 +142,9 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
-           format(controller_ip, controller_restconf_port))
-
+           format(controller_nb_interface.ip, controller_nb_interface.port))
+    auth_token = (controller_nb_interface.username,
+                  controller_nb_interface.password)
     try:
         datastore = requests.get(url=url,
             auth=auth_token).json()['topology'][0]
@@ -152,8 +155,7 @@ def check_ds_links(controller_ip, controller_restconf_port, auth_token):
     return len(links)
 
 
-def poll_ds_thread(controller_ip, controller_restconf_port,
-                   controller_restconf_user, controller_restconf_password,
+def poll_ds_thread(controller_nb_interface,
                    boot_start_time, bootup_time_ms, expected_switches,
                    discovery_deadline_ms, queuecomm):
     """
@@ -201,10 +203,7 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
             queuecomm.put((-1.0, discovered_switches))
             return
         else:
-            discovered_switches = check_ds_switches(controller_ip,
-                controller_restconf_port,
-                (controller_restconf_user,
-                 controller_restconf_password))
+            discovered_switches = check_ds_switches(controller_nb_interface)
 
             if discovered_switches == expected_switches:
                 delta_t = time.time() - t_start

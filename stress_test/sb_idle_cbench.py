@@ -80,11 +80,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     else:
         controller_cpu_shares = 100
 
-    controller_port = conf['controller_port']
-    controller_restconf_port = conf['controller_restconf_port']
-    controller_restconf_user = conf['controller_restconf_user']
-    controller_restconf_password =conf['controller_restconf_password']
-
     # Various test parameters
 
     java_opts = conf['java_opts']
@@ -98,6 +93,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_handlers = collections.namedtuple('cbench_handlers' ,
         ['cbench_build_handler','cbench_clean_handler',
          'cbench_run_handler'])
+    controller_northbound = collections.namedtuple('controller_northbound',
+        ['ip', 'port', 'username', 'password'])
+    controller_southbound = collections.namedtuple('controller_southbound',
+                                                   ['ip', 'port'])
+
     controller_node = node_parameters('Controller',
                                       conf['controller_node_ip'],
                                       int(conf['controller_node_ssh_port']),
@@ -119,7 +119,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         sb_gen_base_dir + conf['cbench_build_handler'],
         sb_gen_base_dir + conf['cbench_clean_handler'],
         sb_gen_base_dir + conf['cbench_run_handler'])
-
+    controller_sb_interface = controller_southbound(conf['controller_node_ip'],
+                                                    conf['controller_port'])
+    controller_nb_interface = controller_northbound(conf['controller_node_ip'],
+        conf['controller_restconf_port'], conf['controller_restconf_user'],
+        conf['controller_restconf_password'])
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -161,7 +165,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # SET, check_for_active controller, generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
-                                      java_opts, controller_port.value,
+                                      java_opts, controller_sb_interface.port,
                                       controller_cpus)
 
         # Run tests for all possible dimensions
@@ -184,7 +188,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cpid = controller_utils.start_controller(
                 controller_handlers_set.ctrl_start_handler,
                 controller_handlers_set.ctrl_status_handler,
-                controller_port.value, ' '.join(conf['java_opts']),
+                controller_sb_interface.port, ' '.join(conf['java_opts']),
                 controller_cpus, controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
@@ -204,9 +208,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
-                args=(controller_node.controller_node_ip,
-                      controller_restconf_port, controller_restconf_user,
-                      controller_restconf_password, t_start, bootup_time_ms,
+                args=(controller_nb_interface, t_start, bootup_time_ms,
                       cbench_switches, discovery_deadline_ms, result_queue))
 
 
@@ -215,16 +217,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 target=cbench_utils.cbench_thread,
                 args=(cbench_handlers_set.cbench_run_handler,
                       cbench_cpus, controller_node.controller_node_ip,
-                      controller_port, cbench_threads,
+                      controller_sb_interface.port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches, cbench_thread_creation_delay_ms,
                       cbench_delay_before_traffic_ms,
                       cbench_ms_per_test, cbench_internal_repeats,
                       cbench_simulated_hosts, cbench_warmup,
-                      cbench_mode, cbench_node.cbench_node_ip,
-                      cbench_node.cbench_node_ssh_port,
-                      cbench_node.cbench_node_username,
-                      cbench_node.cbench_node_password))
+                      cbench_mode, cbench_node))
 
             # Parallel section
             monitor_thread.start()
@@ -262,7 +261,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_delay_before_traffic_ms'] = \
                 conf['cbench_delay_before_traffic_ms']
             statistics['controller_node_ip'] = controller_node.ip
-            statistics['controller_port'] = str(controller_port)
+            statistics['controller_port'] = str(controller_sb_interface.port)
             statistics['cbench_mode'] = cbench_mode
             statistics['cbench_ms_per_test'] = cbench_ms_per_test
             statistics['cbench_internal_repeats'] = \

@@ -10,8 +10,6 @@ import collections
 import common
 import logging
 import subprocess
-import util.customsubprocess
-import util.netutil
 
 
 def rebuild_cbench(cbench_build_handler, ssh_client=None):
@@ -94,8 +92,7 @@ def cleanup_cbench(cbench_clean_handler, ssh_client=None):
 def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
                   controller_port, threads, sw_per_thread, switches,
                   thr_delay_ms, traf_delay_ms, ms_per_test, internal_repeats,
-                  hosts, warmup, mode, cbench_node_ip, cbench_node_ssh_port,
-                  cbench_node_username, cbench_node_password, succ_msg='',
+                  hosts, warmup, mode, cbench_node, succ_msg='',
                   fail_msg='', data_queue=None):
 
     """ Function executed by cbench thread.
@@ -147,10 +144,10 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
         # cbench_ssh_client to be utilized in the sequel
         node_parameters = collections.namedtuple('ssh_connection',
         ['name', 'ip', 'ssh_port', 'username', 'password'])
-        cbench_node = node_parameters('MT-Cbench', cbench_node_ip,
-                                   cbench_node_ssh_port,
-                                   cbench_node_username,
-                                   cbench_node_password)
+        cbench_node = node_parameters('MT-Cbench', cbench_node.ip,
+                                   cbench_node.ssh_port,
+                                   cbench_node.username,
+                                   cbench_node.password)
 
         cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
