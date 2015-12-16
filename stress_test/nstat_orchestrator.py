@@ -203,6 +203,11 @@ def main():
     # 03. if results have been produced, generate plots, report and gather
     # output files
     if os.path.isfile(args.json_output):
+        logging.info(
+            '[nstat_orchestrator] Creating output directory of test results.')
+        if not os.path.exists(args.output_dir):
+            os.makedirs(args.output_dir)
+
         logging.info('[nstat_orchestrator] Producing plots')
         num_plots = len(test_config['plots'])
         for plot_index in list(range(0, num_plots)):
@@ -242,24 +247,17 @@ def main():
                     test_config['plots'][plot_index]['plot_type'],
                     test_config['plots'][plot_index]['plot_subtitle_keys'],
                     plot_options)
+                # Move produced plot in output directory
+                logging.info(
+                    '[nstat_orchestrator] Gathering plot {0} into output '
+                    'directory'.format(plot_options.out_fig))
+                shutil.move(plot_options.out_fig, args.output_dir)
             except:
                 logging.error(
                     '[nstat_orchestrator] The plot {0} could not be created. '
                     'Please check configuration. Continuing to the next plot.'.
                     format(test_config['plots'][plot_index]['plot_title']))
 
-        logging.info(
-            '[nstat_orchestrator] Creating output directory of test results.')
-        if not os.path.exists(args.output_dir):
-            os.makedirs(args.output_dir)
-
-        # move pngs, html report, log file, in and out json's to output dir
-        logging.info(
-            '[nstat_orchestrator] Gathering all produced files into output '
-            'directory')
-        for i in range(0, num_plots):
-            shutil.move(test_config['plots'][i]['plot_filename'] + '.png',
-                        args.output_dir)
         # Move controller log file if exist inside the test output dir
         if args.log_file:
             shutil.move(args.log_file, args.output_dir)
