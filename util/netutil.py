@@ -13,6 +13,146 @@ import stat
 import time
 
 
+def copy_directory_to_target(connection, local_path, remote_path):
+    """Copy a local directory on a remote machine.
+
+    :param connection: A named tuple with all the connection information.
+    It must have the following elements:
+    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param local_path: directory path from local machine to copy, full location
+    required
+    :param remote_path: remote destination, full location required
+    :type connection: collections.namedtuple
+    :type local_path: str
+    :type remote_path: str
+    """
+
+    #  recursively upload a full directory
+    if local_path.endswith('/'):
+        local_path = local_path[:-1]
+    (sftp, transport_layer) = ssh_connection_open(connection)
+    os.chdir(os.path.split(local_path)[0])
+    parent = os.path.split(local_path)[1]
+
+    for walker in os.walk(parent):
+        try:
+            folder_to_make = os.path.join(remote_path, walker[0])
+            sftp.mkdir(folder_to_make)
+        except:
+            pass
+        for curr_file in walker[2]:
+            local_file = os.path.join(walker[0], curr_file)
+            remote_file = os.path.join(remote_path, walker[0], curr_file)
+            sftp.put(local_file, remote_file)
+
+    ssh_connection_close(sftp, transport_layer)
+
+def copy_remote_directory(connection, remote_path, local_path):
+    """Copy recursively remote directories (Copies all files and other
+    sub-directories).
+
+    :param connection: a named tuple with all connection information.
+    It must have the following elements:
+    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param remote_path: a string with the full remote path we want to copy
+    :param local_path: a string with the full local path we want to copy
+    :type connection: collections.namedtuple
+    :type remote_path: str
+    :type local_path: str
+    """
+    (sftp, transport_layer) = ssh_connection_open(connection)
+
+    files = sftp.listdir(path=remote_path)
+
+    for file_item in files:
+        remote_filepath = os.path.join(remote_path, file_item)
+        if isdir(remote_filepath, sftp):
+            if not os.path.exists(os.path.join(local_path, file_item)):
+                os.makedirs(os.path.join(local_path, file_item))
+            copy_remote_directory(connection,
+                                  os.path.join(local_path, file_item))
+        else:
+            sftp.get(remote_filepath, os.path.join(local_path, file_item))
+    ssh_connection_close(sftp, transport_layer)
+
+def create_remote_directory(connection, remote_path):
+    """Opens an ssh connection to a remote machine and creates a new directory.
+
+    :param connection: A named tuple with all the connection information.
+    It must have the following elements:
+    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param remote_path: maximum number of times to connect
+    :type connection: collections.namedtuple
+    :type remote_path: str
+    """
+
+    (sftp, transport_layer) = ssh_connection_open(connection)
+    try:
+        # Test if remote_path exists
+        sftp.chdir(remote_path)
+    except IOError:
+        # Create remote_path
+        sftp.mkdir(remote_path)
+        sftp.chdir(remote_path)
+    ssh_connection_close(sftp, transport_layer)
+
+
+def isdir(path, sftp):
+    """Checks if a given remote path is a directory
+
+    :param path: A string with the full path we want to check
+    :param sftp: An sftp connection object (paramiko)
+    :returns: True if the given path is a directory false otherwise.
+    :rtype: bool
+    :type path: str
+    :type sftp: paramiko.SFTPClient
+    """
+
+    try:
+        return stat.S_ISDIR(sftp.stat(path).st_mode)
+    except IOError:
+        return False
+
+
+def make_remote_file_executable(connection, remote_file):
+    """Makes the remote file executable.
+
+    :param connection: A named tuple with all the connection information.
+    It must have the following elements:
+    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param remote_file: remote file to make executable
+    :type connection: collections.namedtuple
+    :type remote_file: str
+    """
+    (sftp, transport_layer) = ssh_connection_open(connection)
+    sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+    ssh_connection_close(sftp, transport_layer)
+
+def remove_remote_directory(connection, path):
+    """Removes recursively remote directories (removes all files and
+    other sub-directories).
+
+    :param connection: A named tuple with all the connection information.
+    It must have the following elements:
+    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param path: A string with the full path we want to remove
+    :type connection: collections.namedtuple
+    :type path: str
+    """
+
+    (sftp, transport_layer) = ssh_connection_open(connection)
+    files = sftp.listdir(path=path)
+
+    for file_item in files:
+        filepath = os.path.join(path, file_item)
+        if isdir(filepath, sftp):
+            remove_remote_directory(connection, filepath)
+        else:
+            sftp.remove(filepath)
+
+    sftp.rmdir(path)
+    ssh_connection_close(sftp, transport_layer)
+
 def ssh_connect_or_return(connection, maxretries):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
@@ -54,25 +194,6 @@ def ssh_connect_or_return(connection, maxretries):
     raise Exception('[netutil] could not connect to {0}. Returning'
                  .format(connection.ip))
 
-
-def ssh_connection_open(connection):
-    """ Opens an ssh connection on a remote node
-
-    :param connection: a named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :returns sftp, transport_layer
-    :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
-    :type connection: collections.namedtuple
-    """
-
-    transport_layer = paramiko.Transport((connection.ip, connection.ssh_port))
-    transport_layer.connect(username=connection.username,
-                            password=connection.password)
-    sftp = paramiko.SFTPClient.from_transport(transport_layer)
-
-    return (sftp, transport_layer)
-
 def ssh_connection_close(sftp, transport_layer):
     """ Closes an ssh connection with a remote node
 
@@ -86,6 +207,27 @@ def ssh_connection_close(sftp, transport_layer):
         transport_layer.close()
     except:
         pass
+
+
+def ssh_connection_open(connection):
+    """ Opens an ssh connection on a remote node
+
+    :param connection: a named tuple with all the connection information.
+    It must have the following elements:
+    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :returns sftp, transport_layer
+    :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
+    :type connection: collections.namedtuple
+    """
+    try:
+        transport_layer = paramiko.Transport((connection.ip, connection.ssh_port))
+        transport_layer.connect(username=connection.username,
+                                password=connection.password)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+
+        return (sftp, transport_layer)
+    except:
+        logging.error('[netutil] [ssh_connection_open] error: check connection object')
 
 
 def ssh_copy_file_to_target(connection, local_file, remote_file):
@@ -106,118 +248,31 @@ def ssh_copy_file_to_target(connection, local_file, remote_file):
     ssh_connection_close(sftp, transport_layer)
 
 
-def copy_directory_to_target(connection, local_path, remote_path):
-    """Copy a local directory on a remote machine.
+def ssh_delete_file_if_exists(connection, remote_file):
+    """Deletes the file on a remote machine, if exists
 
-    :param connection: A named tuple with all the connection information.
+    :param connection: a named tuple with all connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param local_path: directory path from local machine to copy, full location
-    required
-    :param remote_path: remote destination, full location required
-    :type connection: collections.namedtuple
-    :type local_path: str
-    :type remote_path: str
-    """
-
-    #  recursively upload a full directory
-    if local_path.endswith('/'):
-        local_path = local_path[:-1]
-    (sftp, transport_layer) = ssh_connection_open(connection)
-    os.chdir(os.path.split(local_path)[0])
-    parent = os.path.split(local_path)[1]
-
-    for walker in os.walk(parent):
-        try:
-            folder_to_make = os.path.join(remote_path, walker[0])
-            sftp.mkdir(folder_to_make)
-        except:
-            pass
-        for curr_file in walker[2]:
-            local_file = os.path.join(walker[0], curr_file)
-            remote_file = os.path.join(remote_path, walker[0], curr_file)
-            sftp.put(local_file, remote_file)
-
-    ssh_connection_close(sftp, transport_layer)
-
-
-def make_remote_file_executable(connection, remote_file):
-    """Makes the remote file executable.
-
-    :param connection: A named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_file: remote file to make executable
+    :param remote_file: remote file to remove, full path must be used.
     :type connection: collections.namedtuple
     :type remote_file: str
     """
-    (sftp, transport_layer) = ssh_connection_open(connection)
-    sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-    ssh_connection_close(sftp, transport_layer)
-
-
-def create_remote_directory(connection, remote_path):
-    """Opens an ssh connection to a remote machine and creates a new directory.
-
-    :param connection: A named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_path: maximum number of times to connect
-    :type connection: collections.namedtuple
-    :type remote_path: str
-    """
 
     (sftp, transport_layer) = ssh_connection_open(connection)
     try:
-        # Test if remote_path exists
-        sftp.chdir(remote_path)
+        sftp.remove(remote_file)
+        logging.info('[netutil] [delete_file_if_exists]: file {0} removed'.
+                     format(remote_file))
     except IOError:
-        # Create remote_path
-        sftp.mkdir(remote_path)
-        sftp.chdir(remote_path)
-    ssh_connection_close(sftp, transport_layer)
+        logging.error(
+            '[netutil] [delete_file_if_exists] IOError: The given remote_file '
+            'is not valid. Error message: {0}'.format(IOError.strerror))
+    except:
+        logging.error(
+            '[netutil] [delete_file_if_exists] Error: Unknown Error occured '
+            'while was trying to remove remote file.')
 
-
-def isdir(path, sftp):
-    """Checks if a given remote path is a directory
-
-    :param path: A string with the full path we want to check
-    :param sftp: An sftp connection object (paramiko)
-    :returns: True if the given path is a directory false otherwise.
-    :rtype: bool
-    :type path: str
-    :type sftp: paramiko.SFTPClient
-    """
-
-    try:
-        return stat.S_ISDIR(sftp.stat(path).st_mode)
-    except IOError:
-        return False
-
-
-def remove_remote_directory(connection, path):
-    """Removes recursively remote directories (removes all files and
-    other sub-directories).
-
-    :param connection: A named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param path: A string with the full path we want to remove
-    :type connection: collections.namedtuple
-    :type path: str
-    """
-
-    (sftp, transport_layer) = ssh_connection_open(connection)
-    files = sftp.listdir(path=path)
-
-    for file_item in files:
-        filepath = os.path.join(path, file_item)
-        if isdir(filepath, sftp):
-            remove_remote_directory(connection, filepath)
-        else:
-            sftp.remove(filepath)
-
-    sftp.rmdir(path)
     ssh_connection_close(sftp, transport_layer)
 
 
@@ -269,60 +324,3 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel_exit_status = channel.recv_exit_status()
     channel.close()
     return (channel_exit_status, channel_output)
-
-
-def ssh_delete_file_if_exists(connection, remote_file):
-    """Deletes the file on a remote machine, if exists
-
-    :param connection: a named tuple with all connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_file: remote file to remove, full path must be used.
-    :type connection: collections.namedtuple
-    :type remote_file: str
-    """
-
-    (sftp, transport_layer) = ssh_connection_open(connection)
-    try:
-        sftp.remove(remote_file)
-        logging.info('[netutil] [delete_file_if_exists]: file {0} removed'.
-                     format(remote_file))
-    except IOError:
-        logging.error(
-            '[netutil] [delete_file_if_exists] IOError: The given remote_file '
-            'is not valid. Error message: {0}'.format(IOError.strerror))
-    except:
-        logging.error(
-            '[netutil] [delete_file_if_exists] Error: Unknown Error occured '
-            'while was trying to remove remote file.')
-
-    ssh_connection_close(sftp, transport_layer)
-
-
-def copy_remote_directory(connection, remote_path, local_path):
-    """Copy recursively remote directories (Copies all files and other
-    sub-directories).
-
-    :param connection: a named tuple with all connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_path: a string with the full remote path we want to copy
-    :param local_path: a string with the full local path we want to copy
-    :type connection: collections.namedtuple
-    :type remote_path: str
-    :type local_path: str
-    """
-    (sftp, transport_layer) = ssh_connection_open(connection)
-
-    files = sftp.listdir(path=remote_path)
-
-    for file_item in files:
-        remote_filepath = os.path.join(remote_path, file_item)
-        if isdir(remote_filepath, sftp):
-            if not os.path.exists(os.path.join(local_path, file_item)):
-                os.makedirs(os.path.join(local_path, file_item))
-            copy_remote_directory(connection,
-                                  os.path.join(local_path, file_item))
-        else:
-            sftp.get(remote_filepath, os.path.join(local_path, file_item))
-    ssh_connection_close(sftp, transport_layer)
