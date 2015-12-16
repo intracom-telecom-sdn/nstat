@@ -315,7 +315,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         try:
             logging.info('{0} collecting logs'.format(test_type))
-            util.netutil.copy_remote_directory(controller_node,
+            util.netutil.copy_dir_remote_to_local(controller_node,
                 controller_logs_dir, output_dir+'/log')
         except:
             logging.error('{0} {1}'.format(

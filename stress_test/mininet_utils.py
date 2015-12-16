@@ -216,6 +216,6 @@ def copy_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
     :type remote_port: int
     """
 
-    util.netutil.copy_directory_to_target(mininet_ssh_server_ip, mininet_user,
+    util.netutil.copy_dir_local_to_remote(mininet_ssh_server_ip, mininet_user,
                                           mininet_pass, mininet_source,
                                           mininet_target, remote_port)
