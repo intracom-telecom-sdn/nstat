@@ -142,13 +142,6 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
     try:
         # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        node_parameters = collections.namedtuple('ssh_connection',
-        ['name', 'ip', 'ssh_port', 'username', 'password'])
-        cbench_node = node_parameters('MT-Cbench', cbench_node.ip,
-                                   cbench_node.ssh_port,
-                                   cbench_node.username,
-                                   cbench_node.password)
-
         cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
         run_cbench(cbench_run_handler,
