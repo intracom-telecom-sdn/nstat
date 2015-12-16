@@ -138,8 +138,8 @@ class NetUtilTest(unittest.TestCase):
     def tearDownClass(cls):
         """cleans setUpClass environment
         """
-        #subprocess.check_output("rm -rf" + " " + "foo*", shell=True)
-        pass
+        subprocess.check_output("rm -rf" + " " + "foo*", shell=True)
+
 
 if __name__ == '__main__':
     SUITE_NETUTILTEST = unittest.TestLoader().loadTestsFromTestCase(NetUtilTest)

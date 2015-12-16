@@ -16,8 +16,9 @@ class CpuComputeCpuShares(unittest.TestCase):
     """
 
     def test01_compute_cpu_shares(self):
-        """Checks the compute_cpu_shares() function of
-        util/cpu.py. It checks the equality of the result of a valid input.
+        """Tests  compute_cpu_shares() function of util/cpu.py.
+
+        It checks the equality of the result of a valid input.
         """
 
         self.assertTupleEqual(([0, 1, 2], [3]),
@@ -25,8 +26,9 @@ class CpuComputeCpuShares(unittest.TestCase):
                               'Testing cpu share for ([75,25], 4)')
 
     def test02_compute_cpu_shares(self):
-        """Checks the compute_cpu_shares() function of
-        util/cpu.py. It checks the equality of the result of a valid input.
+        """Tests compute_cpu_shares() of util/cpu.py.
+
+         It checks the equality of the result of a valid input.
         """
 
         self.assertTupleEqual(([0, 1, 2, 3, 4, 5], [6, 7]),
@@ -34,8 +36,9 @@ class CpuComputeCpuShares(unittest.TestCase):
                               'Testing cpu share for ([75,25], 8)')
 
     def test03_compute_cpu_shares(self):
-        """Checks the compute_cpu_shares() function of
-        util/cpu.py. It checks the equality of the result of a valid input.
+        """Tests compute_cpu_shares() function of util/cpu.py.
+
+        It checks the equality of the result of a valid input.
         """
 
         self.assertTupleEqual(([0, 1, 2, 3, 4, 5, 6, 7],
@@ -44,7 +47,8 @@ class CpuComputeCpuShares(unittest.TestCase):
                               'Testing cpu share for ([100,100], 8)')
 
     def test04_compute_cpu_shares(self):
-        """Checks the compute_cpu_shares() function of util/cpu.py.
+        """Tests compute_cpu_shares() function of util/cpu.py.
+
         It checks the equality of the result of a valid input.
         """
 
@@ -54,7 +58,8 @@ class CpuComputeCpuShares(unittest.TestCase):
                               'Testing cpu share for ([0,0], 8)')
 
     def test05_compute_cpu_shares(self):
-        """Checks the compute_cpu_shares() function of util/cpu.py.
+        """Tests compute_cpu_shares() function of util/cpu.py.
+
         It checks the equality of the result of a invalid input.
         It checks if the appropriate ValueError exception is raised.
         """
@@ -62,7 +67,8 @@ class CpuComputeCpuShares(unittest.TestCase):
             util.cpu.compute_cpu_shares([75, 25], 1)
 
     def test06_compute_cpu_shares(self):
-        """Checks the compute_cpu_shares() function of util/cpu.py.
+        """Tests the compute_cpu_shares() function of util/cpu.py.
+
         It checks the equality of the result of a invalid input.
         It checks if the appropriate ValueError exception is raised.
         """
@@ -70,7 +76,8 @@ class CpuComputeCpuShares(unittest.TestCase):
             util.cpu.compute_cpu_shares([75, 125], 4)
 
     def test07_compute_cpu_shares(self):
-        """Checks the compute_cpu_shares() function of util/cpu.py.
+        """Tests the compute_cpu_shares() function of util/cpu.py.
+
         It checks the equality of the result of a invalid input.
         It checks if the appropriate ValueError exception is raised.
         """
