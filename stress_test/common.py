@@ -201,12 +201,12 @@ def poll_ds_thread(controller_ip, controller_restconf_port,
             queuecomm.put((-1.0, discovered_switches))
             return
         else:
-            discovered_switches = check_ds_switches(controller_ip.value.decode(),
-                controller_restconf_port.value,
-                (controller_restconf_user.value.decode(),
-                 controller_restconf_password.value.decode()))
+            discovered_switches = check_ds_switches(controller_ip,
+                controller_restconf_port,
+                (controller_restconf_user,
+                 controller_restconf_password))
 
-            if discovered_switches == expected_switches.value:
+            if discovered_switches == expected_switches:
                 delta_t = time.time() - t_start
                 logging.info(
                     '[poll_ds_thread] {0} switches found in {1} seconds'.

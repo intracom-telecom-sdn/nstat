@@ -147,28 +147,28 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
         # cbench_ssh_client to be utilized in the sequel
         node_parameters = collections.namedtuple('ssh_connection',
         ['name', 'ip', 'ssh_port', 'username', 'password'])
-        cbench_node = node_parameters('MT-Cbench', cbench_node_ip.value.decode(),
-                                   int(cbench_node_ssh_port.value.decode()),
-                                   cbench_node_username.value.decode(),
-                                   cbench_node_password.value.decode())
+        cbench_node = node_parameters('MT-Cbench', cbench_node_ip,
+                                   cbench_node_ssh_port,
+                                   cbench_node_username,
+                                   cbench_node_password)
 
         cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
-        run_cbench(cbench_run_handler.value.decode(),
-                   cbench_cpus.value.decode(), controller_ip.value.decode(),
-                   controller_port.value, threads.value,
+        run_cbench(cbench_run_handler,
+                   cbench_cpus, controller_ip,
+                   controller_port, threads.value,
                    sw_per_thread.value, switches.value, thr_delay_ms.value,
-                   traf_delay_ms.value, ms_per_test.value,
-                   internal_repeats.value, hosts.value, warmup.value,
-                   mode.value.decode(), data_queue, cbench_ssh_client)
+                   traf_delay_ms, ms_per_test,
+                   internal_repeats, hosts, warmup,
+                   mode, data_queue, cbench_ssh_client)
 
         # cbench ended, enqueue termination message
         if data_queue is not None:
-            data_queue.put(succ_msg.value.decode(), block=True)
+            data_queue.put(succ_msg, block=True)
         logging.info('[cbench_thread] cbench thread ended successfully')
     except subprocess.CalledProcessError as err:
         if data_queue is not None:
-            data_queue.put(fail_msg.value.decode(), block=True)
+            data_queue.put(fail_msg, block=True)
         logging.error('[cbench_thread] Exception:{0}'.format(str(err)))
 
     return

@@ -204,7 +204,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
-
                 args=(controller_node.controller_node_ip,
                       controller_restconf_port, controller_restconf_user,
                       controller_restconf_password, t_start, bootup_time_ms,
@@ -218,13 +217,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                       cbench_cpus, controller_node.controller_node_ip,
                       controller_port, cbench_threads,
                       cbench_switches_per_thread,
-                      cbench_switches,
-                      cbench_thread_creation_delay_ms,
+                      cbench_switches, cbench_thread_creation_delay_ms,
                       cbench_delay_before_traffic_ms,
                       cbench_ms_per_test, cbench_internal_repeats,
                       cbench_simulated_hosts, cbench_warmup,
-                      cbench_mode,
-                      cbench_node.cbench_node_ip,
+                      cbench_mode, cbench_node.cbench_node_ip,
                       cbench_node.cbench_node_ssh_port,
                       cbench_node.cbench_node_username,
                       cbench_node.cbench_node_password))
@@ -265,11 +262,11 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_delay_before_traffic_ms'] = \
                 conf['cbench_delay_before_traffic_ms']
             statistics['controller_node_ip'] = controller_node.ip
-            statistics['controller_port'] = str(controller_port.value)
+            statistics['controller_port'] = str(controller_port)
             statistics['cbench_mode'] = cbench_mode
             statistics['cbench_ms_per_test'] = cbench_ms_per_test
             statistics['cbench_internal_repeats'] = \
-                cbench_internal_repeats.value
+                cbench_internal_repeats
             statistics['cbench_cpu_shares'] = \
                 '{0}%'.format(cbench_cpu_shares)
             statistics['controller_cpu_shares'] = \
