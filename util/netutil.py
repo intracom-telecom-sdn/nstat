@@ -13,7 +13,7 @@ import stat
 import time
 
 
-def copy_directory_to_target(connection, local_path, remote_path):
+def copy_dir_local_to_remote(connection, local_path, remote_path):
     """Copy a local directory on a remote machine.
 
     :param connection: A named tuple with all the connection information.
@@ -47,7 +47,7 @@ def copy_directory_to_target(connection, local_path, remote_path):
 
     ssh_connection_close(sftp, transport_layer)
 
-def copy_remote_directory(connection, remote_path, local_path):
+def copy_dir_remote_to_local(connection, remote_path, local_path):
     """Copy recursively remote directories (Copies all files and other
     sub-directories).
 
@@ -69,13 +69,13 @@ def copy_remote_directory(connection, remote_path, local_path):
         if isdir(remote_filepath, sftp):
             if not os.path.exists(os.path.join(local_path, file_item)):
                 os.makedirs(os.path.join(local_path, file_item))
-            copy_remote_directory(connection,
+            copy_dir_remote_to_local(connection,
                                   os.path.join(local_path, file_item))
         else:
             sftp.get(remote_filepath, os.path.join(local_path, file_item))
     ssh_connection_close(sftp, transport_layer)
 
-def create_remote_directory(connection, remote_path):
+def create_dir_remote(connection, remote_path):
     """Opens an ssh connection to a remote machine and creates a new directory.
 
     :param connection: A named tuple with all the connection information.

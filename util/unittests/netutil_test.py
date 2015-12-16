@@ -79,7 +79,7 @@ class NetUtilTest(unittest.TestCase):
              self.remote_node, self.constants_set.maxretries))
 
     def test04_isdir(self):
-        """Testing isdir() when checking for an existing remote directory
+        """testing isdir() with /tmp on localhost
         """
         (sftp, transport_layer) = util.netutil.ssh_connection_open(self.remote_node)
         logging.info('[netutil-test] opened connection with: {0} - {1} '.
@@ -91,7 +91,7 @@ class NetUtilTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Kills the environment prepared at setUpClass
+        """Kills setUpClass environment
         """
         #removefilecommand = "rm -rf" + " " + cls.remotemachinefilename
         #subprocess.check_output(removefilecommand, shell=True)
