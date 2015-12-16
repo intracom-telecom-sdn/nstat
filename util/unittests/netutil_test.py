@@ -22,7 +22,7 @@ import unittest
 import util.netutil
 
 LOGGEROBJ = logging.getLogger()
-LOGGEROBJ.level = logging.DEBUG
+LOGGEROBJ.level = logging.INFO
 
 STREAMHANDLER = logging.StreamHandler(sys.stdout)
 LOGGEROBJ.addHandler(STREAMHANDLER)
@@ -46,29 +46,52 @@ class NetUtilTest(unittest.TestCase):
         node_parameters = collections.namedtuple('ssh_connection',
         ['name', 'ip', 'ssh_port', 'username', 'password'])
         cls.remote_node = node_parameters('remote_node', '127.0.0.1', 22,
-                                          'jenkins', 'jenkins')
-        cls.remote_node_false_ip = node_parameters('remote_node', '127.0.0.1',
-                                                   22, 'jenkins', 'jenkins')
+                                          'konpap', 'konpap')
         constants = collections.namedtuple('constants',
-            ['retries','maxretries','sleeptime'])
-        cls.constants_set = constants(1,1,2)
+            ['maxretries','sleeptime'])
+        cls.constants_set = constants(5,2)
         file_paths = collections.namedtuple('file_paths',
-            ['rem_node_file_name','rem_node_file_name_false','rem_node_path',
+            ['loc_node_file_name','rem_node_file_name_false','rem_node_path',
              'rem_node_path_false'])
         cls.file_paths_set = file_paths('foofile.txt','foofile.mp3','/tmp','/test')
 
-        cls.localmachinefolder = os.getcwd() + '/' + 'fooDir'
-        cls.remotemachinefolder = cls.file_paths_set.rem_node_path + '/' + 'fooDir'
+        cls.localnodefilepath = os.getcwd() + '/' + 'fooDir/'
+        cls.remotenodefolderpath = cls.file_paths_set.rem_node_path
         subprocess.check_output("touch" + " " +
-                                cls.file_paths_set.rem_node_file_name_false,
+                                cls.file_paths_set.loc_node_file_name,
                                 shell=True)
+        if not os.path.isdir(cls.localnodefilepath):
+            os.mkdir(cls.localnodefilepath)
+        retries = 1
+        while True:
+            logging.info('[setup-netutil-test] trying to connect to %s (%i/%i)',
+                         cls.remote_node.ip, retries,
+                         cls.constants_set.maxretries)
+            response = os.system("ping -c 1 " + cls.remote_node.ip)
 
+            if response == 0:
+                logging.info('remote machine: %s is up', cls.remote_node.ip)
+                break
+            else:
+                logging.info('remote machine: %s, is '
+                    'DOWN (%i/%i)', cls.remote_node.ip,
+                    retries, cls.constants_set.maxretries)
+                retries += 1
+                time.sleep(cls.constants_set.sleeptime)
+
+            if retries > cls.constants_set.maxretries:
+                logging.info('could not reach remote node: test cannot continue')
+
+                return -1
     def test01_ssh_connection_open(self):
         """ssh_connection_open() false "remote ip" provided
         """
         logging.info('[netutil-test] remote address: {0} '.
-                     format(self.remote_node_false_ip.ip))
-
+                     format(self.remote_node.ip))
+        (sftp, transport_layer) = \
+            util.netutil.ssh_connection_open(self.remote_node)
+        self.assertIsNotNone(sftp)
+        util.netutil.ssh_connection_close(sftp, transport_layer)
 
     def test02_ssh_connect_or_return(self):
         """ssh_connect_or_return() check returned ssh object
@@ -78,25 +101,45 @@ class NetUtilTest(unittest.TestCase):
         self.assertIsNotNone(util.netutil.ssh_connect_or_return(
              self.remote_node, self.constants_set.maxretries))
 
-    def test04_isdir(self):
+    def test03_isdir(self):
         """testing isdir() with /tmp on localhost
         """
-        (sftp, transport_layer) = util.netutil.ssh_connection_open(self.remote_node)
+        (sftp, transport_layer) = \
+            util.netutil.ssh_connection_open(self.remote_node)
         logging.info('[netutil-test] opened connection with: {0} - {1} '.
                      format(self.remote_node.ip, self.remote_node.username))
         self.assertTrue(util.netutil.isdir(self.file_paths_set.rem_node_path,
                                            sftp))
         util.netutil.ssh_connection_close(sftp, transport_layer)
 
+    def test04_ssh_copy_file_to_target(self):
+        """ssh_copy_file_to_target() copying a local file to remote target
+        """
+        subprocess.check_output("touch" + " " + 'fooDir/' +
+                                self.file_paths_set.loc_node_file_name,
+                                shell=True)
+        localfile  = self.localnodefilepath +  \
+            self.file_paths_set.loc_node_file_name
+        remotefile = self.remotenodefolderpath + '/' + \
+            self.file_paths_set.loc_node_file_name
+        logging.info('copying from file: {0} from local path - to remote node {1} '.
+                     format(localfile, remotefile))
 
+    def test05_copy_dir_local_to_remote(self):
+        """copy_dir_local_to_remote(). copying a local directory to remote target
+         """
+        util.netutil.copy_dir_local_to_remote(self.remote_node,self.localnodefilepath,
+            self.remotenodefolderpath)
+        (sftp, transport_layer) = \
+        util.netutil.ssh_connection_open(self.remote_node)
+        self.assertTrue(util.netutil.isdir(self.file_paths_set.rem_node_path,
+                                           sftp))
     @classmethod
     def tearDownClass(cls):
-        """Kills setUpClass environment
+        """cleans setUpClass environment
         """
-        #removefilecommand = "rm -rf" + " " + cls.remotemachinefilename
-        #subprocess.check_output(removefilecommand, shell=True)
+        #subprocess.check_output("rm -rf" + " " + "foo*", shell=True)
         pass
-
 
 if __name__ == '__main__':
     SUITE_NETUTILTEST = unittest.TestLoader().loadTestsFromTestCase(NetUtilTest)

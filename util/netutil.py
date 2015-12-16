@@ -6,6 +6,7 @@
 
 """ General network utilities """
 
+import collections
 import logging
 import os
 import paramiko
@@ -227,7 +228,7 @@ def ssh_connection_open(connection):
 
         return (sftp, transport_layer)
     except:
-        logging.error('[netutil] [ssh_connection_open] error: check connection object')
+        logging.error('[ssh_connection_open] error: check connection object')
 
 
 def ssh_copy_file_to_target(connection, local_file, remote_file):
@@ -262,16 +263,16 @@ def ssh_delete_file_if_exists(connection, remote_file):
     (sftp, transport_layer) = ssh_connection_open(connection)
     try:
         sftp.remove(remote_file)
-        logging.info('[netutil] [delete_file_if_exists]: file {0} removed'.
+        logging.info('[delete_file_if_exists]: file {0} removed'.
                      format(remote_file))
     except IOError:
         logging.error(
-            '[netutil] [delete_file_if_exists] IOError: The given remote_file '
+            '[delete_file_if_exists] IOError: The given remote_file '
             'is not valid. Error message: {0}'.format(IOError.strerror))
     except:
         logging.error(
-            '[netutil] [delete_file_if_exists] Error: Unknown Error occured '
-            'while was trying to remove remote file.')
+            '[delete_file_if_exists] Error: unknown error occurred '
+            'removing remote file.')
 
     ssh_connection_close(sftp, transport_layer)
 
