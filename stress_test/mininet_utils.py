@@ -15,7 +15,7 @@ import util.netutil
 import util.process
 
 def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
-                         mininet_rest_server_host, mininet_rest_server_port):
+                         mininet_rest_server):
     """
     Remotely boots a REST server on the Mininet node over an SSH connection
 
@@ -32,8 +32,8 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
     """
 
     boot_command = ('sudo python {0} --rest-host {1} --rest-port {2}'.
-                    format(mininet_server_remote_path, mininet_rest_server_host,
-                           mininet_rest_server_port))
+                    format(mininet_server_remote_path, mininet_rest_server.ip,
+                           mininet_rest_server.port))
     util.netutil.ssh_run_command(mininet_ssh_session, boot_command,
                                  prefix='[start_mininet_server]',
                                  lines_queue=None, print_flag=True,
@@ -46,7 +46,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
                  format('[start_mininet_server] '))
     while (mininet_server_pid == -1) and (num_of_tries > 0):
         mininet_server_pid = util.process.getpid_listeningonport(
-            mininet_rest_server_port, mininet_ssh_session)
+            mininet_rest_server.port, mininet_ssh_session)
         time.sleep(1)
         num_of_tries -= 1
 
@@ -56,11 +56,10 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
         raise Exception('Fail to start mininet REST server. Got invalid pid.')
 
 
-def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server_host,
-                       mininet_rest_server_port, controller_ip,
-                       controller_port, mininet_topology_type, mininet_size,
-                       mininet_group_size, mininet_group_delay_ms,
-                       mininet_hosts_per_switch):
+def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server,
+                      controller_ip, controller_port, mininet_topology_type,
+                      mininet_size, mininet_group_size, mininet_group_delay_ms,
+                      mininet_hosts_per_switch):
     """
     Locally calls the Mininet handler that remotely initializes a topology on
     a remote Mininet node
@@ -92,8 +91,8 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server_host,
     :type start_topo_command: list<str>
     """
 
-    init_topo_command = [mininet_init_topo_handler, mininet_rest_server_host,
-                          str(mininet_rest_server_port), controller_ip,
+    init_topo_command = [mininet_init_topo_handler, mininet_rest_server.ip,
+                          str(mininet_rest_server.port), controller_ip,
                           str(controller_port), str(mininet_topology_type),
                           str(mininet_size), str(mininet_group_size),
                           str(mininet_group_delay_ms),
@@ -103,8 +102,7 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server_host,
         format(mininet_topology_type))
 
 
-def start_mininet_topo(mininet_start_handler, mininet_rest_server_host,
-                      mininet_rest_server_port):
+def start_mininet_topo(mininet_start_handler, mininet_rest_server):
     """
     Locally calls the Mininet handler that remotely starts an initialized
     topology on a remote Mininet node
@@ -119,12 +117,11 @@ def start_mininet_topo(mininet_start_handler, mininet_rest_server_host,
     """
 
     util.customsubprocess.check_output_streaming(
-        [mininet_start_handler, mininet_rest_server_host,
-        str(mininet_rest_server_port)], '[mininet_start_handler]')
+        [mininet_start_handler, mininet_rest_server.ip,
+        str(mininet_rest_server.port)], '[mininet_start_handler]')
 
 
-def stop_mininet_topo(mininet_stop_handler, mininet_rest_server_host,
-                      mininet_rest_server_port):
+def stop_mininet_topo(mininet_stop_handler, mininet_rest_server):
     """
     Locally calls the Mininet handler that remotely stops a topology on a
     remote Mininet node
@@ -139,8 +136,8 @@ def stop_mininet_topo(mininet_stop_handler, mininet_rest_server_host,
     """
 
     util.customsubprocess.check_output_streaming(
-        [mininet_stop_handler, mininet_rest_server_host,
-        str(mininet_rest_server_port)], '[mininet_stop_handler]')
+        [mininet_stop_handler, mininet_rest_server.ip,
+        str(mininet_rest_server.port)], '[mininet_stop_handler]')
 
 
 def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
@@ -175,8 +172,7 @@ def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
         raise Exception('Fail to stop mininet REST server. Got invalid pid.')
 
 
-def delete_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
-                            mininet_folder, remote_port=22):
+def delete_mininet_handlers(mininet_node, mininet_folder):
     """
     Cleans up Mininet handlers on the remote Mininet node
 
@@ -193,12 +189,10 @@ def delete_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
     :type remote_port: int
     """
 
-    util.netutil.remove_remote_directory(mininet_ssh_server_ip, mininet_user,
-                                         mininet_pass, mininet_folder,
-                                         remote_port)
+    util.netutil.remove_remote_directory(mininet_node, mininet_folder)
 
-def copy_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
-                          mininet_source, mininet_target, remote_port=22):
+def copy_mininet_handlers(mininet_node,
+                          mininet_source, mininet_target):
     """
     Copies Mininet handlers on the remote Mininet node
 
@@ -216,6 +210,5 @@ def copy_mininet_handlers(mininet_ssh_server_ip, mininet_user, mininet_pass,
     :type remote_port: int
     """
 
-    util.netutil.copy_dir_local_to_remote(mininet_ssh_server_ip, mininet_user,
-                                          mininet_pass, mininet_source,
-                                          mininet_target, remote_port)
+    util.netutil.copy_dir_local_to_remote(mininet_node, mininet_source,
+                                          mininet_target)
