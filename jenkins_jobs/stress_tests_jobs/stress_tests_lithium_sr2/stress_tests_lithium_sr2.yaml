@@ -44,7 +44,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
@@ -75,7 +75,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 
 # ------------------------------------------------------------------------------
@@ -106,6 +106,8 @@
                --html-report=/home/vagrant/nstat/report.html \
                --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
 
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
 # ------------------------------------------------------------------------------
 # lithium_nb_active_scalability_mininet_10sw
 # ------------------------------------------------------------------------------
@@ -133,6 +135,8 @@
                --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
                --html-report=/home/vagrant/nstat/report.html \
                --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_RPC_sb_active_scalability_mtcbench
@@ -163,7 +167,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
@@ -194,7 +198,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_RPC_sb_idle_scalability_mtcbench
@@ -225,7 +229,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_sb_idle_scalability_mininet_DisconnectedTopo
@@ -256,7 +260,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_sb_idle_scalability_mininet_LinearTopo
@@ -287,7 +291,8 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
 # ------------------------------------------------------------------------------
 # lithium_sb_idle_scalability_mininet_MeshTopo
 # ------------------------------------------------------------------------------
@@ -317,7 +322,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # job instances
