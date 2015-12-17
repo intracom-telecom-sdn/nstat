@@ -57,7 +57,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_DS_sb_active_stability_mtcbench
@@ -95,7 +95,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_DS_sb_idle_scalability_mtcbench
@@ -128,7 +128,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_nb_active_scalability_mininet
@@ -167,7 +167,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_RPC_sb_active_scalability_mtcbench
@@ -207,7 +207,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_RPC_sb_active_stability_mtcbench
@@ -243,7 +243,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_RPC_sb_idle_scalability_mtcbench
@@ -274,7 +274,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_sb_idle_scalability_mininet
@@ -305,7 +305,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # sample_lithium_sb_idle_stability_mininet
@@ -336,7 +336,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # job instances
