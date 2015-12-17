@@ -98,13 +98,13 @@
 
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="nb_active_scalability_mininet" \
-               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
-               --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
-               --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
-               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
-               --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
-               --html-report=/home/vagrant/nstat/report.html \
-               --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+               --html-report=$WORKSPACE/report.html \
+               --output-dir=$WORKSPACE/$RESULTS_DIR/
 
           source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
@@ -128,13 +128,13 @@
 
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="nb_active_scalability_mininet" \
-               --ctrl-base-dir=/home/vagrant/nstat/controllers/odl_lithium_sr2_pb/ \
-               --sb-generator-base-dir=/home/vagrant/nstat/emulators/mininet/ \
-               --nb-generator-base-dir=/home/vagrant/nstat/emulators/nb_generator/ \
-               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr2/$CONFIG_FILENAME".json" \
-               --json-output=/home/vagrant/nstat/$OUTPUT_FILENAME"_results.json" \
-               --html-report=/home/vagrant/nstat/report.html \
-               --output-dir=/home/vagrant/nstat/$RESULTS_DIR/
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+               --html-report=$WORKSPACE/report.html \
+               --output-dir=$WORKSPACE/$RESULTS_DIR/
 
           source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
