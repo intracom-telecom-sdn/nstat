@@ -6,8 +6,8 @@
 
 """ NorthBound Performance test """
 
-import collections
 import common
+import conf_collections_util
 import controller_utils
 import itertools
 import json
@@ -139,43 +139,21 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     cpid = 0
 
     # Mininet parameters
-    mininet_rest_server_boot = mininet_base_dir + \
-        conf['mininet_rest_server_boot']
-    mininet_stop_switches_handler = mininet_base_dir + \
-        conf['mininet_stop_switches_handler']
-    mininet_get_switches_handler = mininet_base_dir + \
-        conf['mininet_get_switches_handler']
-    mininet_init_topo_handler = mininet_base_dir + \
-        conf['mininet_init_topo_handler']
-    mininet_start_topo_handler = mininet_base_dir + \
-        conf['mininet_start_topo_handler']
 
     mininet_rest_server_port = conf['mininet_rest_server_port']
 
     # Northbound generator node parameters
     nb_generator_run_handler = nb_generator_base_dir + \
         conf['nb_generator_run_handler']
-    nb_generator_host_ip = conf['nb_generator_host_ip']
+
     if 'nb_generator_cpu_shares' in conf:
         nb_generator_cpu_shares = conf['nb_generator_cpu_shares']
 
     # Controller parameters
-    controller_build_handler = ctrl_base_dir + conf['controller_build_handler']
-    controller_start_handler = ctrl_base_dir + conf['controller_start_handler']
-    controller_status_handler = \
-        ctrl_base_dir + conf['controller_status_handler']
-    controller_stop_handler = ctrl_base_dir + conf['controller_stop_handler']
-    controller_clean_handler = ctrl_base_dir + conf['controller_clean_handler']
-    controller_statistics_handler = \
-        ctrl_base_dir + conf['controller_statistics_handler']
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
     controller_restart = conf['controller_restart']
-    controller_port = conf['controller_port']
-    controller_restconf_port = conf['controller_restconf_port']
-    controller_restconf_user = conf['controller_restconf_user']
-    controller_restconf_password = conf['controller_restconf_password']
     if 'controller_cpu_shares' in conf:
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
@@ -183,24 +161,41 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
     # Various test parameters
     flow_delete_flag = conf['flow_delete_flag']
-    node_parameters = collections.namedtuple('ssh_connection',
-        ['name', 'ip', 'ssh_port', 'username', 'password'])
-    controller_handlers = collections.namedtuple('controller_handlers',
-        ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
-         'ctrl_stop_handler', 'ctrl_clean_handler'])
-    controller_handlers_set = controller_handlers(controller_build_handler,
-        controller_start_handler, controller_status_handler,
-        controller_stop_handler, controller_clean_handler)
-    controller_node = node_parameters('Controller',
+
+
+
+    controller_handlers_set = conf_collections_util.controller_handlers(
+        ctrl_base_dir + conf['controller_build_handler'],
+        ctrl_base_dir + conf['controller_start_handler'],
+        ctrl_base_dir + conf['controller_status_handler'],
+        ctrl_base_dir + conf['controller_stop_handler'],
+        ctrl_base_dir + conf['controller_clean_handler'],
+        ctrl_base_dir + conf['controller_statistics_handler']
+        )
+    mininet_handlers_set = conf_collections_util.mininet_handlers(
+        mininet_base_dir + conf['mininet_rest_server_boot'],
+        mininet_base_dir + conf['mininet_stop_switches_handler'],
+        mininet_base_dir + conf['mininet_get_switches_handler'],
+        mininet_base_dir + conf['mininet_init_topo_handler'],
+        mininet_base_dir + conf['mininet_start_topo_handler']
+        )
+    controller_node = conf_collections_util.node_parameters('Controller',
                                       conf['controller_node_ip'],
                                       int(conf['controller_node_ssh_port']),
                                       conf['controller_node_username'],
                                       conf['controller_node_password'])
-    mininet_node = node_parameters('Mininet', conf['mininet_node_ip'],
+    mininet_node = conf_collections_util.node_parameters('Mininet', conf['mininet_node_ip'],
                                    int(conf['mininet_node_ssh_port']),
                                    conf['mininet_node_username'],
                                    conf['mininet_node_password'])
-    nb_generator_node = node_parameters('Generator',
+    controller_sb_interface = conf_collections_util.controller_southbound(conf['controller_node_ip'],
+                                                    conf['controller_port'])
+    controller_nb_interface = conf_collections_util.controller_northbound(conf['controller_node_ip'],
+        conf['controller_restconf_port'], conf['controller_restconf_user'],
+        conf['controller_restconf_password'])
+    mininet_rest_server = conf_collections_util.mininet_server(conf['mininet_node_ip'],
+                                         conf['mininet_rest_server_port'])
+    nb_generator_node = conf_collections_util.node_parameters('NB_Generator',
                                         conf['nb_generator_node_ip'],
                                         int(conf['nb_generator_node_ssh_port']),
                                         conf['nb_generator_node_username'],
@@ -217,12 +212,19 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     try:
         # Before proceeding with the experiments check validity of all
         # handlers
-        util.file_ops.check_filelist([controller_build_handler, controller_start_handler,
-        controller_status_handler, controller_stop_handler,
-        controller_clean_handler, controller_statistics_handler,
-        mininet_rest_server_boot, mininet_stop_switches_handler,
-        mininet_get_switches_handler, mininet_start_topo_handler,
-        mininet_init_topo_handler])
+        util.file_ops.check_filelist([
+            controller_handlers_set.ctrl_build_handler,
+            controller_handlers_set.ctrl_start_handler,
+            controller_handlers_set.ctrl_status_handler,
+            controller_handlers_set.ctrl_stop_handler,
+            controller_handlers_set.ctrl_clean_handler,
+            controller_handlers_set.ctrl_statistics_handler,
+            mininet_handlers_set.rest_server_boot,
+            mininet_handlers_set.stop_switches_handler,
+            mininet_handlers_set.get_switches_handler,
+            mininet_handlers_set.init_topo_handler,
+            mininet_handlers_set.start_topo_handler,
+            ])
 
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
