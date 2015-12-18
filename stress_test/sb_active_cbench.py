@@ -374,7 +374,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
                 args=(cbench_handlers_set.cbench_run_handler,
-                      cbench_cpus, controller_node.controller_node_ip,
+                      cbench_cpus, controller_node.ip,
                       controller_sb_interface.port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,
