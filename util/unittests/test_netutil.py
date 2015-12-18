@@ -52,7 +52,7 @@ class NetUtilTest(unittest.TestCase):
         cls.constants_set = constants(5,2)
         file_paths = collections.namedtuple('file_paths',
             ['loc_node_file_name','rem_node_file_name_false','rem_node_path',
-             'rem_node_path_copy'])
+             'rem_node_path_create'])
         cls.file_paths_set = file_paths('foofile.txt','foofile.mp3','/tmp','/test')
 
         cls.localnodefilepath = os.getcwd() + '/' + 'fooDir/'
@@ -137,8 +137,12 @@ class NetUtilTest(unittest.TestCase):
     def test06_create_dir_remote(self):
         """create_dir_remote(). creating directory to remote node
         """
-        #util.netutil.create_dir_remote(self.remote_node,
-        #    self.remotenodefolderpath)
+        remote_dir_create = self.file_paths_set.rem_node_path + \
+            self.file_paths_set.rem_node_path_create
+        logging.info('creating directory: {0} at remote node {1} '.
+                     format(remote_dir_create, self.remote_node.ip))
+        util.netutil.create_dir_remote(self.remote_node,
+            remote_dir_create)
 
         pass
     @classmethod
