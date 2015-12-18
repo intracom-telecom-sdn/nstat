@@ -233,7 +233,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['cbench_simulated_hosts'] = \
-                cbench_simulated_hosts.value
+                cbench_simulated_hosts
             statistics['cbench_switches'] = cbench_switches.value
             statistics['cbench_threads'] = cbench_threads.value
             statistics['cbench_switches_per_thread'] = \
