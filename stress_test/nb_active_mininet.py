@@ -27,10 +27,9 @@ import util.netutil
 
 def mininet_topo_check_booted(expected_switches, mininet_group_size,
                               mininet_group_delay_ms,
-                              mininet_get_switches_handler, mininet_ip,
-                              mininet_rest_server_port, ctrl_ip,
-                              ctrl_port, controller_restconf_user,
-                              controller_restconf_password, num_tries=3):
+                              mininet_get_switches_handler,
+                              mininet_rest_server,
+                              controller_nb_interface, num_tries=3):
     """
     Check if a Mininet topology has been booted. Check both from the Mininet
     side and from the controller operational DS.
@@ -70,7 +69,6 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     discovered_switches = 0
     ds_switches = 0
     tries = 0
-    auth_token = (controller_restconf_user, controller_restconf_password)
 
     while tries < num_tries:
         logging.info('[mininet_topo_check_booted] Check if topology is up.')
@@ -83,15 +81,14 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
 
         try:
             util.customsubprocess.check_output_streaming(
-                [mininet_get_switches_handler, mininet_ip,
-                 str(mininet_rest_server_port)],
+                [mininet_get_switches_handler, mininet_rest_server.ip,
+                 str(mininet_rest_server.port)],
                 '[mininet_get_switches_handler]', queue=outq)
             discovered_switches = int(outq.get().strip())
             logging.info('[mininet_topo_check_booted] Discovered {0} switches'
                           ' at the Mininet side'.format(discovered_switches))
 
-            ds_switches = common.check_ds_switches(ctrl_ip, ctrl_port,
-                                                   auth_token)
+            ds_switches = common.check_ds_switches(controller_nb_interface)
             logging.info('[mininet_topo_check_booted] Discovered {0} switches'
                           ' at the controller side'.format(ds_switches))
             if discovered_switches == expected_switches and \
@@ -285,8 +282,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             mininet_topo_check_booted(mininet_size, mininet_group_size,
                                       mininet_group_delay_ms,
-                                      mininet_handlers_set,
-                                      mininet_node.ip,
+                                      mininet_handlers_set.get_switches_handler,
+                                      mininet_rest_server,
                                       controller_nb_interface)
 
             flow_discovery_deadline_ms = 240000
