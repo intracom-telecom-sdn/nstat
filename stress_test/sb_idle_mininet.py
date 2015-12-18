@@ -173,8 +173,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
-                mininet_server_remote_path, mininet_rest_server.ip,
-                mininet_rest_server.port)
+                mininet_server_remote_path, mininet_rest_server)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
@@ -203,19 +202,16 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             mininet_utils.init_mininet_topo(
                 mininet_handlers_set.init_topo_handler,
-                mininet_rest_server.ip, mininet_rest_server.port,
-                controller_node.ip, controller_node.port,
-                mininet_topology_type, mininet_size.value,
-                mininet_group_size, mininet_group_delay_ms,
-                mininet_hosts_per_switch.value)
+                mininet_rest_server, controller_node.ip, controller_node.port,
+                mininet_topology_type, mininet_size.value, mininet_group_size,
+                mininet_group_delay_ms, mininet_hosts_per_switch.value)
 
             t_start.value = time.time()
 
 
             logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_mininet_topo(
-                mininet_handlers_set.start_topo_handler,
-                mininet_rest_server.ip, mininet_rest_server.port)
+                mininet_handlers_set.start_topo_handler, mininet_rest_server)
 
             # Parallel section.
             # We have boot_up_time equal to 0 because start_mininet_topo()
@@ -260,7 +256,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} stopping Mininet topology.'.format(test_type))
             mininet_utils.stop_mininet_topo(
                 mininet_handlers_set.stop_switches_handler,
-                mininet_rest_server.ip, mininet_rest_server.port)
+                mininet_rest_server)
 
             logging.info('{0} stopping REST daemon in Mininet node'.
                 format(test_type))
