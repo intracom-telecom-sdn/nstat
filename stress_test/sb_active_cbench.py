@@ -113,7 +113,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
         try:
             # read messages from queue while TERM_SUCCESS has not been sent
             line = data_queue.get(block=True, timeout=10000)
-            if line == term_success.value.decode():
+            #if line == term_success.value.decode():
+            if line == term_success:
                 logging.info('[monitor_thread] successful termination '
                               'string returned. Returning samples and exiting.')
                 result_queue.put(samples, block=True)
