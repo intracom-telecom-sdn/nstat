@@ -113,7 +113,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
         try:
             # read messages from queue while TERM_SUCCESS has not been sent
             line = data_queue.get(block=True, timeout=10000)
-            if line == term_success.value.decode():
+            #if line == term_success.value.decode():
+            if line == term_success:
                 logging.info('[monitor_thread] successful termination '
                               'string returned. Returning samples and exiting.')
                 result_queue.put(samples, block=True)
@@ -374,7 +375,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
                 args=(cbench_handlers_set.cbench_run_handler,
-                      cbench_cpus, controller_node.controller_node_ip,
+                      cbench_cpus, controller_node.ip,
                       controller_sb_interface.port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches,

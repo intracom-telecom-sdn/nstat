@@ -82,7 +82,7 @@ def create_dir_remote(connection, remote_path):
     :param connection: A named tuple with all the connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_path: maximum number of times to connect
+    :param remote_path: 
     :type connection: collections.namedtuple
     :type remote_path: str
     """

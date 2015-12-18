@@ -52,7 +52,7 @@ class NetUtilTest(unittest.TestCase):
         cls.constants_set = constants(5,2)
         file_paths = collections.namedtuple('file_paths',
             ['loc_node_file_name','rem_node_file_name_false','rem_node_path',
-             'rem_node_path_false'])
+             'rem_node_path_create'])
         cls.file_paths_set = file_paths('foofile.txt','foofile.mp3','/tmp','/test')
 
         cls.localnodefilepath = os.getcwd() + '/' + 'fooDir/'
@@ -126,7 +126,7 @@ class NetUtilTest(unittest.TestCase):
                      format(localfile, remotefile))
 
     def test05_copy_dir_local_to_remote(self):
-        """copy_dir_local_to_remote(). copying a local directory to remote target
+        """copy_dir_local_to_remote(). copying a local directory to remote node
          """
         util.netutil.copy_dir_local_to_remote(self.remote_node,self.localnodefilepath,
             self.remotenodefolderpath)
@@ -134,6 +134,17 @@ class NetUtilTest(unittest.TestCase):
         util.netutil.ssh_connection_open(self.remote_node)
         self.assertTrue(util.netutil.isdir(self.file_paths_set.rem_node_path,
                                            sftp))
+    def test06_create_dir_remote(self):
+        """create_dir_remote(). creating directory to remote node
+        """
+        remote_dir_create = self.file_paths_set.rem_node_path + \
+            self.file_paths_set.rem_node_path_create
+        logging.info('creating directory: {0} at remote node {1} '.
+                     format(remote_dir_create, self.remote_node.ip))
+        util.netutil.create_dir_remote(self.remote_node,
+            remote_dir_create)
+
+        pass
     @classmethod
     def tearDownClass(cls):
         """cleans setUpClass environment

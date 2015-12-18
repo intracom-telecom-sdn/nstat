@@ -201,7 +201,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             cbench_thread = multiprocessing.Process(
                 target=cbench_utils.cbench_thread,
                 args=(cbench_handlers_set.cbench_run_handler,
-                      cbench_cpus, controller_node.controller_node_ip,
+                      cbench_cpus, controller_node.ip,
                       controller_sb_interface.port, cbench_threads,
                       cbench_switches_per_thread,
                       cbench_switches, cbench_thread_creation_delay_ms,
@@ -233,7 +233,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['cbench_simulated_hosts'] = \
-                cbench_simulated_hosts.value
+                cbench_simulated_hosts
             statistics['cbench_switches'] = cbench_switches.value
             statistics['cbench_threads'] = cbench_threads.value
             statistics['cbench_switches_per_thread'] = \
