@@ -455,16 +455,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                 cbench_handlers_set.cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
-        if controller_ssh_client:
-            controller_ssh_client.close()
-        else:
-            logging.error('{0} controller ssh connection does not exist.'.
-                          format(test_type))
-        if cbench_ssh_client:
-            cbench_ssh_client.close()
-        else:
-            logging.error('{0} cbench ssh connection does not exist.'.
-                          format(test_type))
+        common.close_ssh_connections([controller_ssh_client,
+                                      cbench_ssh_client])
+
 
 def get_report_spec(test_type, config_json, results_json):
     """It returns all the information that is needed for the generation of the

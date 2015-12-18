@@ -6,8 +6,8 @@
 
 """ Idle Southbound Performance test """
 
-import collections
 import common
+import conf_collections_util
 import controller_utils
 import itertools
 import logging
@@ -50,7 +50,6 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     mininet_size = multiprocessing.Value('i', 0)
 
     # Mininet parameters
-    mininet_server_remote_path = mininet_base_dir + '/mininet_custom_boot.py'
 
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -61,23 +60,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     else:
         controller_cpu_shares = 100
 
-
-    node_parameters = collections.namedtuple('ssh_connection',
-        ['name', 'ip', 'ssh_port', 'username', 'password'])
-    controller_handlers = collections.namedtuple('controller_handlers',
-        ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
-         'ctrl_stop_handler', 'ctrl_clean_handler', 'ctrl_statistics_handler'])
-    mininet_handlers = collections.namedtuple('mininet_handlers' ,
-        ['rest_server_boot', 'stop_switches_handler', 'get_switches_handler',
-         'init_topo_handler', 'start_topo_handler'])
-    controller_northbound = collections.namedtuple('controller_northbound',
-        ['ip', 'port', 'username', 'password'])
-    controller_southbound = collections.namedtuple('controller_southbound',
-                                                   ['ip', 'port'])
-    mininet_server = collections.namedtuple('mininet_server',
-                                            ['ip', 'port'])
-
-    controller_handlers_set = controller_handlers(
+    controller_handlers_set = conf_collections_util.controller_handlers(
         ctrl_base_dir + conf['controller_build_handler'],
         ctrl_base_dir + conf['controller_start_handler'],
         ctrl_base_dir + conf['controller_status_handler'],
@@ -85,29 +68,26 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler']
         )
-    mininet_handlers_set = mininet_handlers(
+    mininet_handlers_set = conf_collections_util.mininet_handlers(
         mininet_base_dir + conf['mininet_rest_server_boot'],
         mininet_base_dir + conf['mininet_stop_switches_handler'],
         mininet_base_dir + conf['mininet_get_switches_handler'],
         mininet_base_dir + conf['mininet_init_topo_handler'],
         mininet_base_dir + conf['mininet_start_topo_handler']
         )
-    controller_node = node_parameters('Controller',
-                                      conf['controller_node_ip'],
-                                      int(conf['controller_node_ssh_port']),
-                                      conf['controller_node_username'],
-                                      conf['controller_node_password'])
-    mininet_node = node_parameters('Mininet', conf['mininet_node_ip'],
-                                   int(conf['mininet_node_ssh_port']),
-                                   conf['mininet_node_username'],
-                                   conf['mininet_node_password'])
-    controller_sb_interface = controller_southbound(conf['controller_node_ip'],
-                                                    conf['controller_port'])
-    controller_nb_interface = controller_northbound(conf['controller_node_ip'],
-        conf['controller_restconf_port'], conf['controller_restconf_user'],
-        conf['controller_restconf_password'])
-    mininet_rest_server = mininet_server(conf['mininet_node_ip'],
-                                         conf['mininet_rest_server_port'])
+    controller_node = conf_collections_util.node_parameters('Controller',
+        conf['controller_node_ip'], int(conf['controller_node_ssh_port']),
+        conf['controller_node_username'], conf['controller_node_password'])
+    mininet_node = conf_collections_util.node_parameters('Mininet',
+        conf['mininet_node_ip'], int(conf['mininet_node_ssh_port']),
+        conf['mininet_node_username'], conf['mininet_node_password'])
+    controller_sb_interface = conf_collections_util.controller_southbound(
+        conf['controller_node_ip'], conf['controller_port'])
+    controller_nb_interface = conf_collections_util.controller_northbound(
+        conf['controller_node_ip'], conf['controller_restconf_port'],
+        conf['controller_restconf_user'], conf['controller_restconf_password'])
+    mininet_rest_server = conf_collections_util.mininet_server(
+        conf['mininet_node_ip'], conf['mininet_rest_server_port'])
 
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
@@ -173,7 +153,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} booting up Mininet REST server'.
                           format(test_type))
             mininet_utils.start_mininet_server(mininet_ssh_client,
-                mininet_server_remote_path, mininet_rest_server)
+                mininet_handlers_set.rest_server_boot, mininet_rest_server)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
@@ -248,6 +228,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['discovered_switches'] = res[1]
             total_samples.append(statistics)
 
+            logging.debug('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(
                 controller_handlers_set.ctrl_stop_handler,
                 controller_handlers_set.ctrl_status_handler,
@@ -319,16 +300,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             pass
 
         # Closing ssh connections with controller/Mininet nodes
-        if controller_ssh_client:
-            controller_ssh_client.close()
-        else:
-            logging.error('{0} controller ssh connection does not exist.'.
-                          format(test_type))
-        if mininet_ssh_client:
-            mininet_ssh_client.close()
-        else:
-            logging.error('{0} Mininet ssh connection does not exist.'.
-                          format(test_type))
+        common.close_ssh_connections([controller_ssh_client,
+                                      mininet_ssh_client])
 
 
 def get_report_spec(test_type, config_json, results_json):

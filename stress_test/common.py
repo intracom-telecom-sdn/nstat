@@ -39,6 +39,23 @@ def open_ssh_connections(connections_list):
     return tuple(connection_clients)
 
 
+def close_ssh_connections(ssh_clients_list):
+    """Gets a list of open ssh connections (ssh_clients) and closes them.
+
+    :param ssh_clients_list: A list of named tuples
+    :tyle ssh_clients_list: tuple<paramiko.SSHClient>
+    """
+
+    object_id = 0
+    for ssh_client in ssh_clients_list:
+        if ssh_client:
+            ssh_client.close()
+        else:
+            logging.error('[close_ssh_connections] Connection object with '
+                          'id = {0} does not exist.'.format(object_id))
+        object_id += 1
+
+
 def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
                          data_queue=None):
     """Executes a command either locally or remotely and returns the result
