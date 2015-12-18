@@ -7,9 +7,8 @@
 """ Active Southbound Performance test """
 
 import cbench_utils
-import collections
-import conf_collections_util
 import common
+import conf_collections_util
 import controller_utils
 import itertools
 import logging
