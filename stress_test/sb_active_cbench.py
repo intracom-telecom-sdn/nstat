@@ -8,6 +8,7 @@
 
 import cbench_utils
 import collections
+import conf_collections_util
 import common
 import controller_utils
 import itertools
@@ -238,27 +239,16 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     test_repeats = conf['test_repeats']
     java_opts = conf['java_opts']
 
-    node_parameters = collections.namedtuple('ssh_connection',
-        ['name', 'ip', 'ssh_port', 'username', 'password'])
-    controller_handlers = collections.namedtuple('controller_handlers',
-        ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
-         'ctrl_stop_handler', 'ctrl_clean_handler', 'ctrl_statistics_handler'])
-    cbench_handlers = collections.namedtuple('cbench_handlers' ,
-        ['cbench_build_handler','cbench_clean_handler',
-         'cbench_run_handler'])
-    controller_southbound = collections.namedtuple('controller_southbound',
-                                                   ['ip', 'port'])
-
-    controller_node = node_parameters('Controller',
+    controller_node = conf_collections_util.node_parameters('Controller',
                                       conf['controller_node_ip'],
                                       int(conf['controller_node_ssh_port']),
                                       conf['controller_node_username'],
                                       conf['controller_node_password'])
-    cbench_node = node_parameters('MT-Cbench', conf['cbench_node_ip'],
+    cbench_node = conf_collections_util.node_parameters('MT-Cbench', conf['cbench_node_ip'],
                                    int(conf['cbench_node_ssh_port']),
                                    conf['cbench_node_username'],
                                    conf['cbench_node_password'])
-    controller_handlers_set = controller_handlers(
+    controller_handlers_set = conf_collections_util.controller_handlers(
         ctrl_base_dir + conf['controller_build_handler'],
         ctrl_base_dir + conf['controller_start_handler'],
         ctrl_base_dir + conf['controller_status_handler'],
@@ -266,11 +256,11 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler']
         )
-    cbench_handlers_set = cbench_handlers(
+    cbench_handlers_set = conf_collections_util.cbench_handlers(
         sb_gen_base_dir + conf['cbench_build_handler'],
         sb_gen_base_dir + conf['cbench_clean_handler'],
         sb_gen_base_dir + conf['cbench_run_handler'])
-    controller_sb_interface = controller_southbound(conf['controller_node_ip'],
+    controller_sb_interface = conf_collections_util.controller_southbound(conf['controller_node_ip'],
                                                     conf['controller_port'])
 
     # termination message sent to monitor thread when Cbench is finished
