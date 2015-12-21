@@ -49,6 +49,32 @@ def generate_html_head(css_style='', javascript_functions='',
     javascript_functions + '</head><body>' + head_content
     return html_head
 
+def get_ordered_index(field_value, map_dictionary):
+    """Returns the index of a key in map_dictionary, which is defined by the
+    field_value. If no match is found None is returned
+
+    :param field_value: the value of the key we want to search for, inside
+    the map_dictionary. This is a helper function called inside the
+    single_dict_to_html() and multi_dict_to_html() to avoid repetitions of the
+    same code blocks in these functions
+    :param map_dictionary: An instance of OrderedDict which has mappings
+    between keys and their values as they appear inside an html generated
+    document.
+    :returns: The index where the field_value should be placed, depending on
+    the ordering inside the map_dictionary
+    :rtype: int
+    :type field_value: str
+    :type map_dictionary: collections.OrderedDict
+    """
+
+    ordered_index = 0
+    for map_key, map_value in list(map_dictionary.items()):
+        if map_key == field_value:
+            return ordered_index
+        else:
+            ordered_index = ordered_index + 1
+    # In case no match is found, None value is returned as index
+    return -1
 
 def isalistofdictionaries(lst):
     """Takes a list as argument and checks if all the
@@ -145,6 +171,42 @@ def multi_dict_to_html(data, table_title='', map_dictionary=None,
     table_html = table_html + '</table>'
     return str(table_html)
 
+def single_dict_table_data(data_values, td_style=None, td_class=None):
+    """Returns a <td> ... </td> html element for the single_dict_to_html()
+    type of tables, data columns. In case that the input data_values is a
+    list of dictionaries, this function calls recursively
+    single_dict_to_html() and generates sub tables inside the <td> ... </td>
+    html element.
+
+    :param data_values: the data we want to place into a <td> ... </td>
+    html element.
+    :param td_style: the styling code for the content of <td>...</td> html
+    element.
+    :param cls: the class name attribute of the <td>...</td> html element
+    :returns: html code of a <td>  </td> element for single_dict_to_html()
+    tables
+    :rtype: str
+    :type style: str
+    :type cls: str
+    :type data_values: str or list<dict>
+    """
+
+    cell_str = '<td'
+    if td_style:
+        cell_str += ' style=\"' + td_style + '\"'
+    if td_class:
+        cell_str += ' class=\"' + td_class + '\"'
+    cell_str += '>'
+    if isalistofdictionaries(data_values) == True:
+        # In case we have a list of dictionaries recursive call
+        # of function
+        for data_value in data_values:
+            cell_str += single_dict_to_html(data_value, '', '', '', None)
+        cell_str += '</td>'
+    else:
+        cell_str += str(data_values) + '</td>'
+    return cell_str
+
 def single_dict_to_html(data, key_title, data_title, table_title='',
                         map_dictionary=None):
     """Generates html tables according to the input it gets
@@ -226,66 +288,3 @@ def single_dict_to_html(data, key_title, data_title, table_title='',
     table_html = table_html + '</tbody>'
     table_html = table_html + '</table>'
     return str(table_html)
-
-def get_ordered_index(field_value, map_dictionary):
-    """Returns the index of a key in map_dictionary, which is defined by the
-    field_value. If no match is found None is returned
-
-    :param field_value: the value of the key we want to search for, inside
-    the map_dictionary. This is a helper function called inside the
-    single_dict_to_html() and multi_dict_to_html() to avoid repetitions of the
-    same code blocks in these functions
-    :param map_dictionary: An instance of OrderedDict which has mappings
-    between keys and their values as they appear inside an html generated
-    document.
-    :returns: The index where the field_value should be placed, depending on
-    the ordering inside the map_dictionary
-    :rtype: int
-    :type field_value: str
-    :type map_dictionary: collections.OrderedDict
-    """
-
-    ordered_index = 0
-    for map_key, map_value in list(map_dictionary.items()):
-        if map_key == field_value:
-            return ordered_index
-        else:
-            ordered_index = ordered_index + 1
-    # In case no match is found, None value is returned as index
-    return -1
-
-def single_dict_table_data(data_values, td_style=None, td_class=None):
-    """Returns a <td> ... </td> html element for the single_dict_to_html()
-    type of tables, data columns. In case that the input data_values is a
-    list of dictionaries, this function calls recursively
-    single_dict_to_html() and generates sub tables inside the <td> ... </td>
-    html element.
-
-    :param data_values: the data we want to place into a <td> ... </td>
-    html element.
-    :param td_style: the styling code for the content of <td>...</td> html
-    element.
-    :param cls: the class name attribute of the <td>...</td> html element
-    :returns: html code of a <td>  </td> element for single_dict_to_html()
-    tables
-    :rtype: str
-    :type style: str
-    :type cls: str
-    :type data_values: str or list<dict>
-    """
-
-    cell_str = '<td'
-    if td_style:
-        cell_str += ' style=\"' + td_style + '\"'
-    if td_class:
-        cell_str += ' class=\"' + td_class + '\"'
-    cell_str += '>'
-    if isalistofdictionaries(data_values) == True:
-        # In case we have a list of dictionaries recursive call
-        # of function
-        for data_value in data_values:
-            cell_str += single_dict_to_html(data_value, '', '', '', None)
-        cell_str += '</td>'
-    else:
-        cell_str += str(data_values) + '</td>'
-    return cell_str

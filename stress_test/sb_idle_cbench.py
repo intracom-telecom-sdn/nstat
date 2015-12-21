@@ -245,7 +245,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 cbench_switches_per_thread.value
             statistics['cbench_thread_creation_delay_ms'] = \
                 cbench_thread_creation_delay_ms.value
-
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms.value
             statistics['cbench_delay_before_traffic_ms'] = \

@@ -9,37 +9,6 @@
 import os
 import stat
 
-def file_exists(fpath):
-    """Checks if file exists in filesystem.
-
-    :param fpath: file path to check
-    :type fpath: str
-    :returns: bool
-    :rtype: bool
-    """
-
-    return os.path.isfile(fpath)
-
-def is_file_exe(fpath):
-    """Checks if a file is executable.
-
-    :param fpath: file path to check
-    :type fpath: str
-    :returns: bool
-    :rtype: bool
-    """
-
-    return os.access(fpath, os.X_OK)
-
-def make_file_exe(fpath):
-    """Gives executable rights to a file.
-
-    :param fpath: file path to handle
-    :type fpath: str
-    """
-
-    statinfo = os.stat(fpath)
-    os.chmod(fpath, statinfo.st_mode | stat.S_IEXEC)
 
 def check_files_exist(file_list):
     """Checks if all files in a list exist.
@@ -80,3 +49,35 @@ def check_filelist(file_list):
     filelst = check_files_executables(file_list)
     if filelst != []:
         raise Exception('Files {0} are not executable.'.format(filelst))
+
+def file_exists(fpath):
+    """Checks if file exists in filesystem.
+
+    :param fpath: file path to check
+    :type fpath: str
+    :returns: bool
+    :rtype: bool
+    """
+
+    return os.path.isfile(fpath)
+
+def is_file_exe(fpath):
+    """Checks if a file is executable.
+
+    :param fpath: file path to check
+    :type fpath: str
+    :returns: bool
+    :rtype: bool
+    """
+
+    return os.access(fpath, os.X_OK)
+
+def make_file_exe(fpath):
+    """Gives executable rights to a file.
+
+    :param fpath: file path to handle
+    :type fpath: str
+    """
+
+    statinfo = os.stat(fpath)
+    os.chmod(fpath, statinfo.st_mode | stat.S_IEXEC)
