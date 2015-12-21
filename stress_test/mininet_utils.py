@@ -102,42 +102,30 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server,
         format(mininet_topology_type))
 
 
-def start_mininet_topo(mininet_start_handler, mininet_rest_server):
+def start_stop_mininet_topo(mininet_start_stop_handler, mininet_rest_server,
+                       mininet_action):
     """
     Locally calls the Mininet handler that remotely starts an initialized
     topology on a remote Mininet node
 
-    :param mininet_start_handler: full path of the handler to start the Mininet
+    :param mininet_start_stop_handler: full path of the handler to start the Mininet
     topology
     :param mininet_rest_server_host: hostname/IP the REST server listens to
-    :param mininet_rest_server_port: port the REST server listens to
+    :param mininet_rest_servert: named tuple containing the ip address of
+    mininet REST server and the port it listens for requests
+    :param mininet_action: defines the operation that start-stop mininet
+    handler will perform. Can have either 'start' or 'stop' value.
     :type mininet_start_handler: str
-    :type mininet_rest_server_host: str
-    :type mininet_rest_server_port: int
+    :type mininet_rest_server: collections.namedtuple
+    :type mininet_action: str
     """
 
     util.customsubprocess.check_output_streaming(
-        [mininet_start_handler, mininet_rest_server.ip,
-        str(mininet_rest_server.port)], '[mininet_start_handler]')
-
-
-def stop_mininet_topo(mininet_stop_handler, mininet_rest_server):
-    """
-    Locally calls the Mininet handler that remotely stops a topology on a
-    remote Mininet node
-
-    :param mininet_stop_handler: full path of the handler to stop the Mininet
-    topology
-    :param mininet_rest_server_host: hostname/IP the REST server listens to
-    :param mininet_rest_server_port: port the REST server listens to
-    :type mininet_stop_handler: str
-    :type mininet_rest_server_host: str
-    :type mininet_rest_server_port: int
-    """
-
-    util.customsubprocess.check_output_streaming(
-        [mininet_stop_handler, mininet_rest_server.ip,
-        str(mininet_rest_server.port)], '[mininet_stop_handler]')
+        [mininet_start_stop_handler, mininet_rest_server.ip,
+        str(mininet_rest_server.port), mininet_action],
+        '[mininet_start_stop_handler]')
+    logging.info('[mininet_start_stop_handler] {0} mininet topology.'.
+                 format(mininet_action))
 
 
 def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):

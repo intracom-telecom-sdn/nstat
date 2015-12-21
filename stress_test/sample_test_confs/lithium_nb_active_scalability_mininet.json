@@ -50,9 +50,9 @@
 "controller_cpu_shares":75,
 
 "mininet_rest_server_boot":"./mininet_custom_boot.py",
-"mininet_stop_switches_handler":"./stop_topology_handler.py",
+"mininet_stop_switches_handler":"./start_stop_topology_handler.py",
 "mininet_get_switches_handler":"./get_switches_handler.py",
-"mininet_start_topo_handler":"./start_topology_handler.py",
+"mininet_start_topo_handler":"./start_stop_topology_handler.py",
 "mininet_init_topo_handler":"./init_topology_handler.py",
 "mininet_rest_server_port":3333,
 
