@@ -32,6 +32,7 @@
 "controller_rebuild":true,
 "controller_cleanup":false,
 "controller_name":"ODL",
+
 "controller_port":6653,
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",
@@ -49,7 +50,7 @@
 "cbench_threads":[1,2,3,4,5,6],
 "cbench_switches_per_thread":[50],
 "cbench_thread_creation_delay_ms":[100,500,1000],
-"cbench_delay_before_traffic_ms":30000,
+"cbench_delay_before_traffic_ms":[30000],
 "cbench_mode":"Latency",
 "cbench_warmup":0,
 "cbench_ms_per_test":100000,
