@@ -48,6 +48,9 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_switches_per_thread = multiprocessing.Value('i', 0)
     cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
     cbench_switches = multiprocessing.Value('i', 0)
+    cbench_delay_before_traffic_ms = multiprocessing.Value('i', 0)
+    cbench_simulated_hosts = multiprocessing.Value('i', 0)
+
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
@@ -65,9 +68,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_warmup = conf['cbench_warmup']
     cbench_ms_per_test = conf['cbench_ms_per_test']
     cbench_internal_repeats = conf['cbench_internal_repeats']
-
-    cbench_simulated_hosts = conf['cbench_simulated_hosts']
-    cbench_delay_before_traffic_ms = conf['cbench_delay_before_traffic_ms']
 
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -157,10 +157,14 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         for (cbench_threads.value,
              cbench_switches_per_thread.value,
              cbench_thread_creation_delay_ms.value,
-             controller_statistics_period_ms) in \
+             cbench_delay_before_traffic_ms.value,
+             cbench_simulated_hosts.value,
+             controller_statistics_period_ms.value) in \
              itertools.product(conf['cbench_threads'],
                                conf['cbench_switches_per_thread'],
                                conf['cbench_thread_creation_delay_ms'],
+                               conf['cbench_delay_before_traffic_ms'],
+                               conf['cbench_simulated_hosts'],
                                conf['controller_statistics_period_ms']):
 
             logging.info('{0} changing controller statistics period to {1} ms'.
@@ -233,7 +237,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['cbench_simulated_hosts'] = \
-                cbench_simulated_hosts
+                cbench_simulated_hosts.value
             statistics['cbench_switches'] = cbench_switches.value
             statistics['cbench_threads'] = cbench_threads.value
             statistics['cbench_switches_per_thread'] = \
@@ -244,7 +248,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['cbench_delay_before_traffic_ms'] = \
-                conf['cbench_delay_before_traffic_ms']
+                cbench_delay_before_traffic_ms.value
             statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_sb_interface.port)
             statistics['cbench_mode'] = cbench_mode

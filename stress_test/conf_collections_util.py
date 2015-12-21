@@ -11,8 +11,7 @@ import collections
 node_parameters = collections.namedtuple('ssh_connection',
     ['name', 'ip', 'ssh_port', 'username', 'password'])
 cbench_handlers = collections.namedtuple('cbench_handlers' ,
-    ['cbench_build_handler','cbench_clean_handler',
-     'cbench_run_handler'])
+    ['cbench_build_handler','cbench_clean_handler','cbench_run_handler'])
 controller_handlers = collections.namedtuple('controller_handlers',
     ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
      'ctrl_stop_handler', 'ctrl_clean_handler', 'ctrl_statistics_handler'])

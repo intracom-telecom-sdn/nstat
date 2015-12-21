@@ -148,8 +148,8 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
                    cbench_cpus, controller_ip,
                    controller_port, threads.value,
                    sw_per_thread.value, switches.value, thr_delay_ms.value,
-                   traf_delay_ms, ms_per_test,
-                   internal_repeats, hosts, warmup,
+                   traf_delay_ms.value, ms_per_test,
+                   internal_repeats, hosts.value, warmup,
                    mode, data_queue, cbench_ssh_client)
 
         # cbench ended, enqueue termination message

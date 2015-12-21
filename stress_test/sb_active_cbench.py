@@ -199,6 +199,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
     test_type = '[sb_active_cbench]'
     logging.info('{0} initializing test parameters'.format(test_type))
+
+    # Cbench parameters
     cbench_threads = multiprocessing.Value('i', 0)
     cbench_switches_per_thread = multiprocessing.Value('i', 0)
     cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
@@ -210,7 +212,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cpid = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
 
-    # Cbench parameters
+
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
@@ -233,9 +235,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     else:
         controller_cpu_shares = 100
 
-    # Shared read-write variables between monitor-main thread and
-    # Cbench thread.
-
+    # Shared read-write variables between monitor-main thread and Cbench thread.
     test_repeats = conf['test_repeats']
     java_opts = conf['java_opts']
 
@@ -260,6 +260,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         sb_gen_base_dir + conf['cbench_build_handler'],
         sb_gen_base_dir + conf['cbench_clean_handler'],
         sb_gen_base_dir + conf['cbench_run_handler'])
+
     controller_sb_interface = conf_collections_util.controller_southbound(conf['controller_node_ip'],
                                                     conf['controller_port'])
 
@@ -456,8 +457,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                 cbench_handlers_set.cbench_clean_handler, cbench_ssh_client)
 
         # Closing ssh connections with controller/cbench nodes
-        common.close_ssh_connections([controller_ssh_client,
-                                      cbench_ssh_client])
+        common.close_ssh_connections([controller_ssh_client, cbench_ssh_client])
 
 
 def get_report_spec(test_type, config_json, results_json):
