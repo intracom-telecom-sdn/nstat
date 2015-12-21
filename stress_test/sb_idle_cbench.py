@@ -159,15 +159,14 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
              cbench_switches_per_thread.value,
              cbench_thread_creation_delay_ms.value,
              cbench_delay_before_traffic_ms.value,
-             cbench_simulated_hosts.value,
-             controller_statistics_period_ms.value) in \
+             cbench_simulated_hosts.value) in \
              itertools.product(conf['cbench_threads'],
                                conf['cbench_switches_per_thread'],
                                conf['cbench_thread_creation_delay_ms'],
                                conf['cbench_delay_before_traffic_ms'],
-                               conf['cbench_simulated_hosts'],
-                               conf['controller_statistics_period_ms']):
+                               conf['cbench_simulated_hosts']):
 
+            print(controller_statistics_period_ms.value)
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms.value))
             controller_utils.controller_changestatsperiod(
