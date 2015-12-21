@@ -277,8 +277,9 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 mininet_group_delay_ms, mininet_hosts_per_switch.value)
 
             logging.info('{0} starting Mininet topology.'.format(test_type))
-            mininet_utils.start_mininet_topo(
-                mininet_handlers_set.start_topo_handler, mininet_rest_server)
+            mininet_utils.start_stop_mininet_topo(
+                mininet_handlers_set.start_topo_handler, mininet_rest_server,
+                'start')
 
             mininet_topo_check_booted(mininet_size, mininet_group_size,
                                       mininet_group_delay_ms,
@@ -346,9 +347,9 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 cpid.value, controller_ssh_client)
 
             logging.info('{0} stopping Mininet topology.'.format(test_type))
-            mininet_utils.stop_mininet_topo(
+            mininet_utils.start_stop_mininet_topo(
                 mininet_handlers_set.stop_switches_handler,
-                mininet_rest_server)
+                mininet_rest_server, 'stop')
 
             logging.info('{0} stopping REST daemon in Mininet node'.
                 format(test_type))
