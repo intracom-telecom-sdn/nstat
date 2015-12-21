@@ -330,7 +330,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                conf['controller_statistics_period_ms']):
 
             logging.info('{0} changing controller statistics period to {1} ms'.
-                format(test_type, controller_statistics_period_ms))
+                format(test_type, controller_statistics_period_ms.value))
             controller_utils.controller_changestatsperiod(
                 controller_handlers_set.ctrl_statistics_handler,
                 controller_statistics_period_ms.value, controller_ssh_client)

@@ -78,6 +78,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     else:
         controller_cpu_shares = 100
 
+    controller_statistics_period_ms = multiprocessing.Value('i', 0)
     # Various test parameters
 
     java_opts = conf['java_opts']
@@ -168,10 +169,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                conf['controller_statistics_period_ms']):
 
             logging.info('{0} changing controller statistics period to {1} ms'.
-                format(test_type, controller_statistics_period_ms))
+                format(test_type, controller_statistics_period_ms.value))
             controller_utils.controller_changestatsperiod(
                 controller_handlers_set.ctrl_statistics_handler,
-                controller_statistics_period_ms, controller_ssh_client)
+                controller_statistics_period_ms.value, controller_ssh_client)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(
@@ -246,7 +247,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                 cbench_thread_creation_delay_ms.value
 
             statistics['controller_statistics_period_ms'] = \
-                controller_statistics_period_ms
+                controller_statistics_period_ms.value
             statistics['cbench_delay_before_traffic_ms'] = \
                 cbench_delay_before_traffic_ms.value
             statistics['controller_node_ip'] = controller_node.ip
