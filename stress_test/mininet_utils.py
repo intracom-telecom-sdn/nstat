@@ -8,6 +8,7 @@
 Mininet-related utilities
 """
 
+import common
 import logging
 import time
 import util.customsubprocess
