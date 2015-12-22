@@ -233,7 +233,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_utils.stop_controller(
                 controller_handlers_set.ctrl_stop_handler,
                 controller_handlers_set.ctrl_status_handler,
-                cpid.value, controller_ssh_client)
+                cpid, controller_ssh_client)
 
             logging.info('{0} stopping Mininet topology.'.format(test_type))
             mininet_utils.start_stop_mininet_topo(
@@ -273,7 +273,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_utils.stop_controller(
                 controller_handlers_set.ctrl_stop_handler,
                 controller_handlers_set.ctrl_status_handler,
-                cpid.value, controller_ssh_client)
+                cpid, controller_ssh_client)
         except:
             pass
 

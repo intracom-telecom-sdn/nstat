@@ -192,8 +192,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             mininet_utils.init_mininet_topo(
                 mininet_handlers_set.init_topo_handler, mininet_rest_server,
                 controller_node.ip, controller_node.ssh_port,
-                mininet_topology_type, mininet_size.value, mininet_group_size,
-                mininet_group_delay_ms, mininet_hosts_per_switch.value)
+                mininet_topology_type, mininet_size, mininet_group_size,
+                mininet_group_delay_ms, mininet_hosts_per_switch)
 
             logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_stop_mininet_topo(
@@ -264,7 +264,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             controller_utils.stop_controller(
                 controller_handlers_set.ctrl_stop_handler,
                 controller_handlers_set.ctrl_status_handler,
-                cpid.value, controller_ssh_client)
+                cpid, controller_ssh_client)
 
             logging.info('{0} stopping Mininet topology.'.format(test_type))
             mininet_utils.start_stop_mininet_topo(
@@ -304,7 +304,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             controller_utils.stop_controller(
                 controller_handlers_set.ctrl_stop_handler,
                 controller_handlers_set.ctrl_status_handler,
-                cpid.value, controller_ssh_client)
+                cpid, controller_ssh_client)
         except:
             pass
 
