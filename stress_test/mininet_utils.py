@@ -10,6 +10,7 @@ Mininet-related utilities
 
 import common
 import logging
+import multiprocessing
 import time
 import util.customsubprocess
 import util.netutil
