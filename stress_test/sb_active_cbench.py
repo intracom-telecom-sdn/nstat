@@ -200,18 +200,19 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     test_type = '[sb_active_cbench]'
     logging.info('{0} initializing test parameters'.format(test_type))
 
-    # Cbench parameters
+    # Cbench parameters: multiprocessing objects
     cbench_threads = multiprocessing.Value('i', 0)
     cbench_switches_per_thread = multiprocessing.Value('i', 0)
     cbench_thread_creation_delay_ms = multiprocessing.Value('i', 0)
     cbench_delay_before_traffic_ms = multiprocessing.Value('i', 0)
     cbench_simulated_hosts = multiprocessing.Value('i', 0)
+    cbench_switches = multiprocessing.Value('i', 0)
+
+    # Various parameters: multiprocessing objects
     repeat_id = multiprocessing.Value('i', 0)
     controller_statistics_period_ms = multiprocessing.Value('i', 0)
-    cbench_switches = multiprocessing.Value('i', 0)
     cpid = multiprocessing.Value('i', 0)
     global_sample_id = multiprocessing.Value('i', 0)
-
 
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
@@ -244,7 +245,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       int(conf['controller_node_ssh_port']),
                                       conf['controller_node_username'],
                                       conf['controller_node_password'])
-    cbench_node = conf_collections_util.node_parameters('MT-Cbench', conf['cbench_node_ip'],
+    cbench_node = conf_collections_util.node_parameters('MT-Cbench',
+                                   conf['cbench_node_ip'],
                                    int(conf['cbench_node_ssh_port']),
                                    conf['cbench_node_username'],
                                    conf['cbench_node_password'])
@@ -261,7 +263,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         sb_gen_base_dir + conf['cbench_clean_handler'],
         sb_gen_base_dir + conf['cbench_run_handler'])
 
-    controller_sb_interface = conf_collections_util.controller_southbound(conf['controller_node_ip'],
+    controller_sb_interface = \
+        conf_collections_util.controller_southbound(conf['controller_node_ip'],
                                                     conf['controller_port'])
 
     # termination message sent to monitor thread when Cbench is finished
@@ -293,7 +296,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_handlers_set.cbench_run_handler,
             cbench_handlers_set.cbench_clean_handler])
 
-        # Opening connection with mininet_node_ip and returning
+        # Opening connection with cbench_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
         cbench_ssh_client, controller_ssh_client = \
             common.open_ssh_connections([cbench_node, controller_node])
@@ -306,8 +309,11 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_utils.rebuild_cbench(
                 cbench_handlers_set.cbench_build_handler, cbench_ssh_client)
 
-        # Controller common actions: rebuild controller if controller_rebuild is
-        # SET, check_for_active controller, generate_controller_xml_files
+        # Controller common actions:
+        # 1. rebuild controller if controller_rebuild is SET
+        # 2. check_for_active controller,
+        # 3. generate_controller_xml_files
+
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
@@ -388,7 +394,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                       cbench_node, term_success, term_fail,
                       data_queue))
 
-            # Parallel section: starting monitor/cbench threads
+            # parallel section: starting monitor/cbench threads
             monitor_thread.start()
             cbench_thread.start()
 
@@ -446,17 +452,19 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                 test_type, 'failed transferring controller logs directory.'))
 
         if controller_cleanup:
-            logging.info('{0} cleaning controller build directory.'.format(test_type))
+            logging.info('{0} cleaning controller build directory.'.
+                         format(test_type))
             controller_utils.cleanup_controller(
                 controller_handlers_set.ctrl_clean_handler,
                 controller_ssh_client)
 
         if cbench_cleanup:
-            logging.info('{0} cleaning cbench build directory.'.format(test_type))
+            logging.info('{0} cleaning cbench build directory.'.
+                         format(test_type))
             cbench_utils.cleanup_cbench(
                 cbench_handlers_set.cbench_clean_handler, cbench_ssh_client)
 
-        # Closing ssh connections with controller/cbench nodes
+        # closing ssh connections with controller/cbench nodes
         common.close_ssh_connections([controller_ssh_client, cbench_ssh_client])
 
 

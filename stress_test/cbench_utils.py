@@ -38,7 +38,7 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
     :param data_queue: data queue where cbench output is posted line by line
     :parar succ_msg: message written to data queue when cbench_thread
     succeeds
-    :parar fail_msg: message written to         data queue when cbench_thread fails
+    :parar fail_msg: message written to data queue when cbench_thread fails
     :param ssh_client : SSH client provided by paramiko to run the command
     :type cbench_run_handler: str
     :type cbench_cpus:
@@ -67,13 +67,11 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
         # cbench_ssh_client to be utilized in the sequel
         cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
-        run_cbench(cbench_run_handler,
-                   cbench_cpus, controller_ip,
-                   controller_port, threads.value,
-                   sw_per_thread.value, switches.value, thr_delay_ms.value,
-                   traf_delay_ms.value, ms_per_test,
-                   internal_repeats, hosts.value, warmup,
-                   mode, data_queue, cbench_ssh_client)
+        run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
+                   controller_port, threads.value, sw_per_thread.value,
+                   switches.value, thr_delay_ms.value, traf_delay_ms.value,
+                   ms_per_test, internal_repeats, hosts.value, warmup, mode,
+                   data_queue, cbench_ssh_client)
 
         # cbench ended, enqueue termination message
         if data_queue is not None:
@@ -85,7 +83,6 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
         logging.error('[cbench_thread] Exception:{0}'.format(str(err)))
 
     return
-
 
 
 def cleanup_cbench(cbench_clean_handler, ssh_client=None):
@@ -163,7 +160,5 @@ def run_cbench(cbench_run_handler, cbench_cpus, controller_ip, controller_port,
                 str(internal_repeats), str(hosts), str(warmup), mode]
     common.command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
                          data_queue)
-
-
 
 

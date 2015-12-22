@@ -15,6 +15,155 @@ import util.netutil
 import util.process
 
 
+def check_controller_status(controller_status_handler, ssh_client=None):
+    """Wrapper to the controller status handler
+
+    :param controller_status_handler: filepath to the controller status handler
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :returns: '1' if controller is active, '0' otherwise
+    :rtype: str
+    :type controller_status_handler: str
+    :type ssh_client: paramiko.SSHClient
+    """
+
+    if ssh_client == None:
+        return subprocess.check_output([controller_status_handler],
+                                       universal_newlines=True).strip()
+    else:
+        cmd_output = util.netutil.ssh_run_command(ssh_client,
+            controller_status_handler)[1]
+        return cmd_output.strip()
+
+def check_for_active_controller(controller_port, ssh_client=None):
+    """Checks for processes listening on the specified port
+
+    :param controller_port: controller port to check
+    :param ssh_client : paramiko SSH client object when opening a connection
+    :raises Exception: when another process listens on controller's port.
+    :type controller_port: int
+    :type ssh_client: paramiko.SSHClient
+    """
+
+    logging.info(
+        '[check_for_active_controller] Checking if another process is '
+        'listening on specified port. Port number: {0}.'.
+        format(controller_port))
+
+    cpid = util.process.getpid_listeningonport(controller_port, ssh_client)
+
+    if cpid != -1:
+        raise Exception('[check_for_active_controller] Another process is '
+                        'active on port {0}'.
+                        format(controller_port))
+    return cpid
+
+def cleanup_controller(controller_clean_handler, ssh_client=None):
+    """Wrapper to the controller cleanup handler
+
+    :param controller_clean_handler: filepath to the controller cleanup handler
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :type controller_clean_handler: str
+    :type ssh_client: paramiko.SSHClient
+    """
+    common.command_exec_wrapper([controller_clean_handler],
+                         '[controller_clean_handler]')
+
+def controller_changestatsperiod(controller_statistics_handler,
+                                 stat_period_ms, ssh_client=None):
+    """Wrapper to the controller statistics handler
+
+    :param controller_statistics_handler: filepath to the controller statistics
+    handler
+    :param stat_period_ms: statistics period value to set (in milliseconds)
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :type controller_statistics_handler: str
+    :type curr_stat_period: int
+    :type ssh_client: paramiko.SSHClient
+    """
+    common.command_exec_wrapper(
+        [controller_statistics_handler, str(stat_period_ms)],
+        '[controller_statistics_handler] Changing statistics interval',
+        ssh_client)
+    logging.info(
+        '[controller_changestatsperiod] Changed statistics period to {0} ms'.
+        format(stat_period_ms))
+
+def controller_pre_actions(controller_handlers_set, controller_rebuild,
+                           controller_ssh_client, java_opts, controller_port,
+                           controller_cpus):
+    """ Performs all necessary actions before starting a test. Pre actions
+    are 1) rebuild_controller 2) check_for_active_controller
+    3) generate_controller_xml_files
+
+    :param controller_handlers_set: tuple containing
+    :param controller_rebuild: if SET controller rebuild is performed
+    :param controller_ssh_client: paramiko.SSHClient object
+    :param java_opts: controller JAVA options
+    :param controller_port: controller port to check
+    :param controller_cpus
+    :type controller_handlers_set: collections.namedtuple<str>
+    :type controller_rebuild: boolean
+    :type controller_ssh_client: paramiko.SSHClient
+    :type java_opts: str
+    :type controller_port: int
+    :type controller_cpus: str
+    """
+    if controller_rebuild:
+        logging.info('[controller_pre_actions] building controller')
+        rebuild_controller(controller_handlers_set.ctrl_build_handler,
+            controller_ssh_client)
+
+    logging.info('[controller_pre_actions] checking for other active '
+                 'controllers')
+    check_for_active_controller(controller_port,controller_ssh_client)
+    logging.info('[controller_pre_actions] starting and stopping controller'
+                 ' to generate xml files')
+    generate_controller_xml_files(
+        controller_handlers_set.ctrl_start_handler,
+        controller_handlers_set.ctrl_stop_handler,
+        controller_handlers_set.ctrl_status_handler,
+        controller_port,' '.join(java_opts), controller_ssh_client,
+        controller_cpus)
+
+
+def generate_controller_xml_files(controller_start_handler,
+        controller_stop_handler, controller_status_handler, controller_port,
+        java_opts, ssh_client, controller_cpus):
+    """ Starts and then stops the controller to triger the generation of
+    its XML files.
+
+    :param controller_start_handler: filepath to the controller start handler
+    :param controller_stop_handler: filepath to the controller stop handler
+    :param controller_status_handler: filepath to the controller status handler
+    :param controller_port: controller port to check
+    :param java_opts: A comma separated value string with the javaoptions for
+    the controller
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :param controller_cpus:
+    :type controller_start_handler: str
+    :type controller_stop_handler: str
+    :type controller_status_handler: str
+    :type controller_port: int
+    :type java_opts: str
+    :type ssh_client: paramiko.SSHClient
+    :type controller_cpus: str
+    """
+    logging.info('[generate_controller_xml_files] Starting controller')
+    cpid = start_controller(controller_start_handler,
+        controller_status_handler, controller_port, java_opts,
+        controller_cpus, ssh_client)
+
+    # Controller status check is done inside start_controller() of the
+    # controller_utils
+    logging.info('[generate_controller_xml_files] OK, controller status is 1.')
+    logging.info('[generate_controller_xml_files] Stopping controller')
+    stop_controller(controller_stop_handler, controller_status_handler, cpid,
+                    ssh_client)
+
+
+
+
+
 def rebuild_controller(controller_build_handler, ssh_client=None):
     """ Wrapper to the controller build handler
 
@@ -26,6 +175,33 @@ def rebuild_controller(controller_build_handler, ssh_client=None):
 
     common.command_exec_wrapper([controller_build_handler],
                          '[controller_build_handler]', ssh_client)
+
+def restart_controller(controller_stop_handler, controller_start_handler,
+                       controller_status_handler, controller_port, old_cpid,
+                       ssh_client=None):
+    """Restarts the controller
+
+    :param controller_stop_handler: filepath to the controller stop handler
+    :param controller_start_handler: filepath to the controller start handler
+    :param controller_status_handler: filepath to the controller status handler
+    :param controller_port: controller port number to listen for SB connections
+    :param old_cpid: PID of already running controller process
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :returns: controller process ID
+    :rtype: int
+    :type controller_stop_handler: str
+    :type controller_start_handler: str
+    :type controller_status_handler: str
+    :type controller_port: int
+    :type old_cpid: int
+    :type ssh_client: paramiko.SSHClient
+    """
+
+    stop_controller(controller_stop_handler, controller_status_handler,
+                    old_cpid, ssh_client)
+    new_cpid = start_controller(controller_start_handler,
+        controller_status_handler, controller_port, ssh_client)
+    return new_cpid
 
 def start_controller(controller_start_handler, controller_status_handler,
                      controller_port, java_opts, controller_cpus,
@@ -74,17 +250,6 @@ def start_controller(controller_start_handler, controller_status_handler,
         logging.info('[start_controller] Controller already started.')
 
 
-def cleanup_controller(controller_clean_handler, ssh_client=None):
-    """Wrapper to the controller cleanup handler
-
-    :param controller_clean_handler: filepath to the controller cleanup handler
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :type controller_clean_handler: str
-    :type ssh_client: paramiko.SSHClient
-    """
-    common.command_exec_wrapper([controller_clean_handler],
-                         '[controller_clean_handler]')
-
 def stop_controller(controller_stop_handler, controller_status_handler, cpid,
                     ssh_client=None):
     """Wrapper to the controller stop handler
@@ -107,98 +272,6 @@ def stop_controller(controller_stop_handler, controller_status_handler, cpid,
         util.process.wait_until_process_finishes(cpid, ssh_client)
     else:
         logging.info('[stop_controller] Controller already stopped.')
-
-
-def check_controller_status(controller_status_handler, ssh_client=None):
-    """Wrapper to the controller status handler
-
-    :param controller_status_handler: filepath to the controller status handler
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :returns: '1' if controller is active, '0' otherwise
-    :rtype: str
-    :type controller_status_handler: str
-    :type ssh_client: paramiko.SSHClient
-    """
-
-    if ssh_client == None:
-        return subprocess.check_output([controller_status_handler],
-                                       universal_newlines=True).strip()
-    else:
-        cmd_output = util.netutil.ssh_run_command(ssh_client,
-            controller_status_handler)[1]
-        return cmd_output.strip()
-
-def controller_changestatsperiod(controller_statistics_handler,
-                                 stat_period_ms, ssh_client=None):
-    """Wrapper to the controller statistics handler
-
-    :param controller_statistics_handler: filepath to the controller statistics
-    handler
-    :param stat_period_ms: statistics period value to set (in milliseconds)
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :type controller_statistics_handler: str
-    :type curr_stat_period: int
-    :type ssh_client: paramiko.SSHClient
-    """
-    common.command_exec_wrapper(
-        [controller_statistics_handler, str(stat_period_ms)],
-        '[controller_statistics_handler] Changing statistics interval',
-        ssh_client)
-    logging.info(
-        '[controller_changestatsperiod] Changed statistics period to {0} ms'.
-        format(stat_period_ms))
-
-
-def restart_controller(controller_stop_handler, controller_start_handler,
-                       controller_status_handler, controller_port, old_cpid,
-                       ssh_client=None):
-    """Restarts the controller
-
-    :param controller_stop_handler: filepath to the controller stop handler
-    :param controller_start_handler: filepath to the controller start handler
-    :param controller_status_handler: filepath to the controller status handler
-    :param controller_port: controller port number to listen for SB connections
-    :param old_cpid: PID of already running controller process
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :returns: controller process ID
-    :rtype: int
-    :type controller_stop_handler: str
-    :type controller_start_handler: str
-    :type controller_status_handler: str
-    :type controller_port: int
-    :type old_cpid: int
-    :type ssh_client: paramiko.SSHClient
-    """
-
-    stop_controller(controller_stop_handler, controller_status_handler,
-                    old_cpid, ssh_client)
-    new_cpid = start_controller(controller_start_handler,
-        controller_status_handler, controller_port, ssh_client)
-    return new_cpid
-
-
-def check_for_active_controller(controller_port, ssh_client=None):
-    """Checks for processes listening on the specified port
-
-    :param controller_port: controller port to check
-    :param ssh_client : paramiko SSH client object when opening a connection
-    :raises Exception: when another process listens on controller's port.
-    :type controller_port: int
-    :type ssh_client: paramiko.SSHClient
-    """
-
-    logging.info(
-        '[check_for_active_controller] Checking if another process is '
-        'listening on specified port. Port number: {0}.'.
-        format(controller_port))
-
-    cpid = util.process.getpid_listeningonport(controller_port, ssh_client)
-
-    if cpid != -1:
-        raise Exception('[check_for_active_controller] Another process is '
-                        'active on port {0}'.
-                        format(controller_port))
-    return cpid
 
 
 def wait_until_controller_listens(interval_ms, port, ssh_client=None):
@@ -258,73 +331,5 @@ def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
                     format(float(interval_ms) / 1000))
 
 
-def generate_controller_xml_files(controller_start_handler,
-        controller_stop_handler, controller_status_handler, controller_port,
-        java_opts, ssh_client, controller_cpus):
-    """ Starts and then stops the controller to triger the generation of
-    its XML files.
 
-    :param controller_start_handler: filepath to the controller start handler
-    :param controller_stop_handler: filepath to the controller stop handler
-    :param controller_status_handler: filepath to the controller status handler
-    :param controller_port: controller port to check
-    :param java_opts: A comma separated value string with the javaoptions for
-    the controller
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :param controller_cpus:
-    :type controller_start_handler: str
-    :type controller_stop_handler: str
-    :type controller_status_handler: str
-    :type controller_port: int
-    :type java_opts: str
-    :type ssh_client: paramiko.SSHClient
-    :type controller_cpus: str
-    """
-    logging.info('[generate_controller_xml_files] Starting controller')
-    cpid = start_controller(controller_start_handler,
-        controller_status_handler, controller_port, java_opts,
-        controller_cpus, ssh_client)
 
-    # Controller status check is done inside start_controller() of the
-    # controller_utils
-    logging.info('[generate_controller_xml_files] OK, controller status is 1.')
-    logging.info('[generate_controller_xml_files] Stopping controller')
-    stop_controller(controller_stop_handler, controller_status_handler, cpid,
-                    ssh_client)
-
-def controller_pre_actions(controller_handlers_set, controller_rebuild,
-                           controller_ssh_client, java_opts, controller_port,
-                           controller_cpus):
-    """ Performs all necessary actions before starting a test. Pre actions
-    are 1) rebuild_controller 2) check_for_active_controller
-    3) generate_controller_xml_files
-
-    :param controller_handlers_set: tuple containing
-    :param controller_rebuild: if SET controller rebuild is performed
-    :param controller_ssh_client: paramiko.SSHClient object
-    :param java_opts: controller JAVA options
-    :param controller_port: controller port to check
-    :param controller_cpus
-    :type controller_handlers_set: collections.namedtuple<str>
-    :type controller_rebuild: boolean
-    :type controller_ssh_client: paramiko.SSHClient
-    :type java_opts: str
-    :type controller_port: int
-    :type controller_cpus: str
-    """
-    if controller_rebuild:
-        logging.info('[controller_pre_actions] building controller')
-        rebuild_controller(controller_handlers_set.ctrl_build_handler,
-            controller_ssh_client)
-
-    logging.info('[controller_pre_actions] checking for other active '
-                 'controllers')
-    check_for_active_controller(controller_port,controller_ssh_client)
-    logging.info('[controller_pre_actions] starting and stopping controller'
-                 ' to generate xml files')
-    generate_controller_xml_files(
-        controller_handlers_set.ctrl_start_handler,
-        controller_handlers_set.ctrl_stop_handler,
-        controller_handlers_set.ctrl_status_handler,
-        controller_port,' '.join(java_opts), controller_ssh_client,
-        controller_cpus)

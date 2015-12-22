@@ -23,90 +23,6 @@ import util.file_ops
 import util.netutil
 
 
-#import emulators.nb_generator.nb_gen
-
-def mininet_topo_check_booted(expected_switches, mininet_group_size,
-                              mininet_group_delay_ms,
-                              mininet_get_switches_handler,
-                              mininet_rest_server,
-                              controller_nb_interface, num_tries=3):
-    """
-    Check if a Mininet topology has been booted. Check both from the Mininet
-    side and from the controller operational DS.
-
-    :param expected_switches: expected Mininet switches
-    :param mininet_group_size: group size at which switches where added in a
-    Mininet topo
-    :param mininet_group_delay_ms: delay between group additions
-    (in milliseconds)
-    :param mininet_get_switches_handler: Mininet handler used to query the
-    current number of switches in a Mininet topology
-    :param mininet_ip: Mininet node IP
-    :param mininet_rest_server_port: port of the Mininet node REST server
-    :param ctrl_ip: controller IP
-    :param ctrl_port: controller RESTconf port
-    :param controller_restconf_user: RESTconf username
-    :param controller_restconf_password: RESTconf password
-    :param num_tries: maximum number of tries until the method identifies that
-    number of discovered switches of the Mininet topology is equal to the
-    number of expected Mininet switches
-    :raises Exception: If we reach max number of tries and either the
-    controller has not seen the topology or the topology has failed to start.
-    :type expected_switches: int
-    :type mininet_group_size: int
-    :type mininet_group_delay_ms: int
-    :type mininet_get_switches_handler: str
-    :type mininet_ip: str
-    :type mininet_rest_server_port: int
-    :type ctrl_ip: str
-    :type ctrl_port: int
-    :type controller_restconf_user: str
-    :type controller_restconf_password: str
-    :type num_tries: int
-    """
-
-    mininet_group_delay = float(mininet_group_delay_ms)/1000
-    discovered_switches = 0
-    ds_switches = 0
-    tries = 0
-
-    while tries < num_tries:
-        logging.info('[mininet_topo_check_booted] Check if topology is up.')
-
-        # Here we sleep in order to give time to the controller to discover
-        # topology through the LLDP protocol.
-        time.sleep(int(expected_switches/mininet_group_size) * \
-                   mininet_group_delay + 15)
-        outq = multiprocessing.Queue()
-
-        try:
-            util.customsubprocess.check_output_streaming(
-                [mininet_get_switches_handler, mininet_rest_server.ip,
-                 str(mininet_rest_server.port)],
-                '[mininet_get_switches_handler]', queue=outq)
-            discovered_switches = int(outq.get().strip())
-            logging.info('[mininet_topo_check_booted] Discovered {0} switches'
-                          ' at the Mininet side'.format(discovered_switches))
-
-            ds_switches = common.check_ds_switches(controller_nb_interface)
-            logging.info('[mininet_topo_check_booted] Discovered {0} switches'
-                          ' at the controller side'.format(ds_switches))
-            if discovered_switches == expected_switches and \
-                ds_switches == expected_switches and expected_switches != 0:
-                return
-
-        except:
-            pass
-
-        tries += 1
-
-    raise Exception('Topology did not fully initialized. Expected {0} '
-                    'switches, but found {1} at the Mininet side and {2} '
-                    'at the controller side.'.
-                    format(expected_switches, discovered_switches,
-                           ds_switches))
-
-
 def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                           mininet_base_dir, conf, output_dir, log_level):
     """Run NB active test with Mininet.
@@ -186,8 +102,9 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     nb_generator_node = conf_collections_util.node_parameters('NB_Generator',
         conf['nb_generator_node_ip'], int(conf['nb_generator_node_ssh_port']),
         conf['nb_generator_node_username'], conf['nb_generator_node_password'])
-    # list of samples: each sample is a dictionary that contains
-    # all information that describes a single measurement, i.e.:
+
+    # list of samples: each sample is a dictionary containing information that
+    # describes a single measurement, i.e.:
     #    - the actual performance results
     #    - secondary runtime statistics
     #    - current values of test dimensions (dynamic)
@@ -196,8 +113,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     java_opts = conf['java_opts']
 
     try:
-        # Before proceeding with the experiments check validity of all
-        # handlers
+        # check validity of all handlers
         util.file_ops.check_filelist([
             controller_handlers_set.ctrl_build_handler,
             controller_handlers_set.ctrl_start_handler,
@@ -212,8 +128,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             mininet_handlers_set.start_topo_handler,
             ])
 
-        # Opening connection with mininet_node_ip and returning
-        # cbench_ssh_client to be utilized in the sequel
+        # opening connection with mininet_node_ip and returning
+        # mininet_ssh_client to be utilized in the sequel
         mininet_ssh_client, controller_ssh_client, nb_generator_ssh_client = \
             common.open_ssh_connections([mininet_node,
                 controller_node, nb_generator_node])
@@ -221,8 +137,11 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         controller_cpus, nb_generator_cpus = common.create_cpu_shares(
             controller_cpu_shares, nb_generator_cpu_shares)
 
-        # Controller common actions: rebuild controller if controller_rebuild is
-        # SET, check_for_active controller, generate_controller_xml_files
+        # Controller common actions:
+        # 1. rebuild controller if controller_rebuild is SET
+        # 2. check_for_active controller,
+        # 3. generate_controller_xml_files
+
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
@@ -281,7 +200,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 mininet_handlers_set.start_topo_handler, mininet_rest_server,
                 'start')
 
-            mininet_topo_check_booted(mininet_size, mininet_group_size,
+            mininet_utils.mininet_topo_check_booted(mininet_size,
+                                      mininet_group_size,
                                       mininet_group_delay_ms,
                                       mininet_handlers_set.get_switches_handler,
                                       mininet_rest_server,
@@ -411,7 +331,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         except:
             pass
 
-        # Closing ssh connections with controller/Mininet nodes
+        # Closing ssh connections with controller/Mininet/nb_generator nodes
         common.close_ssh_connections([controller_ssh_client,
                                       mininet_ssh_client,
                                       nb_generator_ssh_client])

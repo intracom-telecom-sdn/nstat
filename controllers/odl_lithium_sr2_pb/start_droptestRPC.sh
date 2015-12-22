@@ -83,7 +83,7 @@ exec_client_command "feature:install odl-restconf-all"
 echo "odl-restconf-all feature was Installed successfully"
 
 exec_client_command "feature:install odl-openflowplugin-flow-services"
-echo "odl-openflowplugin-flow-services feature was Installed successfully"
+echo "odl-openflowplugin-flow-services feature was installed successfully"
 
 exec_client_command "feature:install odl-openflowplugin-drop-test"
 echo "odl-openflowplugin-drop-test feature was installed successfully"
