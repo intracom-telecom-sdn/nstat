@@ -184,8 +184,7 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     raise Exception('Topology did not fully initialize. Expected {0} '
                     'switches, but found {1} at the Mininet side and {2} '
                     'at the controller side.'.
-                    format(expected_switches, discovered_switches,
-                           ds_switches))
+                    format(expected_switches, discovered_switches,ds_switches))
 
 
 def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,

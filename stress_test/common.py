@@ -16,9 +16,6 @@ import util.netutil
 import util.sysstats
 
 
-
-
-
 def check_ds_hosts(controller_nb_interface):
     """Query number of hosts registered in ODL operational DS
 
@@ -167,9 +164,6 @@ def create_cpu_shares(controller_cpu_shares, generator_cpu_shares):
     controller_cpus_str = ','.join(str(e) for e in cpu_lists[0])
     generator_cpus_str = ','.join(str(e) for e in cpu_lists[1])
     return (controller_cpus_str, generator_cpus_str)
-
-
-
 
 
 def generate_json_results(results, out_json):

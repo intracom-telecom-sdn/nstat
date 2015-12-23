@@ -190,7 +190,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 '{0} initializing topology on REST server.'.format(test_type))
             mininet_utils.init_mininet_topo(
                 mininet_handlers_set.init_topo_handler, mininet_rest_server,
-                controller_node.ip, controller_node.ssh_port,
+                controller_sb_interface.ip, controller_sb_interface.port,
                 mininet_topology_type, mininet_size, mininet_group_size,
                 mininet_group_delay_ms, mininet_hosts_per_switch)
 
