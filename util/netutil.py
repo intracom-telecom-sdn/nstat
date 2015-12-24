@@ -20,10 +20,11 @@ def copy_dir_local_to_remote(connection, local_path, remote_path):
     :param connection: A named tuple with all the connection information.
     It must have the following elements:
     ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param local_path: directory path from local machine to copy, full location
+    :param local_path: directory path from local machine to be copied, full
+    location required
+    :param remote_path: directory path on the remote node, full location
     required
-    :param remote_path: remote destination, full location required
-    :type connection: collections.namedtuple
+    :type connection: namedtuple<>
     :type local_path: str
     :type remote_path: str
     """
@@ -52,12 +53,11 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
     """Copy recursively remote directories (Copies all files and other
     sub-directories).
 
-    :param connection: a named tuple with all connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_path: a string with the full remote path we want to copy
-    :param local_path: a string with the full local path we want to copy
-    :type connection: collections.namedtuple
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
+    :param remote_path: full remote path we want to copy
+    :param local_path: full local path we want to copy
+    :type connection: namedtuple<>
     :type remote_path: str
     :type local_path: str
     """
@@ -79,11 +79,10 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
 def create_dir_remote(connection, remote_path):
     """Opens an ssh connection to a remote machine and creates a new directory.
 
-    :param connection: A named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param remote_path: 
-    :type connection: collections.namedtuple
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
+    :param remote_path:
+    :type connection: namedtuple<>
     :type remote_path: str
     """
 
@@ -118,11 +117,10 @@ def isdir(path, sftp):
 def make_remote_file_executable(connection, remote_file):
     """Makes the remote file executable.
 
-    :param connection: A named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
     :param remote_file: remote file to make executable
-    :type connection: collections.namedtuple
+    :type connection: namedtuple<>
     :type remote_file: str
     """
     (sftp, transport_layer) = ssh_connection_open(connection)
@@ -133,11 +131,10 @@ def remove_remote_directory(connection, path):
     """Removes recursively remote directories (removes all files and
     other sub-directories).
 
-    :param connection: A named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
     :param path: A string with the full path we want to remove
-    :type connection: collections.namedtuple
+    :type connection: namedtuple<>
     :type path: str
     """
 
@@ -158,13 +155,12 @@ def ssh_connect_or_return(connection, maxretries):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
 
-    :param connection: a named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
     :param maxretries: maximum number of times to connect
     :returns: an ssh connection handle or -1 on failure
     :rtype: paramiko.SSHClient (or -1 when failure)
-    :type connection: collections.namedtuple
+    :type connection: namedtuple<>
     :type maxretries: int
     """
 
@@ -213,9 +209,8 @@ def ssh_connection_close(sftp, transport_layer):
 def ssh_connection_open(connection):
     """ Opens an ssh connection on a remote node
 
-    :param connection: a named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
     :returns sftp, transport_layer
     :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
     :type connection: collections.namedtuple
@@ -234,9 +229,8 @@ def ssh_connection_open(connection):
 def ssh_copy_file_to_target(connection, local_file, remote_file):
     """Copies local file on a remote machine target.
 
-    :param connection: a named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
     :param local_file: file from local machine to copy,full location required
     :param remote_file: remote destination, full location required
     i.e /tmp/foo.txt
@@ -252,9 +246,8 @@ def ssh_copy_file_to_target(connection, local_file, remote_file):
 def ssh_delete_file_if_exists(connection, remote_file):
     """Deletes the file on a remote machine, if exists
 
-    :param connection: a named tuple with all connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
     :param remote_file: remote file to remove, full path must be used.
     :type connection: collections.namedtuple
     :type remote_file: str

@@ -39,7 +39,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :param cpid: controller PID
     :param global_sample_id: unique ascending ID for the next sample
     :param repeat_id: ID of the test repeat
-    :param test_repeats:
+    :param test_repeats: number of external iterations for a test, (i.e the
+    number of times a test should be repeated to derive aggregate results)
     :param cbench_switches: total number of simulated switches
     :param cbench_switches_per_thread: number of sim. switches per thread
     :param cbench_threads: total number of Cbench threads
@@ -63,11 +64,9 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     statistics flow requests to the switches (in milliseconds)
     :param controller_port: controller port number where OF switches should
     connect
-    :param controller_node_ip: controller node IP address
-    :param controller_node_ssh_port: ssh port of controller node
-    (controller_node_ip)
-    :param controller_node_username: username of the controller node
-    :param controller_node_password: password of the controller node
+    :param controller node: named tuple containing the 1) controller node IP
+    address 2) ssh port of controller node (controller_node_ip) 3) username of
+    the controller node 4) password of the controller node
     :param controller_cpu_shares: the percentage of CPU resources to be used for
     controller
     :param term_success: The success message when we have success in Cbench thread
@@ -77,6 +76,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :type cpid: int
     :type global_sample_id: int
     :type repeat_id: int
+    :type test_repeats: int
     :type cbench_switches: int
     :type cbench_switches_per_thread: int
     :type cbench_threads: int
@@ -90,10 +90,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :type cbench_cpu_shares: int
     :type controller_statistics_period_ms: int
     :type controller_port: str
-    :type controller_node_ip: str
-    :type controller_node_ssh_port: str
-    :type controller_node_username: str
-    :type controller_node_password: str
+    :type controller_node: namedtuple<str,str,str,str>
     :type controller_cpu_shares: int
     :type term_success: str
     :type term_fail: str

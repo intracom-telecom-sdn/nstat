@@ -20,8 +20,8 @@ import time
 import util.file_ops
 
 
-def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
-                       conf, output_dir):
+def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
+                       output_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 

@@ -47,10 +47,10 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     t_start = multiprocessing.Value('d', 0.0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
     bootup_time_ms = multiprocessing.Value('i', 0)
-    mininet_hosts_per_switch = multiprocessing.Value('i', 0)
-    mininet_size = multiprocessing.Value('i', 0)
 
     # Mininet parameters
+    mininet_hosts_per_switch = multiprocessing.Value('i', 0)
+    mininet_size = multiprocessing.Value('i', 0)
 
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -182,9 +182,9 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                          format(test_type))
             mininet_utils.init_mininet_topo(
                 mininet_handlers_set.init_topo_handler, mininet_rest_server,
-                controller_node.ip, controller_node.ssh_port, mininet_topology_type,
-                mininet_size.value, mininet_group_size, mininet_group_delay_ms,
-                mininet_hosts_per_switch.value)
+                controller_node.ip, controller_node.ssh_port,
+                mininet_topology_type, mininet_size.value, mininet_group_size,
+                mininet_group_delay_ms, mininet_hosts_per_switch.value)
 
             t_start.value = time.time()
 

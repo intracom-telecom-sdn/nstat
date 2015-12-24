@@ -18,43 +18,34 @@ import util.process
 
 
 
-def copy_mininet_handlers(mininet_node,
-                          mininet_source, mininet_target):
+def copy_mininet_handlers(mininet_node, mininet_dir_source, mininet_dir_target):
     """
     Copies Mininet handlers on the remote Mininet node
 
-    :param mininet_ssh_server_ip: IP address of the ssh server on the Mininet
-    node
-    :param mininet_user: username for the Mininet node
-    :param mininet_pass: password for the Mininet node
-    :param mininet_source: folder with Mininet handlers
-    :param mininet_target: folder where Mininet handlers will be copied
-    :param remote_port: port for mininet_ssh_server_ip
-    :type mininet_ssh_server_ip: str
-    :type mininet_user: str
-    :type mininet_pass: str
-    :type mininet_folder: str
-    :type remote_port: int
+    :param mininet_node:  A named tuple with all the connection information.
+    It must have the following elements: ['name', 'ip', 'ssh_port', 'username',
+    'password']
+    :param mininet_dir_source: directory path from local machine to copy, full
+    location required
+    :param mininet_dir_target: remote destination, full location required
+    :type mininet_node: str
+    :type mininet_dir_source: str
+    :type mininet_dir_target: str
     """
 
-    util.netutil.copy_dir_local_to_remote(mininet_node, mininet_source,
-                                          mininet_target)
+    util.netutil.copy_dir_local_to_remote(mininet_node, mininet_dir_source,
+                                          mininet_dir_target)
 
 def delete_mininet_handlers(mininet_node, mininet_folder):
     """
-    Cleans up Mininet handlers on the remote Mininet node
+    Removes Mininet handlers from the remote Mininet node
 
-    :param mininet_ssh_server_ip: IP address of the ssh server on the Mininet
-    node
-    :param mininet_user: username for the Mininet node
-    :param mininet_pass: password for the Mininet node
-    :param mininet_folder: folder with Mininet handlers
-    :param remote_port: port for mininet_ssh_server_ip
+    :param mininet_node: a named tuple with all the connection information.
+    It must have the following elements: ['name', 'ip', 'ssh_port', 'username',
+    'password']
+    :param mininet_folder:
     :type mininet_ssh_server_ip: str
     :type mininet_user: str
-    :type mininet_pass: str
-    :type mininet_folder: str
-    :type remote_port: int
     """
 
     util.netutil.remove_remote_directory(mininet_node, mininet_folder)
@@ -237,12 +228,12 @@ def start_stop_mininet_topo(mininet_start_stop_handler, mininet_rest_server,
     :param mininet_start_stop_handler: full path of the handler to start the Mininet
     topology
     :param mininet_rest_server_host: hostname/IP the REST server listens to
-    :param mininet_rest_servert: named tuple containing the ip address of
+    :param mininet_rest_server: named tuple containing the ip address of
     mininet REST server and the port it listens for requests
     :param mininet_action: defines the operation that start-stop mininet
     handler will perform. Can have either 'start' or 'stop' value.
     :type mininet_start_handler: str
-    :type mininet_rest_server: collections.namedtuple
+    :type mininet_rest_server: namedtuple
     :type mininet_action: str
     """
 
