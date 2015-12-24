@@ -179,12 +179,11 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
             logging.info('{0} initializing Mininet topology.'.
                          format(test_type))
-
             mininet_utils.init_mininet_topo(
-                mininet_handlers_set.init_topo_handler,
-                mininet_rest_server, controller_node.ip, controller_node.port,
-                mininet_topology_type, mininet_size.value, mininet_group_size,
-                mininet_group_delay_ms, mininet_hosts_per_switch.value)
+                mininet_handlers_set.init_topo_handler, mininet_rest_server,
+                controller_node.ip, controller_node.ssh_port, mininet_topology_type,
+                mininet_size.value, mininet_group_size, mininet_group_delay_ms,
+                mininet_hosts_per_switch.value)
 
             t_start.value = time.time()
 
