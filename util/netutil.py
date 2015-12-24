@@ -29,7 +29,6 @@ def copy_dir_local_to_remote(connection, local_path, remote_path):
     :type remote_path: str
     """
 
-    #  recursively upload a full directory
     if local_path.endswith('/'):
         local_path = local_path[:-1]
     (sftp, transport_layer) = ssh_connection_open(connection)

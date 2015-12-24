@@ -24,10 +24,12 @@ import util.netutil
 
 def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                           mininet_base_dir, conf, output_dir, log_level):
-    """Run NB active test with Mininet.
+
+    """Run northbound active test with Mininet.
 
     :param out_json: the JSON output file
     :param ctrl_base_dir: controller base directory
+    :param nb_generator_base_dir: northbound generator base directory
     :param mininet_base_dir: Mininet base directory
     :param conf: JSON configuration dictionary
     :param output_dir: directory to store output files
@@ -35,13 +37,12 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     --logging-level argument to NorthBound generator.
     :type out_json: str
     :type ctrl_base_dir: str
+    :type nb_generator_base_dir: str
     :type mininet_base_dir: str
     :type conf: dict
     :type output_dir: str
     :type log_level: str
     """
-
-
 
     test_type = '[nb_active_mininet]'
     logging.info('{0} initializing test parameters.'.format(test_type))
@@ -49,8 +50,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     # Global variables read-write shared between monitor and main thread
     global_sample_id = 0
     cpid = 0
-
-    # Mininet parameters
+    flow_delete_flag = conf['flow_delete_flag']
 
     # Northbound generator node parameters
     if 'nb_generator_cpu_shares' in conf:
@@ -65,9 +65,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
         controller_cpu_shares = 100
-    # Various test parameters
-    flow_delete_flag = conf['flow_delete_flag']
 
+    # set named tuples
     controller_handlers_set = conf_collections_util.controller_handlers(
         ctrl_base_dir + conf['controller_build_handler'],
         ctrl_base_dir + conf['controller_start_handler'],
@@ -96,8 +95,8 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     controller_nb_interface = conf_collections_util.controller_northbound(
         conf['controller_node_ip'], conf['controller_restconf_port'],
         conf['controller_restconf_user'], conf['controller_restconf_password'])
-    mininet_rest_server = conf_collections_util.mininet_server(conf['mininet_node_ip'],
-                                         conf['mininet_rest_server_port'])
+    mininet_rest_server = conf_collections_util.mininet_server(
+        conf['mininet_node_ip'], conf['mininet_rest_server_port'])
     nb_generator_node = conf_collections_util.node_parameters('NB_Generator',
         conf['nb_generator_node_ip'], int(conf['nb_generator_node_ssh_port']),
         conf['nb_generator_node_username'], conf['nb_generator_node_password'])

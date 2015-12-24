@@ -21,7 +21,7 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
     """ Function executed by cbench thread.
 
     :param cbench_run_handler: cbench run handler
-    :param cbench_cpus
+    :param cbench_cpus: number of cpus allocated by create_cpu_shares
     :param controller_ip: controller IP
     :param controller_port: controller port
     :param threads: number of cbench threads
@@ -35,13 +35,14 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
     :param hosts: number of simulated hosts
     :param warmup: initial loops to be considered as 'warmup'
     :param mode: cbench mode
-    :param data_queue: data queue where cbench output is posted line by line
+    :param cbench_node: named tuple containing 1) cbench_node_ip
+    2) cbench_node_ssh_port 3) cbench_node_username 4) cbench_node_password
     :parar succ_msg: message written to data queue when cbench_thread
     succeeds
     :parar fail_msg: message written to data queue when cbench_thread fails
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param data_queue: data queue where cbench output is posted line by line
     :type cbench_run_handler: str
-    :type cbench_cpus:
+    :type cbench_cpus: int
     :type controller_ip: str
     :type controller_port: int
     :type threads: int
@@ -54,17 +55,16 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
     :type hosts: int
     :type warmup: int
     :type mode: str
-    :type data_queue: multiprocessing.Queue
+    :type cbench_node: namedtuple<str,int,str,str>
     :type succ_msg: str
     :type fail_msg: str
-    :type ssh_client: paramiko.SSHClient
+    :type data_queue: multiprocessing.Queue
     """
 
     logging.info('[cbench_thread] cbench thread started')
 
     try:
-        # Opening connection with cbench_node_ip and returning
-        # cbench_ssh_client to be utilized in the sequel
+        # Opening connection with cbench_node_ip and returning cbench_ssh_client
         cbench_ssh_client =  common.open_ssh_connections([cbench_node])[0]
 
         run_cbench(cbench_run_handler, cbench_cpus, controller_ip,
@@ -118,7 +118,7 @@ def run_cbench(cbench_run_handler, cbench_cpus, controller_ip, controller_port,
     """Runs a cbench instance
 
     :param cbench_run_handler: cbench run handler
-    :param cbench_cpus
+    :param cbench_cpus: number of cpus allocated by create_cpu_shares
     :param controller_ip: controller IP for OpenFlow connection
     :param controller_port: controller port for OpenFlow connection
     :param threads: number of cbench threads
@@ -129,14 +129,14 @@ def run_cbench(cbench_run_handler, cbench_cpus, controller_ip, controller_port,
     transmission (in milliseconds)
     :param ms_per_test: test duration of a single cbench loop
     :param internal_repeats: number of cbench loops
-    :param hosts: number of simulated hoss
+    :param hosts: number of simulated hosts
     :param warmup: initial loops to be considered as 'warmup'
     :param mode: cbench mode
     :param data_queue: data queue where cbench output is posted line by line
     the cbench process will run.
     :param ssh_client : SSH client provided by paramiko to run the command
     :type cbench_run_handler: str
-    :type cbench_cpus:
+    :type cbench_cpus: int
     :type controller_ip: str
     :type controller_port: int
     :type threads: int

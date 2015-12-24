@@ -19,16 +19,13 @@ import util.sysstats
 def check_ds_hosts(controller_nb_interface):
     """Query number of hosts registered in ODL operational DS
 
-    :param controller_ip: controller IP address
-    :param controller_restconf_port: controller restconf port
-    :param auth_token: tuple with controller restconf user and password
-    (controller_restconf_user, controller_restconf_password)
+    :param controller_nb_interface: namedtuple containing 1) controller_node_ip
+    2)controller_restconf_port 3) controller_restconf_user
+    4) controller_restconf_password
     :returns: number of hosts found, 0 if none exists and -1 in case of
     error.
     :rtype: int
-    :type controller_ip: str
-    :type controller_restconf_port: int
-    :type auth_token: tuple<str>
+    :type controller_nb_interface: namedtuple<str,int,str,str>
     """
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
@@ -49,15 +46,13 @@ def check_ds_hosts(controller_nb_interface):
 def check_ds_links(controller_nb_interface):
     """Query number of links registered in ODL operational DS
 
-    :param controller_ip: controller IP address
-    :param controller_restconf_port: controller restconf port
-    :param auth_token: tuple with controller restconf user and password
-    (controller_restconf_user, controller_restconf_password)
-    :returns: number of links found, 0 if none exists and -1 in case of error.
+    :param controller_nb_interface: namedtuple containing 1) controller_node_ip
+    2)controller_restconf_port 3) controller_restconf_user
+    4) controller_restconf_password
+    :returns: number of hosts found, 0 if none exists and -1 in case of
+    error.
     :rtype: int
-    :type controller_ip: str
-    :type controller_restconf_port: int
-    :type auth_token: tuple<str>
+    :type controller_nb_interface: namedtuple<str,int,str,str>
     """
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
@@ -77,16 +72,13 @@ def check_ds_links(controller_nb_interface):
 def check_ds_switches(controller_nb_interface):
     """Query number of switches registered in ODL operational DS
 
-    :param controller_ip: controller IP address
-    :param controller_restconf_port: controller restconf port
-    :param auth_token: tuple with controller restconf user and password
-    (controller_restconf_user, controller_restconf_password)
-    :returns: number of switches found, 0 if none exists and -1 in case of
+    :param controller_nb_interface: namedtuple containing 1) controller_node_ip
+    2)controller_restconf_port 3) controller_restconf_user
+    4) controller_restconf_password
+    :returns: number of hosts found, 0 if none exists and -1 in case of
     error.
     :rtype: int
-    :type controller_ip: str
-    :type controller_restconf_port: int
-    :type auth_token: tuple<str>
+    :type controller_nb_interface: namedtuple<str,int,str,str>
     """
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
@@ -107,7 +99,7 @@ def close_ssh_connections(ssh_clients_list):
     """Gets a list of open ssh connections (ssh_clients) and closes them.
 
     :param ssh_clients_list: A list of named tuples
-    :tyle ssh_clients_list: tuple<paramiko.SSHClient>
+    :type ssh_clients_list: tuple<paramiko.SSHClient>
     """
 
     object_id = 0
@@ -153,6 +145,8 @@ def create_cpu_shares(controller_cpu_shares, generator_cpu_shares):
     controller.
     :param generator_cpu_shares: Percentage of CPU resources to be used by
     generator.
+    :returns: number of cpus allocated fot controller, generator
+    :rtype: tuple<str,str>
     :type controller_cpu_shares: int
     :type generator_cpu_shares: int
     """
@@ -219,10 +213,9 @@ def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
     """
     Poll operational DS to discover installed switches
 
-    :param controller_ip: controller IP address
-    :param controller_restconf_port: controller restconf port
-    :param auth_token: tuple with controller restconf user and controller
-    restconf password (controller_restconf_user, controller_restconf_password)
+    :param controller_nb_interface: namedtuple containing 1) controller_node_ip
+    2)controller_restconf_port 3) controller_restconf_user
+    4) controller_restconf_password
     :param boot_start_time: The time we begin starting topology switches
     :param bootup_time_ms: Time to bootup switches topology (in ms). We start
     discovery process after this time.
@@ -230,9 +223,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
     :param discovery_deadline_ms: deadline (in ms) at which the thread
     should discover switches (in milliseconds)
     :param queuecomm: queue for communicating with the main context
-    :type controller_ip: str
-    :type controller_restconf_port: int
-    :type controller_restconf_auth_token: tuple<str>
+    :type controller_nb_interface: namedtuple<str,int,str,str>
     :type boot_start_time: int
     :type bootup_time_ms: int
     :type expected_switches: int
@@ -281,7 +272,7 @@ def sample_stats(cpid, ssh_client=None):
 
     :param cpid: controller PID
     :param ssh_client : SSH client provided by paramiko to run the command
-    :returns: the statistics in a dictionary
+    :returns: experiment statistics in dictionary
     :rtype: dict
     :type cpid: int
     :type ssh_client: paramiko.SSHClient
@@ -317,6 +308,7 @@ def sample_stats(cpid, ssh_client=None):
     common_statistics['five_minute_load'] = util.sysstats.sys_load_average(ssh_client)[1]
     common_statistics['fifteen_minute_load'] = \
         util.sysstats.sys_load_average(ssh_client)[2]
+
     return common_statistics
 
 

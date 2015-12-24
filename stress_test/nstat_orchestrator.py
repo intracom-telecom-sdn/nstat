@@ -263,7 +263,8 @@ def main():
             shutil.move(args.log_file, args.output_dir)
         shutil.copy(args.json_output, args.output_dir)
         shutil.copy(args.json_config, args.output_dir)
-        # Generate html report and move it inside test output dir
+
+        # Generate html report and move it within test output dir
         logging.info('[nstat_orchestrator] Generating html report')
         html_generation.generate_html(report_spec, args.html_report)
         shutil.move(args.html_report, args.output_dir)
