@@ -340,10 +340,9 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
             logging.info('{0} starting controller'.format(test_type))
             cpid.value = controller_utils.start_controller(
-                controller_handlers_set.ctrl_start_handler,
-                controller_handlers_set.ctrl_status_handler,
-                controller_sb_interface.port, ' '.join(conf['java_opts']),
-                controller_cpus, controller_ssh_client)
+                controller_handlers_set, controller_sb_interface.port,
+                ' '.join(conf['java_opts']), controller_cpus,
+                controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
             cbench_switches.value = \
@@ -402,10 +401,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} joining cbench thread'.format(test_type))
             cbench_thread.join()
 
-            controller_utils.stop_controller(
-                controller_handlers_set.ctrl_stop_handler,
-                controller_handlers_set.ctrl_status_handler,
-                cpid.value, controller_ssh_client)
+            controller_utils.stop_controller(controller_handlers_set,
+                                             cpid.value, controller_ssh_client)
 
     except:
         logging.error('{0} :::::::::: Exception caught :::::::::::'.
@@ -433,10 +430,8 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         try:
             logging.info('{0} stopping controller.'.
                          format(test_type))
-            controller_utils.stop_controller(
-                controller_handlers_set.ctrl_stop_handler,
-                controller_handlers_set.ctrl_status_handler,
-                cpid.value, controller_ssh_client)
+            controller_utils.stop_controller(controller_handlers_set,
+                                             cpid.value, controller_ssh_client)
         except:
             pass
 

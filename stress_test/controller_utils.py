@@ -143,20 +143,13 @@ def generate_controller_xml_files(controller_handlers_set, controller_port,
     :type controller_cpus: str
     """
     logging.info('[generate_controller_xml_files] Starting controller')
-    cpid = start_controller(controller_handlers_set.ctrl_start_handler,
-        controller_handlers_set.ctrl_status_handler, controller_port, java_opts,
+    cpid = start_controller(controller_handlers_set, controller_port, java_opts,
         controller_cpus, ssh_client)
 
-    # Controller status check is done inside start_controller() of the
-    # controller_utils
+    # Controller status check is done within start_controller()
     logging.info('[generate_controller_xml_files] OK, controller status is 1.')
     logging.info('[generate_controller_xml_files] Stopping controller')
-    stop_controller(controller_handlers_set.ctrl_stop_handler,
-                    controller_handlers_set.ctrl_status_handler, cpid,
-                    ssh_client)
-
-
-
+    stop_controller(controller_handlers_set, cpid, ssh_client)
 
 
 def rebuild_controller(controller_build_handler, ssh_client=None):
@@ -171,8 +164,7 @@ def rebuild_controller(controller_build_handler, ssh_client=None):
     common.command_exec_wrapper([controller_build_handler],
                          '[controller_build_handler]', ssh_client)
 
-def restart_controller(controller_stop_handler, controller_start_handler,
-                       controller_status_handler, controller_port, old_cpid,
+def restart_controller(controller_handlers_set, controller_port, old_cpid,
                        ssh_client=None):
     """Restarts the controller
 
@@ -192,15 +184,13 @@ def restart_controller(controller_stop_handler, controller_start_handler,
     :type ssh_client: paramiko.SSHClient
     """
 
-    stop_controller(controller_stop_handler, controller_status_handler,
-                    old_cpid, ssh_client)
-    new_cpid = start_controller(controller_start_handler,
-        controller_status_handler, controller_port, ssh_client)
+    stop_controller(controller_handlers_set, old_cpid, ssh_client)
+    new_cpid = start_controller(controller_handlers_set, controller_port,
+                                ssh_client)
     return new_cpid
 
-def start_controller(controller_start_handler, controller_status_handler,
-                     controller_port, java_opts, controller_cpus,
-                     ssh_client=None):
+def start_controller(controller_handlers_set, controller_port, java_opts,
+                     controller_cpus, ssh_client=None):
     """Wrapper to the controller start handler
 
     :param controller_start_handler: filepath to the controller start handler
@@ -220,13 +210,14 @@ def start_controller(controller_start_handler, controller_status_handler,
 
     if ssh_client==None:
         os.environ['JAVA_OPTS'] = java_opts
-        cmd = [controller_start_handler]
+        cmd = [controller_handlers_set.ctrl_start_handler]
     else:
         cmd = ['export JAVA_OPTS="{0}";'.format(java_opts),
                'taskset', '-c', '{0}'.format(controller_cpus),
-               controller_start_handler]
+               controller_handlers_set.ctrl_start_handler]
 
-    if check_controller_status(controller_status_handler, ssh_client) == '0':
+    if check_controller_status(controller_handlers_set.ctrl_status_handler,
+                               ssh_client) == '0':
         common.command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
         logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
         logging.info(
@@ -238,17 +229,14 @@ def start_controller(controller_start_handler, controller_status_handler,
             '[start_controller] Checking controller status after it starts '
             'listening on port {0}.'.format(controller_port))
         wait_until_controller_up_and_running(420000,
-                                             controller_status_handler,
-                                             ssh_client)
+            controller_handlers_set.ctrl_status_handler, ssh_client)
         return cpid
     else:
         logging.info('[start_controller] Controller already started.')
 
 
-def stop_controller(controller_stop_handler, controller_status_handler, cpid,
-                    ssh_client=None):
+def stop_controller(controller_handlers_set, cpid, ssh_client=None):
     """Wrapper to the controller stop handler
-
 
     :param controller_stop_handler: filepath to the controller stop handler
     :param controller_status_handler: filepath to the controller status handler
@@ -260,17 +248,19 @@ def stop_controller(controller_stop_handler, controller_status_handler, cpid,
     :type ssh_client: paramiko.SSHClient
     """
 
-    if check_controller_status(controller_status_handler, ssh_client) == '1':
+    if check_controller_status(controller_handlers_set.ctrl_status_handler,
+                               ssh_client) == '1':
         logging.info('[stop_controller] Stopping controller.')
         common.command_exec_wrapper(
-            [controller_stop_handler], '[controller_stop_handler]', ssh_client)
+            [controller_handlers_set.ctrl_stop_handler],
+            '[controller_stop_handler]', ssh_client)
         util.process.wait_until_process_finishes(cpid, ssh_client)
     else:
         logging.info('[stop_controller] Controller already stopped.')
 
 
 def wait_until_controller_listens(interval_ms, port, ssh_client=None):
-    """ Waits for the controller to start listening on specified port.
+    """ Waits for controller to start listening on specified port.
 
     :param interval_ms: milliseconds to wait (in milliseconds).
     :param port: controller port.
@@ -303,7 +293,7 @@ def wait_until_controller_listens(interval_ms, port, ssh_client=None):
 
 def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
                                          ssh_client=None):
-    """ Waits for the controller status to become 1 (Started).
+    """ Waits for controller status to become 1 (started).
 
     :param interval_ms: milliseconds to wait (in milliseconds).
     :param controller_status_handler: filepath to the controller status handler
@@ -324,7 +314,4 @@ def wait_until_controller_up_and_running(interval_ms, controller_status_handler,
     raise Exception('Controller failed to start. '
                     'Status check returned 0 after trying for {0} seconds.'.
                     format(float(interval_ms) / 1000))
-
-
-
 

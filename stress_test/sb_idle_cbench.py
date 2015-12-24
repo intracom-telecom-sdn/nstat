@@ -176,9 +176,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                 controller_statistics_period_ms.value, controller_ssh_client)
 
             logging.info('{0} starting controller'.format(test_type))
-            cpid = controller_utils.start_controller(
-                controller_handlers_set.ctrl_start_handler,
-                controller_handlers_set.ctrl_status_handler,
+            cpid = controller_utils.start_controller( controller_handlers_set,
                 controller_sb_interface.port, ' '.join(conf['java_opts']),
                 controller_cpus, controller_ssh_client)
             logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -267,8 +265,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             statistics['discovered_switches'] = res[1]
             total_samples.append(statistics)
 
-            controller_utils.stop_controller(controller_handlers_set.ctrl_stop_handler,
-                controller_handlers_set.ctrl_status_handler, cpid, controller_ssh_client)
+            controller_utils.stop_controller(controller_handlers_set, cpid,
+                                             controller_ssh_client)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -295,9 +293,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         try:
             logging.info('{0} stopping controller.'.
                          format(test_type))
-            controller_utils.stop_controller(
-                controller_handlers_set.ctrl_stop_handler,
-                controller_handlers_set.ctrl_status_handler, cpid,
+            controller_utils.stop_controller(controller_handlers_set, cpid,
                 controller_ssh_client)
         except:
             pass

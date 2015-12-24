@@ -157,9 +157,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 mininet_handlers_set.rest_server_boot, mininet_rest_server)
 
             logging.info('{0} starting controller'.format(test_type))
-            cpid = controller_utils.start_controller(
-                controller_handlers_set.ctrl_start_handler,
-                controller_handlers_set.ctrl_status_handler,
+            cpid = controller_utils.start_controller(controller_handlers_set,
                 controller_sb_interface.port, ' '.join(conf['java_opts']),
                 controller_cpus, controller_ssh_client)
 
@@ -230,10 +228,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             total_samples.append(statistics)
 
             logging.debug('{0} stopping controller.'.format(test_type))
-            controller_utils.stop_controller(
-                controller_handlers_set.ctrl_stop_handler,
-                controller_handlers_set.ctrl_status_handler,
-                cpid, controller_ssh_client)
+            controller_utils.stop_controller(controller_handlers_set, cpid,
+                                             controller_ssh_client)
 
             logging.info('{0} stopping Mininet topology.'.format(test_type))
             mininet_utils.start_stop_mininet_topo(
@@ -270,10 +266,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         try:
             logging.info('{0} stopping controller.'.
                          format(test_type))
-            controller_utils.stop_controller(
-                controller_handlers_set.ctrl_stop_handler,
-                controller_handlers_set.ctrl_status_handler,
-                cpid, controller_ssh_client)
+            controller_utils.stop_controller( controller_handlers_set, cpid,
+                                              controller_ssh_client)
         except:
             pass
 
