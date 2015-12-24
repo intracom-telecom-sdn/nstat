@@ -118,46 +118,41 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     check_for_active_controller(controller_port,controller_ssh_client)
     logging.info('[controller_pre_actions] starting and stopping controller'
                  ' to generate xml files')
-    generate_controller_xml_files(
-        controller_handlers_set.ctrl_start_handler,
-        controller_handlers_set.ctrl_stop_handler,
-        controller_handlers_set.ctrl_status_handler,
-        controller_port,' '.join(java_opts), controller_ssh_client,
-        controller_cpus)
+    generate_controller_xml_files(controller_handlers_set, controller_port,
+                                  ' '.join(java_opts), controller_ssh_client,
+                                  controller_cpus)
 
 
-def generate_controller_xml_files(controller_start_handler,
-        controller_stop_handler, controller_status_handler, controller_port,
+def generate_controller_xml_files(controller_handlers_set, controller_port,
         java_opts, ssh_client, controller_cpus):
-    """ Starts and then stops the controller to triger the generation of
-    its XML files.
+    """ Starts and then stops the controller to trigger the generation of
+    controller's XML files.
 
-    :param controller_start_handler: filepath to the controller start handler
-    :param controller_stop_handler: filepath to the controller stop handler
-    :param controller_status_handler: filepath to the controller status handler
+    :param controller_handlers_set: named tuple containing 1)
+    controller_start_handler 2) controller_stop_handler
+    3) controller_status_handler
     :param controller_port: controller port to check
-    :param java_opts: A comma separated value string with the javaoptions for
+    :param java_opts: A comma separated value string with the java options for
     the controller
     :param ssh_client : SSH client provided by paramiko to run the command
     :param controller_cpus:
-    :type controller_start_handler: str
-    :type controller_stop_handler: str
-    :type controller_status_handler: str
+    :type controller_handlers_set: namedtuple<str,str,str>
     :type controller_port: int
     :type java_opts: str
     :type ssh_client: paramiko.SSHClient
     :type controller_cpus: str
     """
     logging.info('[generate_controller_xml_files] Starting controller')
-    cpid = start_controller(controller_start_handler,
-        controller_status_handler, controller_port, java_opts,
+    cpid = start_controller(controller_handlers_set.ctrl_start_handler,
+        controller_handlers_set.ctrl_status_handler, controller_port, java_opts,
         controller_cpus, ssh_client)
 
     # Controller status check is done inside start_controller() of the
     # controller_utils
     logging.info('[generate_controller_xml_files] OK, controller status is 1.')
     logging.info('[generate_controller_xml_files] Stopping controller')
-    stop_controller(controller_stop_handler, controller_status_handler, cpid,
+    stop_controller(controller_handlers_set.ctrl_stop_handler,
+                    controller_handlers_set.ctrl_status_handler, cpid,
                     ssh_client)
 
 
