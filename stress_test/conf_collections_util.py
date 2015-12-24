@@ -4,7 +4,7 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Configuration collections used from all test implementations """
+""" Configuration collections used for all test implementations """
 
 import collections
 

@@ -22,9 +22,8 @@ def copy_mininet_handlers(mininet_node, mininet_dir_source, mininet_dir_target):
     """
     Copies Mininet handlers on the remote Mininet node
 
-    :param mininet_node:  A named tuple with all the connection information.
-    It must have the following elements: ['name', 'ip', 'ssh_port', 'username',
-    'password']
+    :param mininet_node:  named tuple with all connection information. ['name',
+    'ip', 'ssh_port', 'username', 'password']
     :param mininet_dir_source: directory path from local machine to copy, full
     location required
     :param mininet_dir_target: remote destination, full location required
