@@ -68,8 +68,8 @@ def cleanup_controller(controller_clean_handler, ssh_client=None):
     common.command_exec_wrapper([controller_clean_handler],
                          '[controller_clean_handler]')
 
-def controller_changestatsperiod(controller_statistics_handler,
-                                 stat_period_ms, ssh_client=None):
+def controller_changestatsperiod(controller_statistics_handler, stat_period_ms,
+                                 ssh_client=None):
     """Wrapper to the controller statistics handler
 
     :param controller_statistics_handler: filepath to the controller statistics
@@ -95,13 +95,16 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     are 1) rebuild_controller 2) check_for_active_controller
     3) generate_controller_xml_files
 
-    :param controller_handlers_set: tuple containing
+    :param controller_handlers_set: tuple containing paths of
+    1) controller_build_handler  2) controller_start_handler
+    3) controller_status_handler 4) controller_stop_handler
+    5) controller_clean_handler  6) controller_statistics_handler
     :param controller_rebuild: if SET controller rebuild is performed
     :param controller_ssh_client: paramiko.SSHClient object
     :param java_opts: controller JAVA options
     :param controller_port: controller port to check
     :param controller_cpus
-    :type controller_handlers_set: collections.namedtuple<str>
+    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type controller_rebuild: boolean
     :type controller_ssh_client: paramiko.SSHClient
     :type java_opts: str
@@ -128,15 +131,16 @@ def generate_controller_xml_files(controller_handlers_set, controller_port,
     """ Starts and then stops the controller to trigger the generation of
     controller's XML files.
 
-    :param controller_handlers_set: named tuple containing 1)
-    controller_start_handler 2) controller_stop_handler
-    3) controller_status_handler
+    :param controller_handlers_set: tuple containing paths of
+    1) controller_build_handler  2) controller_start_handler
+    3) controller_status_handler 4) controller_stop_handler
+    5) controller_clean_handler  6) controller_statistics_handler
     :param controller_port: controller port to check
     :param java_opts: A comma separated value string with the java options for
     the controller
     :param ssh_client : SSH client provided by paramiko to run the command
     :param controller_cpus:
-    :type controller_handlers_set: namedtuple<str,str,str>
+    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type java_opts: str
     :type ssh_client: paramiko.SSHClient
@@ -168,17 +172,16 @@ def restart_controller(controller_handlers_set, controller_port, old_cpid,
                        ssh_client=None):
     """Restarts the controller
 
-    :param controller_stop_handler: filepath to the controller stop handler
-    :param controller_start_handler: filepath to the controller start handler
-    :param controller_status_handler: filepath to the controller status handler
+    :param controller_handlers_set: tuple containing paths of
+    1) controller_build_handler  2) controller_start_handler
+    3) controller_status_handler 4) controller_stop_handler
+    5) controller_clean_handler  6) controller_statistics_handler
     :param controller_port: controller port number to listen for SB connections
     :param old_cpid: PID of already running controller process
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller process ID
     :rtype: int
-    :type controller_stop_handler: str
-    :type controller_start_handler: str
-    :type controller_status_handler: str
+    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type old_cpid: int
     :type ssh_client: paramiko.SSHClient
@@ -193,16 +196,17 @@ def start_controller(controller_handlers_set, controller_port, java_opts,
                      controller_cpus, ssh_client=None):
     """Wrapper to the controller start handler
 
-    :param controller_start_handler: filepath to the controller start handler
-    :param controller_status_handler: filepath to the controller status handler
+    :param controller_handlers_set: tuple containing paths of
+    1) controller_build_handler  2) controller_start_handler
+    3) controller_status_handler 4) controller_stop_handler
+    5) controller_clean_handler  6) controller_statistics_handler
     :param controller_port: controller port number to listen for SB connections
     :param java_opts: JAVA options to be set for controller
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller's process ID
     :raises Exception: When controller fails to start.
     :rtype: int
-    :type controller_start_handler: str
-    :type controller_status_handler: str
+    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type java_opts: str
     :type ssh_client: paramiko.SSHClient
@@ -238,12 +242,13 @@ def start_controller(controller_handlers_set, controller_port, java_opts,
 def stop_controller(controller_handlers_set, cpid, ssh_client=None):
     """Wrapper to the controller stop handler
 
-    :param controller_stop_handler: filepath to the controller stop handler
-    :param controller_status_handler: filepath to the controller status handler
+    :param controller_handlers_set: tuple containing paths of
+    1) controller_build_handler  2) controller_start_handler
+    3) controller_status_handler 4) controller_stop_handler
+    5) controller_clean_handler  6) controller_statistics_handler
     :param cpid: controller process ID
     :param ssh_client : SSH client provided by paramiko to run the command
-    :type controller_stop_handler: str
-    :type controller_status_handler: str
+    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type cpid: int
     :type ssh_client: paramiko.SSHClient
     """
