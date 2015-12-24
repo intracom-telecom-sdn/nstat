@@ -46,6 +46,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
     t_start = multiprocessing.Value('d', 0.0)
     discovery_deadline_ms = multiprocessing.Value('i', 0)
+    bootup_time_ms = multiprocessing.Value('i', 0)
     mininet_hosts_per_switch = multiprocessing.Value('i', 0)
     mininet_size = multiprocessing.Value('i', 0)
 
@@ -201,7 +202,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, 0, mininet_size,
+                      t_start, bootup_time_ms, mininet_size,
                       discovery_deadline_ms, result_queue))
 
             monitor_thread.start()

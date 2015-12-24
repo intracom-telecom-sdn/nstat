@@ -214,9 +214,8 @@ def open_ssh_connections(connections_list):
     return tuple(connection_clients)
 
 
-def poll_ds_thread(controller_nb_interface,
-                   boot_start_time, bootup_time_ms, expected_switches,
-                   discovery_deadline_ms, queuecomm):
+def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
+                   expected_switches, discovery_deadline_ms, queuecomm):
     """
     Poll operational DS to discover installed switches
 
