@@ -145,7 +145,7 @@ def create_cpu_shares(controller_cpu_shares, generator_cpu_shares):
     controller.
     :param generator_cpu_shares: Percentage of CPU resources to be used by
     generator.
-    :returns: number of cpus allocated fot controller, generator
+    :returns: number of cpus allocated for controller, generator
     :rtype: tuple<str,str>
     :type controller_cpu_shares: int
     :type generator_cpu_shares: int
@@ -175,7 +175,7 @@ def generate_json_results(results, out_json):
             with open(out_json, 'w') as ojf:
                 json.dump(results, ojf)
                 ojf.close()
-                logging.info('[generate_json_results] Results writen to {0}.'.
+                logging.info('[generate_json_results] Results written to {0}.'.
                              format(out_json))
         else:
             logging.error('[generate_json_results] results parameter was empty.'
@@ -265,8 +265,6 @@ def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
         time.sleep(1)
 
 
-
-
 def sample_stats(cpid, ssh_client=None):
     """ Take runtime statistics
 
@@ -281,7 +279,8 @@ def sample_stats(cpid, ssh_client=None):
     common_statistics = {}
     common_statistics['total_memory_bytes'] = \
         util.sysstats.sys_total_memory_bytes(ssh_client)
-    common_statistics['controller_cwd'] = util.sysstats.proc_cwd(cpid, ssh_client)
+    common_statistics['controller_cwd'] = \
+        util.sysstats.proc_cwd(cpid, ssh_client)
     common_statistics['controller_java_xopts'] = \
         util.sysstats.get_java_options(cpid, ssh_client)
     common_statistics['timestamp'] = \
@@ -295,7 +294,6 @@ def sample_stats(cpid, ssh_client=None):
         util.sysstats.sys_free_memory_bytes(ssh_client)
     common_statistics['controller_cpu_system_time'] = \
         util.sysstats.proc_cpu_system_time(cpid, ssh_client)
-
     common_statistics['controller_cpu_user_time'] = \
         util.sysstats.proc_cpu_user_time(cpid, ssh_client)
     common_statistics['controller_vm_size'] = \
@@ -304,8 +302,10 @@ def sample_stats(cpid, ssh_client=None):
         util.sysstats.proc_num_fds(cpid, ssh_client)
     common_statistics['controller_num_threads'] = \
         util.sysstats.proc_num_threads(cpid, ssh_client)
-    common_statistics['one_minute_load'] = util.sysstats.sys_load_average(ssh_client)[0]
-    common_statistics['five_minute_load'] = util.sysstats.sys_load_average(ssh_client)[1]
+    common_statistics['one_minute_load'] = \
+        util.sysstats.sys_load_average(ssh_client)[0]
+    common_statistics['five_minute_load'] = \
+        util.sysstats.sys_load_average(ssh_client)[1]
     common_statistics['fifteen_minute_load'] = \
         util.sysstats.sys_load_average(ssh_client)[2]
 

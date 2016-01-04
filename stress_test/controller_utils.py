@@ -103,7 +103,8 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     :param controller_ssh_client: paramiko.SSHClient object
     :param java_opts: controller JAVA options
     :param controller_port: controller port to check
-    :param controller_cpus
+    :param controller_cpus: number of cpus returned by create_cpu_shares() and
+    allocated for controller
     :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type controller_rebuild: boolean
     :type controller_ssh_client: paramiko.SSHClient
@@ -139,7 +140,8 @@ def generate_controller_xml_files(controller_handlers_set, controller_port,
     :param java_opts: A comma separated value string with the java options for
     the controller
     :param ssh_client : SSH client provided by paramiko to run the command
-    :param controller_cpus:
+    :param controller_cpus: number of cpus returned by create_cpu_shares() and
+    allocated for controller
     :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type java_opts: str
@@ -202,6 +204,8 @@ def start_controller(controller_handlers_set, controller_port, java_opts,
     5) controller_clean_handler  6) controller_statistics_handler
     :param controller_port: controller port number to listen for SB connections
     :param java_opts: JAVA options to be set for controller
+    :param controller_cpus: number of cpus returned by create_cpu_shares() and
+    allocated for controller
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller's process ID
     :raises Exception: When controller fails to start.
@@ -209,6 +213,7 @@ def start_controller(controller_handlers_set, controller_port, java_opts,
     :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type java_opts: str
+    :type controller_cpus: str
     :type ssh_client: paramiko.SSHClient
     """
 
