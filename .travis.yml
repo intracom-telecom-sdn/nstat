@@ -13,8 +13,8 @@ before_script:
   - sudo apt-get -y install openjdk-7-jdk openjdk-7-jre
   - sudo bash ./vagrant/base/provisioning/provision.sh
   - sudo apt-get -y install ssh
-  - sudo apt-get install -y mkpasswd
-  - sudo useradd -s /bin/bash -m -G sudo -p $(perl -e'print crypt("jenkins", "mb")') jenkins
+  - sudo useradd -s /bin/bash -m -G sudo jenkins
+  - echo -e "jenkins\njenkins" | passwd jenkins
   - sudo pip3 install paramiko
   - sudo pip2 install paramiko
   - sudo pip2 install bottle
