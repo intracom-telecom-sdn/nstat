@@ -7,6 +7,7 @@
 
 """Unittest Module for util/process.py."""
 
+import collections
 import logging
 import multiprocessing
 import os
@@ -21,9 +22,10 @@ LOGGER = logging.getLogger()
 LOGGER.level = logging.INFO
 STREAM_HANDLER = logging.StreamHandler(sys.stdout)
 LOGGER.addHandler(STREAM_HANDLER)
-SSH_IP = '127.0.0.1'
-SSH_UNAME = 'jenkins'
-SSH_PWD = 'jenkins'
+node_parameters = collections.namedtuple('ssh_connection',
+    ['name', 'ip', 'ssh_port', 'username', 'password'])
+NODE_CONNECTION = node_parameters('test_server_node-travis', '127.0.0.1',
+                                  22, 'travis', 'travis')
 
 def server_init(listen_port):
     """The helper method start a server process that listens to a predefined
@@ -101,8 +103,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
         cls.SERVER_PID = os.getpid()
         logging.getLogger().info('SERVER PID: %d', cls.SERVER_PID)
         logging.getLogger().info('NOT OWNED PORT: %s', cls.port_not_owned)
-        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP, SSH_UNAME,
-                                                            SSH_PWD, 10, 22)
+        cls.ssh_client = util.netutil.ssh_connect_or_return(NODE_CONNECTION, 10)
 
     def test01_getpid_listeningonport(self):
         """Checks the getpid_listeningonport() function of
@@ -156,7 +157,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
         self.assertTrue(util.process.is_process_running(self.SERVER_PID,
                                                         self.ssh_client),
                         'Testing true case for a valid process id. Remote')
-        
+
     def test02_is_process_running(self):
         """Checks the is_process_running() function of
         util/process.py module. In this scenario we check the result in case
