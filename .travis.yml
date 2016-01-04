@@ -14,7 +14,7 @@ before_script:
   - sudo bash ./vagrant/base/provisioning/provision.sh
   - sudo apt-get -y install ssh
   - sudo apt-get install -y mkpasswd
-  - sudo useradd -s /bin/bash -m -G sudo -p $(mkpasswd --hash=SHA-512 jenkins) jenkins
+  - sudo useradd -s /bin/bash -m -G sudo -p $(perl -e'print crypt("jenkins", "mb")') jenkins
   - sudo pip3 install paramiko
   - sudo pip2 install paramiko
   - sudo pip2 install bottle
