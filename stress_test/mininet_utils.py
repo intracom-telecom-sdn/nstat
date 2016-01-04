@@ -243,7 +243,7 @@ def stop_mininet_server(mininet_ssh_session, mininet_rest_server_port):
 
     :param mininet_ssh_session: ssh session used to issue remote command
     :param mininet_rest_server_port: port the REST server listens to
-    :type test_type: ssh connection object
+    :type mininet_ssh_session: ssh connection object
     :type mininet_rest_server_port: int
     """
 

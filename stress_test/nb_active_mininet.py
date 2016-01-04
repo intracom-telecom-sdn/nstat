@@ -293,8 +293,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         common.generate_json_results(total_samples, out_json)
 
         try:
-            logging.info('{0} stopping controller.'.
-                         format(test_type))
+            logging.info('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_handlers_set, cpid,
                                              controller_ssh_client)
         except:
