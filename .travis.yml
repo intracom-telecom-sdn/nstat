@@ -13,7 +13,6 @@ before_script:
   - sudo apt-get -y install openjdk-7-jdk openjdk-7-jre
   - sudo bash ./vagrant/base/provisioning/provision.sh
   - sudo apt-get -y install openssh-server
-  - sudo systemctl restart ssh
   - sudo pip3 install paramiko
   - sudo pip2 install paramiko
   - sudo pip2 install bottle
