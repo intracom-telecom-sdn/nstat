@@ -43,8 +43,8 @@ def delete_mininet_handlers(mininet_node, mininet_folder):
     It must have the following elements: ['name', 'ip', 'ssh_port', 'username',
     'password']
     :param mininet_folder:
-    :type mininet_ssh_server_ip: str
-    :type mininet_user: str
+    :type mininet_node: namedtuple<str,str,str,str,str>
+    :type mininet_folder: str
     """
 
     util.netutil.remove_remote_directory(mininet_node, mininet_folder)
