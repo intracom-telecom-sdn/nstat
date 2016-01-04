@@ -25,7 +25,7 @@ LOGGER.addHandler(STREAM_HANDLER)
 node_parameters = collections.namedtuple('ssh_connection',
     ['name', 'ip', 'ssh_port', 'username', 'password'])
 NODE_CONNECTION = node_parameters('test_server_node-travis', '127.0.0.1',
-                                  22, 'travis', 'travis')
+                                  22, 'travis', '')
 
 def server_init(listen_port):
     """The helper method start a server process that listens to a predefined
