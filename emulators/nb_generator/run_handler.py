@@ -11,7 +11,6 @@ Run handler of NorthBound traffic generator
 """
 import json
 import re
-import requests
 import subprocess
 import sys
 
