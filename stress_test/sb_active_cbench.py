@@ -28,7 +28,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
             cbench_threads, cbench_delay_before_traffic_ms,
             cbench_thread_creation_delay_ms, cbench_simulated_hosts,
             cbench_ms_per_test, cbench_internal_repeats, cbench_warmup,
-            cbench_mode, cbench_cpu_shares, controller_statistics_period_ms,
+            cbench_mode, mtcbench_cpu_shares, controller_statistics_period_ms,
             controller_port, controller_node, controller_cpu_shares,
             term_success, term_fail):
     """ Function executed by the monitor thread
@@ -58,8 +58,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     performance results
     :param cbench_mode: (one of "Latency" or "Throughput", see Cbench
     documentation)
-    :param cbench_cpu_shares: the percentage of CPU resources to be used for
-    cbench
+    :param mtcbench_cpu_shares: the percentage of CPU resources to be used for
+    mtcbench
     :param controller_statistics_period_ms: Interval that controller sends
     statistics flow requests to the switches (in milliseconds)
     :param controller_port: controller port number where OF switches should
@@ -87,7 +87,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
     :type cbench_internal_repeats: int
     :type cbench_warmup: int
     :type cbench_mode: str
-    :type cbench_cpu_shares: int
+    :type mtcbench_cpu_shares: int
     :type controller_statistics_period_ms: int
     :type controller_port: str
     :type controller_node: namedtuple<str,str,str,str>
@@ -151,8 +151,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                     statistics['cbench_ms_per_test'] = cbench_ms_per_test
                     statistics['cbench_internal_repeats'] = \
                         cbench_internal_repeats
-                    statistics['cbench_cpu_shares'] = \
-                        '{0}%'.format(cbench_cpu_shares)
+                    statistics['mtcbench_cpu_shares'] = \
+                        '{0}%'.format(mtcbench_cpu_shares)
                     statistics['cbench_warmup'] = cbench_warmup
                     if line == term_fail:
                         logging.info(
@@ -214,10 +214,10 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    if 'cbench_cpu_shares' in conf:
-        cbench_cpu_shares = conf['cbench_cpu_shares']
+    if 'mtcbench_cpu_shares' in conf:
+        mtcbench_cpu_shares = conf['mtcbench_cpu_shares']
     else:
-        cbench_cpu_shares = 100
+        mtcbench_cpu_shares = 100
 
     cbench_ms_per_test = conf['cbench_ms_per_test']
     cbench_internal_repeats = conf['cbench_internal_repeats']
@@ -299,7 +299,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             common.open_ssh_connections([cbench_node, controller_node])
 
         controller_cpus, cbench_cpus = common.create_cpu_shares(
-            controller_cpu_shares, cbench_cpu_shares)
+            controller_cpu_shares, mtcbench_cpu_shares)
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
@@ -367,7 +367,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
                                       cbench_ms_per_test,
                                       cbench_internal_repeats,
                                       cbench_warmup, cbench_mode,
-                                      cbench_cpu_shares,
+                                      mtcbench_cpu_shares,
                                       controller_statistics_period_ms,
                                       controller_sb_interface.port,
                                       controller_node,
@@ -541,7 +541,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_ms_per_test', 'Internal repeats interval'),
              ('cbench_warmup', 'Cbench warmup repeats'),
              ('cbench_mode', 'Cbench test mode'),
-             ('cbench_cpu_shares', 'Cbench CPU percentage'),
+             ('mtcbench_cpu_shares', 'MT-Cbench CPU percentage'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),

@@ -105,11 +105,19 @@ def main():
                              "DEBUG (default)\n"
                              "ERROR")
 
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
+    # setting log level for NSTAT experiment
     nstat_pre_test_actions.nstat_test_set_log_level(args)
+
+    # Parsing configuration options from JSON input file
     nstat_pre_test_actions.nstat_load_test_conf(args)
+
+    # NSTAT test selector: depending on the test_type defined on the command
+    # line options of NSTAT
     nstat_pre_test_actions.nstat_test_selector(args)
+
+    #
     nstat_post_test_actions.nstat_post_test_actions(args)
 
 

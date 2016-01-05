@@ -93,6 +93,7 @@ def nstat_post_test_actions(args):
             format(args.json_output))
 
 def nstat_test_save_logfile():
+
         # Move controller log file if exist inside the test output dir
         if args.log_file:
             shutil.move(args.log_file, args.output_dir)
