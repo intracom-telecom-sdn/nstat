@@ -13,7 +13,7 @@ SDN controller stress tests in a highly-configurable and modular manner.
 Key features in brief:
 - [Fully automated, end-to-end testing](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT#work-flow) with exhaustive test cases
 - Easy and rich [configuration system](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT#configuration-keys)
-- [Scalable traffic generation](https://github.com/intracom-telecom-sdn/nstat/wiki/MT-Cbench),
+- [Scalable traffic generation](https://github.com/intracom-telecom-sdn/mtcbench),
   able to emulate networks in the order of [thousands of switches](https://github.com/intracom-telecom-sdn/NSTAT/wiki/OpenDaylight-scalability-results-lithium)
 - Unification of different stress tests, see below:
   * SouthBound idle switch scalability (with [Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Southbound-idle-scalability-cbench),
@@ -39,7 +39,7 @@ page.
 
 - [NSTAT testing procedure, command line options and configuration parameters](https://github.com/intracom-telecom-sdn/nstat/wiki/NSTAT)
 - documentation for tests
-- [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/MT-Cbench) traffic generator
+- [MT-Cbench](https://github.com/intracom-telecom-sdn/mtcbench) traffic generator
 - [code design, concepts and conventions](https://github.com/intracom-telecom-sdn/nstat/wiki/Code-design)
 - [code structure](https://github.com/intracom-telecom-sdn/nstat/wiki/Code-design#code-structure)
 - [plotting methodology](https://github.com/intracom-telecom-sdn/nstat/wiki/Plotting)
