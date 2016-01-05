@@ -24,7 +24,7 @@ import sys
 import util.plot_json
 
 
-def nstat_post_test_actions(args):
+def nstat_post_test_actions(args, test_config, report_spec):
 
     # 03. if results have been produced, generate plots, report and gather
     # output files
@@ -84,15 +84,15 @@ def nstat_post_test_actions(args):
                     'Please check configuration. Continuing to the next plot.'.
                     format(test_config['plots'][plot_index]['plot_title']))
 
-        nstat_test_save_logfile()
-        nstat_test_save_report()
+        nstat_test_save_logfile(args)
+        nstat_test_save_report(args, report_spec)
 
     else:
         logging.error(
             '[nstat_orchestrator] No output file {0} found. Finishing.'.
             format(args.json_output))
 
-def nstat_test_save_logfile():
+def nstat_test_save_logfile(args):
 
         # Move controller log file if exist inside the test output dir
         if args.log_file:
@@ -100,7 +100,7 @@ def nstat_test_save_logfile():
         shutil.copy(args.json_output, args.output_dir)
         shutil.copy(args.json_config, args.output_dir)
 
-def nstat_test_save_report():
+def nstat_test_save_report(args, report_spec):
 
         # Generate html report and move it within test output dir
         logging.info('[nstat_orchestrator] Generating html report')

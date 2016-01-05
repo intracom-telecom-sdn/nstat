@@ -68,8 +68,9 @@ def nstat_load_test_conf(args):
     logging.info('[nstat_orchestrator] Parsing test configuration')
     json_conf_file = open(args.json_config)
     test_config = json.load(json_conf_file)
+    return test_config
 
-def nstat_test_selector(args):
+def nstat_test_selector(args, test_config):
     """NSTAT test selector: depending on the test_type defined on the command
     line options of NSTAT
 
@@ -144,3 +145,4 @@ def nstat_test_selector(args):
         logging.error('[nstat_orchestrator] not valid test configuration')
         exit(0)
 
+    return report_spec
