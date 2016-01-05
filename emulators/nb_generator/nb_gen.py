@@ -11,7 +11,6 @@ import logging
 import nb_gen_utils
 import os
 import sys
-import time
 import collections
 
 F_TEMP = """{
@@ -191,7 +190,7 @@ if __name__ == '__main__':
                         dest='discovery_deadline_ms',
                         action='store',
                         default='240000',
-                        help=("The deadline to discover switches (in ms). \n"
+                        help=("The deadline to discover flows (in ms). \n"
                               "The default value is '240000'.\n"
                               "Example: --discovery-deadline='240000'"))
     parser.add_argument('--restconf-user',
