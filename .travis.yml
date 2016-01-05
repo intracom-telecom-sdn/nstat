@@ -13,8 +13,7 @@ before_script:
   - sudo apt-get -y install openjdk-7-jdk openjdk-7-jre
   - sudo bash ./vagrant/base/provisioning/provision.sh
   - sudo apt-get -y install ssh
-  - sudo useradd -s /bin/bash -m -G sudo jenkins
-  - echo -e "jenkins\njenkins" | passwd jenkins
+  - sudo useradd -s /bin/bash -m -G sudo -p $(echo "jenkins" | openssl passwd -1 -stdin) jenkins
   - sudo pip3 install paramiko
   - sudo pip2 install paramiko
   - sudo pip2 install bottle
@@ -40,3 +39,5 @@ script:
   - coverage combine
 after_success:
   coveralls
+notifications:
+  email: false
