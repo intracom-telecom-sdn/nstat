@@ -25,6 +25,13 @@ import util.plot_json
 
 
 def nstat_test_set_log_level(args):
+    """Setting log level for NSTAT experiment
+
+    :param args:
+    :returns:
+    :rtype:
+    :type args:
+    """
 
     logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
     if args.logging_level == 'INFO':
@@ -49,14 +56,28 @@ def nstat_test_set_log_level(args):
             file_logging_handler.setLevel(level=logging.DEBUG)
 
 def nstat_load_test_conf(args):
+    """Loading test configuration for NSTAT experiment. Parsing configuration
+    options from JSON input file
 
-    # 01. parse configuration options from JSON
+    :param args:
+    :returns:
+    :rtype:
+    :type args:
+    """
+
     logging.info('[nstat_orchestrator] Parsing test configuration')
     json_conf_file = open(args.json_config)
     test_config = json.load(json_conf_file)
 
 def nstat_test_selector(args):
+    """NSTAT test selector: depending on the test_type defined on the command
+    line options of NSTAT
 
+    :param args:
+    :returns:
+    :rtype:
+    :type args:
+    """
     # sb_active_cbench
     if args.test_type == 'sb_active_scalability_mtcbench' or \
        args.test_type == 'sb_active_stability_mtcbench':

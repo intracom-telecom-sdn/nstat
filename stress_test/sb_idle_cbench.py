@@ -59,10 +59,10 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_rebuild = conf['cbench_rebuild']
     cbench_cleanup = conf['cbench_cleanup']
     cbench_name = conf['cbench_name']
-    if 'cbench_cpu_shares' in conf:
-        cbench_cpu_shares = conf['cbench_cpu_shares']
+    if 'mtcbench_cpu_shares' in conf:
+        mtcbench_cpu_shares = conf['mtcbench_cpu_shares']
     else:
-        cbench_cpu_shares = 100
+        mtcbench_cpu_shares = 100
 
     cbench_mode = conf['cbench_mode']
     cbench_warmup = conf['cbench_warmup']
@@ -139,7 +139,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             common.open_ssh_connections([cbench_node, controller_node])
 
         controller_cpus, cbench_cpus = common.create_cpu_shares(
-            controller_cpu_shares, cbench_cpu_shares)
+            controller_cpu_shares, mtcbench_cpu_shares)
         cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
 
         if cbench_rebuild:
@@ -254,8 +254,8 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             statistics['cbench_ms_per_test'] = cbench_ms_per_test
             statistics['cbench_internal_repeats'] = \
                 cbench_internal_repeats
-            statistics['cbench_cpu_shares'] = \
-                '{0}%'.format(cbench_cpu_shares)
+            statistics['mtcbench_cpu_shares'] = \
+                '{0}%'.format(mtcbench_cpu_shares)
             statistics['controller_cpu_shares'] = \
                 '{0}%'.format(controller_cpu_shares)
 
@@ -397,7 +397,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('cbench_ms_per_test', 'Internal repeats interval'),
              ('cbench_warmup', 'Generator warmup repeats'),
              ('cbench_mode', 'Generator test mode'),
-             ('cbench_cpu_shares', 'Cbench CPU percentage'),
+             ('mtcbench_cpu_shares', 'MT-Cbench CPU percentage'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),
