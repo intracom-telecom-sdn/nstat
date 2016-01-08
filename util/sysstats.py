@@ -23,7 +23,6 @@ def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
     :type cmd: str
     :type ssh_client: paramiko.SSHClient
     :type return_type: str
-    :raises: Exception when the output of executed command is None
     """
 
     max_exec_tries = 5
@@ -37,16 +36,15 @@ def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
         max_exec_tries -= 1
     if cmd_output:
         cmd_output = cmd_output.strip()
-        if return_type == 'int':
-            return int(cmd_output)
-        elif return_type == 'float':
-            return float(cmd_output)
-        else:
-            return cmd_output
     else:
-        raise Exception('[sysstats] No output returned '
-                        'from executed command: {0}'.format(cmd))
+        cmd_output = '-1'
 
+    if return_type == 'int':
+        return int(cmd_output)
+    elif return_type == 'float':
+        return float(cmd_output)
+    else:
+        return cmd_output
 
 
 def sys_used_ram_mb(ssh_client=None):
