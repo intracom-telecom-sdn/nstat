@@ -40,11 +40,20 @@ def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
         cmd_output = '-1'
 
     if return_type == 'int':
-        return int(cmd_output)
+        try:
+            return int(cmd_output)
+        except:
+            return -1
     elif return_type == 'float':
-        return float(cmd_output)
+        try:
+            return float(cmd_output)
+        except:
+            return -1.0
     else:
-        return cmd_output
+        try:
+            return cmd_output
+        except:
+            return '-1'
 
 
 def sys_used_ram_mb(ssh_client=None):
