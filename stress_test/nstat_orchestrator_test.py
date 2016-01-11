@@ -110,7 +110,6 @@ def main():
     # setting log level for NSTAT experiment
     nstat_pre_test_actions.nstat_test_set_log_level(args)
 
-
     # Parsing configuration options from JSON input file
     test_configuration = nstat_pre_test_actions.nstat_load_test_conf(args)
     exit(0)
