@@ -50,7 +50,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -88,7 +88,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_stability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -121,7 +121,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -159,7 +159,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                   --test="nb_active_scalability_mininet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
                --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
@@ -200,7 +200,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -236,7 +236,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_stability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -267,7 +267,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -298,7 +298,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mininet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -329,7 +329,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mininet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -344,7 +344,7 @@
 
 - project:
     name: sample_nstat-jenkins-jobs
-    branch: develop_release_1.2
+    branch: master
     jobs:
 
         - 'sample_lithium_DS_sb_active_scalability_mtcbench-{branch}'
@@ -355,4 +355,4 @@
         - 'sample_lithium_RPC_sb_active_stability_mtcbench-{branch}'
         - 'sample_lithium_RPC_sb_idle_scalability_mtcbench-{branch}'
         - 'sample_lithium_sb_idle_scalability_mininet-{branch}'
-        - 'sample_lithium_sb_idle_stability_mininet-{branch}'
+#        - 'sample_lithium_sb_idle_stability_mininet-{branch}'
