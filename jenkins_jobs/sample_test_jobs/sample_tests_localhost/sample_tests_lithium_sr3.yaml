@@ -48,6 +48,7 @@
 
           # test execution
           # --------------------------------------------------------------------
+
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_scalability_mtcbench" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \

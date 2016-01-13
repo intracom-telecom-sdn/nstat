@@ -19,6 +19,7 @@ nstat_vm_ram = '1024'
 nstat_vm_cpus = '1'
 nstat_vm_bridge_interface_name = 'eth0'
 nstat_vm_hostname = 'nodecbench'
+nstat_vm_name = 'vm_mt_cbench'
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
@@ -67,6 +68,7 @@ Vagrant.configure(2) do |config|
       nstat_machine.vm.hostname = nstat_vm_hostname
       nstat_machine.vm.provider :virtualbox do |vb|
 
+        vb.name = nstat_vm_name
         # Customize the amount of memory on the VM:
         vb.memory = nstat_vm_ram
         vb.cpus = nstat_vm_cpus
