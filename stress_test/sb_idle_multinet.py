@@ -20,7 +20,7 @@ import time
 import util.file_ops
 import util.netutil
 
-def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
+def sb_idle_multinet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                         output_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
@@ -37,7 +37,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     :type output_dir: str
     """
 
-    test_type = '[sb_idle_mininet]'
+    test_type = '[sb_idle_multinet]'
     logging.info('{0} initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.
