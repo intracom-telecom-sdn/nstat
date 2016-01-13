@@ -48,7 +48,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     discovery_deadline_ms = multiprocessing.Value('i', 0)
     bootup_time_ms = multiprocessing.Value('i', 0)
 
-    # Mininet parameters
+    # Multinet parameters
     mininet_hosts_per_switch = multiprocessing.Value('i', 0)
     mininet_size = multiprocessing.Value('i', 0)
 
