@@ -135,15 +135,15 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
 
         # Run tests for all possible dimensions
         for (multinet_size.value,
-             mininet_group_size,
-             mininet_group_delay_ms,
+             multinet_group_size,
+             multinet_group_delay_ms,
              multinet_hosts_per_switch.value,
-             mininet_topology_type,
+             multinet_topology_type,
              controller_statistics_period_ms) in \
-             itertools.product(conf['multinet_size'],
+             itertools.product(conf['mininet_size'],
                                conf['mininet_group_size'],
                                conf['mininet_group_delay_ms'],
-                               conf['multinet_hosts_per_switch'],
+                               conf['mininet_hosts_per_switch'],
                                conf['mininet_topology_type'],
                                conf['controller_statistics_period_ms']):
 
@@ -152,6 +152,13 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             controller_utils.controller_changestatsperiod(
                 controller_handlers_set.ctrl_statistics_handler,
                 controller_statistics_period_ms, controller_ssh_client)
+
+
+
+
+
+
+
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
@@ -183,8 +190,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             mininet_utils.init_mininet_topo(
                 mininet_handlers_set.init_topo_handler, mininet_rest_server,
                 controller_node.ip, controller_node.ssh_port,
-                mininet_topology_type, multinet_size.value, mininet_group_size,
-                mininet_group_delay_ms, multinet_hosts_per_switch.value)
+                multinet_topology_type, multinet_size.value, multinet_group_size,
+                multinet_group_delay_ms, multinet_hosts_per_switch.value)
 
             t_start.value = time.time()
 
@@ -214,11 +221,11 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['multinet_size'] = multinet_size.value
-            statistics['mininet_topology_type'] = mininet_topology_type
+            statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
                 multinet_hosts_per_switch.value
-            statistics['mininet_group_size'] = mininet_group_size
-            statistics['mininet_group_delay_ms'] = mininet_group_delay_ms
+            statistics['multinet_group_size'] = multinet_group_size
+            statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['controller_node_ip'] = controller_node.ip
@@ -346,9 +353,9 @@ def get_report_spec(test_type, config_json, results_json):
              ('mininet_start_topo_handler', 'Multinet start topology handler'),
              ('mininet_node_ip', 'Multinet IP address'),
              ('mininet_rest_server_port', 'Multinet port'),
-             ('multinet_size', 'Multinet network size'),
+             ('mininet_size', 'Multinet network size'),
              ('mininet_topology_type', 'Multinet topology type'),
-             ('multinet_hosts_per_switch', 'Multinet hosts per switch'),
+             ('mininet_hosts_per_switch', 'Multinet hosts per switch'),
              ('java_opts', 'JVM options')], config_json)],
         [report_spec.TableSpec('2d', 'Test results',
             [('global_sample_id', 'Sample ID'),
@@ -357,10 +364,10 @@ def get_report_spec(test_type, config_json, results_json):
              ('bootup_time_secs', 'Time to discover switches (seconds)'),
              ('discovered_switches', 'Discovered switches'),
              ('multinet_size', 'Multinet Size'),
-             ('mininet_topology_type', 'Multinet Topology Type'),
+             ('multinet_topology_type', 'Multinet Topology Type'),
              ('multinet_hosts_per_switch', 'Multinet Hosts per Switch'),
-             ('mininet_group_size', 'Multinet Group Size'),
-             ('mininet_group_delay_ms', 'Multinet Group Delay (ms)'),
+             ('multinet_group_size', 'Multinet Group Size'),
+             ('multinet_group_delay_ms', 'Multinet Group Delay (ms)'),
              ('controller_node_ip', 'Controller IP'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),

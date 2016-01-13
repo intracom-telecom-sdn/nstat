@@ -59,12 +59,12 @@
 "multinet_node_username":"vagrant",
 "multinet_node_password":"vagrant",
 
-"mutlinet_boot_handler":"./deploy",
-"multinet_start_switches_handler":"./start_topos",
-"multinet_stop_switches_handler":"./stop_topos",
-"multinet_get_switches_handler":"./get_switches",
-"multinet_init_switches_handler":"./init_topos",
-"multinet_cleanup_switches_handler":"./cleanup",
+"mutlinet_boot_handler":"./bin/deploy",
+"multinet_start_switches_handler":"./bin/handlers/start_topos",
+"multinet_stop_switches_handler":"./bin/handlers/stop_topos",
+"multinet_get_switches_handler":"./bin/handlers/get_switches",
+"multinet_init_switches_handler":"./bin/handlers/init_topos",
+"multinet_cleanup_switches_handler":"./bin/cleanup",
 
 "multinet_master_ip":"192.168.64.30",
 "multinet_master_port": 3300,
