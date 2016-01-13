@@ -14,10 +14,8 @@ import os
 import util.customsubprocess
 
 
-MULTINET_BASE_DIR = ('{0}/emulators/multinet'.
-    format(os.path.dirname(os.path.realpath(__file__))))
-
-def multinet_command_runner(exec_path, logging_prefix, is_privileged=False):
+def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
+                            is_privileged=False):
     """
     General wrapper for running multinet handlers and deploy/cleanup multinet
     scripts
@@ -35,20 +33,21 @@ def multinet_command_runner(exec_path, logging_prefix, is_privileged=False):
     if is_privileged:
         run_cmd_prefix = 'sudo'
     multinet_run_cmd = ('{0} PYTHONPATH={1} python {2} --json-config {3}'.
-                            format(run_cmd_prefix, MULTINET_BASE_DIR,
+                            format(run_cmd_prefix, multinet_base_dir,
                                    exec_path,
-                                   MULTINET_BASE_DIR + '/config/config.json'))
+                                   multinet_base_dir + '/config/config.json'))
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
     util.customsubprocess.check_output_streaming(multinet_run_cmd,
                                                  '[{0}]'.format(logging_prefix))
 
 
-def generate_multinet_config(controller_sb_interface, multinet_rest_server, multinet_node,
-                             multinet_size, multinet_group_size,
+def generate_multinet_config(controller_sb_interface, multinet_rest_server,
+                             multinet_node, multinet_size, multinet_group_size,
                              multinet_group_delay_ms, multinet_hosts_per_switch,
                              multinet_topology_type, multinet_switch_type,
-                             multinet_worker_ip_list, multinet_worker_port_list):
+                             multinet_worker_ip_list, multinet_worker_port_list,
+                             multinet_base_dir):
     """
     Generates a new json configuration file for multinet, according to the
     configuration values that are passed as parameters.
@@ -74,6 +73,7 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server, mult
     :param multinet_switch_type: the type of openflow switch we want to create
     :param multinet_worker_ip_list: a list of ip addresses of multinet workers
     :param multinet_worker_port_list: a list of port numbers of multinet workers
+    :param multinet_base_dir:
     :type controller_sb_interface: collection.namedtuple(<str>, <int>)
     :type multinet_rest_server: collection.namedtuple(<str>, <int>)
     :type multinet_node: collection.namedtuple(<str>, <str>, <int>, <str>, <str>)
@@ -85,9 +85,10 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server, mult
     :type multinet_switch_type: str
     :type multinet_worker_ip_list: list<str>
     :type multinet_worker_port_list: list<int>
+    :type multinet_base_dir:<str>
     """
 
-    multinet_config_path = '{0}/config/config.json'.format(MULTINET_BASE_DIR)
+    multinet_config_path = '{0}/config/config.json'.format(multinet_base_dir)
     with open(multinet_config_path, 'r') as config_json_file:
         config_json = json.load(config_json_file)
 
@@ -95,7 +96,7 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server, mult
     config_json['master_port'] = multinet_rest_server.port
     config_json['worker_ip_list'] = multinet_worker_ip_list
     config_json['worker_port_list'] = multinet_worker_port_list
-    config_json['deploy']['multinet_base_dir'] = MULTINET_BASE_DIR
+    config_json['deploy']['multinet_base_dir'] = multinet_base_dir
     config_json['deploy']['ssh_port'] = multinet_node.ssh_port
     config_json['deploy']['username'] = multinet_node.username
     config_json['deploy']['password'] = multinet_node.password

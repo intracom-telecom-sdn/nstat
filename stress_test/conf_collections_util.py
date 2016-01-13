@@ -28,3 +28,4 @@ controller_northbound = collections.namedtuple('controller_northbound',
 controller_southbound = collections.namedtuple('controller_southbound',
                                                ['ip', 'port'])
 mininet_server = collections.namedtuple('mininet_server', ['ip', 'port'])
+multinet_server = collections.namedtuple('multinet_server', ['ip', 'port'])
