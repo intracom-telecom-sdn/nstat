@@ -18,6 +18,9 @@ controller_handlers = collections.namedtuple('controller_handlers',
 mininet_handlers = collections.namedtuple('mininet_handlers' ,
     ['rest_server_boot', 'stop_switches_handler', 'get_switches_handler',
      'init_topo_handler', 'start_topo_handler'])
+multinet_handlers = collections.namedtuple('multinet_handlers' ,
+    ['deploy', 'stop_switches_handler', 'get_switches_handler',
+     'init_topo_handler', 'start_topo_handler', 'cleanup_handler'])
 nb_generator_handlers = collections.namedtuple('nb_generator_handlers',
                                                ['run_handler'])
 controller_northbound = collections.namedtuple('controller_northbound',
