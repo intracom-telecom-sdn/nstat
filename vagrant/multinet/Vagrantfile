@@ -1,20 +1,32 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-################################################################
-################################################################
-####### VM configuration. DON'T FORGET TO CHANGE THESE  ########
-################################################################
-################################################################
+# Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License v1.0 which accompanies this distribution,
+# and is available at http://www.eclipse.org/legal/epl-v10.html
+
+# ------------------------------------------------------------------------------
+# VM configuration.
+# ------------------------------------------------------------------------------
+
+# make a new nstat_vm_basebox based on 'ubuntu/trusty64'
+# https://atlas.hashicorp.com/ubuntu (latest version)
+# vagrant box update (for updating to the latest official box)
+# ------------------------------------------------------------------------------
+
+# make a new nstat_vm_basebox based on 'nstat_vm_base'
+# ------------------------------------------------------------------------------
 http_proxy = ''
-mh_vm_basebox = 'mh-provisioned'
-mh_vm_ram_mini = '2048'
+mh_vm_basebox = 'nstat_vm_base'
+mh_vm_ram_mini = '1024'
 mh_vm_cpus_mini = '2'
 num_multinet_vms = 2
 mh_vm_private_network_ip_mini = '10.1.1.90' # the first IP Address in the  multinet VMs IP Address range
 forwarded_ports_master = []
 forwarded_ports_host = []
-################################################################
+# ------------------------------------------------------------------------------
 
 
 Vagrant.configure(2) do |config|

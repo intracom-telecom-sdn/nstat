@@ -40,6 +40,7 @@ def main():
                              "sb_active_stability_mtcbench\n"
                              "sb_idle_scalability_mtcbench\n"
                              "sb_idle_scalability_mininet\n"
+                             "sb_idle_scalability_multinet\n"
                              "nb_active_scalability_mininet")
     parser.add_argument('--bypass-execution',
                         dest='bypass_test',
@@ -58,7 +59,7 @@ def main():
                         type=str,
                         dest='sb_gen_base_dir',
                         action='store',
-                        help='MT-Cbench or Mininet generator base directory')
+                        help='MT-Cbench, Mininet or Multinet generator base directory')
     parser.add_argument('--nb-generator-base-dir',
                         required=False,
                         type=str,
