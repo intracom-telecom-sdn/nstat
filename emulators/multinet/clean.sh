@@ -17,4 +17,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "[clean.sh] Cleanup of multinet completed successful"
+echo "[clean.sh] Cleanup of multinet completed successfully"

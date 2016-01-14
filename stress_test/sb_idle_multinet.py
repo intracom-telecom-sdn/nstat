@@ -105,6 +105,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
     java_opts = conf['java_opts']
 
     try:
+
         # Before proceeding with the experiments check validity
         # of all handlers
         logging.info('{0} checking handler files.'.format(test_type))
@@ -115,6 +116,16 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
+            multinet_handlers_set.build,
+            multinet_handlers_set.clean_handler])
+
+        # Check if multinet files exist
+
+
+        # Before proceeding with the experiments check validity
+        # of all mutinet handlers
+        logging.info('{0} checking handler files.'.format(test_type))
+        util.file_ops.check_filelist([
             multinet_handlers_set.deploy,
             multinet_handlers_set.stop_switches_handler,
             multinet_handlers_set.get_switches_handler,
