@@ -19,7 +19,7 @@ import os
 import sb_active_cbench
 import sb_idle_cbench
 import sb_idle_mininet
-import sb_idle_mutlinet
+import sb_idle_multinet
 import shutil
 import sys
 import util.plot_json

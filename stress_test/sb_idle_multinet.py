@@ -74,7 +74,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         ctrl_base_dir + conf['controller_statistics_handler']
         )
     multinet_handlers_set = conf_collections_util.multinet_handlers(
-        multinet_base_dir + conf['mutlinet_boot_handler'],
+        multinet_base_dir + conf['multinet_boot_handler'],
         multinet_base_dir + conf['multinet_stop_switches_handler'],
         multinet_base_dir + conf['multinet_get_switches_handler'],
         multinet_base_dir + conf['multinet_init_switches_handler'],
@@ -95,7 +95,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
     mininet_rest_server = conf_collections_util.mininet_server(
         conf['mininet_node_ip'], conf['mininet_rest_server_port'])
 
-    multinet_rest_server = conf_collections_util.mutltinet_server(
+    multinet_rest_server = conf_collections_util.multinet_server(
         conf['multinet_master_ip'], conf['multinet_master_port'])
 
     # list of samples: each sample is a dictionary that contains

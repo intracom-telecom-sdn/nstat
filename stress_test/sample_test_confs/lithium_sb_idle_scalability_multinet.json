@@ -59,7 +59,7 @@
 "multinet_node_username":"vagrant",
 "multinet_node_password":"vagrant",
 
-"mutlinet_boot_handler":"./bin/deploy",
+"multinet_boot_handler":"./bin/deploy",
 "multinet_start_switches_handler":"./bin/handlers/start_topos",
 "multinet_stop_switches_handler":"./bin/handlers/stop_topos",
 "multinet_get_switches_handler":"./bin/handlers/get_switches",
