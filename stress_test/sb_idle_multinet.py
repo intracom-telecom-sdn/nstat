@@ -11,8 +11,8 @@ import conf_collections_util
 import controller_utils
 import itertools
 import logging
-import mininet_utils
 import multiprocessing
+import multinet_utils
 import os
 import report_spec
 import sys
@@ -92,9 +92,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
     controller_nb_interface = conf_collections_util.controller_northbound(
         conf['controller_node_ip'], conf['controller_restconf_port'],
         conf['controller_restconf_user'], conf['controller_restconf_password'])
-    mininet_rest_server = conf_collections_util.mininet_server(
-        conf['mininet_node_ip'], conf['mininet_rest_server_port'])
-
     multinet_rest_server = conf_collections_util.multinet_server(
         conf['multinet_master_ip'], conf['multinet_master_port'])
 
