@@ -10,6 +10,7 @@ Multinet-related utilities
 
 import json
 import logging
+import os
 import util.customsubprocess
 
 
@@ -31,8 +32,9 @@ def multinet_pre_post_actions(multinet_base_dir, action):
         logging.error('[{0}] Action {1} is not valid'.
                       format('multinet_pre_post_actions', action))
         raise ValueError('Invalid action value.')
-    util.customsubprocess(exec_cmd, '[{0}] Running multinet {1} action'.
-                              format('multinet_pre_post_actions', action))
+    util.customsubprocess.check_output_streaming(exec_cmd,
+        '[{0}] Running multinet {1} action'.
+        format('multinet_pre_post_actions', action))
 
 
 def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
@@ -55,14 +57,15 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
     run_cmd_prefix = ''
     if is_privileged:
         run_cmd_prefix = 'sudo'
-    multinet_run_cmd = ('{0} PYTHONPATH={1} python {2} --json-config {3}'.
+    multinet_run_cmd = ('{0} PYTHONPATH=\"{1}\" python {2} --json-config {3}'.
                             format(run_cmd_prefix, multinet_base_dir,
                                    exec_path,
-                                   multinet_base_dir + '/config/config.json'))
+                                   multinet_base_dir + 'config/config.json'))
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
-    util.customsubprocess.check_output_streaming(multinet_run_cmd,
-                                                 '[{0}]'.format(logging_prefix))
+    os.system(multinet_run_cmd)
+    #util.customsubprocess.check_output_streaming(multinet_run_cmd.split(),
+    #                                            '[{0}]'.format(logging_prefix))
 
 
 def generate_multinet_config(controller_sb_interface, multinet_rest_server,

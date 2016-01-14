@@ -138,11 +138,12 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             multinet_handlers_set.get_switches_handler,
             multinet_handlers_set.init_topo_handler,
             multinet_handlers_set.start_topo_handler,
-            multinet_handlers_set.cleanup_handler])
+            multinet_handlers_set.clean_handler])
 
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
-        controller_ssh_client = common.open_ssh_connections([controller_node])
+        controller_ssh_client = common.open_ssh_connections([controller_node])[0]
+
 
         controller_cpus = common.create_cpu_shares(
             controller_cpu_shares, 100)[0]
@@ -153,6 +154,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
                                       controller_cpus)
+
 
         # Run tests for all possible dimensions
         for (multinet_size.value,
@@ -182,15 +184,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 multinet_switch_type, multinet_worker_ip_list,
                 multinet_worker_port_list, multinet_base_dir)
 
-
-            logging.info('{0} booting up Multinet REST server'.
-                          format(test_type))
-            #mininet_utils.start_mininet_server(mininet_ssh_client,
-            #    mininet_handlers_set.rest_server_boot, mininet_rest_server)
-
-            multinet_utils.multinet_command_runner(multinet_handlers_set.deploy,
-                'deploy_multinet', multinet_base_dir, is_privileged=True)
-
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_handlers_set,
                 controller_sb_interface.port, ' '.join(conf['java_opts']),
@@ -199,6 +192,14 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             # Control of controller status
             # is done inside controller_utils.start_controller()
             logging.info('{0} OK, controller status is 1.'.format(test_type))
+
+            logging.info('{0} booting up Multinet REST server'.
+                          format(test_type))
+            #mininet_utils.start_mininet_server(mininet_ssh_client,
+            #    mininet_handlers_set.rest_server_boot, mininet_rest_server)
+
+            multinet_utils.multinet_command_runner(multinet_handlers_set.deploy,
+                'deploy_multinet', multinet_base_dir, is_privileged=False)
 
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
@@ -289,7 +290,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 format(test_type))
 
             multinet_utils.multinet_command_runner(
-                multinet_handlers_set.cleanup_handler, 'cleanup_multinet',
+                multinet_handlers_set.clean_handler, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
             #mininet_utils.stop_mininet_server(mininet_ssh_client,
             #                                  mininet_rest_server.port)
@@ -343,7 +344,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 '{0} stopping REST daemon in Multinet node.'.
                 format(test_type))
             multinet_utils.multinet_command_runner(
-                multinet_handlers_set.cleanup_handler, 'cleanup_multinet',
+                multinet_handlers_set.clean_handler, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
 
             #mininet_utils.stop_mininet_server(mininet_ssh_client,
