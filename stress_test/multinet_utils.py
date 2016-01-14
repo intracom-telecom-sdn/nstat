@@ -10,8 +10,28 @@ Multinet-related utilities
 
 import json
 import logging
-import os
 import util.customsubprocess
+
+
+def multinet_pre_post_actions(multinet_base_dir, action):
+    """
+    Function that calls the multinet build and clean handlers under
+    emulators/multinet folder
+    :param multinet_base_dir: the full path to the multinet root folder
+    :param action: the type of pre or post action to execute. Can be either
+    build or clean
+    :type multinet_base_dir: str
+    :type action: str
+    :raises ValueError: if invalid action is given as input
+    """
+
+    exec_cmd = '{0}/{1}.sh'.format(multinet_base_dir, action)
+    if action != 'build' and action != 'clean':
+        logging.error('[{0}] Action {1} is not valid'.
+                      format('multinet_pre_post_actions', action))
+        raise ValueError('Invalid action value.')
+    util.customsubprocess(exec_cmd, '[{0}] Running multinet {1} action'.
+                              format('multinet_pre_post_actions', action))
 
 
 def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
@@ -22,11 +42,13 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
 
     :param exec_path: the full path of handler or script to be executed
     :param logging_prefix: the logging message prefix
+    :param multinet_base_dir: the full path to the multinet root folder
     :param is_privileged: flag to indicate if the executed script or handler
     will be executed in privileged mode
     :type exec_path: str
     :type logging_prefix: str
     :type is_privileged: bool
+    :type multinet_base_dir: str
     """
 
     run_cmd_prefix = ''
@@ -73,7 +95,7 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
     :param multinet_switch_type: the type of openflow switch we want to create
     :param multinet_worker_ip_list: a list of ip addresses of multinet workers
     :param multinet_worker_port_list: a list of port numbers of multinet workers
-    :param multinet_base_dir:
+    :param multinet_base_dir: the full path to the multinet root folder
     :type controller_sb_interface: collection.namedtuple(<str>, <int>)
     :type multinet_rest_server: collection.namedtuple(<str>, <int>)
     :type multinet_node: collection.namedtuple(<str>, <str>, <int>, <str>, <str>)
