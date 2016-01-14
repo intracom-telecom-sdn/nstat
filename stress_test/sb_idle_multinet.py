@@ -81,6 +81,13 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         multinet_base_dir + conf['multinet_start_switches_handler'],
         multinet_base_dir + conf['multinet_cleanup_switches_handler']
         )
+
+
+    multinet_local_handlers_set = \
+        conf_collections_util.multinet_local_handlers(
+        multinet_base_dir + conf['multinet_build_handler'],
+        multinet_base_dir + conf['multinet_clean_handler'])
+
     controller_node = conf_collections_util.node_parameters('Controller',
         conf['controller_node_ip'], int(conf['controller_node_ssh_port']),
         conf['controller_node_username'], conf['controller_node_password'])
@@ -116,11 +123,11 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
-            multinet_handlers_set.build,
-            multinet_handlers_set.clean_handler])
+            multinet_local_handlers_set.build_handler,
+            multinet_local_handlers_set.clean_handler])
 
         # Check if multinet files exist
-
+        multinet_utils.multinet_pre_post_actions(multinet_base_dir, 'build')
 
         # Before proceeding with the experiments check validity
         # of all mutinet handlers

@@ -10,6 +10,8 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
+#rm !(build.sh|clean.sh)
+shopt -s extglob
 rm -rf !(build.sh|clean.sh)
 
 if [ $? -ne 0 ]; then

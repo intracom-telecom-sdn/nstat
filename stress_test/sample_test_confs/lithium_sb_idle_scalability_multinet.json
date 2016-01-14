@@ -66,6 +66,9 @@
 "multinet_init_switches_handler":"./bin/handlers/init_topos",
 "multinet_cleanup_switches_handler":"./bin/cleanup",
 
+"multinet_clean_handler":"./clean.sh",
+"multinet_build_handler":"./build.sh",
+
 "multinet_master_ip":"192.168.64.30",
 "multinet_master_port": 3300,
 "multinet_worker_ip_list":["192.168.64.30", "192.168.64.31", "192.168.64.32"],

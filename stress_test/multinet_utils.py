@@ -25,7 +25,8 @@ def multinet_pre_post_actions(multinet_base_dir, action):
     :raises ValueError: if invalid action is given as input
     """
 
-    exec_cmd = '{0}/{1}.sh'.format(multinet_base_dir, action)
+    exec_cmd = '{0}{1}.sh'.format(multinet_base_dir, action)
+    print(exec_cmd)
     if action != 'build' and action != 'clean':
         logging.error('[{0}] Action {1} is not valid'.
                       format('multinet_pre_post_actions', action))
