@@ -18,12 +18,8 @@ def multinet_pre_post_actions(action_handler):
     """
     Function that calls the multinet build and clean handlers under
     emulators/multinet folder
-    :param multinet_base_dir: the full path to the multinet root folder
-    :param action: the type of pre or post action to execute. Can be either
-    build or clean
-    :type multinet_base_dir: str
-    :type action: str
-    :raises ValueError: if invalid action is given as input
+    :param action_handler: the full path to the multinet local handler
+    :type action_handler: str
     """
 
     logging.debug('[{0}] Executing command: {1}'.
