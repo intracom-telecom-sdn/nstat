@@ -69,7 +69,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler']
         )
-    mininet_handlers_set = conf_collections_util.mininet_handlers(
+    mininet_handlers_set = conf_collections_util.topology_generator_handlers(
         mininet_base_dir + conf['mininet_rest_server_boot'],
         mininet_base_dir + conf['mininet_stop_switches_handler'],
         mininet_base_dir + conf['mininet_get_switches_handler'],

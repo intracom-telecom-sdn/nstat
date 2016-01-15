@@ -15,12 +15,10 @@ cbench_handlers = collections.namedtuple('cbench_handlers' ,
 controller_handlers = collections.namedtuple('controller_handlers',
     ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
      'ctrl_stop_handler', 'ctrl_clean_handler', 'ctrl_statistics_handler'])
-mininet_handlers = collections.namedtuple('mininet_handlers' ,
+topology_generator_handlers = collections.namedtuple(
+    'topology_generator_handlers' ,
     ['rest_server_boot', 'stop_switches_handler', 'get_switches_handler',
-     'init_topo_handler', 'start_topo_handler'])
-multinet_handlers = collections.namedtuple('multinet_handlers' ,
-    ['deploy', 'stop_switches_handler', 'get_switches_handler',
-     'init_topo_handler', 'start_topo_handler', 'clean_handler'])
+     'init_topo_handler', 'start_topo_handler', 'rest_server_stop'])
 multinet_local_handlers = collections.namedtuple('multinet_local_handlers' ,
     ['build_handler', 'clean_handler'])
 nb_generator_handlers = collections.namedtuple('nb_generator_handlers',

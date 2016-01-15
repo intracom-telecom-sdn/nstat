@@ -59,12 +59,12 @@
 "multinet_node_username":"vagrant",
 "multinet_node_password":"vagrant",
 
-"multinet_boot_handler":"./bin/deploy",
+"multinet_rest_server_boot":"./bin/deploy",
 "multinet_start_switches_handler":"./bin/handlers/start_topos",
 "multinet_stop_switches_handler":"./bin/handlers/stop_topos",
 "multinet_get_switches_handler":"./bin/handlers/get_switches",
 "multinet_init_switches_handler":"./bin/handlers/init_topos",
-"multinet_cleanup_switches_handler":"./bin/cleanup",
+"multinet_rest_server_stop":"./bin/cleanup",
 
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",

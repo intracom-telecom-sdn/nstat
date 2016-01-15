@@ -73,13 +73,13 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler']
         )
-    multinet_handlers_set = conf_collections_util.multinet_handlers(
-        multinet_base_dir + conf['multinet_boot_handler'],
+    multinet_handlers_set = conf_collections_util.topology_generator_handlers(
+        multinet_base_dir + conf['multinet_rest_server_boot'],
         multinet_base_dir + conf['multinet_stop_switches_handler'],
         multinet_base_dir + conf['multinet_get_switches_handler'],
         multinet_base_dir + conf['multinet_init_switches_handler'],
         multinet_base_dir + conf['multinet_start_switches_handler'],
-        multinet_base_dir + conf['multinet_cleanup_switches_handler']
+        multinet_base_dir + conf['multinet_rest_server_stop']
         )
 
 
@@ -134,12 +134,12 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         # of all mutinet handlers
         logging.info('{0} checking handler files.'.format(test_type))
         util.file_ops.check_filelist([
-            multinet_handlers_set.deploy,
+            multinet_handlers_set.rest_server_boot,
             multinet_handlers_set.stop_switches_handler,
             multinet_handlers_set.get_switches_handler,
             multinet_handlers_set.init_topo_handler,
             multinet_handlers_set.start_topo_handler,
-            multinet_handlers_set.clean_handler])
+            multinet_handlers_set.rest_server_stop])
 
         # Opening connection with mininet_node_ip and returning
         # cbench_ssh_client to be utilized in the sequel
@@ -199,7 +199,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             #mininet_utils.start_mininet_server(mininet_ssh_client,
             #    mininet_handlers_set.rest_server_boot, mininet_rest_server)
 
-            multinet_utils.multinet_command_runner(multinet_handlers_set.deploy,
+            multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
                 'deploy_multinet', multinet_base_dir, is_privileged=False)
 
             logging.info('{0} creating queue'.format(test_type))
@@ -291,7 +291,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 format(test_type))
 
             multinet_utils.multinet_command_runner(
-                multinet_handlers_set.clean_handler, 'cleanup_multinet',
+                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
             #mininet_utils.stop_mininet_server(mininet_ssh_client,
             #                                  mininet_rest_server.port)
@@ -345,7 +345,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 '{0} stopping REST daemon in Multinet node.'.
                 format(test_type))
             multinet_utils.multinet_command_runner(
-                multinet_handlers_set.clean_handler, 'cleanup_multinet',
+                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
             #mininet_utils.stop_mininet_server(mininet_ssh_client,
             #                                  mininet_rest_server.port)

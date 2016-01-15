@@ -16,8 +16,6 @@ import mininet_utils
 import os
 import report_spec
 import sys
-import time
-import util.customsubprocess
 import util.file_ops
 import util.netutil
 
@@ -75,7 +73,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler']
         )
-    mininet_handlers_set = conf_collections_util.mininet_handlers(
+    mininet_handlers_set = conf_collections_util.topology_generator_handlers(
         mininet_base_dir + conf['mininet_rest_server_boot'],
         mininet_base_dir + conf['mininet_stop_switches_handler'],
         mininet_base_dir + conf['mininet_get_switches_handler'],
