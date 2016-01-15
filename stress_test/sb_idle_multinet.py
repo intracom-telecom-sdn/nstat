@@ -419,7 +419,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Per Multinet worker topology size'),
-             ('multinet_workers','number of Multinet workers')
+             ('multinet_workers','number of Multinet workers'),
              ('multinet_topology_type', 'Multinet Topology Type'),
              ('multinet_hosts_per_switch', 'Multinet Hosts per Switch'),
              ('multinet_group_size', 'Multinet Group Size'),
