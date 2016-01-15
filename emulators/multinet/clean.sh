@@ -10,6 +10,8 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
+cd $SCRIPT_DIR
+
 for item in $( ls -1 ); do
     if [ $item != 'build.sh' ] && [ $item != 'clean.sh' ]; then
         rm -rf $item
