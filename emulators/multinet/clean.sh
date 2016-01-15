@@ -10,11 +10,9 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
-cd $SCRIPT_DIR
-
-for item in $( ls -1 ); do
+for item in $( ls -1 $SCRIPT_DIR ); do
     if [ $item != 'build.sh' ] && [ $item != 'clean.sh' ]; then
-        rm -rf $item
+        rm -rf $SCRIPT_DIR/$item
         if [ $? -ne 0 ]; then
             echo "[clean.sh] Cleanup of multinet failed. Exiting ..."
             exit 1
