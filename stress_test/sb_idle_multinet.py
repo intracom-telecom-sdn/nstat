@@ -228,7 +228,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             #    multinet_group_delay_ms, multinet_hosts_per_switch.value)
 
             t_start.value = time.time()
-            multinet_network_size = multinet_size * len(multinet_worker_ip_list)
 
             logging.info('{0} starting Multinet topology.'.format(test_type))
             multinet_utils.multinet_command_runner(
@@ -246,7 +245,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, bootup_time_ms, multinet_network_size,
+                      t_start, bootup_time_ms,
+                      multinet_size.value * len(multinet_worker_ip_list),
                       discovery_deadline_ms, result_queue))
 
             monitor_thread.start()
