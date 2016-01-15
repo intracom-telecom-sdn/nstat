@@ -246,7 +246,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, bootup_time_ms, multinet_size * len(multinet_worker_ip_list),
+                      t_start, bootup_time_ms,
+                      multinet_size * len(multinet_worker_ip_list),
                       discovery_deadline_ms, result_queue))
 
             monitor_thread.start()
@@ -257,7 +258,9 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
-            statistics['multinet_size'] = multinet_size.value
+            statistics['multinet_size'] = \
+                multinet_size * len(multinet_worker_ip_list)
+            statistics['multinet_worker_topo_size'] = multinet_size
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
                 multinet_hosts_per_switch.value
@@ -281,8 +284,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.stop_switches_handler,
                 'stop_switches_handler_multinet', multinet_base_dir)
-
-
 
             #mininet_utils.start_stop_mininet_topo(
             #    mininet_handlers_set.stop_switches_handler,
@@ -405,7 +406,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('mininet_start_topo_handler', 'Multinet start topology handler'),
              ('mininet_node_ip', 'Multinet IP address'),
              ('mininet_rest_server_port', 'Multinet port'),
-             ('mininet_size', 'Multinet network size'),
+             ('mininet_size', 'Per Multinet worker network size'),
              ('mininet_topology_type', 'Multinet topology type'),
              ('mininet_hosts_per_switch', 'Multinet hosts per switch'),
              ('java_opts', 'JVM options')], config_json)],
@@ -416,6 +417,8 @@ def get_report_spec(test_type, config_json, results_json):
              ('bootup_time_secs', 'Time to discover switches (seconds)'),
              ('discovered_switches', 'Discovered switches'),
              ('multinet_size', 'Multinet Size'),
+             ('multinet_worker_topo_size',
+              'Per Multinet worker topology size'),
              ('multinet_topology_type', 'Multinet Topology Type'),
              ('multinet_hosts_per_switch', 'Multinet Hosts per Switch'),
              ('multinet_group_size', 'Multinet Group Size'),
