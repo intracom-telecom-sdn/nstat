@@ -258,8 +258,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['multinet_size'] = \
-                multinet_size * len(multinet_worker_ip_list)
-            statistics['multinet_worker_topo_size'] = multinet_size
+                multinet_size.value * len(multinet_worker_ip_list)
+            statistics['multinet_worker_topo_size'] = multinet_size.value
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
                 multinet_hosts_per_switch.value
