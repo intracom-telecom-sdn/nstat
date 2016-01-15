@@ -257,6 +257,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
+            statistics['multinet_workers'] = len(multinet_worker_ip_list)
             statistics['multinet_size'] = \
                 multinet_size.value * len(multinet_worker_ip_list)
             statistics['multinet_worker_topo_size'] = multinet_size.value
@@ -418,6 +419,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Per Multinet worker topology size'),
+             ('multinet_workers','number of Multinet workers')
              ('multinet_topology_type', 'Multinet Topology Type'),
              ('multinet_hosts_per_switch', 'Multinet Hosts per Switch'),
              ('multinet_group_size', 'Multinet Group Size'),

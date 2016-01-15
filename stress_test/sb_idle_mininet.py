@@ -227,6 +227,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics['discovered_switches'] = res[1]
             total_samples.append(statistics)
 
+
             logging.debug('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_handlers_set, cpid,
                                              controller_ssh_client)
