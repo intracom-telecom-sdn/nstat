@@ -14,7 +14,7 @@ import os
 import util.customsubprocess
 
 
-def multinet_pre_post_actions(multinet_base_dir, action):
+def multinet_pre_post_actions(action_handler):
     """
     Function that calls the multinet build and clean handlers under
     emulators/multinet folder
@@ -26,15 +26,10 @@ def multinet_pre_post_actions(multinet_base_dir, action):
     :raises ValueError: if invalid action is given as input
     """
 
-    exec_cmd = '{0}{1}.sh'.format(multinet_base_dir, action)
-    print(exec_cmd)
-    if action != 'build' and action != 'clean':
-        logging.error('[{0}] Action {1} is not valid'.
-                      format('multinet_pre_post_actions', action))
-        raise ValueError('Invalid action value.')
-    util.customsubprocess.check_output_streaming(exec_cmd,
-        '[{0}] Running multinet {1} action'.
-        format('multinet_pre_post_actions', action))
+    logging.debug('[{0}] Executing command: {1}'.
+                  format('multinet_pre_post_actions', action_handler))
+    util.customsubprocess.check_output_streaming(action_handler,
+                                                 '[multinet_pre_post_actions]')
 
 
 def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,

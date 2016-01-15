@@ -126,8 +126,9 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler])
 
-        # Check if multinet files exist
-        multinet_utils.multinet_pre_post_actions(multinet_base_dir, 'build')
+        logging.info('{0} Deploy Multinet nodes.'.format(test_type))
+        multinet_utils.multinet_pre_post_actions(
+                        multinet_local_handlers_set.build_handler)
 
         # Before proceeding with the experiments check validity
         # of all mutinet handlers
@@ -346,11 +347,13 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.clean_handler, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
-
             #mininet_utils.stop_mininet_server(mininet_ssh_client,
             #                                  mininet_rest_server.port)
         except:
             pass
+        logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
+        multinet_utils.multinet_pre_post_actions(
+            multinet_local_handlers_set.clean_handler)
 
         # Closing ssh connections with controller/Multinet nodes
         common.close_ssh_connections([controller_ssh_client])
