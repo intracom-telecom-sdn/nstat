@@ -50,7 +50,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
 
     # Multinet parameters
     multinet_hosts_per_switch = multiprocessing.Value('i', 0)
-    multinet_size = multiprocessing.Value('i', 0)
+    multinet_worker_topo_size = multiprocessing.Value('i', 0)
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
 
@@ -74,12 +74,12 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         ctrl_base_dir + conf['controller_statistics_handler']
         )
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
-        multinet_base_dir + conf['multinet_rest_server_boot'],
-        multinet_base_dir + conf['multinet_stop_switches_handler'],
-        multinet_base_dir + conf['multinet_get_switches_handler'],
-        multinet_base_dir + conf['multinet_init_switches_handler'],
-        multinet_base_dir + conf['multinet_start_switches_handler'],
-        multinet_base_dir + conf['multinet_rest_server_stop']
+        multinet_base_dir + conf['topology_rest_server_boot'],
+        multinet_base_dir + conf['topology_stop_switches_handler'],
+        multinet_base_dir + conf['topology_get_switches_handler'],
+        multinet_base_dir + conf['topology_init_switches_handler'],
+        multinet_base_dir + conf['topology_start_switches_handler'],
+        multinet_base_dir + conf['topology_rest_server_stop']
         )
 
 
@@ -92,15 +92,15 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         conf['controller_node_ip'], int(conf['controller_node_ssh_port']),
         conf['controller_node_username'], conf['controller_node_password'])
     multinet_node = conf_collections_util.node_parameters('Multinet',
-        conf['multinet_node_ip'], int(conf['multinet_node_ssh_port']),
-        conf['multinet_node_username'], conf['multinet_node_password'])
+        conf['topology_node_ip'], int(conf['topology_node_ssh_port']),
+        conf['topology_node_username'], conf['topology_node_password'])
     controller_sb_interface = conf_collections_util.controller_southbound(
         conf['controller_node_ip'], conf['controller_port'])
     controller_nb_interface = conf_collections_util.controller_northbound(
         conf['controller_node_ip'], conf['controller_restconf_port'],
         conf['controller_restconf_user'], conf['controller_restconf_password'])
     multinet_rest_server = conf_collections_util.multinet_server(
-        conf['multinet_master_ip'], conf['multinet_master_port'])
+        conf['topology_node_ip'], conf['multinet_master_rest_port'])
 
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
@@ -158,17 +158,17 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
 
 
         # Run tests for all possible dimensions
-        for (multinet_size.value,
+        for (multinet_worker_topo_size.value,
              multinet_group_size,
              multinet_group_delay_ms,
              multinet_hosts_per_switch.value,
              multinet_topology_type,
              controller_statistics_period_ms) in \
-             itertools.product(conf['mininet_size'],
-                               conf['mininet_group_size'],
-                               conf['mininet_group_delay_ms'],
-                               conf['mininet_hosts_per_switch'],
-                               conf['mininet_topology_type'],
+             itertools.product(conf['topology_size'],
+                               conf['topology_group_size'],
+                               conf['topology_group_delay_ms'],
+                               conf['topology_hosts_per_switch'],
+                               conf['topology_type'],
                                conf['controller_statistics_period_ms']):
 
 
@@ -180,7 +180,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
 
 
             multinet_utils.generate_multinet_config(controller_sb_interface,
-                multinet_rest_server, multinet_node, multinet_size.value,
+                multinet_rest_server, multinet_node, multinet_worker_topo_size.value,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch.value, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
@@ -246,7 +246,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
                       t_start, bootup_time_ms,
-                      multinet_size.value * len(multinet_worker_ip_list),
+                      multinet_worker_topo_size.value * len(multinet_worker_ip_list),
                       discovery_deadline_ms, result_queue))
 
             monitor_thread.start()
@@ -259,8 +259,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             global_sample_id += 1
             statistics['multinet_workers'] = len(multinet_worker_ip_list)
             statistics['multinet_size'] = \
-                multinet_size.value * len(multinet_worker_ip_list)
-            statistics['multinet_worker_topo_size'] = multinet_size.value
+                multinet_worker_topo_size.value * len(multinet_worker_ip_list)
+            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size.value
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
                 multinet_hosts_per_switch.value
@@ -397,18 +397,18 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
              ('controller_restconf_port', 'Controller RESTconf port'),
-             ('mininet_rest_server_boot', 'Multinet boot handler'),
-             ('mininet_stop_switches_handler',
+             ('topology_rest_server_boot', 'Multinet boot handler'),
+             ('topology_stop_switches_handler',
               'Multinet stop switches handler'),
-             ('mininet_get_switches_handler', 'Multinet get switches handler'),
-             ('mininet_init_topo_handler',
+             ('topology_get_switches_handler', 'Multinet get switches handler'),
+             ('topology_init_switches_handler',
               'Multinet initialize topology handler'),
-             ('mininet_start_topo_handler', 'Multinet start topology handler'),
-             ('mininet_node_ip', 'Multinet IP address'),
-             ('mininet_rest_server_port', 'Multinet port'),
-             ('mininet_size', 'Per Multinet worker network size'),
-             ('mininet_topology_type', 'Multinet topology type'),
-             ('mininet_hosts_per_switch', 'Multinet hosts per switch'),
+             ('topology_start_switches_handler', 'Multinet start topology handler'),
+             ('toplogy_node_ip', 'Multinet IP address'),
+             ('topology_rest_server_port', 'Multinet port'),
+             ('topology_size', 'Per Multinet worker network size'),
+             ('topology_type', 'Multinet topology type'),
+             ('topology_hosts_per_switch', 'Multinet hosts per switch'),
              ('java_opts', 'JVM options')], config_json)],
         [report_spec.TableSpec('2d', 'Test results',
             [('global_sample_id', 'Sample ID'),
