@@ -77,7 +77,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         multinet_base_dir + conf['topology_rest_server_boot'],
         multinet_base_dir + conf['topology_stop_switches_handler'],
         multinet_base_dir + conf['topology_get_switches_handler'],
-        multinet_base_dir + conf['topology_init_switches_handler'],
+        multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
         multinet_base_dir + conf['topology_rest_server_stop']
         )
@@ -141,8 +141,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             multinet_handlers_set.start_topo_handler,
             multinet_handlers_set.rest_server_stop])
 
-        # Opening connection with mininet_node_ip and returning
-        # cbench_ssh_client to be utilized in the sequel
+        # Opening connection with controller noder and returning to be utilized
+        # in the sequel
         controller_ssh_client = common.open_ssh_connections([controller_node])[0]
 
 
@@ -401,7 +401,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('topology_stop_switches_handler',
               'Multinet stop switches handler'),
              ('topology_get_switches_handler', 'Multinet get switches handler'),
-             ('topology_init_switches_handler',
+             ('topology_init_handler',
               'Multinet initialize topology handler'),
              ('topology_start_switches_handler', 'Multinet start topology handler'),
              ('toplogy_node_ip', 'Multinet IP address'),

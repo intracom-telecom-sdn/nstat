@@ -133,7 +133,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             cbench_handlers_set.cbench_run_handler,
             cbench_handlers_set.cbench_clean_handler])
 
-        # Opening connection with mininet_node_ip and returning
+        # Opening connection with cbench node and returning
         # cbench_ssh_client to be utilized in the sequel
         cbench_ssh_client, controller_ssh_client, = \
             common.open_ssh_connections([cbench_node, controller_node])

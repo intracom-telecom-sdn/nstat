@@ -61,7 +61,7 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server,
 
     :param mininet_init_topo_handler: full path of the handler to initialize
     the Mininet topology
-    :param mininet_rest_server: named tuple containng 1) mininet_node_ip
+    :param mininet_rest_server: named tuple containng 1) topology_node_ip
     2)mininet_rest_server_port the REST server listens to
     :param controller_ip: controller IP
     :param controller_port: controller OpenFlow port
@@ -111,7 +111,7 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     (in milliseconds)
     :param mininet_get_switches_handler: Mininet handler used to query the
     current number of switches in a Mininet topology
-    :param mininet_rest_server: named tuple containing 1) mininet_node_ip
+    :param mininet_rest_server: named tuple containing 1) topology_node_ip
     2)mininet_rest_server_port the REST server listens to
     :param controller_nb_interface: named tuple containing 1) controller_node_ip
     2) controller_restconf_port 3) controller_restconf_user
@@ -179,7 +179,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
     :param mininet_ssh_session: ssh session used to issue remote command
     :param mininet_server_remote_path: path where mininet_custom_boot.py is
     stored and used to start the Mininet topology.
-    :param mininet_rest_server: named tuple containing 1) mininet_node_ip
+    :param mininet_rest_server: named tuple containing 1) topology_node_ip
     2)mininet_rest_server_port the REST server listens to
     :raises Exception: if getpid_listeningonport() returns -1, Mininet rest
     server failed to start

@@ -101,8 +101,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
 
     # will hold samples taken in the lifetime of this thread
     samples = []
-        # Opening connection with mininet_node_ip and returning
-        # cbench_ssh_client to be utilized in the sequel
+        # Opening connection with controller node to be utilized in the sequel
 
     controller_ssh_client =  common.open_ssh_connections([controller_node])[0]
 
