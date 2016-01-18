@@ -404,7 +404,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('topology_init_handler',
               'Multinet initialize topology handler'),
              ('topology_start_switches_handler', 'Multinet start topology handler'),
-             ('toplogy_node_ip', 'Multinet IP address'),
+             ('topology_node_ip', 'Multinet IP address'),
              ('topology_rest_server_port', 'Multinet port'),
              ('topology_size', 'Per Multinet worker network size'),
              ('topology_type', 'Multinet topology type'),

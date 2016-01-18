@@ -181,7 +181,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             mininet_utils.init_mininet_topo(
                 mininet_handlers_set.init_topo_handler, mininet_rest_server,
                 controller_node.ip, controller_node.ssh_port,
-                topology_type, mininet_size.value, topology_group_size,
+                topology_type, topology_size.value, topology_group_size,
                 topology_group_delay_ms, topology_hosts_per_switch.value)
 
             t_start.value = time.time()
@@ -200,7 +200,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, bootup_time_ms, mininet_size,
+                      t_start, bootup_time_ms, topology_size,
                       discovery_deadline_ms, result_queue))
 
             monitor_thread.start()
@@ -211,7 +211,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
-            statistics['mininet_size'] = mininet_size.value
+            statistics['topology_size'] = topology_size.value
             statistics['topology_type'] = topology_type
             statistics['topology_hosts_per_switch'] = \
                 topology_hosts_per_switch.value
@@ -345,7 +345,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('topology_start_switches_handler', 'Mininet start topology handler'),
              ('topology_node_ip', 'Mininet IP address'),
              ('topology_rest_server_port', 'Mininet port'),
-             ('mininet_size', 'Mininet network size'),
+             ('topology_size', 'Mininet network size'),
              ('topology_type', 'Mininet topology type'),
              ('topology_hosts_per_switch', 'Mininet hosts per switch'),
              ('java_opts', 'JVM options')], config_json)],
