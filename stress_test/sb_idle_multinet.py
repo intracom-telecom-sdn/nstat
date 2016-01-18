@@ -100,7 +100,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         conf['controller_node_ip'], conf['controller_restconf_port'],
         conf['controller_restconf_user'], conf['controller_restconf_password'])
     multinet_rest_server = conf_collections_util.multinet_server(
-        conf['topology_node_ip'], conf['multinet_master_rest_port'])
+        conf['topology_node_ip'], conf['topology_rest_server_port'])
 
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:

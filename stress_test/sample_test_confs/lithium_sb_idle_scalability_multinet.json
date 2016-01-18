@@ -45,7 +45,7 @@
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 "topology_init_handler":"./bin/handlers/init_topos",
 "topology_rest_server_stop":"./bin/cleanup",
-"topology_rest_server_port":3333,
+"topology_rest_server_port":3300,
 "topology_size":[100, 200, 300],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[1],
@@ -56,7 +56,6 @@
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_master_rest_port": 3300,
 "multinet_worker_ip_list":["192.168.64.30", "192.168.64.31", "192.168.64.32"],
 "multinet_worker_port_list":[3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
