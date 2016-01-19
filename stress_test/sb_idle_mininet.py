@@ -74,7 +74,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         mininet_base_dir + conf['topology_stop_switches_handler'],
         mininet_base_dir + conf['topology_get_switches_handler'],
         mininet_base_dir + conf['topology_init_handler'],
-        mininet_base_dir + conf['topology_start_switches_handler']
+        mininet_base_dir + conf['topology_start_switches_handler'],
+        mininet_base_dir + conf['topology_rest_server_stop']
         )
     controller_node = conf_collections_util.node_parameters('Controller',
         conf['controller_node_ip'], int(conf['controller_node_ssh_port']),
