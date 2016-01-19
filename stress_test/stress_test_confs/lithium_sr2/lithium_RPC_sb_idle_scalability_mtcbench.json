@@ -47,11 +47,11 @@
 "cbench_cleanup":false,
 "cbench_name":"Cbench",
 
-"cbench_simulated_hosts":100,
+"cbench_simulated_hosts":[100],
 "cbench_threads":[1,2,4,8,16,20,30,40,50,60,70,80,90,100],
 "cbench_switches_per_thread":[50],
 "cbench_thread_creation_delay_ms":[500,1000,2000,4000,8000,16000],
-"cbench_delay_before_traffic_ms":30000,
+"cbench_delay_before_traffic_ms":[30000],
 "cbench_mode":"Latency",
 "cbench_warmup":0,
 "cbench_ms_per_test":100000,

@@ -37,6 +37,7 @@
 "controller_restconf_user":"admin",
 "controller_restconf_password":"admin",
 "controller_statistics_period_ms":[5000],
+"controller_cpu_shares":75,
 
 "topology_rest_server_boot":"./topology_custom_boot.py",
 "topology_stop_switches_handler":"./start_stop_topology_handler.py",
