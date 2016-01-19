@@ -50,7 +50,7 @@
 "topology_rest_server_boot":"./topology_custom_boot.py",
 "topology_stop_switches_handler":"./start_stop_topology_handler.py",
 "topology_get_switches_handler":"./get_switches_handler.py",
-"topology_start_topo_handler":"./start_stop_topology_handler.py",
+"topology_start_switches_handler":"./start_stop_topology_handler.py",
 "topology_init_handler":"./init_topology_handler.py",
 "topology_rest_server_port":3333,
 
