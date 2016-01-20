@@ -141,8 +141,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             multinet_handlers_set.start_topo_handler,
             multinet_handlers_set.rest_server_stop])
 
-        # Opening connection with controller noder and returning to be utilized
-        # in the sequel
+        # Opening connection with controller node and returning
+        # ontroller_ssh_client to be utilized in the sequel
         controller_ssh_client = common.open_ssh_connections([controller_node])[0]
 
 
@@ -178,7 +178,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 controller_handlers_set.ctrl_statistics_handler,
                 controller_statistics_period_ms, controller_ssh_client)
 
-
+            logging.info('{0} generating new configuration file'.format(test_type))
             multinet_utils.generate_multinet_config(controller_sb_interface,
                 multinet_rest_server, multinet_node, multinet_worker_topo_size.value,
                 multinet_group_size, multinet_group_delay_ms,
