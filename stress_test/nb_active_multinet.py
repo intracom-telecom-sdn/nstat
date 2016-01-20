@@ -191,8 +191,8 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
-            #mininet_utils.start_mininet_server(multinet_ssh_client,
-            #    multinet_handlers_set.rest_server_boot, multinet_rest_server)
+            # mininet_utils.start_mininet_server(multinet_ssh_client,
+            # multinet_handlers_set.rest_server_boot, multinet_rest_server)
 
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
                 'deploy_multinet', multinet_base_dir, is_privileged=False)
