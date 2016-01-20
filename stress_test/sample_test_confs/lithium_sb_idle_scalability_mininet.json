@@ -40,6 +40,7 @@
 "controller_cpu_shares":75,
 
 "topology_rest_server_boot":"./topology_custom_boot.py",
+"topology_rest_server_stop":"./topology_custom_boot.py",
 "topology_rest_server_port":3333,
 
 "topology_init_handler":"./init_topology_handler.py",

@@ -177,7 +177,7 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
     Remotely boots a REST server on the Mininet node over an SSH connection
 
     :param mininet_ssh_session: ssh session used to issue remote command
-    :param mininet_server_remote_path: path where mininet_custom_boot.py is
+    :param mininet_server_remote_path: path where topology_custom_boot.py is
     stored and used to start the Mininet topology.
     :param mininet_rest_server: named tuple containing 1) topology_node_ip
     2)mininet_rest_server_port the REST server listens to
