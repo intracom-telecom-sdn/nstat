@@ -89,7 +89,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         conf['controller_node_ip'], conf['controller_restconf_port'],
         conf['controller_restconf_user'], conf['controller_restconf_password'])
     mininet_rest_server = conf_collections_util.mininet_server(
-        conf['mininet_node_ip'], conf['topology_rest_server_port'])
+        conf['topology_node_ip'], conf['topology_rest_server_port'])
 
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
