@@ -13,6 +13,7 @@ import itertools
 import json
 import logging
 import mininet_utils
+import multinet_utils
 import os
 import report_spec
 import sys
@@ -20,7 +21,7 @@ import util.file_ops
 import util.netutil
 
 
-def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
+def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                           mininet_base_dir, conf, output_dir, log_level):
 
     """Run northbound active test with Mininet.

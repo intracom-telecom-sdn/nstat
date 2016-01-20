@@ -15,6 +15,7 @@ import html_generation
 import json
 import logging
 import nb_active_mininet
+import nb_active_multinet
 import os
 import sb_active_cbench
 import sb_idle_cbench
@@ -210,6 +211,21 @@ def main():
                                                     test_config,
                                                     args.output_dir,
                                                     args.logging_level)
+        report_spec = nb_active_mininet.get_report_spec(args.test_type,
+                                                        args.json_config,
+                                                        args.json_output)
+    elif args.test_type == 'nb_active_scalability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            nb_active_multinet.nb_active_multinet_run(args.json_output,
+                                                      args.ctrl_base_dir,
+                                                      args.nb_gen_base_dir,
+                                                      args.sb_gen_base_dir,
+                                                      test_config,
+                                                      args.output_dir,
+                                                      args.logging_level)
         report_spec = nb_active_mininet.get_report_spec(args.test_type,
                                                         args.json_config,
                                                         args.json_output)
