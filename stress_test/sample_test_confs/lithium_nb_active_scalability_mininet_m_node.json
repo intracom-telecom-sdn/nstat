@@ -57,7 +57,7 @@
 "topology_rest_server_port":3333,
 
 "topology_size":[10],
-"topology_topology_type":["LinearTopo","MeshTopo"],
+"topology_type":["Linear","Mesh"],
 "topology_hosts_per_switch":[1],
 "topology_group_size":[3],
 "topology_group_delay_ms":[2000],
@@ -106,7 +106,7 @@
     {
         "x_axis_key":"total_flows",
         "y_axis_key":"delete_flows_time",
-        "z_axis_key":"topology_topology_type",
+        "z_axis_key":"topology_type",
         "x_axis_label":"# Total Deleted Flows",
         "y_axis_label":" Time to delete Flows (sec)",
         "plot_type":"errorbar_connected",

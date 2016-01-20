@@ -46,7 +46,7 @@
 "topology_init_handler":"./init_topology_handler.py",
 "topology_rest_server_port":3333,
 "topology_size":[10,15,20,25],
-"topology_topology_type":["MeshTopo"],
+"topology_type":["Mesh"],
 "topology_hosts_per_switch":[1],
 "topology_group_size":[1],
 "topology_group_delay_ms":[100, 500],

@@ -9,14 +9,14 @@
 from CustomBootedTopo import CustomBootedTopo
 
 
-class DisconnectedTopo(CustomBootedTopo):
+class Disconnected(CustomBootedTopo):
     """ Disconnected-type topology """
 
     def _add_links_to_switch(self, switch, startflag):
         """
         Adds links between a newly added switch and the rest switches of the
         topology. In the disconnected topology type, no links are added.
-        
+
         :param switch: the newly added switch
         :param startflag: not used since no link with a newly added switch
         takes place

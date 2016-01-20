@@ -14,9 +14,9 @@ import bottle
 import json
 import logging
 
-from LinearTopo import LinearTopo
-from MeshTopo import MeshTopo
-from DisconnectedTopo import DisconnectedTopo
+from LinearTopo import Linear
+from MeshTopo import Mesh
+from DisconnectedTopo import Disconnected
 
 # We must define logging level separately because this module runs
 # independently.
@@ -32,8 +32,8 @@ def init(ip_address, port, topo, size, group, delay, hosts):
 
     :param ip_address: controller IP address
     :param port: controller OF port number
-    :param topo: type of the topology we want to start ("DisconnectedTopo",
-    "LinearTopo", "MeshTopo")
+    :param topo: type of the topology we want to start ("Disconnected",
+    "Linear", "Mesh")
     :param size: initial number of switches to boot the topology with
     :param group: group addition size
     :paran delay: group addition delay (in milliseconds)

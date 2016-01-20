@@ -66,7 +66,7 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server,
     :param controller_ip: controller IP
     :param controller_port: controller OpenFlow port
     :param mininet_topology_type: Type of the network topology. It can have
-    one of the following values (DisconnectedTopo,LinearTopo or MeshTopo)
+    one of the following values (Disconnected,Linear or Mesh)
     :param mininet_size: size of the Mininet tpology
     :param mininet_group_size: size of Mininet group (batches of switches)
     :param mininet_group_delay_ms: delay in which Mininet groups are

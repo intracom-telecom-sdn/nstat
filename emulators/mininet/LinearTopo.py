@@ -10,18 +10,18 @@ from CustomBootedTopo import CustomBootedTopo
 import logging
 from mininet import link
 
-class LinearTopo(CustomBootedTopo):
+class Linear(CustomBootedTopo):
     """Linear-type topology"""
 
     def _add_links_to_switch(self, switch, startflag):
         """
-        Adds links between a newly added switch and the last switch in the 
+        Adds links between a newly added switch and the last switch in the
         linear topology.
 
         :param switch: the newly added switch
         :param startflag: controls whether the newly added switch will become
         active in the existing topology
-        :type switch: mininet.node.OVSSwitch 
+        :type switch: mininet.node.OVSSwitch
         :type startflag: bool
         """
 
