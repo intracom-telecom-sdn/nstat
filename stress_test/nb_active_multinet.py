@@ -14,6 +14,7 @@ import json
 import logging
 import mininet_utils
 import multinet_utils
+import multiprocessing
 import os
 import report_spec
 import sys
@@ -52,11 +53,11 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     flow_delete_flag = conf['flow_delete_flag']
 
     # Multinet parameters
-    #multinet_hosts_per_switch = multiprocessing.Value('i', 0)
-    multinet_worker_topo_size = multiprocessing.Value('i', 0)
+    multinet_hosts_per_switch = multiprocessing.Value('i', 0)
+
+    multinet_worker_topo_size = conf['topology_size']
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
-
 
     # Northbound generator node parameters
     if 'nb_generator_cpu_shares' in conf:
