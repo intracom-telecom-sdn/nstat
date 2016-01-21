@@ -91,6 +91,11 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         multinet_base_dir + conf['topology_start_switches_handler'],
         multinet_base_dir + conf['topology_rest_server_stop']
         )
+    multinet_local_handlers_set = \
+        conf_collections_util.multinet_local_handlers(
+        multinet_base_dir + conf['multinet_build_handler'],
+        multinet_base_dir + conf['multinet_clean_handler'])
+
     nb_generator_handlers_set = conf_collections_util.nb_generator_handlers(
         nb_generator_base_dir + conf['nb_generator_run_handler'])
     controller_node = conf_collections_util.node_parameters('Controller',
