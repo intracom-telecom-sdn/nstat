@@ -1,4 +1,4 @@
-{
+    {
 "nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
 "nstat_host_ip":"127.0.0.1",
 "nstat_node_ip":"127.0.0.1",
