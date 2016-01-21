@@ -49,9 +49,9 @@
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":75,
 
-"topology_rest_server_boot":"./topology_custom_boot.py",
-"topology_rest_server_stop":"./topology_custom_boot.py",
-"topology_rest_server_port":3333,
+"topology_rest_server_boot":"./bin/deploy",
+"topology_rest_server_stop":"./bin/cleanup",
+"topology_rest_server_port":3300,
 
 "topology_init_handler":"./bin/handlers/init_topos",
 "topology_start_switches_handler":"./bin/handlers/start_topos",
