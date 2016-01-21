@@ -144,7 +144,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         # ontroller_ssh_client to be utilized in the sequel
         controller_ssh_client = common.open_ssh_connections([controller_node])[0]
 
-
         controller_cpus = common.create_cpu_shares(
             controller_cpu_shares, 100)[0]
 
@@ -169,7 +168,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                                conf['topology_hosts_per_switch'],
                                conf['topology_type'],
                                conf['controller_statistics_period_ms']):
-
 
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))

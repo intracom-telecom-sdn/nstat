@@ -201,7 +201,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             logging.info('{0} generating new configuration file'.format(test_type))
             multinet_utils.generate_multinet_config(controller_sb_interface,
                 multinet_rest_server, multinet_node,
-                multinet_worker_topo_size.value,
+                multinet_worker_topo_size,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch.value, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
@@ -216,12 +216,6 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
                 'deploy_multinet', multinet_base_dir, is_privileged=False)
 
-            exit(0)
-
-
-
-
-
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_handlers_set,
@@ -230,25 +224,40 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
+
+
+
+
             logging.info(
                 '{0} initializing topology on REST server.'.format(test_type))
-            mininet_utils.init_mininet_topo(
-                multinet_handlers_set.init_topo_handler, multinet_rest_server,
-                controller_sb_interface.ip, controller_sb_interface.port,
-                multinet_topology_type, topology_size, multinet_group_size,
-                multinet_group_delay_ms, multinet_hosts_per_switch)
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.init_topo_handler,
+                'init_topo_handler_multinet', multinet_base_dir)
+
+
+
+            #mininet_utils.init_mininet_topo(
+            #    multinet_handlers_set.init_topo_handler, multinet_rest_server,
+            #    controller_sb_interface.ip, controller_sb_interface.port,
+            #    multinet_topology_type, topology_size, multinet_group_size,
+            #    multinet_group_delay_ms, multinet_hosts_per_switch)
 
             logging.info('{0} starting Multinet topology.'.format(test_type))
-            mininet_utils.start_stop_mininet_topo(
-                multinet_handlers_set.start_topo_handler, multinet_rest_server,
-                'start')
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.start_topo_handler,
+                'start_topo_handler_multinet', multinet_base_dir)
 
-            mininet_utils.mininet_topo_check_booted(topology_size,
-                                      multinet_group_size,
-                                      multinet_group_delay_ms,
-                                      multinet_handlers_set.get_switches_handler,
-                                      multinet_rest_server,
-                                      controller_nb_interface)
+            #logging.info('{0} starting Multinet topology.'.format(test_type))
+            #mininet_utils.start_stop_mininet_topo(
+            #    multinet_handlers_set.start_topo_handler, multinet_rest_server,
+            #    'start')
+
+            #mininet_utils.mininet_topo_check_booted(topology_size,
+            #                          multinet_group_size,
+            #                          multinet_group_delay_ms,
+            #                          multinet_handlers_set.get_switches_handler,
+            #                          multinet_rest_server,
+            #                          controller_nb_interface)
 
             flow_discovery_deadline_ms = 240000
 
@@ -276,6 +285,14 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
+            statistics['multinet_workers'] = len(multinet_worker_ip_list)
+            statistics['multinet_size'] = \
+                multinet_worker_topo_size * len(multinet_worker_ip_list)
+            statistics['multinet_topology_type'] = multinet_topology_type
+            statistics['multinet_hosts_per_switch'] = \
+                multinet_hosts_per_switch
+            statistics['multinet_group_size'] = multinet_group_size
+            statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
             statistics['controller_node_ip'] = controller_node.ip
             statistics['controller_port'] = str(controller_sb_interface.port)
             statistics['controller_restart'] = controller_restart
@@ -283,11 +300,6 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 '{0}'.format(controller_cpu_shares)
             statistics['total_flows'] = total_flows
             statistics['topology_size'] = topology_size
-            statistics['multinet_topology_type'] = multinet_topology_type
-            statistics['multinet_hosts_per_switch'] = \
-                multinet_hosts_per_switch
-            statistics['multinet_group_size'] = multinet_group_size
-            statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['nb_generator_cpu_shares'] = \
