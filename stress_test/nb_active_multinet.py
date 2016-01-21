@@ -120,7 +120,9 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     java_opts = conf['java_opts']
 
     try:
-        # check validity of all handlers
+        # Before proceeding with the experiments check validity
+        # of all handlers
+        logging.info('{0} checking controller/local multinet handler files.'.format(test_type))
         util.file_ops.check_filelist([
             controller_handlers_set.ctrl_build_handler,
             controller_handlers_set.ctrl_start_handler,
@@ -128,12 +130,23 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
+            multinet_local_handlers_set.build_handler,
+            multinet_local_handlers_set.clean_handler])
+
+        logging.info('{0} Deploy Multinet nodes.'.format(test_type))
+        multinet_utils.multinet_pre_post_actions(
+                        multinet_local_handlers_set.build_handler)
+
+        # Before proceeding with the experiments check validity
+        # of all multinet handlers
+        logging.info('{0} checking multinet handler files.'.format(test_type))
+        util.file_ops.check_filelist([
             multinet_handlers_set.rest_server_boot,
             multinet_handlers_set.stop_switches_handler,
             multinet_handlers_set.get_switches_handler,
             multinet_handlers_set.init_topo_handler,
             multinet_handlers_set.start_topo_handler,
-            ])
+            multinet_handlers_set.rest_server_stop])
 
         # opening connection with topology_node_ip and returning
         # controller_ssh_client, nb_generator_ssh_client to be utilized in the

@@ -114,7 +114,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
 
         # Before proceeding with the experiments check validity
         # of all handlers
-        logging.info('{0} checking handler files.'.format(test_type))
+        logging.info('{0} checking controller/local multinet handler files.'.format(test_type))
         util.file_ops.check_filelist([
             controller_handlers_set.ctrl_build_handler,
             controller_handlers_set.ctrl_start_handler,
@@ -130,8 +130,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                         multinet_local_handlers_set.build_handler)
 
         # Before proceeding with the experiments check validity
-        # of all mutinet handlers
-        logging.info('{0} checking handler files.'.format(test_type))
+        # of all multinet handlers
+        logging.info('{0} checking multinet handler files.'.format(test_type))
         util.file_ops.check_filelist([
             multinet_handlers_set.rest_server_boot,
             multinet_handlers_set.stop_switches_handler,
