@@ -82,7 +82,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
         multinet_base_dir + conf['topology_rest_server_stop']
         )
 
-
     multinet_local_handlers_set = \
         conf_collections_util.multinet_local_handlers(
         multinet_base_dir + conf['multinet_build_handler'],
