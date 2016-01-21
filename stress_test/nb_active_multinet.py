@@ -374,16 +374,22 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
 
         try:
-            logging.info('{0} stopping REST daemon in Multinet node.'.
-                          format(test_type))
-            mininet_utils.stop_mininet_server(multinet_ssh_client,
-                                              multinet_rest_server.port)
+            logging.info(
+                '{0} stopping REST daemon in Multinet node.'.
+                format(test_type))
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
+                multinet_base_dir)
+            #mininet_utils.stop_mininet_server(multinet_ssh_client,
+            #                                  multinet_rest_server.port)
         except:
             pass
 
+        logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
+        multinet_utils.multinet_pre_post_actions(
+            multinet_local_handlers_set.clean_handler)
         # Closing ssh connections with controller/Multinet/nb_generator nodes
         common.close_ssh_connections([controller_ssh_client,
-                                      multinet_ssh_client,
                                       nb_generator_ssh_client])
 
 

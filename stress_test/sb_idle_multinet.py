@@ -350,6 +350,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             #                                  mininet_rest_server.port)
         except:
             pass
+
         logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
         multinet_utils.multinet_pre_post_actions(
             multinet_local_handlers_set.clean_handler)
