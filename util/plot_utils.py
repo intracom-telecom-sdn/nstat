@@ -40,25 +40,6 @@ class PlotOptions(object):
         self.fmt = 'o'
         self.colors = iter(list('bgrcmyk') * 6)
         self.markers = iter(list('ov^<>sp8*.+xhHDd|') * 3)
-        self.cords = {}
-        self.y_mean = []
-        self.y_diff_plus = []
-        self.y_diff_minus = []
-
-    def calculate_y_mean_diff(self, x_keys_sorted, z_value=None):
-        for key in x_keys_sorted:
-            if z_value:
-                values_list = self.cords[z_value]
-            else:
-                values_list = self.cords
-            mean = util.stats.mean(values_list[key])
-            diff_plus = self.y_axis_fct * (max(values_list[key]) - mean)
-            diff_minus = self.y_axis_fct * (mean - min(values_list[key]))
-            self.y_mean.append(mean)
-            self.y_diff_plus.append(diff_plus)
-            self.y_diff_minus.append(diff_minus)
-
-
 
 
 def setup_plot(plot_options):
@@ -100,7 +81,8 @@ def finish_plotting(plot_options):
     plt.savefig(plot_options.out_fig)
 
 
-def plot_errorbar_helper(plot_options, x_keys_sorted, z_value=None):
+def plot_errorbar_helper(x_keys_sorted, y_mean, y_diff_minus, y_diff_plus,
+                         plot_options):
     """Draws a single errorbar.
 
     :param x_keys_sorted: values of x axis
@@ -122,18 +104,17 @@ def plot_errorbar_helper(plot_options, x_keys_sorted, z_value=None):
     :type plot_options: PlotOptions
     """
 
-    plot_options.calculate_y_mean_diff(x_keys_sorted, z_value)
-
     return plt.errorbar(x = [elem * (plot_options.x_axis_fct)
                            for elem in x_keys_sorted],
                         y = [elem * (plot_options.y_axis_fct)
-                           for elem in plot_options.y_mean],
-                        yerr = [plot_options.y_diff_minus, plot_options.y_diff_plus],
+                           for elem in y_mean],
+                        yerr = [y_diff_minus, y_diff_plus],
                         fmt = plot_options.fmt,
                         c = next(plot_options.colors))
 
 
-def plot_errorbar(plot_options, x_keys_sorted):
+def plot_errorbar(x_keys_sorted, y_mean, y_diff_minus, y_diff_plus,
+                  plot_options):
     """Creates a single errorbar figure.
 
     :param x_keys_sorted: values of x axis.
@@ -154,12 +135,12 @@ def plot_errorbar(plot_options, x_keys_sorted):
     """
 
     setup_plot(plot_options)
-
-    plot_errorbar_helper(plot_options, x_keys_sorted)
+    plot_errorbar_helper(x_keys_sorted, y_mean, y_diff_minus, y_diff_plus,
+                         plot_options)
     finish_plotting(plot_options)
 
 
-def plot_multi_errorbar(z_axis_key, plot_options):
+def plot_multi_errorbar(y_values, z_axis_key, plot_options):
     """Creates a multiple errorbars figure.
 
     :param y_values: values of y axis.
@@ -176,19 +157,38 @@ def plot_multi_errorbar(z_axis_key, plot_options):
 
     plots = {}
 
-    for z_value in plot_options.cords:
+    for z_value in y_values:
 
         # Compute mean and +/- diff values
-        x_keys_sorted = sorted(plot_options.cords[z_value].keys())
+        y_mean = []
+        y_diff_plus = []
+        y_diff_minus = []
+        x_keys_sorted = sorted(y_values[z_value].keys())
 
-        plots[z_value] = plot_errorbar_helper(plot_options, x_keys_sorted,
-                                              z_value)
-    # Add legend to plot, plt object
-    generate_legend(z_axis_key, plots, plot_options.legend_position)
+        for key in x_keys_sorted:
+            mean = util.stats.mean(y_values[z_value][key])
+            diff_plus = max(y_values[z_value][key]) - mean
+            diff_minus = mean - min(y_values[z_value][key])
+            y_mean.append(mean)
+            y_diff_plus.append(diff_plus)
+            y_diff_minus.append(diff_minus)
+
+        plots[z_value] = plot_errorbar_helper(x_keys_sorted,
+                                              y_mean,
+                                              y_diff_minus,
+                                              y_diff_plus,
+                                              plot_options)
+
+    plt.legend(list(plots.values()),
+               [z_axis_key + ':' + str(k) for k in list(plots.keys())],
+               scatterpoints=1,
+               loc=plot_options.legend_position,
+               fontsize=8)
     finish_plotting(plot_options)
 
 
-def plot_scatter_helper(plot_options, marker_arg='o', color='b'):
+def plot_scatter_helper(x_coords, y_coords, plot_options, marker_arg='o',
+                        color='b'):
     """Produces a single scatter plot with a specific color.
 
     :param x_coords: values of x axis.
@@ -204,12 +204,12 @@ def plot_scatter_helper(plot_options, marker_arg='o', color='b'):
     """
 
     return plt.scatter(
-        x = [elem * (plot_options.x_axis_fct) for elem in plot_options.cords.keys()],
-        y = [elem * (plot_options.y_axis_fct) for elem in plot_options.cords.values()],
-        marker = marker_arg, c = color)
+        x = [elem * (plot_options.x_axis_fct) for elem in x_coords],
+        y = [elem * (plot_options.y_axis_fct) for elem in y_coords],
+        marker = marker_arg, c=color)
 
 
-def plot_scatter(plot_options):
+def plot_scatter(x_coords, y_coords, plot_options):
     """Creates a single scatter plot figure.
 
     :param x_coords: values of x axis.
@@ -222,11 +222,11 @@ def plot_scatter(plot_options):
     """
 
     setup_plot(plot_options)
-    plot_scatter_helper(plot_options)
+    plot_scatter_helper(x_coords, y_coords, plot_options)
     finish_plotting(plot_options)
 
 
-def plot_multi_scatter(z_axis_key, plot_options):
+def plot_multi_scatter(y_values, z_axis_key, plot_options):
     """Creates a multiple scatter plots figure
 
     :param y_values: list<float>
@@ -241,7 +241,6 @@ def plot_multi_scatter(z_axis_key, plot_options):
     setup_plot(plot_options)
 
     plots = {}
-    y_values = plot_options.cords
     for z_value in y_values:
         x_coords = []
         y_coords = []
@@ -250,29 +249,16 @@ def plot_multi_scatter(z_axis_key, plot_options):
             for val in y_values[z_value][key]:
                 x_coords.append(key)
                 y_coords.append(val)
-        plot_options.cords = dict(zip(x_coords, y_coords))
-        plots[z_value] = plot_scatter_helper(plot_options,
-            marker_arg=next(plot_options.markers),
+
+        plots[z_value] = plot_scatter_helper(x_coords, y_coords,
+            plot_options, marker_arg=next(plot_options.markers),
             color=next(plot_options.colors))
-    # Add legend to plot, plt object
-    generate_legend(z_axis_key, plots, plot_options.legend_position)
-    finish_plotting(plot_options)
-
-
-def generate_legend(z_axis_key, plots, position):
-    """Creates the legend for multi_scatter and multi_errorbar plots
-
-    :param z_axis_key: field names from results to be used for z axis.
-    :param plots: a dictionary of plot objects, one for esch z_axis_key.
-    :param position: the position that the legend will be placed in the plot
-    :type z_axis_key: list<str>
-    :type plots: dictionary<matplotlib.pyplot>
-    :type position: str
-    """
 
     plt.legend(list(plots.values()),
-        [z_axis_key + ':' + str(k) for k in list(plots.keys())],
-        scatterpoints=1, loc=position, fontsize=8)
+               [z_axis_key + ':' + str(k) for k in list(plots.keys())],
+               scatterpoints=1, loc=plot_options.legend_position, fontsize=8)
+
+    finish_plotting(plot_options)
 
 
 def create_xy_dict_from_file(results_file, x_axis_key, y_axis_key):
