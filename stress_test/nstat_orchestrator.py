@@ -57,6 +57,7 @@ def main():
                         help='Controller base directory')
     parser.add_argument('--sb-monitor-base-dir',
                         required=False,
+                        default=None,
                         type=str,
                         dest='sb_monitor_base_dir',
                         action='store',
