@@ -300,7 +300,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
             statistics['total_flows'] = total_flows
-            statistics['topology_size'] = topology_size
+            statistics['multinet_worker_topo_size'] = topology_size
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['nb_generator_cpu_shares'] = \
