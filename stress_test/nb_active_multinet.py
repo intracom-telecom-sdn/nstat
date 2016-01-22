@@ -236,6 +236,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
 
 
+
             #mininet_utils.init_mininet_topo(
             #    multinet_handlers_set.init_topo_handler, multinet_rest_server,
             #    controller_sb_interface.ip, controller_sb_interface.port,
