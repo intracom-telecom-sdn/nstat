@@ -21,7 +21,7 @@ import util.file_ops
 import util.netutil
 
 def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
-                        output_dir):
+                        output_dir, monitor_base_dir=None):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 

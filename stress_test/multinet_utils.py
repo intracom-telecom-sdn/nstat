@@ -55,8 +55,6 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
     os.system(multinet_run_cmd)
-    #util.customsubprocess.check_output_streaming(multinet_run_cmd.split(),
-    #                                            '[{0}]'.format(logging_prefix))
 
 
 def generate_multinet_config(controller_sb_interface, multinet_rest_server,

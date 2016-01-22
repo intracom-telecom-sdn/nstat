@@ -11,7 +11,7 @@ oftraf-related utilities
 import json
 import logging
 import os
-import util.customsubprocess
+import util.netutil
 
 
 
