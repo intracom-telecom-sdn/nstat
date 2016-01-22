@@ -175,7 +175,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         # Run tests for all possible dimensions
         for (total_flows,
              flow_operations_delay_ms,
-             topology_size,
+             multinet_worker_topo_size,
              flow_workers,
              multinet_group_size,
              multinet_group_delay_ms,
