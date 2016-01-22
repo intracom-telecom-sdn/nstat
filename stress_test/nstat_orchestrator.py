@@ -55,6 +55,12 @@ def main():
                         dest='ctrl_base_dir',
                         action='store',
                         help='Controller base directory')
+    parser.add_argument('--sb-monitor-base-dir',
+                        required=False,
+                        type=str,
+                        dest='sb_monitor_base_dir',
+                        action='store',
+                        help='The base directory path to the monitor tool we will use.')
     parser.add_argument('--sb-generator-base-dir',
                         required=True,
                         type=str,
@@ -194,7 +200,8 @@ def main():
                                                 args.ctrl_base_dir,
                                                 args.sb_gen_base_dir,
                                                 test_config,
-                                                args.output_dir)
+                                                args.output_dir,
+                                                args.sb_monitor_base_dir)
         report_spec = sb_idle_multinet.get_report_spec(args.test_type,
                                                       args.json_config,
                                                       args.json_output)
