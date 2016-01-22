@@ -162,7 +162,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         controller_cpus, nb_generator_cpus = common.create_cpu_shares(
             controller_cpu_shares, nb_generator_cpu_shares)
 
-        # Controller common actions:
+        # Controller common pre actions:
         # 1. rebuild controller if controller_rebuild is SET
         # 2. check_for_active controller,
         # 3. generate_controller_xml_files
@@ -207,15 +207,10 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 multinet_switch_type, multinet_worker_ip_list,
                 multinet_worker_port_list, multinet_base_dir)
 
-
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
-            # mininet_utils.start_mininet_server(multinet_ssh_client,
-            # multinet_handlers_set.rest_server_boot, multinet_rest_server)
-
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
                 'deploy_multinet', multinet_base_dir, is_privileged=False)
-
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_handlers_set,
@@ -224,41 +219,16 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
 
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
-
-
-
-
             logging.info(
                 '{0} initializing topology on REST server.'.format(test_type))
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.init_topo_handler,
                 'init_topo_handler_multinet', multinet_base_dir)
 
-
-
-
-            #mininet_utils.init_mininet_topo(
-            #    multinet_handlers_set.init_topo_handler, multinet_rest_server,
-            #    controller_sb_interface.ip, controller_sb_interface.port,
-            #    multinet_topology_type, topology_size, multinet_group_size,
-            #    multinet_group_delay_ms, multinet_hosts_per_switch)
-
             logging.info('{0} starting Multinet topology.'.format(test_type))
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.start_topo_handler,
                 'start_topo_handler_multinet', multinet_base_dir)
-
-            #logging.info('{0} starting Multinet topology.'.format(test_type))
-            #mininet_utils.start_stop_mininet_topo(
-            #    multinet_handlers_set.start_topo_handler, multinet_rest_server,
-            #    'start')
-
-            #mininet_utils.mininet_topo_check_booted(topology_size,
-            #                          multinet_group_size,
-            #                          multinet_group_delay_ms,
-            #                          multinet_handlers_set.get_switches_handler,
-            #                          multinet_rest_server,
-            #                          controller_nb_interface)
 
             flow_discovery_deadline_ms = 240000
 
@@ -373,7 +343,6 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 controller_handlers_set.ctrl_clean_handler,
                 controller_ssh_client)
 
-
         try:
             logging.info(
                 '{0} stopping REST daemon in Multinet node.'.
@@ -389,7 +358,8 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
         multinet_utils.multinet_pre_post_actions(
             multinet_local_handlers_set.clean_handler)
-        # Closing ssh connections with controller/Multinet/nb_generator nodes
+
+        # Closing ssh connections with controller/multinet/nb_generator nodes
         common.close_ssh_connections([controller_ssh_client,
                                       nb_generator_ssh_client])
 

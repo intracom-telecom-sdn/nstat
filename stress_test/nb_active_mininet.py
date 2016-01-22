@@ -133,7 +133,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         controller_cpus, nb_generator_cpus = common.create_cpu_shares(
             controller_cpu_shares, nb_generator_cpu_shares)
 
-        # Controller common actions:
+        # Controller common pre actions:
         # 1. rebuild controller if controller_rebuild is SET
         # 2. check_for_active controller,
         # 3. generate_controller_xml_files
