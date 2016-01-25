@@ -314,6 +314,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                     abs(res[0] - oftraf_previous_throughput[0]) / (oftraf_test_interval_ms / 1000)
                 statistics['of_out_bytes_per_sec'] = \
                     abs(res[1] - oftraf_previous_throughput[1]) / (oftraf_test_interval_ms / 1000)
+                oftraf_previous_throughput = res
             total_samples.append(statistics)
 
             logging.debug('{0} stopping controller.'.format(test_type))

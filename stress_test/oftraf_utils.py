@@ -111,6 +111,7 @@ def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
     :type oftraf_rest_server: collections.namedtuple<str,int>
     :type results_queue: multiprocessing.Queue
     """
+
     oftraf_interval_sec = oftraf_interval_ms / 1000
     logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'.
                  format(oftraf_interval_sec))
