@@ -59,7 +59,7 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
 
     common.command_exec_wrapper(
         [oftraf_start_handler, controller_sb_interface.ip,
-         controller_sb_interface.port, str(oftraf_rest_port)], '[oftraf_start]',
+         str(controller_sb_interface.port), str(oftraf_rest_port)], '[oftraf_start]',
         ssh_client)
 
 
