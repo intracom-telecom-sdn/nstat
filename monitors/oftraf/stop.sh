@@ -7,19 +7,20 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 #Input parameters
-#    1. REST port where oftraf REST server listens for requests
+#    1. IP address of oftraf REST server
+#    2. REST port where oftraf REST server listens for requests
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
-for i in $(sudo netstat -tulpn --numeric-ports  2>&1 | grep "LISTEN" | grep ":$1 ");
+for i in $(sudo netstat -atupn --numeric-ports  2>&1 | grep "LISTEN" | grep "$1:$2 ");
 do
     if [ $(echo $i | grep '/') ];
     then
         sudo kill -9 $(echo $i |awk -F'/' '{print $1}')
         if [ $? -ne 0 ]; then
-            echo "[start.sh] start of oftraf failed. Exiting ..."
-            exit 1
+            echo "[stop.sh] stop of oftraf failed. Exiting ..."
+            exit $?
         fi
     fi
 done

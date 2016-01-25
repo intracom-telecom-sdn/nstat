@@ -13,10 +13,22 @@
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
-
+MAX_START_TRIES=10
 
 sudo python $SCRIPT_DIR/oftraf.py --rest-host $1 --rest-port $2 --of-port $3 --ifname $(ip addr show | grep $1 | awk '{print $5}') --server
 if [ $? -ne 0 ]; then
     echo "[start.sh] start of oftraf failed. Exiting ..."
-    exit 1
+    exit $?
 fi
+
+tries=1
+until [ $(sudo netstat -atupn --numeric-ports  2>&1 | grep "LISTEN" | grep "$1:$2 "| wc -l) -ge 1 ];
+do
+    sleep(2)
+    tries=$(( $tries + 1 ))
+    if [ "$tries" -ge "$MAX_START_TRIES" ];
+    then
+        echo "[start.sh] Failed to start oftraf. Exiting ..."
+        exit 1
+    fi
+done

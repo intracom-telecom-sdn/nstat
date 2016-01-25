@@ -15,7 +15,7 @@ for item in $( ls -1 $SCRIPT_DIR ); do
         rm -rf $SCRIPT_DIR/$item
         if [ $? -ne 0 ]; then
             echo "[clean.sh] Cleanup of oftraf failed. Exiting ..."
-            exit 1
+            exit $?
         fi
     fi
 done

@@ -37,8 +37,7 @@ def oftraf_clean(oftraf_clean_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
 
-    common.command_exec_wrapper([oftraf_clean_handler],
-                                '[oftraf_clean]',
+    common.command_exec_wrapper([oftraf_clean_handler], '[oftraf_clean]',
                                 ssh_client)
 
 
@@ -64,7 +63,7 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
         ssh_client)
 
 
-def oftraf_stop(oftraf_stop_handler, oftraf_rest_port, ssh_client=None):
+def oftraf_stop(oftraf_stop_handler, oftraf_rest_server, ssh_client=None):
     """Executes the oftraf stop handler
 
     :param oftraf_stop_handler: the full path to the stop script of oftraf
@@ -77,7 +76,8 @@ def oftraf_stop(oftraf_stop_handler, oftraf_rest_port, ssh_client=None):
     """
 
     common.command_exec_wrapper(
-        [oftraf_stop_handler, oftraf_rest_port], '[oftraf_clean]', ssh_client)
+        [oftraf_stop_handler, oftraf_rest_server.ip, oftraf_rest_server.port],
+        '[oftraf_clean]', ssh_client)
 
 
 def oftraf_get_throughput(oftraf_rest_server):
@@ -94,6 +94,7 @@ def oftraf_get_throughput(oftraf_rest_server):
     s = requests.Session()
     req = s.get(url, headers=getheaders, stream=False)
     return req.content.decode('utf-8')
+
 
 def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
                           results_queue):
@@ -117,7 +118,7 @@ def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
                  format(oftraf_interval_sec))
     time.sleep(oftraf_interval_sec)
     logging.info('[oftraf_monitor_thread] get throughput of controller')
-    throughput_responce = json.loads(oftraf_get_throughput(oftraf_rest_server))
-    out_traffic = tuple(throughput_responce['OF_out_counts'])
+    throughput_response = json.loads(oftraf_get_throughput(oftraf_rest_server))
+    out_traffic = tuple(throughput_response['OF_out_counts'])
     results_queue.put(out_traffic)
 
