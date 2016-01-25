@@ -18,7 +18,6 @@ if [ ! -d $SCRIPT_DIR"/multinet" ]; then
         echo "[build.sh] Cloning multinet failed. Exiting ..."
         exit 1
     fi
-    git checkout master
     rm -rf $SCRIPT_DIR"/multinet/.git"
     mv $SCRIPT_DIR/multinet/* $SCRIPT_DIR
     if [ $? -ne 0 ]; then
