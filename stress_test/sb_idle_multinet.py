@@ -101,7 +101,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
     multinet_rest_server = conf_collections_util.multinet_server(
         conf['topology_node_ip'], conf['topology_rest_server_port'])
     # Check if this is an oftraf test
-    if conf.has_key('oftraf_rest_port') and monitor_base_dir:
+    if monitor_base_dir is not None:
         oftraf_rest_server = conf_collections_util.oftraf_server(
             conf['controller_node_ip'], conf['oftraf_rest_server_port'])
         oftraf_handlers_set = conf_collections_util.oftraf_handlers(
