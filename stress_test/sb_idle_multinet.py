@@ -270,6 +270,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                           multinet_worker_topo_size.value * len(multinet_worker_ip_list),
                           discovery_deadline_ms, result_queue))
             else:
+                logging.info('{0} Starting oftraf traffic monitor in REST '
+                             'server mode.'.format(test_type))
                 oftraf_utils.oftraf_start(
                     oftraf_handlers_set.oftraf_start_handler,
                     controller_sb_interface, oftraf_rest_server.port,
@@ -287,6 +289,8 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
             monitor_thread.join()
 
             if idle_oftraf_test:
+                logging.info('{0} stopping oftraf REST server.'.
+                             format(test_type))
                 oftraf_utils.oftraf_stop(
                     oftraf_handlers_set.oftraf_stop_handler,
                     oftraf_rest_server, controller_ssh_client)
