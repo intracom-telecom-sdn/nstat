@@ -470,7 +470,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('topology_start_switches_handler', 'Multinet start topology handler'),
              ('topology_node_ip', 'Multinet IP address'),
              ('topology_rest_server_port', 'Multinet port'),
-             ('topology_size', 'Per Multinet worker network size'),
+             ('topology_size', 'Multinet network size per worker'),
              ('topology_type', 'Multinet topology type'),
              ('topology_hosts_per_switch', 'Multinet hosts per switch'),
              ('java_opts', 'JVM options')], config_json)],

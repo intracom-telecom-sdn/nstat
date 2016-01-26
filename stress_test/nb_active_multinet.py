@@ -403,7 +403,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('topology_start_switches_handler', 'Multinet start topology handler'),
              ('topology_node_ip', 'Multinet node IP'),
              ('topology_rest_server_port', 'Multinet node REST server port'),
-             ('topology_size', 'Multinet network size'),
+             ('topology_size', 'Multinet network size per worker'),
              ('topology_type', 'Multinet topology type'),
              ('topology_hosts_per_switch', 'Multinet hosts per switch'),
              ('flow_workers', 'Flow worker threads'),
