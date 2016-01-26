@@ -12,7 +12,9 @@ import common
 import json
 import logging
 import requests
+import os
 import time
+import util.netutil
 
 def oftraf_build(oftraf_build_handler, ssh_client=None):
     """Executes the oftraf build handler
@@ -57,10 +59,16 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
     :type ssh_client: paramiko.SSHClient
     """
 
-    common.command_exec_wrapper(
-        [oftraf_start_handler, controller_sb_interface.ip,
-         str(oftraf_rest_port), str(controller_sb_interface.port)],
-        '[oftraf_start]', ssh_client)
+    oftraf_start_command = '{0} {1} {2} {3}'.format(oftraf_start_handler,
+                            controller_sb_interface.ip, oftraf_rest_port,
+                            controller_sb_interface.port)
+    if ssh_client is not None:
+        util.netutil.ssh_run_command(ssh_client, oftraf_start_command,
+                                     prefix='[oftraf_start]',
+                                     lines_queue=None, print_flag=True,
+                                     block_flag=False)
+    else:
+        os.system(oftraf_start_command)
 
 
 def oftraf_stop(oftraf_stop_handler, oftraf_rest_server, ssh_client=None):
