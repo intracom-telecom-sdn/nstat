@@ -42,7 +42,8 @@ def main():
                              "sb_idle_scalability_mtcbench\n"
                              "sb_idle_scalability_mininet\n"
                              "sb_idle_scalability_multinet\n"
-                             "nb_active_scalability_mininet")
+                             "nb_active_scalability_mininet\n"
+                             "nb_active_scalability_multinet")
     parser.add_argument('--bypass-execution',
                         dest='bypass_test',
                         action='store_true',
@@ -254,7 +255,7 @@ def main():
                                                       test_config,
                                                       args.output_dir,
                                                       args.logging_level)
-        report_spec = nb_active_mininet.get_report_spec(args.test_type,
+        report_spec = nb_active_multinet.get_report_spec(args.test_type,
                                                         args.json_config,
                                                         args.json_output)
     else:
