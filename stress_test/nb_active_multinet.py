@@ -291,14 +291,16 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                                              controller_ssh_client)
 
             logging.info('{0} stopping Multinet topology.'.format(test_type))
-            mininet_utils.start_stop_mininet_topo(
+            multinet_utils.multinet_command_runner(
                 multinet_handlers_set.stop_switches_handler,
-                multinet_rest_server, 'stop')
+                'stop_switches_handler_multinet', multinet_base_dir)
 
             logging.info('{0} stopping REST daemon in Multinet node'.
                 format(test_type))
-            mininet_utils.stop_mininet_server(multinet_ssh_client,
-                                              multinet_rest_server.port)
+
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
+                multinet_base_dir, is_privileged=True)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -350,8 +352,6 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir)
-            #mininet_utils.stop_mininet_server(multinet_ssh_client,
-            #                                  multinet_rest_server.port)
         except:
             pass
 
