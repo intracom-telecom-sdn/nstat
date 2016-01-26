@@ -18,8 +18,7 @@ if [ ! -d $SCRIPT_DIR"/oftraf" ]; then
         echo "[build.sh] Cloning oftraf failed. Exiting ..."
         exit $?
     fi
-    git checkout master
-    rm -f $SCRIPT_DIR"/oftraf/.git"
+    rm -rf $SCRIPT_DIR"/oftraf/.git"
     mv $SCRIPT_DIR/oftraf/* $SCRIPT_DIR
     if [ $? -ne 0 ]; then
         echo "[build.sh] Moving oftraf files failed. Exiting ..."
