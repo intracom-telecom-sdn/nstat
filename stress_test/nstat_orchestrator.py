@@ -22,6 +22,7 @@ import sb_idle_cbench
 import sb_idle_mininet
 import sb_idle_multinet
 import shutil
+import stability_sb_idle_multinet
 import sys
 import util.plot_json
 
@@ -42,7 +43,9 @@ def main():
                              "sb_idle_scalability_mtcbench\n"
                              "sb_idle_scalability_mininet\n"
                              "sb_idle_scalability_multinet\n"
-                             "nb_active_scalability_mininet")
+                             "nb_active_scalability_mininet\n"
+                             "sb_idle_stability_multinet\n"
+                             "sb_idle_scalability_multinet\n")
     parser.add_argument('--bypass-execution',
                         dest='bypass_test',
                         action='store_true',
@@ -55,12 +58,6 @@ def main():
                         dest='ctrl_base_dir',
                         action='store',
                         help='Controller base directory')
-    parser.add_argument('--sb-monitor-base-dir',
-                        required=False,
-                        type=str,
-                        dest='sb_monitor_base_dir',
-                        action='store',
-                        help='The base directory path to the monitor tool we will use.')
     parser.add_argument('--sb-generator-base-dir',
                         required=True,
                         type=str,
@@ -210,19 +207,14 @@ def main():
         if not args.bypass_test:
             logging.info('[nstat_orchestrator] Running test {0}'.
                          format(args.test_type))
-            if args.sb_monitor_base_dir is not None:
-                sb_idle_multinet.sb_idle_multinet_run(args.json_output,
-                                                    args.ctrl_base_dir,
-                                                    args.sb_gen_base_dir,
-                                                    test_config,
-                                                    args.output_dir,
-                                                    args.sb_monitor_base_dir)
-            else:
-                logging.error('[nstat_orchestrator] Parameter '
-                              '--sb-monitor-base-dir must be defined for {0} '
-                              'test type.'.format(args.test_type))
-                sys.exit(1)
-        report_spec = sb_idle_multinet.get_report_spec(args.test_type,
+            monitors_base_dir = os.path.abspath(os.path.join(__file__,
+                                                            os.pardir))
+            oftraf_path = os.path.join(monitors_base_dir, 'monitors',
+                                       'oftraf', os.path.sep)
+            stability_sb_idle_multinet.stability_sb_idle_multinet_run(
+                args.json_output, args.ctrl_base_dir, args.sb_gen_base_dir,
+                test_config, args.output_dir, oftraf_path)
+        report_spec = stability_sb_idle_multinet.get_report_spec(args.test_type,
                                                       args.json_config,
                                                       args.json_output)
     # sb_active_mininet
