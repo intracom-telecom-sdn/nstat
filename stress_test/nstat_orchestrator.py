@@ -201,8 +201,28 @@ def main():
                                                 args.ctrl_base_dir,
                                                 args.sb_gen_base_dir,
                                                 test_config,
-                                                args.output_dir,
-                                                args.sb_monitor_base_dir)
+                                                args.output_dir)
+        report_spec = sb_idle_multinet.get_report_spec(args.test_type,
+                                                      args.json_config,
+                                                      args.json_output)
+
+    elif args.test_type == 'sb_idle_stability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            if args.sb_monitor_base_dir is not None:
+                sb_idle_multinet.sb_idle_multinet_run(args.json_output,
+                                                    args.ctrl_base_dir,
+                                                    args.sb_gen_base_dir,
+                                                    test_config,
+                                                    args.output_dir,
+                                                    args.sb_monitor_base_dir)
+            else:
+                logging.error('[nstat_orchestrator] Parameter '
+                              '--sb-monitor-base-dir must be defined for {0} '
+                              'test type.'.format(args.test_type))
+                sys.exit(1)
         report_spec = sb_idle_multinet.get_report_spec(args.test_type,
                                                       args.json_config,
                                                       args.json_output)
