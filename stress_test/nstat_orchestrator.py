@@ -208,10 +208,12 @@ def main():
         if not args.bypass_test:
             logging.info('[nstat_orchestrator] Running test {0}'.
                          format(args.test_type))
-            monitors_base_dir = os.path.abspath(os.path.join(__file__,
+            stress_test_base_dir = os.path.abspath(os.path.join(
+                os.path.realpath(__file__), os.pardir))
+            monitors_base_dir = os.path.abspath(os.path.join(stress_test_base_dir,
                                                             os.pardir))
-            oftraf_path = os.path.join(monitors_base_dir, 'monitors',
-                                       'oftraf', os.path.sep)
+            oftraf_path = os.path.sep.join(
+                [monitors_base_dir, 'monitors', 'oftraf', ''])
             stability_sb_idle_multinet.stability_sb_idle_multinet_run(
                 args.json_output, args.ctrl_base_dir, args.sb_gen_base_dir,
                 test_config, args.output_dir, oftraf_path)

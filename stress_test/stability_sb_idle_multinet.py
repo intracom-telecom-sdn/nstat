@@ -21,8 +21,8 @@ import time
 import util.file_ops
 import util.netutil
 
-def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
-                        output_dir, oftraf_base_dir):
+def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
+                                   conf, output_dir, oftraf_base_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 
@@ -175,14 +175,14 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
              multinet_hosts_per_switch.value,
              multinet_topology_type,
              controller_statistics_period_ms,
-             oftraf_repeat_id) in \
+             sample_id) in \
              itertools.product(conf['topology_size'],
                                conf['topology_group_size'],
                                conf['topology_group_delay_ms'],
                                conf['topology_hosts_per_switch'],
                                conf['topology_type'],
                                conf['controller_statistics_period_ms'],
-                               list(range(conf['oftraf_repeats']))):
+                               list(range(conf['number_of_samples']))):
 
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))
@@ -209,8 +209,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
-            #mininet_utils.start_mininet_server(mininet_ssh_client,
-            #    mininet_handlers_set.rest_server_boot, mininet_rest_server)
 
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
                 'deploy_multinet', multinet_base_dir, is_privileged=False)
@@ -232,12 +230,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.init_topo_handler,
                 'init_topo_handler_multinet', multinet_base_dir)
-
-            #mininet_utils.init_mininet_topo(
-            #    mininet_handlers_set.init_topo_handler, mininet_rest_server,
-            #    controller_node.ip, controller_node.ssh_port,
-            #    multinet_topology_type, multinet_size.value, multinet_group_size,
-            #    multinet_group_delay_ms, multinet_hosts_per_switch.value)
 
             t_start.value = time.time()
 
@@ -265,12 +257,11 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
-            if idle_oftraf_test:
-                logging.info('{0} stopping oftraf REST server.'.
-                             format(test_type))
-                oftraf_utils.oftraf_stop(
-                    oftraf_handlers_set.oftraf_stop_handler,
-                    oftraf_rest_server, controller_ssh_client)
+            logging.info('{0} stopping oftraf REST server.'.
+                         format(test_type))
+            oftraf_utils.oftraf_stop(
+                oftraf_handlers_set.oftraf_stop_handler,
+                oftraf_rest_server, controller_ssh_client)
 
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
@@ -294,7 +285,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
                 abs(res[0] - oftraf_previous_throughput[0]) / (oftraf_test_interval_ms / 1000)
             statistics['of_out_bytes_per_sec'] = \
                 abs(res[1] - oftraf_previous_throughput[1]) / (oftraf_test_interval_ms / 1000)
-            statistics['oftraf_repeat_id'] = oftraf_repeat_id
+            statistics['sample_id'] = sample_id
             oftraf_previous_throughput = res
             total_samples.append(statistics)
 
@@ -307,9 +298,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
                 multinet_handlers_set.stop_switches_handler,
                 'stop_switches_handler_multinet', multinet_base_dir)
 
-            #mininet_utils.start_stop_mininet_topo(
-            #    mininet_handlers_set.stop_switches_handler,
-            #    mininet_rest_server, 'stop')
 
             logging.info('{0} stopping REST daemon in Multinet node'.
                 format(test_type))
@@ -317,8 +305,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -371,8 +357,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
         except:
             pass
 
@@ -382,8 +366,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
             oftraf_utils.oftraf_stop(
                 oftraf_handlers_set.oftraf_stop_handler,
                 oftraf_rest_server, controller_ssh_client)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
+
         except:
             pass
         logging.info('{0} Cleanup oftraf.'.format(test_type))
@@ -454,9 +437,9 @@ def get_report_spec(test_type, config_json, results_json):
              ('bootup_time_secs', 'Time to discover switches (seconds)'),
              ('discovered_switches', 'Discovered switches'),
              ('of_out_packages_per_sec',
-              'Openflow output packages throughput (per second)'),
+              'Openflow outgoing packets per second'),
              ('of_out_bytes_per_sec',
-              'Openflow output bytes throughput (per second)'),
+              'Openflow outgoing bytes per second'),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Topology size per Multinet worker'),
