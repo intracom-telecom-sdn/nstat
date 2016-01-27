@@ -359,7 +359,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         multinet_utils.multinet_pre_post_actions(
             multinet_local_handlers_set.clean_handler)
 
-        # Closing ssh connections with controller/multinet/nb_generator nodes
+        # Closing ssh connections with controller/nb_generator nodes
         common.close_ssh_connections([controller_ssh_client,
                                       nb_generator_ssh_client])
 
