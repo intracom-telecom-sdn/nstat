@@ -13,7 +13,6 @@
 "controller_node_ssh_port":"22",
 "controller_node_username":"vagrant",
 "controller_node_password":"vagrant",
-"controller_port":6653,
 
 "topology_node_spec":"/nstat/vagrant/node_mininet/Vagrantfile",
 "topology_host_ip":"127.0.0.1",

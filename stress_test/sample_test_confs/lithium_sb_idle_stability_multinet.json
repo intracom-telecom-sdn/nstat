@@ -12,7 +12,6 @@
 "controller_node_ssh_port":"22",
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
-"controller_port":6653,
 
 "topology_node_spec":"/nstat/vagrant/node_mininet/Vagrantfile",
 "topology_host_ip":"127.0.0.1",
@@ -62,11 +61,7 @@
 "multinet_worker_port_list":[3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
-"oftraf_build_handler":"./build.sh",
-"oftraf_start_handler":"./start.sh",
-"oftraf_stop_handler":"./stop.sh",
-"oftraf_clean_handler":"./clean.sh",
-
+"oftraf_repeats":10,
 "oftraf_test_interval_ms":10000,
 "oftraf_rest_server_port":5555,
 
@@ -75,17 +70,17 @@
 "plots":[
   {
       "x_axis_key":"multinet_size",
-      "y_axis_key":"bootup_time_secs",
-      "z_axis_key":"multinet_group_delay_ms",
+      "y_axis_key":"of_out_packages_per_sec",
+      "z_axis_key":null,
       "x_axis_label":"# Total switches",
-      "y_axis_label":"Bootup time (secs)",
-      "plot_type":"multi_scatter",
-      "plot_title":"Controller bootup time for various switch numbers",
+      "y_axis_label":"Used memory (MB)",
+      "plot_type":"errorbar",
+      "plot_title":"Controller memory usage for varying switches",
       "plot_subtitle_keys":["controller_java_xopts", "multinet_group_size"],
-      "plot_filename":"throughput",
-      "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+      "plot_filename":"memory_usage",
+      "x_min":null, "x_max":null, "y_min":null, "y_max":null,
       "x_axis_factor":"1.0",
-      "y_axis_factor":"1.0",
+      "y_axis_factor":"1.0/(1024.0**2)",
       "x_axis_scale": "linear",
       "y_axis_scale": "linear"
   },
