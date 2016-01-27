@@ -38,8 +38,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_active_scalability_mtcbench"
@@ -77,8 +77,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_active_stability_mtcbench"
@@ -110,8 +110,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_idle_scalability_mtcbench"
@@ -148,8 +148,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_nb_active_scalability_mininet"
@@ -189,8 +189,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_active_scalability_mtcbench"
@@ -225,8 +225,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_active_stability_mtcbench"
@@ -256,8 +256,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_idle_scalability_mtcbench"
@@ -287,8 +287,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet"
@@ -318,8 +318,8 @@
     block-downstream: false
     block-upstream: false
     defaults: github-sample
-    triggers:
-    - pollscm: '0 19 * * *'
+#    triggers:
+#    - pollscm: '0 19 * * *'
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_sb_idle_stability_mininet"
