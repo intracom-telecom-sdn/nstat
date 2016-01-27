@@ -280,7 +280,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             statistics['controller_port'] = str(controller_sb_interface.port)
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
-            statistics['of_out_packages_per_sec'] = \
+            statistics['of_out_packets_per_sec'] = \
                 res[0] / (oftraf_test_interval_ms / 1000)
             statistics['of_out_bytes_per_sec'] = \
                 res[1] / (oftraf_test_interval_ms / 1000)
@@ -432,9 +432,7 @@ def get_report_spec(test_type, config_json, results_json):
             [('global_sample_id', 'Sample ID'),
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
-             ('bootup_time_secs', 'Time to discover switches (seconds)'),
-             ('discovered_switches', 'Discovered switches'),
-             ('of_out_packages_per_sec',
+             ('of_out_packets_per_sec',
               'Openflow outgoing packets per second'),
              ('of_out_bytes_per_sec',
               'Openflow outgoing bytes per second'),
