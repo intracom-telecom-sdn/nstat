@@ -59,6 +59,9 @@ apt-get install -y \
     python3-matplotlib \
     python3-lxml \
     python-lxml \
+    python-paramiko \
+    python-pypcap \
+    python-dpkt \
     python-bottle
 
 # Install NSTAT necessary python3.4 tools
