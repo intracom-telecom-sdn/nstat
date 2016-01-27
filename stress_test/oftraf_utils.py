@@ -129,3 +129,4 @@ def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
     response_data = json.loads(oftraf_get_of_counts(oftraf_rest_server))
     out_traffic = tuple(response_data['OF_out_counts'])
     results_queue.put(out_traffic)
+
