@@ -88,8 +88,8 @@ def oftraf_stop(oftraf_stop_handler, oftraf_rest_server, ssh_client=None):
          str(oftraf_rest_server.port)], '[oftraf_clean]', ssh_client)
 
 
-def oftraf_get_throughput(oftraf_rest_server):
-    """Gets the Throughput value measured by oftraf
+def oftraf_get_of_counts(oftraf_rest_server):
+    """Gets the openFlow packets counts, measured by oftraf
 
     :param oftraf_rest_server: a named tuple python collection, containing the
     IP address and the port number of oftraf rest server
@@ -106,8 +106,8 @@ def oftraf_get_throughput(oftraf_rest_server):
 
 def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
                           results_queue):
-    """Function executed inside a thread and returns the output throughput,
-    measured by oftraf
+    """Function executed inside a thread and returns the output in json format,
+    of openflow packets counts
 
     :param oftraf_interval_ms: interval in milliseconds, after which we want
     to get an oftraf measurement
@@ -126,7 +126,7 @@ def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
                  format(oftraf_interval_sec))
     time.sleep(oftraf_interval_sec)
     logging.info('[oftraf_monitor_thread] get throughput of controller')
-    response_data = json.loads(oftraf_get_throughput(oftraf_rest_server))
+    response_data = json.loads(oftraf_get_of_counts(oftraf_rest_server))
     out_traffic = tuple(response_data['OF_out_counts'])
     results_queue.put(out_traffic)
 

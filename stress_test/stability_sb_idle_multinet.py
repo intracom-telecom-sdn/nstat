@@ -175,14 +175,14 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
              multinet_hosts_per_switch.value,
              multinet_topology_type,
              controller_statistics_period_ms,
-             oftraf_repeat_id) in \
+             sample_id) in \
              itertools.product(conf['topology_size'],
                                conf['topology_group_size'],
                                conf['topology_group_delay_ms'],
                                conf['topology_hosts_per_switch'],
                                conf['topology_type'],
                                conf['controller_statistics_period_ms'],
-                               list(range(conf['oftraf_repeats']))):
+                               list(range(conf['number_of_samples']))):
 
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))
@@ -265,12 +265,11 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
-            if idle_oftraf_test:
-                logging.info('{0} stopping oftraf REST server.'.
-                             format(test_type))
-                oftraf_utils.oftraf_stop(
-                    oftraf_handlers_set.oftraf_stop_handler,
-                    oftraf_rest_server, controller_ssh_client)
+            logging.info('{0} stopping oftraf REST server.'.
+                         format(test_type))
+            oftraf_utils.oftraf_stop(
+                oftraf_handlers_set.oftraf_stop_handler,
+                oftraf_rest_server, controller_ssh_client)
 
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
@@ -294,7 +293,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, c
                 abs(res[0] - oftraf_previous_throughput[0]) / (oftraf_test_interval_ms / 1000)
             statistics['of_out_bytes_per_sec'] = \
                 abs(res[1] - oftraf_previous_throughput[1]) / (oftraf_test_interval_ms / 1000)
-            statistics['oftraf_repeat_id'] = oftraf_repeat_id
+            statistics['sample_id'] = sample_id
             oftraf_previous_throughput = res
             total_samples.append(statistics)
 
@@ -454,9 +453,9 @@ def get_report_spec(test_type, config_json, results_json):
              ('bootup_time_secs', 'Time to discover switches (seconds)'),
              ('discovered_switches', 'Discovered switches'),
              ('of_out_packages_per_sec',
-              'Openflow output packages throughput (per second)'),
+              'Openflow outgoing packets per second'),
              ('of_out_bytes_per_sec',
-              'Openflow output bytes throughput (per second)'),
+              'Openflow outgoing bytes per second'),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Topology size per Multinet worker'),
