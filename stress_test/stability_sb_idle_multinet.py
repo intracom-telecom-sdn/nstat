@@ -104,7 +104,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         oftraf_base_dir + 'stop.sh', oftraf_base_dir + 'clean.sh')
     oftraf_test_interval_ms = conf['oftraf_test_interval_ms']
     idle_oftraf_test = True
-    oftraf_previous_throughput = (0, 0)
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -282,11 +281,10 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
             statistics['of_out_packages_per_sec'] = \
-                abs(res[0] - oftraf_previous_throughput[0]) / (oftraf_test_interval_ms / 1000)
+                res[0] / (oftraf_test_interval_ms / 1000)
             statistics['of_out_bytes_per_sec'] = \
-                abs(res[1] - oftraf_previous_throughput[1]) / (oftraf_test_interval_ms / 1000)
+                res[1] / (oftraf_test_interval_ms / 1000)
             statistics['sample_id'] = sample_id
-            oftraf_previous_throughput = res
             total_samples.append(statistics)
 
             logging.debug('{0} stopping controller.'.format(test_type))
