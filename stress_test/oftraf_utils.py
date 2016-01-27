@@ -75,11 +75,11 @@ def oftraf_stop(oftraf_stop_handler, oftraf_rest_server, ssh_client=None):
     """Executes the oftraf stop handler
 
     :param oftraf_stop_handler: the full path to the stop script of oftraf
-    :param oftraf_rest_port: the port number on which oftraf listens for REST
-    calls
+    :param oftraf_rest_server: a named tuple python collection, containing the
+    IP address and the port number of oftraf rest server
     :param ssh_client: SSH client provided by paramiko to run the command
-    :type oftraf_start_handler: str
-    :type oftraf_rest_port: int
+    :type oftraf_stop_handler: str
+    :type oftraf_rest_server: collections.namedtuple<str,int>
     :type ssh_client: paramiko.SSHClient
     """
 
@@ -129,4 +129,3 @@ def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
     response_data = json.loads(oftraf_get_of_counts(oftraf_rest_server))
     out_traffic = tuple(response_data['OF_out_counts'])
     results_queue.put(out_traffic)
-

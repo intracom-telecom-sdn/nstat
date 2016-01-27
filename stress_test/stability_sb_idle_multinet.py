@@ -209,8 +209,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
-            #mininet_utils.start_mininet_server(mininet_ssh_client,
-            #    mininet_handlers_set.rest_server_boot, mininet_rest_server)
 
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
                 'deploy_multinet', multinet_base_dir, is_privileged=False)
@@ -232,12 +230,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.init_topo_handler,
                 'init_topo_handler_multinet', multinet_base_dir)
-
-            #mininet_utils.init_mininet_topo(
-            #    mininet_handlers_set.init_topo_handler, mininet_rest_server,
-            #    controller_node.ip, controller_node.ssh_port,
-            #    multinet_topology_type, multinet_size.value, multinet_group_size,
-            #    multinet_group_delay_ms, multinet_hosts_per_switch.value)
 
             t_start.value = time.time()
 
@@ -306,9 +298,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 multinet_handlers_set.stop_switches_handler,
                 'stop_switches_handler_multinet', multinet_base_dir)
 
-            #mininet_utils.start_stop_mininet_topo(
-            #    mininet_handlers_set.stop_switches_handler,
-            #    mininet_rest_server, 'stop')
 
             logging.info('{0} stopping REST daemon in Multinet node'.
                 format(test_type))
@@ -316,8 +305,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -370,8 +357,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
         except:
             pass
 
@@ -381,8 +366,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             oftraf_utils.oftraf_stop(
                 oftraf_handlers_set.oftraf_stop_handler,
                 oftraf_rest_server, controller_ssh_client)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
+
         except:
             pass
         logging.info('{0} Cleanup oftraf.'.format(test_type))
