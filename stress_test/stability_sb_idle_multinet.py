@@ -21,8 +21,8 @@ import time
 import util.file_ops
 import util.netutil
 
-def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
-                        output_dir, oftraf_base_dir):
+def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
+                                   conf, output_dir, oftraf_base_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 
