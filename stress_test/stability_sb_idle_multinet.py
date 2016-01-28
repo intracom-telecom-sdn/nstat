@@ -9,7 +9,6 @@
 import common
 import conf_collections_util
 import controller_utils
-import itertools
 import logging
 import multiprocessing
 import multinet_utils
@@ -17,7 +16,6 @@ import oftraf_utils
 import os
 import report_spec
 import sys
-import time
 import util.file_ops
 import util.netutil
 
