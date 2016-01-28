@@ -78,8 +78,10 @@ git checkout -b 2.2.1 2.2.1
 #-------------------------------------------------------------------------------
 git clone https://github.com/intracom-telecom-sdn/nstat.git nstat
 cd nstat
-git branch -a
-git checkout master
+git branch -a # list NSTAT branches
+git checkout master # checkout to master branch
+git tag -l # list NSTAT tags
+# git checkout v1.2 comment out to check out at a certain tag
 
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)

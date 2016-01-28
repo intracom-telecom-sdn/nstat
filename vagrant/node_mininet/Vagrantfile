@@ -20,7 +20,6 @@ nstat_vm_cpus = 2
 nstat_vm_bridge_interface_name = 'br0'
 nstat_vm_hostname = 'nodemininet'
 nstat_vm_name = 'vm_mininet'
-#nstat_vm_private_network_ip = '10.1.38.45'
 nstat_vm_private_network_ip = '192.168.10.17'
 
 # ------------------------------------------------------------------------------
@@ -59,9 +58,9 @@ Vagrant.configure(2) do |config|
     config.ssh.password = 'vagrant'
 
     if RUNNING_ENV == 'with-proxy'
-      config.proxy.http = http_proxy
-      config.proxy.https = http_proxy
-      config.proxy.no_proxy = 'localhost,127.0.0.1,192.168.64.15,192.168.64.16,192.168.64.17,192.168.64.18,192.168.64.19,192.168.64.21,192.168.64.30,192.168.64.31,192.168.64.31'
+        config.proxy.http = http_proxy
+        config.proxy.https = http_proxy
+        config.proxy.no_proxy = 'localhost,127.0.0.1,192.168.64.15,192.168.64.16,192.168.64.17,192.168.64.18,192.168.64.19,192.168.64.20,192.168.64.21,192.168.64.30,192.168.64.31,192.168.64.31'
     end
 
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
@@ -70,15 +69,15 @@ Vagrant.configure(2) do |config|
 
         nstat_machine.vm.box = nstat_vm_basebox
         nstat_machine.vm.hostname = nstat_vm_hostname
-        #nstat_machine.vm.network :public_network, bridge: nstat_vm_bridge_interface_name, nictype: "virtio"
         nstat_machine.vm.network :private_network, ip: nstat_vm_private_network_ip
-        #nstat_machine.vm.network :public_network, :dev=> nstat_vm_bridge_interface_name,:mode=>'bridge'
 
         nstat_machine.vm.provider :virtualbox do |vb|
             vb.name = nstat_vm_name
+
             # Customize the amount of memory on the VM:
             vb.memory = nstat_vm_ram
             vb.cpus = nstat_vm_cpus
+            vb.management_network_name = 'vagrant-virtualbox-nstat'
             #vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
         end
 
@@ -86,8 +85,7 @@ Vagrant.configure(2) do |config|
             libvirt.memory = nstat_vm_ram
             libvirt.cpus = nstat_vm_cpus
             libvirt.management_network_name = 'vagrant-libvirt-nstat'
-            #libvirt.management_network_address = '192.168.64.21/24'
-      end
+        end
 
     end
 
@@ -96,6 +94,5 @@ Vagrant.configure(2) do |config|
 # ------------------------------------------------------------------------------
   #config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth1 192.168.64.17 netmask 255.255.255.0 up'
   config.vm.provision :shell, privileged: true, inline: 'sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins'
-
 
 end
