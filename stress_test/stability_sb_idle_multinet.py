@@ -45,19 +45,19 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     cpid = 0
     global_sample_id = 0
 
-    t_start = multiprocessing.Value('d', 0.0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
-
     # Multinet parameters
-    multinet_hosts_per_switch = multiprocessing.Value('i', 0)
-    multinet_worker_topo_size = multiprocessing.Value('i', 0)
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
-
+    multinet_worker_topo_size = conf['topology_size']
+    multinet_group_size = conf['topology_group_size']
+    multinet_group_delay_ms = conf['topology_group_delay_ms']
+    multinet_hosts_per_switch = conf['topology_hosts_per_switch']
+    multinet_topology_type = conf['topology_type']
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    controller_statistics_period_ms = conf['controller_statistics_period_ms']
     if 'controller_cpu_shares' in conf:
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
@@ -166,6 +166,12 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
                                   controller_ssh_client)
 
+        logging.info('{0} changing controller statistics period to {1} ms'.
+            format(test_type, controller_statistics_period_ms))
+        controller_utils.controller_changestatsperiod(
+            controller_handlers_set.ctrl_statistics_handler,
+            controller_statistics_period_ms, controller_ssh_client)
+
         logging.info('{0} starting controller'.format(test_type))
         cpid = controller_utils.start_controller(controller_handlers_set,
             controller_sb_interface.port, ' '.join(conf['java_opts']),
@@ -174,6 +180,38 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         # is done inside controller_utils.start_controller()
         logging.info('{0} OK, controller status is 1.'.format(test_type))
 
+        logging.info('{0} generating new configuration file'.format(test_type))
+        multinet_utils.generate_multinet_config(controller_sb_interface,
+            multinet_rest_server, multinet_node, multinet_worker_topo_size,
+            multinet_group_size, multinet_group_delay_ms,
+            multinet_hosts_per_switch, multinet_topology_type,
+            multinet_switch_type, multinet_worker_ip_list,
+            multinet_worker_port_list, multinet_base_dir)
+
+        logging.info('{0} booting up Multinet REST server'.
+                      format(test_type))
+
+        multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
+            'deploy_multinet', multinet_base_dir, is_privileged=False)
+
+        logging.info(
+            '{0} initiating topology on REST server and start '
+            'monitor thread to check for discovered switches '
+            'on controller.'.format(test_type))
+
+        logging.info('{0} initializing Multinet topology.'.
+                     format(test_type))
+
+        multinet_utils.multinet_command_runner(
+            multinet_handlers_set.init_topo_handler,
+            'init_topo_handler_multinet', multinet_base_dir)
+
+
+        logging.info('{0} starting Multinet topology.'.format(test_type))
+        multinet_utils.multinet_command_runner(
+            multinet_handlers_set.start_topo_handler,
+            'start_topo_handler_multinet', multinet_base_dir)
+
         logging.info('{0} Starting oftraf traffic monitor in REST '
                      'server mode.'.format(test_type))
         oftraf_utils.oftraf_start(oftraf_handlers_set.oftraf_start_handler,
@@ -181,66 +219,10 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             controller_ssh_client)
 
         # Run tests for all possible dimensions
-        for (multinet_worker_topo_size.value,
-             multinet_group_size,
-             multinet_group_delay_ms,
-             multinet_hosts_per_switch.value,
-             multinet_topology_type,
-             controller_statistics_period_ms,
-             sample_id) in \
-             itertools.product(conf['topology_size'],
-                               conf['topology_group_size'],
-                               conf['topology_group_delay_ms'],
-                               conf['topology_hosts_per_switch'],
-                               conf['topology_type'],
-                               conf['controller_statistics_period_ms'],
-                               list(range(conf['number_of_samples']))):
-
-            logging.info('{0} changing controller statistics period to {1} ms'.
-                format(test_type, controller_statistics_period_ms))
-            controller_utils.controller_changestatsperiod(
-                controller_handlers_set.ctrl_statistics_handler,
-                controller_statistics_period_ms, controller_ssh_client)
-
-            logging.info('{0} generating new configuration file'.format(test_type))
-            multinet_utils.generate_multinet_config(controller_sb_interface,
-                multinet_rest_server, multinet_node, multinet_worker_topo_size.value,
-                multinet_group_size, multinet_group_delay_ms,
-                multinet_hosts_per_switch.value, multinet_topology_type,
-                multinet_switch_type, multinet_worker_ip_list,
-                multinet_worker_port_list, multinet_base_dir)
-
-            logging.info('{0} booting up Multinet REST server'.
-                          format(test_type))
-
-            multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
-                'deploy_multinet', multinet_base_dir, is_privileged=False)
+        for sample_id in list(range(conf['number_of_samples'])):
 
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
-
-            # We define a maximum value of 120000 ms to discover the switches
-            discovery_deadline_ms.value = 120000
-
-            logging.info(
-                '{0} initiating topology on REST server and start '
-                'monitor thread to check for discovered switches '
-                'on controller.'.format(test_type))
-
-            logging.info('{0} initializing Multinet topology.'.
-                         format(test_type))
-
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.init_topo_handler,
-                'init_topo_handler_multinet', multinet_base_dir)
-
-            t_start.value = time.time()
-
-            logging.info('{0} starting Multinet topology.'.format(test_type))
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.start_topo_handler,
-                'start_topo_handler_multinet', multinet_base_dir)
-
 
             # Parallel section.
             logging.info('{0} creating Idle stability with oftraf '
@@ -260,11 +242,11 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             global_sample_id += 1
             statistics['multinet_workers'] = len(multinet_worker_ip_list)
             statistics['multinet_size'] = \
-                multinet_worker_topo_size.value * len(multinet_worker_ip_list)
-            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size.value
+                multinet_worker_topo_size * len(multinet_worker_ip_list)
+            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
-                multinet_hosts_per_switch.value
+                multinet_hosts_per_switch
             statistics['multinet_group_size'] = multinet_group_size
             statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
