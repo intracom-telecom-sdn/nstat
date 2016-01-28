@@ -74,6 +74,13 @@ cd mininet
 git checkout -b 2.2.1 2.2.1
 ./util/install.sh -vnf3
 
+# Install NTSTAT
+#-------------------------------------------------------------------------------
+git clone https://github.com/intracom-telecom-sdn/nstat.git nstat
+cd nstat
+git branch -a
+git checkout master
+
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
