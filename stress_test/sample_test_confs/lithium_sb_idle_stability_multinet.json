@@ -81,7 +81,7 @@
       "plot_filename":"outgoing_packets",
       "x_min":null, "x_max":null, "y_min":null, "y_max":null,
       "x_axis_factor":"1.0",
-      "y_axis_factor":"1.0/(1024.0**2)",
+      "y_axis_factor":"1.0",
       "x_axis_scale": "linear",
       "y_axis_scale": "linear"
   },
@@ -97,7 +97,7 @@
       "plot_filename":"outgoing_bytes",
       "x_min":null, "x_max":null, "y_min":null, "y_max":null,
       "x_axis_factor":"1.0",
-      "y_axis_factor":"1.0/(1024.0**2)",
+      "y_axis_factor":"1.0",
       "x_axis_scale": "linear",
       "y_axis_scale": "linear"
   },
