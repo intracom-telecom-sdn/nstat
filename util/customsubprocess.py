@@ -10,7 +10,7 @@ import logging
 import subprocess
 
 
-def check_output_streaming(cmd, prefix='', queue=None):
+def check_output_streaming(cmd, prefix='', queue=None, block_flag=True):
     """ Redirect output to stderr, printing it whenever a new line
     is detected (bufsize=1 denotes line buffered output). This
     can be considered as "realtime" printing.
@@ -21,6 +21,7 @@ def check_output_streaming(cmd, prefix='', queue=None):
     :param cmd: the command line list.
     :param prefix: the user defined prefix for output.
     :param queue: queue to forward console output to.
+    :param block_flag: defines if the execution will be performed in block mode
     :returns: return exit status of command.
     :raises subprocess.CalledProcessError: If the exit status of the executed
     command is not 0.
@@ -28,19 +29,24 @@ def check_output_streaming(cmd, prefix='', queue=None):
     :type cmd: list<str>
     :type prefix: str
     :type queue: multiprocessing.Queue
+    :type block_flag: bool
     """
 
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT, bufsize=1,
-                            universal_newlines=True)
+    if block_flag:
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT, bufsize=1,
+                                universal_newlines=True)
 
-    for line in iter(proc.stdout.readline, ''):
-        if queue is not None:
-            queue.put(line)
-        logging.debug('{0} {1}'.format(prefix, line.rstrip()))
+        for line in iter(proc.stdout.readline, ''):
+            if queue is not None:
+                queue.put(line)
+            logging.debug('{0} {1}'.format(prefix, line.rstrip()))
 
-    proc.wait()
-    if proc.returncode != 0:
-        raise subprocess.CalledProcessError(proc.returncode, cmd)
+        proc.wait()
+        if proc.returncode != 0:
+            raise subprocess.CalledProcessError(proc.returncode, cmd)
+        else:
+            return proc.returncode
     else:
-        return proc.returncode
+        subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None,
+                        close_fds=True)
