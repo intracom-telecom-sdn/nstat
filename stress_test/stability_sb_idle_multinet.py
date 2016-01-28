@@ -103,7 +103,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         oftraf_base_dir + 'build.sh', oftraf_base_dir + 'start.sh',
         oftraf_base_dir + 'stop.sh', oftraf_base_dir + 'clean.sh')
     oftraf_test_interval_ms = conf['oftraf_test_interval_ms']
-    idle_oftraf_test = True
+    previous_oftraf_result = (0,0)
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -163,9 +163,22 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                       controller_cpus)
 
         logging.info('{0} Building oftraf.'.format(test_type))
-        if idle_oftraf_test:
-            oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
-                                      controller_ssh_client)
+        oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
+                                  controller_ssh_client)
+
+        logging.info('{0} starting controller'.format(test_type))
+        cpid = controller_utils.start_controller(controller_handlers_set,
+            controller_sb_interface.port, ' '.join(conf['java_opts']),
+            controller_cpus, controller_ssh_client)
+        # Control of controller status
+        # is done inside controller_utils.start_controller()
+        logging.info('{0} OK, controller status is 1.'.format(test_type))
+
+        logging.info('{0} Starting oftraf traffic monitor in REST '
+                     'server mode.'.format(test_type))
+        oftraf_utils.oftraf_start(oftraf_handlers_set.oftraf_start_handler,
+            controller_sb_interface, oftraf_rest_server.port,
+            controller_ssh_client)
 
         # Run tests for all possible dimensions
         for (multinet_worker_topo_size.value,
@@ -196,15 +209,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 multinet_hosts_per_switch.value, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
                 multinet_worker_port_list, multinet_base_dir)
-
-            logging.info('{0} starting controller'.format(test_type))
-            cpid = controller_utils.start_controller(controller_handlers_set,
-                controller_sb_interface.port, ' '.join(conf['java_opts']),
-                controller_cpus, controller_ssh_client)
-
-            # Control of controller status
-            # is done inside controller_utils.start_controller()
-            logging.info('{0} OK, controller status is 1.'.format(test_type))
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
@@ -237,12 +241,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 multinet_handlers_set.start_topo_handler,
                 'start_topo_handler_multinet', multinet_base_dir)
 
-            logging.info('{0} Starting oftraf traffic monitor in REST '
-                         'server mode.'.format(test_type))
-            oftraf_utils.oftraf_start(
-                oftraf_handlers_set.oftraf_start_handler,
-                controller_sb_interface, oftraf_rest_server.port,
-                controller_ssh_client)
+
             # Parallel section.
             logging.info('{0} creating Idle stability with oftraf '
                          'monitor thread'.format(test_type))
@@ -255,12 +254,6 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             res = result_queue.get(block=True)
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
-
-            logging.info('{0} stopping oftraf REST server.'.
-                         format(test_type))
-            oftraf_utils.oftraf_stop(
-                oftraf_handlers_set.oftraf_stop_handler,
-                oftraf_rest_server, controller_ssh_client)
 
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
@@ -281,28 +274,12 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
             statistics['of_out_packets_per_sec'] = \
-                res[0] / (oftraf_test_interval_ms / 1000)
+                abs(res[0] - previous_oftraf_result[0]) / (oftraf_test_interval_ms / 1000)
             statistics['of_out_bytes_per_sec'] = \
-                res[1] / (oftraf_test_interval_ms / 1000)
+                abs(res[1] - previous_oftraf_result[1]) / (oftraf_test_interval_ms / 1000)
             statistics['sample_id'] = sample_id
             total_samples.append(statistics)
-
-            logging.debug('{0} stopping controller.'.format(test_type))
-            controller_utils.stop_controller(controller_handlers_set, cpid,
-                                             controller_ssh_client)
-
-            logging.info('{0} stopping Multinet topology.'.format(test_type))
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.stop_switches_handler,
-                'stop_switches_handler_multinet', multinet_base_dir)
-
-
-            logging.info('{0} stopping REST daemon in Multinet node'.
-                format(test_type))
-
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
-                multinet_base_dir, is_privileged=True)
+            previous_oftraf_result = res
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
