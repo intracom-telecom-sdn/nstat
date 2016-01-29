@@ -15,15 +15,16 @@ import html_generation
 import json
 import logging
 import nb_active_mininet
+import nb_active_multinet
 import os
 import sb_active_cbench
 import sb_idle_cbench
 import sb_idle_mininet
+import sb_idle_multinet
 import shutil
+import stability_sb_idle_multinet
 import sys
 import util.plot_json
-import nstat_post_test_actions
-import nstat_pre_test_actions
 
 
 def main():
@@ -37,11 +38,16 @@ def main():
                         type=str,
                         dest='test_type',
                         action='store',
-                        help="sb_active_scalability_mtcbench \n"
+                        help="sb_active_scalability_mtcbench\n"
                              "sb_active_stability_mtcbench\n"
                              "sb_idle_scalability_mtcbench\n"
                              "sb_idle_scalability_mininet\n"
-                             "nb_active_scalability_mininet")
+                             "sb_idle_scalability_multinet\n"
+                             "sb_idle_stability_multinet\n"
+                             "sb_idle_scalability_multinet\n"
+                             "nb_active_scalability_mininet\n"
+                             "nb_active_scalability_multinet"
+                             )
     parser.add_argument('--bypass-execution',
                         dest='bypass_test',
                         action='store_true',
@@ -59,7 +65,7 @@ def main():
                         type=str,
                         dest='sb_gen_base_dir',
                         action='store',
-                        help='MT-Cbench or Mininet generator base directory')
+                        help='MT-Cbench, Mininet or Multinet generator base directory')
     parser.add_argument('--nb-generator-base-dir',
                         required=False,
                         type=str,

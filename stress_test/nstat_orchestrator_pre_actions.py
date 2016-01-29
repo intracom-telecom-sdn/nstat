@@ -110,7 +110,6 @@ def nstat_test_selector(args, test_config):
         report_spec = sb_idle_cbench.get_report_spec(args.test_type,
                                                      args.json_config,
                                                      args.json_output)
-
     # sb_idle_mininet
     elif args.test_type == 'sb_idle_scalability_mininet':
 
@@ -125,7 +124,40 @@ def nstat_test_selector(args, test_config):
         report_spec = sb_idle_mininet.get_report_spec(args.test_type,
                                                       args.json_config,
                                                       args.json_output)
-    # sb_active_mininet
+
+    # sb_idle_multinet
+    elif args.test_type == 'sb_idle_scalability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            sb_idle_multinet.sb_idle_multinet_run(args.json_output,
+                                                args.ctrl_base_dir,
+                                                args.sb_gen_base_dir,
+                                                test_config,
+                                                args.output_dir)
+        report_spec = sb_idle_multinet.get_report_spec(args.test_type,
+                                                      args.json_config,
+                                                      args.json_output)
+    # sb_idle_multinet
+    elif args.test_type == 'sb_idle_stability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            stress_test_base_dir = os.path.abspath(os.path.join(
+                os.path.realpath(__file__), os.pardir))
+            monitors_base_dir = os.path.abspath(os.path.join(stress_test_base_dir,
+                                                            os.pardir))
+            oftraf_path = os.path.sep.join(
+                [monitors_base_dir, 'monitors', 'oftraf', ''])
+            stability_sb_idle_multinet.stability_sb_idle_multinet_run(
+                args.json_output, args.ctrl_base_dir, args.sb_gen_base_dir,
+                test_config, args.output_dir, oftraf_path)
+        report_spec = stability_sb_idle_multinet.get_report_spec(args.test_type,
+                                                      args.json_config,
+                                                      args.json_output)
+    # nb_active_mininet
     elif args.test_type == 'nb_active_scalability_mininet':
 
         if not args.bypass_test:
@@ -139,6 +171,22 @@ def nstat_test_selector(args, test_config):
                                                     args.output_dir,
                                                     args.logging_level)
         report_spec = nb_active_mininet.get_report_spec(args.test_type,
+                                                        args.json_config,
+                                                        args.json_output)
+    # nb_active_multinet
+    elif args.test_type == 'nb_active_scalability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            nb_active_multinet.nb_active_multinet_run(args.json_output,
+                                                      args.ctrl_base_dir,
+                                                      args.nb_gen_base_dir,
+                                                      args.sb_gen_base_dir,
+                                                      test_config,
+                                                      args.output_dir,
+                                                      args.logging_level)
+        report_spec = nb_active_multinet.get_report_spec(args.test_type,
                                                         args.json_config,
                                                         args.json_output)
     else:
