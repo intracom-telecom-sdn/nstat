@@ -80,7 +80,6 @@ Vagrant.configure(2) do |config|
         end
 
         nstat_machine.vm.provider :libvirt do |libvirt|
-            #libvirt.name = nstat_vm_name
             libvirt.memory = nstat_vm_ram
             libvirt.cpus = nstat_vm_cpus
             libvirt.management_network_name = 'vagrant-libvirt-nstat'
