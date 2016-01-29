@@ -18,25 +18,17 @@ for i in "${vmslist[@]}"; do
 	vboxmanage unregistervm $i --delete
 done
 
-
 for item in $( ls -1d $SCRIPT_DIR/*/ ); do
 	echo $item
 	cd $item
-	vagrant destroy -f
-	virsh shutdown $item"_nstat_vm_packaged"
-    virsh destroy $item"_nstat_vm_packaged"
-    virsh undefine $item"_nstat_vm_packaged"
+	vagrant destroy
     rm -rf .vagrant
 	cd $SCRIPT_DIR
 done
 
-for network in $(vboxmanage list hostonlyifs | egrep  '^Name:.*' | awk '{print $2}');
-do
+
+for network in $(vboxmanage list hostonlyifs | egrep  '^Name:.*' | awk '{print $2}'); do
     vboxmanage hostonlyif remove $network
 done
 
-virsh net-destroy --network vagrant-libvirt-nstat
-virsh net-undefine --network vagrant-libvirt-nstat
-
-
-echo "[networks_cleanup.sh] Cleanup of multinet completed successfully"
+echo "[networks_cleanup.sh] Cleanup of host only networks completed successfully"
