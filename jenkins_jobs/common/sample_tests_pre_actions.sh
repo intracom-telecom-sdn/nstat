@@ -21,7 +21,7 @@ export WORKSPACE='/home/jenkins/nstat'
 PARENT_DIRECTORY=$(dirname $WORKSPACE)
 export PYTHONPATH=$WORKSPACE
 export MAVEN_OPTS="-Xmx1048m -XX:MaxPermSize=512m"
-export no_proxy='localhost,127.0.0.1,192.168.64.21,192.168.64.17,172.28.40.10'
+export no_proxy='localhost,127.0.0.1,192.168.10.21,192.168.10.17,172.28.40.10'
 echo "Starting new test with Build Number= "$BUILD_NUMBER
 export RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
 export OUTPUT_FILENAME=$CONFIG_FILENAME
