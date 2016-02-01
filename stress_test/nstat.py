@@ -123,10 +123,12 @@ def main():
 
     # NSTAT test selector: depending on the test_type defined on the command
     # line options of NSTAT
-    report_spec = nstat_pre_actions.nstat_test_selector(args, test_configuration)
+    report_spec = nstat_pre_actions.nstat_test_selector(args,
+                                                        test_configuration)
 
-    #
-    nstat_post_test_actions.nstat_post_test_actions(args, test_configuration, report_spec)
+    # NSTAT post actions (directories cleanup, results plotting/aggregation)
+    nstat_post_test_actions.nstat_post_test_actions(args, test_configuration,
+                                                    report_spec)
 
 
 if __name__ == '__main__':
