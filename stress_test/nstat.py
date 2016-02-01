@@ -16,6 +16,8 @@ import json
 import logging
 import nb_active_mininet
 import nb_active_multinet
+import nstat_post_actions
+import nstat_pre_actions
 import os
 import sb_active_cbench
 import sb_idle_cbench
@@ -111,17 +113,17 @@ def main():
                              "DEBUG (default)\n"
                              "ERROR")
 
-    args = parser.parse_args(args)
+    args = parser.parse_args()
 
     # setting log level for NSTAT experiment
-    nstat_pre_test_actions.nstat_test_set_log_level(args)
+    nstat_pre_actions.nstat_test_set_log_level(args)
 
     # Parsing configuration options from JSON input file
-    test_configuration = nstat_pre_test_actions.nstat_load_test_conf(args)
-    exit(0)
+    test_configuration = nstat_pre_actions.nstat_load_test_conf(args)
+
     # NSTAT test selector: depending on the test_type defined on the command
     # line options of NSTAT
-    report_spec = nstat_pre_test_actions.nstat_test_selector(args, test_configuration)
+    report_spec = nstat_pre_actions.nstat_test_selector(args, test_configuration)
 
     #
     nstat_post_test_actions.nstat_post_test_actions(args, test_configuration, report_spec)
