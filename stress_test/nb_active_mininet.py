@@ -16,8 +16,6 @@ import mininet_utils
 import os
 import report_spec
 import sys
-import time
-import util.customsubprocess
 import util.file_ops
 import util.netutil
 
@@ -75,12 +73,12 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler']
         )
-    mininet_handlers_set = conf_collections_util.mininet_handlers(
-        mininet_base_dir + conf['mininet_rest_server_boot'],
-        mininet_base_dir + conf['mininet_stop_switches_handler'],
-        mininet_base_dir + conf['mininet_get_switches_handler'],
-        mininet_base_dir + conf['mininet_init_topo_handler'],
-        mininet_base_dir + conf['mininet_start_topo_handler']
+    mininet_handlers_set = conf_collections_util.topology_generator_handlers(
+        mininet_base_dir + conf['topology_rest_server_boot'],
+        mininet_base_dir + conf['topology_stop_switches_handler'],
+        mininet_base_dir + conf['topology_get_switches_handler'],
+        mininet_base_dir + conf['topology_init_handler'],
+        mininet_base_dir + conf['topology_start_switches_handler']
         )
     nb_generator_handlers_set = conf_collections_util.nb_generator_handlers(
         nb_generator_base_dir + conf['nb_generator_run_handler'])
@@ -88,15 +86,15 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         conf['controller_node_ip'], int(conf['controller_node_ssh_port']),
         conf['controller_node_username'], conf['controller_node_password'])
     mininet_node = conf_collections_util.node_parameters('Mininet',
-        conf['mininet_node_ip'], int(conf['mininet_node_ssh_port']),
-        conf['mininet_node_username'], conf['mininet_node_password'])
+        conf['topology_node_ip'], int(conf['topology_node_ssh_port']),
+        conf['topology_node_username'], conf['topology_node_password'])
     controller_sb_interface = conf_collections_util.controller_southbound(
         conf['controller_node_ip'], conf['controller_port'])
     controller_nb_interface = conf_collections_util.controller_northbound(
         conf['controller_node_ip'], conf['controller_restconf_port'],
         conf['controller_restconf_user'], conf['controller_restconf_password'])
     mininet_rest_server = conf_collections_util.mininet_server(
-        conf['mininet_node_ip'], conf['mininet_rest_server_port'])
+        conf['topology_node_ip'], conf['topology_rest_server_port'])
     nb_generator_node = conf_collections_util.node_parameters('NB_Generator',
         conf['nb_generator_node_ip'], int(conf['nb_generator_node_ssh_port']),
         conf['nb_generator_node_username'], conf['nb_generator_node_password'])
@@ -126,7 +124,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             mininet_handlers_set.start_topo_handler,
             ])
 
-        # opening connection with mininet_node_ip and returning
+        # opening connection with topology_node_ip and returning
         # mininet_ssh_client to be utilized in the sequel
         mininet_ssh_client, controller_ssh_client, nb_generator_ssh_client = \
             common.open_ssh_connections([mininet_node,
@@ -135,7 +133,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         controller_cpus, nb_generator_cpus = common.create_cpu_shares(
             controller_cpu_shares, nb_generator_cpu_shares)
 
-        # Controller common actions:
+        # Controller common pre actions:
         # 1. rebuild controller if controller_rebuild is SET
         # 2. check_for_active controller,
         # 3. generate_controller_xml_files
@@ -148,21 +146,21 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         # Run tests for all possible dimensions
         for (total_flows,
              flow_operations_delay_ms,
-             mininet_size,
+             topology_size,
              flow_workers,
-             mininet_group_size,
-             mininet_group_delay_ms,
-             mininet_hosts_per_switch,
-             mininet_topology_type,
+             topology_group_size,
+             topology_group_delay_ms,
+             topology_hosts_per_switch,
+             topology_type,
              controller_statistics_period_ms) in \
              itertools.product(conf['total_flows'],
                                conf['flow_operations_delay_ms'],
-                               conf['mininet_size'],
+                               conf['topology_size'],
                                conf['flow_workers'],
-                               conf['mininet_group_size'],
-                               conf['mininet_group_delay_ms'],
-                               conf['mininet_hosts_per_switch'],
-                               conf['mininet_topology_type'],
+                               conf['topology_group_size'],
+                               conf['topology_group_delay_ms'],
+                               conf['topology_hosts_per_switch'],
+                               conf['topology_type'],
                                conf['controller_statistics_period_ms']):
 
             logging.info('{0} changing controller statistics period to {1} ms'.
@@ -188,17 +186,17 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             mininet_utils.init_mininet_topo(
                 mininet_handlers_set.init_topo_handler, mininet_rest_server,
                 controller_sb_interface.ip, controller_sb_interface.port,
-                mininet_topology_type, mininet_size, mininet_group_size,
-                mininet_group_delay_ms, mininet_hosts_per_switch)
+                topology_type, topology_size, topology_group_size,
+                topology_group_delay_ms, topology_hosts_per_switch)
 
             logging.info('{0} starting Mininet topology.'.format(test_type))
             mininet_utils.start_stop_mininet_topo(
                 mininet_handlers_set.start_topo_handler, mininet_rest_server,
                 'start')
 
-            mininet_utils.mininet_topo_check_booted(mininet_size,
-                                      mininet_group_size,
-                                      mininet_group_delay_ms,
+            mininet_utils.mininet_topo_check_booted(topology_size,
+                                      topology_group_size,
+                                      topology_group_delay_ms,
                                       mininet_handlers_set.get_switches_handler,
                                       mininet_rest_server,
                                       controller_nb_interface)
@@ -235,12 +233,12 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
             statistics['total_flows'] = total_flows
-            statistics['mininet_size'] = mininet_size
-            statistics['mininet_topology_type'] = mininet_topology_type
-            statistics['mininet_hosts_per_switch'] = \
-                mininet_hosts_per_switch
-            statistics['mininet_group_size'] = mininet_group_size
-            statistics['mininet_group_delay_ms'] = mininet_group_delay_ms
+            statistics['topology_size'] = topology_size
+            statistics['topology_type'] = topology_type
+            statistics['topology_hosts_per_switch'] = \
+                topology_hosts_per_switch
+            statistics['topology_group_size'] = topology_group_size
+            statistics['topology_group_delay_ms'] = topology_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['nb_generator_cpu_shares'] = \
@@ -358,18 +356,18 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
              ('controller_restconf_port', 'Controller RESTconf port'),
-             ('mininet_rest_server_boot', 'Mininet boot handler'),
-             ('mininet_stop_switches_handler',
+             ('topology_rest_server_boot', 'Mininet boot handler'),
+             ('topology_stop_switches_handler',
               'Mininet stop switches handler'),
-             ('mininet_get_switches_handler', 'Mininet get switches handler'),
-             ('mininet_init_topo_handler',
+             ('topology_get_switches_handler', 'Mininet get switches handler'),
+             ('topology_init_handler',
               'Mininet initialize topology handler'),
-             ('mininet_start_topo_handler', 'Mininet start topology handler'),
-             ('mininet_node_ip', 'Mininet node IP'),
-             ('mininet_rest_server_port', 'Mininet node REST server port'),
-             ('mininet_size', 'Mininet network size'),
-             ('mininet_topology_type', 'Mininet topology type'),
-             ('mininet_hosts_per_switch', 'Mininet hosts per switch'),
+             ('topology_start_switches_handler', 'Mininet start topology handler'),
+             ('topology_node_ip', 'Mininet node IP'),
+             ('topology_rest_server_port', 'Mininet node REST server port'),
+             ('topology_size', 'Mininet network size'),
+             ('topology_type', 'Mininet topology type'),
+             ('topology_hosts_per_switch', 'Mininet hosts per switch'),
              ('flow_workers', 'Flow worker threads'),
              ('total_flows', 'Total flows to be added'),
              ('flow_operations_delay_ms', 'Delay between flow operations'),
@@ -391,11 +389,11 @@ def get_report_spec(test_type, config_json, results_json):
              ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
              ('flow_workers', 'Flow workers'),
              ('flow_delete_flag', 'Deletion flag'),
-             ('mininet_size', 'Mininet Size'),
-             ('mininet_topology_type', 'Mininet Topology Type'),
-             ('mininet_hosts_per_switch', 'Mininet Hosts per Switch'),
-             ('mininet_group_size', 'Mininet Group Size'),
-             ('mininet_group_delay_ms', 'Mininet Group Delay (ms)'),
+             ('topology_size', 'Mininet Size'),
+             ('topology_type', 'Mininet Topology Type'),
+             ('topology_hosts_per_switch', 'Mininet Hosts per Switch'),
+             ('topology_group_size', 'Mininet Group Size'),
+             ('topology_group_delay_ms', 'Mininet Group Delay (ms)'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_vm_size', 'Controller VM size'),

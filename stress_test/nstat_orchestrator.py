@@ -15,11 +15,14 @@ import html_generation
 import json
 import logging
 import nb_active_mininet
+import nb_active_multinet
 import os
 import sb_active_cbench
 import sb_idle_cbench
 import sb_idle_mininet
+import sb_idle_multinet
 import shutil
+import stability_sb_idle_multinet
 import sys
 import util.plot_json
 
@@ -35,11 +38,16 @@ def main():
                         type=str,
                         dest='test_type',
                         action='store',
-                        help="sb_active_scalability_mtcbench \n"
+                        help="sb_active_scalability_mtcbench\n"
                              "sb_active_stability_mtcbench\n"
                              "sb_idle_scalability_mtcbench\n"
                              "sb_idle_scalability_mininet\n"
-                             "nb_active_scalability_mininet")
+                             "sb_idle_scalability_multinet\n"
+                             "sb_idle_stability_multinet\n"
+                             "sb_idle_scalability_multinet\n"
+                             "nb_active_scalability_mininet\n"
+                             "nb_active_scalability_multinet"
+                             )
     parser.add_argument('--bypass-execution',
                         dest='bypass_test',
                         action='store_true',
@@ -57,7 +65,7 @@ def main():
                         type=str,
                         dest='sb_gen_base_dir',
                         action='store',
-                        help='MT-Cbench or Mininet generator base directory')
+                        help='MT-Cbench, Mininet or Multinet generator base directory')
     parser.add_argument('--nb-generator-base-dir',
                         required=False,
                         type=str,
@@ -165,7 +173,6 @@ def main():
         report_spec = sb_idle_cbench.get_report_spec(args.test_type,
                                                      args.json_config,
                                                      args.json_output)
-
     # sb_idle_mininet
     elif args.test_type == 'sb_idle_scalability_mininet':
 
@@ -180,7 +187,40 @@ def main():
         report_spec = sb_idle_mininet.get_report_spec(args.test_type,
                                                       args.json_config,
                                                       args.json_output)
-    # sb_active_mininet
+
+    # sb_idle_multinet
+    elif args.test_type == 'sb_idle_scalability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            sb_idle_multinet.sb_idle_multinet_run(args.json_output,
+                                                args.ctrl_base_dir,
+                                                args.sb_gen_base_dir,
+                                                test_config,
+                                                args.output_dir)
+        report_spec = sb_idle_multinet.get_report_spec(args.test_type,
+                                                      args.json_config,
+                                                      args.json_output)
+    # sb_idle_multinet
+    elif args.test_type == 'sb_idle_stability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            stress_test_base_dir = os.path.abspath(os.path.join(
+                os.path.realpath(__file__), os.pardir))
+            monitors_base_dir = os.path.abspath(os.path.join(stress_test_base_dir,
+                                                            os.pardir))
+            oftraf_path = os.path.sep.join(
+                [monitors_base_dir, 'monitors', 'oftraf', ''])
+            stability_sb_idle_multinet.stability_sb_idle_multinet_run(
+                args.json_output, args.ctrl_base_dir, args.sb_gen_base_dir,
+                test_config, args.output_dir, oftraf_path)
+        report_spec = stability_sb_idle_multinet.get_report_spec(args.test_type,
+                                                      args.json_config,
+                                                      args.json_output)
+    # nb_active_mininet
     elif args.test_type == 'nb_active_scalability_mininet':
 
         if not args.bypass_test:
@@ -194,6 +234,22 @@ def main():
                                                     args.output_dir,
                                                     args.logging_level)
         report_spec = nb_active_mininet.get_report_spec(args.test_type,
+                                                        args.json_config,
+                                                        args.json_output)
+    # nb_active_multinet
+    elif args.test_type == 'nb_active_scalability_multinet':
+
+        if not args.bypass_test:
+            logging.info('[nstat_orchestrator] Running test {0}'.
+                         format(args.test_type))
+            nb_active_multinet.nb_active_multinet_run(args.json_output,
+                                                      args.ctrl_base_dir,
+                                                      args.nb_gen_base_dir,
+                                                      args.sb_gen_base_dir,
+                                                      test_config,
+                                                      args.output_dir,
+                                                      args.logging_level)
+        report_spec = nb_active_multinet.get_report_spec(args.test_type,
                                                         args.json_config,
                                                         args.json_output)
     else:

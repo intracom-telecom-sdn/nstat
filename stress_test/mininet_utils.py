@@ -61,12 +61,12 @@ def init_mininet_topo(mininet_init_topo_handler, mininet_rest_server,
 
     :param mininet_init_topo_handler: full path of the handler to initialize
     the Mininet topology
-    :param mininet_rest_server: named tuple containng 1) mininet_node_ip
+    :param mininet_rest_server: named tuple containng 1) topology_node_ip
     2)mininet_rest_server_port the REST server listens to
     :param controller_ip: controller IP
     :param controller_port: controller OpenFlow port
     :param mininet_topology_type: Type of the network topology. It can have
-    one of the following values (DisconnectedTopo,LinearTopo or MeshTopo)
+    one of the following values (Disconnected,Linear or Mesh)
     :param mininet_size: size of the Mininet tpology
     :param mininet_group_size: size of Mininet group (batches of switches)
     :param mininet_group_delay_ms: delay in which Mininet groups are
@@ -111,7 +111,7 @@ def mininet_topo_check_booted(expected_switches, mininet_group_size,
     (in milliseconds)
     :param mininet_get_switches_handler: Mininet handler used to query the
     current number of switches in a Mininet topology
-    :param mininet_rest_server: named tuple containing 1) mininet_node_ip
+    :param mininet_rest_server: named tuple containing 1) topology_node_ip
     2)mininet_rest_server_port the REST server listens to
     :param controller_nb_interface: named tuple containing 1) controller_node_ip
     2) controller_restconf_port 3) controller_restconf_user
@@ -177,9 +177,9 @@ def start_mininet_server(mininet_ssh_session, mininet_server_remote_path,
     Remotely boots a REST server on the Mininet node over an SSH connection
 
     :param mininet_ssh_session: ssh session used to issue remote command
-    :param mininet_server_remote_path: path where mininet_custom_boot.py is
+    :param mininet_server_remote_path: path where topology_custom_boot.py is
     stored and used to start the Mininet topology.
-    :param mininet_rest_server: named tuple containing 1) mininet_node_ip
+    :param mininet_rest_server: named tuple containing 1) topology_node_ip
     2)mininet_rest_server_port the REST server listens to
     :raises Exception: if getpid_listeningonport() returns -1, Mininet rest
     server failed to start

@@ -105,7 +105,7 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     :param controller_port: controller port to check
     :param controller_cpus: number of cpus returned by create_cpu_shares() and
     allocated for controller
-    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
+    :type controller_handlers_set: collections.namedtuple<str,str,str,str,str,str>
     :type controller_rebuild: boolean
     :type controller_ssh_client: paramiko.SSHClient
     :type java_opts: str
@@ -142,7 +142,7 @@ def generate_controller_xml_files(controller_handlers_set, controller_port,
     :param ssh_client : SSH client provided by paramiko to run the command
     :param controller_cpus: number of cpus returned by create_cpu_shares() and
     allocated for controller
-    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
+    :type controller_handlers_set: collections.namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type java_opts: str
     :type ssh_client: paramiko.SSHClient
@@ -183,7 +183,7 @@ def restart_controller(controller_handlers_set, controller_port, old_cpid,
     :param ssh_client : SSH client provided by paramiko to run the command
     :returns: controller process ID
     :rtype: int
-    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
+    :type controller_handlers_set: collections.namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type old_cpid: int
     :type ssh_client: paramiko.SSHClient
@@ -210,7 +210,7 @@ def start_controller(controller_handlers_set, controller_port, java_opts,
     :returns: controller's process ID
     :raises Exception: When controller fails to start.
     :rtype: int
-    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
+    :type controller_handlers_set: collections.namedtuple<str,str,str,str,str,str>
     :type controller_port: int
     :type java_opts: str
     :type controller_cpus: str
@@ -253,7 +253,7 @@ def stop_controller(controller_handlers_set, cpid, ssh_client=None):
     5) controller_clean_handler  6) controller_statistics_handler
     :param cpid: controller process ID
     :param ssh_client : SSH client provided by paramiko to run the command
-    :type controller_handlers_set: namedtuple<str,str,str,str,str,str>
+    :type controller_handlers_set: collections.namedtuple<str,str,str,str,str,str>
     :type cpid: int
     :type ssh_client: paramiko.SSHClient
     """
