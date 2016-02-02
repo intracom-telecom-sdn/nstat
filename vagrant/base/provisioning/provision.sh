@@ -17,6 +17,7 @@ sudo apt-get update && sudo apt-get install --force-yes -y \
     wget \
     iperf \
     mz \
+    wireshark \
     net-tools
 
 # build tools
@@ -77,7 +78,7 @@ sudo pip3 install collections-extended
 git clone https://github.com/mininet/mininet.git
 cd mininet
 git checkout -b 2.2.1 2.2.1
-./util/install.sh -vnf3
+./util/install.sh -vwnf3
 cd $HOME
 
 # Install NTSTAT
