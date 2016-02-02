@@ -26,8 +26,8 @@ nstat_vm_private_network_ip = '192.168.10.16'
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
 RUNNING_ENV = 'with-proxy'
-#ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
-ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+#ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ Vagrant.configure(2) do |config|
     if RUNNING_ENV == 'with-proxy'
         config.proxy.http = http_proxy
         config.proxy.https = http_proxy
-        config.proxy.no_proxy = 'localhost,127.0.0.1,192.168.64.15,192.168.64.16,192.168.64.17,192.168.64.18,192.168.64.19,192.168.64.20,192.168.64.21,192.168.64.30,192.168.64.31,192.168.64.31'
+        config.proxy.no_proxy = 'localhost,127.0.0.1,192.168.10.15,192.168.10.16,192.168.10.17,192.168.10.18,192.168.10.19,192.168.10.20,192.168.10.21,192.168.10.30,192.168.10.31,192.168.10.31'
     end
 
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
@@ -91,7 +91,7 @@ Vagrant.configure(2) do |config|
 # ------------------------------------------------------------------------------
 # Provisioning actions
 # ------------------------------------------------------------------------------
-  #config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth1 192.168.64.16 netmask 255.255.255.0 up'
+  #config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth1 192.168.10.16 netmask 255.255.255.0 up'
   config.vm.provision :shell, privileged: true, inline: 'sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins'
 
 end

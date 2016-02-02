@@ -127,7 +127,7 @@ def main():
                                                         test_configuration)
 
     # NSTAT post actions (directories cleanup, results plotting/aggregation)
-    nstat_post_test_actions.nstat_post_test_actions(args, test_configuration,
+    nstat_post_actions.nstat_post_test_actions(args, test_configuration,
                                                     report_spec)
 
 

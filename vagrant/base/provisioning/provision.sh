@@ -11,15 +11,18 @@
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+sudo apt-get update && sudo apt-get install --force-yes -y \
     git \
     unzip \
     wget \
+    iperf \
+    mz \
+    wireshark \
     net-tools
 
 # build tools
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     snmp \
     libsnmp-dev \
     snmpd \
@@ -32,7 +35,7 @@ apt-get install -y \
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     openssh-client \
     openssh-server \
     openjdk-7-jdk \
@@ -40,7 +43,7 @@ apt-get install -y \
 
 # Python installation
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     build-essential \
     python-dev \
     python-setuptools \
@@ -53,7 +56,7 @@ apt-get install -y \
 
 # Install Python libraries
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     python3-bottle \
     python3-requests \
     python3-matplotlib \
@@ -66,16 +69,17 @@ apt-get install -y \
 
 # Install NSTAT necessary python3.4 tools
 #-------------------------------------------------------------------------------
-easy_install3 pip
-pip3 install paramiko
-pip3 install collections-extended
+sudo easy_install3 pip
+sudo pip3 install paramiko
+sudo pip3 install collections-extended
 
 # Install Mininet
 #-------------------------------------------------------------------------------
 git clone https://github.com/mininet/mininet.git
 cd mininet
 git checkout -b 2.2.1 2.2.1
-./util/install.sh -vnf3
+./util/install.sh -vwnf3
+cd $HOME
 
 # Install NTSTAT
 #-------------------------------------------------------------------------------
@@ -85,9 +89,11 @@ git branch -a # list NSTAT branches
 git checkout master # checkout to master branch
 git tag -l # list NSTAT tags
 # git checkout v1.2 comment out to check out at a certain tag
+cd $HOME
 
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
+cd $HOME
