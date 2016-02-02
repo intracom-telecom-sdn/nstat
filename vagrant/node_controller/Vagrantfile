@@ -26,8 +26,8 @@ nstat_vm_private_network_ip = '192.168.10.16'
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
 RUNNING_ENV = 'with-proxy'
-#ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
-ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+#ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
