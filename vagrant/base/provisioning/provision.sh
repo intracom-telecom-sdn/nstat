@@ -15,6 +15,8 @@ sudo apt-get update && sudo apt-get install --force-yes -y \
     git \
     unzip \
     wget \
+    iperf \
+    mz \
     net-tools
 
 # build tools
@@ -66,9 +68,9 @@ sudo apt-get install --force-yes -y \
 
 # Install NSTAT necessary python3.4 tools
 #-------------------------------------------------------------------------------
-easy_install3 pip
-pip3 install paramiko
-pip3 install collections-extended
+sudo easy_install3 pip
+sudo pip3 install paramiko
+sudo pip3 install collections-extended
 
 # Install Mininet
 #-------------------------------------------------------------------------------
@@ -76,6 +78,7 @@ git clone https://github.com/mininet/mininet.git
 cd mininet
 git checkout -b 2.2.1 2.2.1
 ./util/install.sh -vnf3
+cd $HOME
 
 # Install NTSTAT
 #-------------------------------------------------------------------------------
@@ -85,9 +88,11 @@ git branch -a # list NSTAT branches
 git checkout master # checkout to master branch
 git tag -l # list NSTAT tags
 # git checkout v1.2 comment out to check out at a certain tag
+cd $HOME
 
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
+cd $HOME
