@@ -11,7 +11,7 @@
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+sudo apt-get update && sudo apt-get install --force-yes -y \
     git \
     unzip \
     wget \
@@ -19,7 +19,7 @@ apt-get update && apt-get install -y \
 
 # build tools
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     snmp \
     libsnmp-dev \
     snmpd \
@@ -32,7 +32,7 @@ apt-get install -y \
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     openssh-client \
     openssh-server \
     openjdk-7-jdk \
@@ -40,7 +40,7 @@ apt-get install -y \
 
 # Python installation
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     build-essential \
     python-dev \
     python-setuptools \
@@ -53,7 +53,7 @@ apt-get install -y \
 
 # Install Python libraries
 #-------------------------------------------------------------------------------
-apt-get install -y \
+sudo apt-get install --force-yes -y \
     python3-bottle \
     python3-requests \
     python3-matplotlib \
