@@ -9,6 +9,7 @@ oftraf-related utilities
 """
 
 import common
+import util.customsubprocess
 import json
 import logging
 import requests
@@ -68,7 +69,8 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
                                      lines_queue=None, print_flag=True,
                                      block_flag=False)
     else:
-        os.system(oftraf_start_command)
+        util.customsubprocess.check_output_streaming(
+            oftraf_start_command.split(' '), queue=None, block_flag=False)
 
 
 def oftraf_stop(oftraf_stop_handler, oftraf_rest_server, ssh_client=None):

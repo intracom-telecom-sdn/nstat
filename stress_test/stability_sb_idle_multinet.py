@@ -9,7 +9,6 @@
 import common
 import conf_collections_util
 import controller_utils
-import itertools
 import logging
 import multiprocessing
 import multinet_utils
@@ -17,7 +16,6 @@ import oftraf_utils
 import os
 import report_spec
 import sys
-import time
 import util.file_ops
 import util.netutil
 
@@ -45,19 +43,19 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     cpid = 0
     global_sample_id = 0
 
-    t_start = multiprocessing.Value('d', 0.0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
-
     # Multinet parameters
-    multinet_hosts_per_switch = multiprocessing.Value('i', 0)
-    multinet_worker_topo_size = multiprocessing.Value('i', 0)
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
-
+    multinet_worker_topo_size = conf['topology_size']
+    multinet_group_size = conf['topology_group_size']
+    multinet_group_delay_ms = conf['topology_group_delay_ms']
+    multinet_hosts_per_switch = conf['topology_hosts_per_switch']
+    multinet_topology_type = conf['topology_type']
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
+    controller_statistics_period_ms = conf['controller_statistics_period_ms']
     if 'controller_cpu_shares' in conf:
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
@@ -103,8 +101,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         oftraf_base_dir + 'build.sh', oftraf_base_dir + 'start.sh',
         oftraf_base_dir + 'stop.sh', oftraf_base_dir + 'clean.sh')
     oftraf_test_interval_ms = conf['oftraf_test_interval_ms']
-    idle_oftraf_test = True
-    oftraf_previous_throughput = (0, 0)
+    previous_oftraf_result = (0,0)
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -164,86 +161,67 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                       controller_cpus)
 
         logging.info('{0} Building oftraf.'.format(test_type))
-        if idle_oftraf_test:
-            oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
-                                      controller_ssh_client)
+        oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
+                                  controller_ssh_client)
+
+        logging.info('{0} changing controller statistics period to {1} ms'.
+            format(test_type, controller_statistics_period_ms))
+        controller_utils.controller_changestatsperiod(
+            controller_handlers_set.ctrl_statistics_handler,
+            controller_statistics_period_ms, controller_ssh_client)
+
+        logging.info('{0} starting controller'.format(test_type))
+        cpid = controller_utils.start_controller(controller_handlers_set,
+            controller_sb_interface.port, ' '.join(conf['java_opts']),
+            controller_cpus, controller_ssh_client)
+        # Control of controller status
+        # is done inside controller_utils.start_controller()
+        logging.info('{0} OK, controller status is 1.'.format(test_type))
+
+        logging.info('{0} generating new configuration file'.format(test_type))
+        multinet_utils.generate_multinet_config(controller_sb_interface,
+            multinet_rest_server, multinet_node, multinet_worker_topo_size,
+            multinet_group_size, multinet_group_delay_ms,
+            multinet_hosts_per_switch, multinet_topology_type,
+            multinet_switch_type, multinet_worker_ip_list,
+            multinet_worker_port_list, multinet_base_dir)
+
+        logging.info('{0} booting up Multinet REST server'.
+                      format(test_type))
+
+        multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
+            'deploy_multinet', multinet_base_dir, is_privileged=False)
+
+        logging.info(
+            '{0} initiating topology on REST server and start '
+            'monitor thread to check for discovered switches '
+            'on controller.'.format(test_type))
+
+        logging.info('{0} initializing Multinet topology.'.
+                     format(test_type))
+
+        multinet_utils.multinet_command_runner(
+            multinet_handlers_set.init_topo_handler,
+            'init_topo_handler_multinet', multinet_base_dir)
+
+
+        logging.info('{0} starting Multinet topology.'.format(test_type))
+        multinet_utils.multinet_command_runner(
+            multinet_handlers_set.start_topo_handler,
+            'start_topo_handler_multinet', multinet_base_dir)
+
+        logging.info('{0} Starting oftraf traffic monitor in REST '
+                     'server mode.'.format(test_type))
+        oftraf_utils.oftraf_start(oftraf_handlers_set.oftraf_start_handler,
+            controller_sb_interface, oftraf_rest_server.port,
+            controller_ssh_client)
 
         # Run tests for all possible dimensions
-        for (multinet_worker_topo_size.value,
-             multinet_group_size,
-             multinet_group_delay_ms,
-             multinet_hosts_per_switch.value,
-             multinet_topology_type,
-             controller_statistics_period_ms,
-             sample_id) in \
-             itertools.product(conf['topology_size'],
-                               conf['topology_group_size'],
-                               conf['topology_group_delay_ms'],
-                               conf['topology_hosts_per_switch'],
-                               conf['topology_type'],
-                               conf['controller_statistics_period_ms'],
-                               list(range(conf['number_of_samples']))):
-
-            logging.info('{0} changing controller statistics period to {1} ms'.
-                format(test_type, controller_statistics_period_ms))
-            controller_utils.controller_changestatsperiod(
-                controller_handlers_set.ctrl_statistics_handler,
-                controller_statistics_period_ms, controller_ssh_client)
-
-            logging.info('{0} generating new configuration file'.format(test_type))
-            multinet_utils.generate_multinet_config(controller_sb_interface,
-                multinet_rest_server, multinet_node, multinet_worker_topo_size.value,
-                multinet_group_size, multinet_group_delay_ms,
-                multinet_hosts_per_switch.value, multinet_topology_type,
-                multinet_switch_type, multinet_worker_ip_list,
-                multinet_worker_port_list, multinet_base_dir)
-
-            logging.info('{0} starting controller'.format(test_type))
-            cpid = controller_utils.start_controller(controller_handlers_set,
-                controller_sb_interface.port, ' '.join(conf['java_opts']),
-                controller_cpus, controller_ssh_client)
-
-            # Control of controller status
-            # is done inside controller_utils.start_controller()
-            logging.info('{0} OK, controller status is 1.'.format(test_type))
-
-            logging.info('{0} booting up Multinet REST server'.
-                          format(test_type))
-
-            multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
-                'deploy_multinet', multinet_base_dir, is_privileged=False)
+        for sample_id in list(range(conf['number_of_samples'])):
 
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            # We define a maximum value of 120000 ms to discover the switches
-            discovery_deadline_ms.value = 120000
-
-            logging.info(
-                '{0} initiating topology on REST server and start '
-                'monitor thread to check for discovered switches '
-                'on controller.'.format(test_type))
-
-            logging.info('{0} initializing Multinet topology.'.
-                         format(test_type))
-
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.init_topo_handler,
-                'init_topo_handler_multinet', multinet_base_dir)
-
-            t_start.value = time.time()
-
-            logging.info('{0} starting Multinet topology.'.format(test_type))
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.start_topo_handler,
-                'start_topo_handler_multinet', multinet_base_dir)
-
-            logging.info('{0} Starting oftraf traffic monitor in REST '
-                         'server mode.'.format(test_type))
-            oftraf_utils.oftraf_start(
-                oftraf_handlers_set.oftraf_start_handler,
-                controller_sb_interface, oftraf_rest_server.port,
-                controller_ssh_client)
             # Parallel section.
             logging.info('{0} creating Idle stability with oftraf '
                          'monitor thread'.format(test_type))
@@ -257,22 +235,16 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
-            logging.info('{0} stopping oftraf REST server.'.
-                         format(test_type))
-            oftraf_utils.oftraf_stop(
-                oftraf_handlers_set.oftraf_stop_handler,
-                oftraf_rest_server, controller_ssh_client)
-
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['multinet_workers'] = len(multinet_worker_ip_list)
             statistics['multinet_size'] = \
-                multinet_worker_topo_size.value * len(multinet_worker_ip_list)
-            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size.value
+                multinet_worker_topo_size * len(multinet_worker_ip_list)
+            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
-                multinet_hosts_per_switch.value
+                multinet_hosts_per_switch
             statistics['multinet_group_size'] = multinet_group_size
             statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
@@ -281,30 +253,13 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             statistics['controller_port'] = str(controller_sb_interface.port)
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
-            statistics['of_out_packages_per_sec'] = \
-                abs(res[0] - oftraf_previous_throughput[0]) / (oftraf_test_interval_ms / 1000)
+            statistics['of_out_packets_per_sec'] = \
+                abs(res[0] - previous_oftraf_result[0]) / (oftraf_test_interval_ms / 1000)
             statistics['of_out_bytes_per_sec'] = \
-                abs(res[1] - oftraf_previous_throughput[1]) / (oftraf_test_interval_ms / 1000)
+                abs(res[1] - previous_oftraf_result[1]) / (oftraf_test_interval_ms / 1000)
             statistics['sample_id'] = sample_id
-            oftraf_previous_throughput = res
             total_samples.append(statistics)
-
-            logging.debug('{0} stopping controller.'.format(test_type))
-            controller_utils.stop_controller(controller_handlers_set, cpid,
-                                             controller_ssh_client)
-
-            logging.info('{0} stopping Multinet topology.'.format(test_type))
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.stop_switches_handler,
-                'stop_switches_handler_multinet', multinet_base_dir)
-
-
-            logging.info('{0} stopping REST daemon in Multinet node'.
-                format(test_type))
-
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
-                multinet_base_dir, is_privileged=True)
+            previous_oftraf_result = res
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -434,9 +389,7 @@ def get_report_spec(test_type, config_json, results_json):
             [('global_sample_id', 'Sample ID'),
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
-             ('bootup_time_secs', 'Time to discover switches (seconds)'),
-             ('discovered_switches', 'Discovered switches'),
-             ('of_out_packages_per_sec',
+             ('of_out_packets_per_sec',
               'Openflow outgoing packets per second'),
              ('of_out_bytes_per_sec',
               'Openflow outgoing bytes per second'),

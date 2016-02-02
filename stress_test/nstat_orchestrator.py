@@ -16,6 +16,8 @@ import json
 import logging
 import nb_active_mininet
 import nb_active_multinet
+import nstat_post_actions
+import nstat_pre_actions
 import os
 import sb_active_cbench
 import sb_idle_cbench
@@ -113,221 +115,20 @@ def main():
 
     args = parser.parse_args()
 
-    logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
-    if args.logging_level == 'INFO':
-        logging.basicConfig(level=logging.INFO, stream=sys.stdout,
-                        format=logging_format)
-    elif args.logging_level == 'ERROR':
-        logging.basicConfig(level=logging.ERROR, stream=sys.stdout,
-                        format=logging_format)
-    else:
-        logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
-                        format=logging_format)
+    # setting log level for NSTAT experiment
+    nstat_pre_actions.nstat_test_set_log_level(args)
 
-    if args.log_file:
-        open(args.log_file, 'a').close()
-        file_logging_handler = logging.FileHandler(filename=args.log_file,
-                                                   mode='w')
-        if args.logging_level == 'INFO':
-            file_logging_handler.setLevel(level=logging.INFO)
-        elif args.logging_level == 'ERROR':
-            file_logging_handler.setLevel(level=logging.ERROR)
-        else:
-            file_logging_handler.setLevel(level=logging.DEBUG)
+    # Parsing configuration options from JSON input file
+    test_configuration = nstat_pre_actions.nstat_load_test_conf(args)
 
-    # 01. parse configuration options from JSON
-    logging.info('[nstat_orchestrator] Parsing test configuration')
-    json_conf_file = open(args.json_config)
-    test_config = json.load(json_conf_file)
+    # NSTAT test selector: depending on the test_type defined on the command
+    # line options of NSTAT
+    report_spec = nstat_pre_actions.nstat_test_selector(args,
+                                                        test_configuration)
 
-    # 02. run test
-
-    # sb_active_cbench
-    if args.test_type == 'sb_active_scalability_mtcbench' or \
-       args.test_type == 'sb_active_stability_mtcbench':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            sb_active_cbench.sb_active_cbench_run(args.json_output,
-                                                  args.ctrl_base_dir,
-                                                  args.sb_gen_base_dir,
-                                                  test_config,
-                                                  args.output_dir)
-        report_spec = sb_active_cbench.get_report_spec(args.test_type,
-                                                       args.json_config,
-                                                       args.json_output)
-
-    # sb_idle_cbench
-    elif args.test_type == 'sb_idle_scalability_mtcbench':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            sb_idle_cbench.sb_idle_cbench_run(
-                args.json_output,
-                args.ctrl_base_dir,
-                args.sb_gen_base_dir,
-                test_config,
-                args.output_dir)
-        report_spec = sb_idle_cbench.get_report_spec(args.test_type,
-                                                     args.json_config,
-                                                     args.json_output)
-    # sb_idle_mininet
-    elif args.test_type == 'sb_idle_scalability_mininet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            sb_idle_mininet.sb_idle_mininet_run(args.json_output,
-                                                args.ctrl_base_dir,
-                                                args.sb_gen_base_dir,
-                                                test_config,
-                                                args.output_dir)
-        report_spec = sb_idle_mininet.get_report_spec(args.test_type,
-                                                      args.json_config,
-                                                      args.json_output)
-
-    # sb_idle_multinet
-    elif args.test_type == 'sb_idle_scalability_multinet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            sb_idle_multinet.sb_idle_multinet_run(args.json_output,
-                                                args.ctrl_base_dir,
-                                                args.sb_gen_base_dir,
-                                                test_config,
-                                                args.output_dir)
-        report_spec = sb_idle_multinet.get_report_spec(args.test_type,
-                                                      args.json_config,
-                                                      args.json_output)
-    # sb_idle_multinet
-    elif args.test_type == 'sb_idle_stability_multinet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            stress_test_base_dir = os.path.abspath(os.path.join(
-                os.path.realpath(__file__), os.pardir))
-            monitors_base_dir = os.path.abspath(os.path.join(stress_test_base_dir,
-                                                            os.pardir))
-            oftraf_path = os.path.sep.join(
-                [monitors_base_dir, 'monitors', 'oftraf', ''])
-            stability_sb_idle_multinet.stability_sb_idle_multinet_run(
-                args.json_output, args.ctrl_base_dir, args.sb_gen_base_dir,
-                test_config, args.output_dir, oftraf_path)
-        report_spec = stability_sb_idle_multinet.get_report_spec(args.test_type,
-                                                      args.json_config,
-                                                      args.json_output)
-    # nb_active_mininet
-    elif args.test_type == 'nb_active_scalability_mininet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            nb_active_mininet.nb_active_mininet_run(args.json_output,
-                                                    args.ctrl_base_dir,
-                                                    args.nb_gen_base_dir,
-                                                    args.sb_gen_base_dir,
-                                                    test_config,
-                                                    args.output_dir,
-                                                    args.logging_level)
-        report_spec = nb_active_mininet.get_report_spec(args.test_type,
-                                                        args.json_config,
-                                                        args.json_output)
-    # nb_active_multinet
-    elif args.test_type == 'nb_active_scalability_multinet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            nb_active_multinet.nb_active_multinet_run(args.json_output,
-                                                      args.ctrl_base_dir,
-                                                      args.nb_gen_base_dir,
-                                                      args.sb_gen_base_dir,
-                                                      test_config,
-                                                      args.output_dir,
-                                                      args.logging_level)
-        report_spec = nb_active_multinet.get_report_spec(args.test_type,
-                                                        args.json_config,
-                                                        args.json_output)
-    else:
-        logging.error('[nstat_orchestrator] not valid test configuration')
-        exit(0)
-
-    # 03. if results have been produced, generate plots, report and gather
-    # output files
-    if os.path.isfile(args.json_output):
-        logging.info(
-            '[nstat_orchestrator] Creating output directory of test results.')
-        if not os.path.exists(args.output_dir):
-            os.makedirs(args.output_dir)
-
-        logging.info('[nstat_orchestrator] Producing plots')
-        num_plots = len(test_config['plots'])
-        for plot_index in list(range(0, num_plots)):
-            try:
-                plot_options = util.plot_utils.PlotOptions()
-                plot_options.xmin = test_config['plots'][plot_index]['x_min']
-                plot_options.xmax = test_config['plots'][plot_index]['x_max']
-                plot_options.ymin = test_config['plots'][plot_index]['y_min']
-                plot_options.ymax = test_config['plots'][plot_index]['y_max']
-                plot_options.x_axis_label = \
-                    test_config['plots'][plot_index]['x_axis_label']
-                plot_options.y_axis_label = \
-                    test_config['plots'][plot_index]['y_axis_label']
-                plot_options.out_fig = \
-                    test_config['plots'][plot_index]['plot_filename'] + '.png'
-                plot_options.plot_title = \
-                    test_config['plots'][plot_index]['plot_title']
-                plot_options.x_axis_fct = \
-                    float(eval(test_config['plots'][plot_index]['x_axis_factor']))
-                plot_options.y_axis_fct = \
-                    float(eval(test_config['plots'][plot_index]['y_axis_factor']))
-                if test_config['plots'][plot_index]['x_axis_scale'] == 'log':
-                    plot_options.xscale_log = True
-                else:
-                    plot_options.xscale_log = False
-
-                if test_config['plots'][plot_index]['y_axis_scale'] == 'log':
-                    plot_options.yscale_log = True
-                else:
-                    plot_options.yscale_log = False
-                # Call the util function responsible to generate the plot png
-                util.plot_json.plot_json(
-                    args.json_output,
-                    test_config['plots'][plot_index]['x_axis_key'],
-                    test_config['plots'][plot_index]['y_axis_key'],
-                    test_config['plots'][plot_index]['z_axis_key'],
-                    test_config['plots'][plot_index]['plot_type'],
-                    test_config['plots'][plot_index]['plot_subtitle_keys'],
-                    plot_options)
-                # Move produced plot in output directory
-                logging.info(
-                    '[nstat_orchestrator] Gathering plot {0} into output '
-                    'directory'.format(plot_options.out_fig))
-                shutil.move(plot_options.out_fig, args.output_dir)
-            except:
-                logging.error(
-                    '[nstat_orchestrator] The plot {0} could not be created. '
-                    'Please check configuration. Continuing to the next plot.'.
-                    format(test_config['plots'][plot_index]['plot_title']))
-
-        # Move controller log file if exist inside the test output dir
-        if args.log_file:
-            shutil.move(args.log_file, args.output_dir)
-        shutil.copy(args.json_output, args.output_dir)
-        shutil.copy(args.json_config, args.output_dir)
-
-        # Generate html report and move it within test output dir
-        logging.info('[nstat_orchestrator] Generating html report')
-        html_generation.generate_html(report_spec, args.html_report)
-        shutil.move(args.html_report, args.output_dir)
-    else:
-        logging.error(
-            '[nstat_orchestrator] No output file {0} found. Finishing.'.
-            format(args.json_output))
+    # NSTAT post actions (directories cleanup, results plotting/aggregation)
+    nstat_post_actions.nstat_post_test_actions(args, test_configuration,
+                                                    report_spec)
 
 
 if __name__ == '__main__':
