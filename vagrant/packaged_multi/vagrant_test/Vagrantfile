@@ -45,8 +45,21 @@ elsif RUNNING_ENV == 'no-proxy'
 else
     puts 'RUNNING_ENV not set'
 end
+     kostas = ['1', '2']
+     no_proxy_nstat_nodes = Array.new
+    (1..nstat_nodes_number).each do |nstat_vm|
+        last_two_ip_digits = nstat_nodes_private_network_ip[-2..-1].to_i
+        new_last_two_ip_digits = last_two_ip_digits + (nstat_vm - 1)
+        base_ip = nstat_nodes_private_network_ip[0..-3]
+        nstat_nodes_private_network_ip_inst = base_ip + new_last_two_ip_digits.to_s
 
+        no_proxy_nstat_nodes[nstat_vm] = nstat_nodes_private_network_ip_inst.to_s
+        #puts no_proxy_nstat_nodes[nstat_vm]
 
+    end
+    final_string = no_proxy_nstat_nodes.join(",")
+    puts final_string
+exit
 Vagrant.configure(2) do |config|
 
     config.ssh.username = 'vagrant'
