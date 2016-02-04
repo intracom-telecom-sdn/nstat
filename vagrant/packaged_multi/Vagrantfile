@@ -14,17 +14,17 @@
 nstat_vm_basebox = 'nstat_vm_base'
 nstat_nodes_number = 4
 nstat_node_names = ['nodecontroller', 'nodemininet', 'nodenstat', 'nodecbench']
-nstat_nodes_private_network_ip = '192.168.10.20' # the first IP address in the NSTAT VMs IP Address range
+nstat_nodes_private_network_ip = '192.168.10.25' # the first IP address in the NSTAT VMs IP Address range
 
 nstat_node_vm_ram = '2048'
 nstat_node_vm_cpus = '1'
-
-
 
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
 RUNNING_ENV = 'no-proxy'
+#ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
@@ -46,18 +46,21 @@ elsif RUNNING_ENV == 'no-proxy'
 else
     puts 'RUNNING_ENV not set'
 end
-     no_proxy_nstat_nodes = ''
+     no_proxy_nstat_nodes = Array.new
     (1..nstat_nodes_number).each do |nstat_vm|
-        no_proxy_nstat_nodes = no_proxy_nstat_nodes + nstat_nodes_private_network_ip[nstat_vm - 1] + ','
-        puts no_proxy_nstat_nodes
+        last_two_ip_digits = nstat_nodes_private_network_ip[-2..-1].to_i
+        new_last_two_ip_digits = last_two_ip_digits + (nstat_vm - 1)
+        base_ip = nstat_nodes_private_network_ip[0..-3]
+        nstat_nodes_private_network_ip_inst = base_ip + new_last_two_ip_digits.to_s
+        no_proxy_nstat_nodes[nstat_vm] = nstat_nodes_private_network_ip_inst.to_s
     end
+    no_proxy_nstat_nodes_str = no_proxy_nstat_nodes.join(",")
 
 Vagrant.configure(2) do |config|
 
     config.ssh.username = 'vagrant'
     config.ssh.password = 'vagrant'
-    no_proxy_nstat_nodes = '192.168.10.20,192.168.10.21,192.168.10.22,192.168.10.23,192.168.10.24,192.168.10.25,192.168.10.26,192.168.10.30,192.168.10.31,192.168.10.31'
-    no_proxy_nodes = 'localhost,127.0.0.1,' + no_proxy_nstat_nodes
+    no_proxy_nodes = 'localhost,127.0.0.1' + no_proxy_nstat_nodes_str
     puts "NSTAT no proxy nodes: " + no_proxy_nodes
 
     if RUNNING_ENV == 'with-proxy'
@@ -90,6 +93,7 @@ Vagrant.configure(2) do |config|
         nstat_node_name_inst = 'nstat_ubuntu_box_'  + ENV['USER'] + uid_nstat  + "_" + temp_name
 
         nstat_node_hostname_inst = nstat_vm_hostname + "-" + nstat_vm.to_s
+        #nstat_node_hostname_inst = nstat_node_names[nstat_vm]
 
         config.vm.define nstat_node_name_inst do |machine|
             machine.proxy.no_proxy = 'localhost,127.0.0.1,' + ',' + nstat_nodes_private_network_ip_inst
@@ -105,8 +109,13 @@ Vagrant.configure(2) do |config|
                 # change the network card hardware for better performance
                 vb.customize ["modifyvm", :id, "--nictype1", "virtio" ]
                 vb.customize ["modifyvm", :id, "--nictype2", "virtio" ]
-
             end
+            machine.vm.provider :libvirt do |libvirt|
+                libvirt.memory = nstat_node_vm_ram
+                libvirt.cpus = nstat_node_vm_cpus
+                #libvirt.management_network_name = 'vagrant-libvirt-nstat'
+            end
+
         end
     end
 

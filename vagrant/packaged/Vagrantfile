@@ -86,7 +86,7 @@ Vagrant.configure(2) do |config|
 # Provisioning actions
 # ------------------------------------------------------------------------------
   #config.vm.provision :shell, privileged: true, inline: 'sudo ifconfig eth1 192.168.10.16 netmask 255.255.255.0 up'
-  config.vm.provision :shell, privileged: true, inline: 'sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins
+  config.vm.provision :shell, privileged: true, inline: 'sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins'
 
 
 
