@@ -5,23 +5,23 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 # ------------------------------------------------------------------------------
-# 01. lithium_DS_sb_active_scalability_mtcbench.json
-# 02. lithium_DS_sb_active_stability_mtcbench.json
-# 03. lithium_DS_sb_idle_scalability_mtcbench.json
-# 04. lithium_nb_active_scalability_mininet.json
-# 05. lithium_RPC_sb_active_scalability_mtcbench.json
-# 06. lithium_RPC_sb_active_stability_mtcbench.json
-# 07. lithium_RPC_sb_idle_scalability_mtcbench.json
-# 08. lithium_sb_idle_scalability_mininet
-# 09. lithium_sb_idle_stability_mininet
+# 01. beryllium_DS_sb_active_scalability_mtcbench.json
+# 02. beryllium_DS_sb_active_stability_mtcbench.json
+# 03. beryllium_DS_sb_idle_scalability_mtcbench.json
+# 04. beryllium_nb_active_scalability_mininet.json
+# 05. beryllium_RPC_sb_active_scalability_mtcbench.json
+# 06. beryllium_RPC_sb_active_stability_mtcbench.json
+# 07. beryllium_RPC_sb_idle_scalability_mtcbench.json
+# 08. beryllium_sb_idle_scalability_mininet
+# 09. beryllium_sb_idle_stability_mininet
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-# sample_lithium_DS_sb_active_scalability_mtcbench
+# sample_beryllium_DS_sb_active_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_DS_sb_active_scalability_mtcbench_m_node-{branch}
+    name: sample_beryllium_DS_sb_active_scalability_mtcbench-{branch}
     description: "A booted switch topology sends OpenFlow traffic to the\n
                  controller to probe its performance. During this test the\n
                  topology is booted gradually. Therefore\n
@@ -39,20 +39,21 @@
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_DS_sb_active_scalability_mtcbench_m_node"
+          export CONFIG_FILENAME="beryllium_DS_sb_active_scalability_mtcbench"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
           # test execution
           # --------------------------------------------------------------------
+
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -60,11 +61,11 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_DS_sb_active_stability_mtcbench
+# sample_beryllium_DS_sb_active_stability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_DS_sb_active_stability_mtcbench_m_node-{branch}
+    name: sample_beryllium_DS_sb_active_stability_mtcbench-{branch}
     description: "A booted switch topology sends OpenFlow traffic to the\n
                  controller to probe its performance. Stability tests explore\n
                  how controller performance behaves in a large time window for\n
@@ -77,10 +78,10 @@
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_DS_sb_active_stability_mtcbench_m_node"
+          export CONFIG_FILENAME="beryllium_DS_sb_active_stability_mtcbench"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -88,9 +89,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_stability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -98,11 +99,11 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_DS_sb_idle_scalability_mtcbench
+# sample_beryllium_DS_sb_idle_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_DS_sb_idle_scalability_mtcbench_m_node-{branch}
+    name: sample_beryllium_DS_sb_idle_scalability_mtcbench-{branch}
     description: "An idle network is created by Cbench but since the test is idle\n
                  no traffic is generated. The topology is created by several\n
                  threads and therefore gradually since MtCench is used."
@@ -110,10 +111,10 @@
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_DS_sb_idle_scalability_mtcbench_m_node"
+          export CONFIG_FILENAME="beryllium_DS_sb_idle_scalability_mtcbench"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -121,9 +122,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -131,11 +132,11 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_nb_active_scalability_mininet
+# sample_beryllium_nb_active_scalability_mininet
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_nb_active_scalability_mininet_m_node-{branch}
+    name: sample_beryllium_nb_active_scalability_mininet-{branch}
     description: "In Northbound tests we want to investigate how OpenDaylight\n
                  performs under heavy load of NB traffic. In the context of\n
                  OpenDaylight NBtraffic is translated in RESTCONF calls. In\n
@@ -148,10 +149,10 @@
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_nb_active_scalability_mininet_m_node"
+          export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -159,10 +160,10 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                   --test="nb_active_scalability_mininet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
                --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -170,11 +171,11 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_RPC_sb_active_scalability_mtcbench
+# sample_beryllium_RPC_sb_active_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_RPC_sb_active_scalability_mtcbench_m_node-{branch}
+    name: sample_beryllium_RPC_sb_active_scalability_mtcbench-{branch}
     description: "In this test DS operations do not take place on the controller.\n
                  The test is active and since MtCbench is the generator openflow\n
                  traffic is created to the controller. The test is 'scalability'\n
@@ -189,10 +190,10 @@
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_RPC_sb_active_scalability_mtcbench_m_node"
+          export CONFIG_FILENAME="beryllium_RPC_sb_active_scalability_mtcbench"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -200,9 +201,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -210,11 +211,11 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_RPC_sb_active_stability_mtcbench
+# sample_beryllium_RPC_sb_active_stability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_RPC_sb_active_stability_mtcbench_m_node-{branch}
+    name: sample_beryllium_RPC_sb_active_stability_mtcbench-{branch}
     description: "A booted switch topology sends OpenFlow traffic to the\n
                  controller to probe its performance. Stability tests explore\n
                  how controller performance behaves in a large time window for\n
@@ -225,10 +226,10 @@
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_RPC_sb_active_stability_mtcbench_m_node"
+          export CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -236,9 +237,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_stability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -246,20 +247,20 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_RPC_sb_idle_scalability_mtcbench
+# sample_beryllium_RPC_sb_idle_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_RPC_sb_idle_scalability_mtcbench_m_node-{branch}
+    name: sample_beryllium_RPC_sb_idle_scalability_mtcbench-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_RPC_sb_idle_scalability_mtcbench_m_node"
+          export CONFIG_FILENAME="beryllium_RPC_sb_idle_scalability_mtcbench"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -267,9 +268,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mtcbench" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -277,20 +278,20 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_sb_idle_scalability_mininet
+# sample_beryllium_sb_idle_scalability_mininet
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_sb_idle_scalability_mininet_m_node-{branch}
+    name: sample_beryllium_sb_idle_scalability_mininet-{branch}
     description: An idle mininet network is booted.
     block-downstream: false
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_m_node"
+          export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -298,9 +299,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mininet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -308,20 +309,20 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_sb_idle_stability_mininet
+# sample_beryllium_sb_idle_stability_mininet
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_sb_idle_stability_mininet_m_node-{branch}
+    name: sample_beryllium_sb_idle_stability_mininet-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
     defaults: github-sample
     triggers:
-      - timed:
+     - pollscm: '0 19 * * *'
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_stability_mininet_m_node"
+          export CONFIG_FILENAME="beryllium_sb_idle_stability_mininet"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
@@ -329,9 +330,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_idle_scalability_mininet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -343,16 +344,16 @@
 # ------------------------------------------------------------------------------
 
 - project:
-    name: sample_nstat-jenkins-jobs_m_node
-    branch: develop_code_climate_issues
+    name: sample_nstat-jenkins-jobs
+    branch: develop_multinet_integration
     jobs:
 
-        - 'sample_lithium_DS_sb_active_scalability_mtcbench_m_node-{branch}'
-        - 'sample_lithium_DS_sb_active_stability_mtcbench_m_node-{branch}'
-        - 'sample_lithium_DS_sb_idle_scalability_mtcbench_m_node-{branch}'
-        - 'sample_lithium_nb_active_scalability_mininet_m_node-{branch}'
-        - 'sample_lithium_RPC_sb_active_scalability_mtcbench_m_node-{branch}'
-        - 'sample_lithium_RPC_sb_active_stability_mtcbench_m_node-{branch}'
-        - 'sample_lithium_RPC_sb_idle_scalability_mtcbench_m_node-{branch}'
-        - 'sample_lithium_sb_idle_scalability_mininet_m_node-{branch}'
-        - 'sample_lithium_sb_idle_stability_mininet_m_node-{branch}'
+        - 'sample_beryllium_DS_sb_active_scalability_mtcbench-{branch}'
+        - 'sample_beryllium_DS_sb_active_stability_mtcbench-{branch}'
+        - 'sample_beryllium_DS_sb_idle_scalability_mtcbench-{branch}'
+        - 'sample_beryllium_nb_active_scalability_mininet-{branch}'
+        - 'sample_beryllium_RPC_sb_active_scalability_mtcbench-{branch}'
+        - 'sample_beryllium_RPC_sb_active_stability_mtcbench-{branch}'
+        - 'sample_beryllium_RPC_sb_idle_scalability_mtcbench-{branch}'
+        - 'sample_beryllium_sb_idle_scalability_mininet-{branch}'
+#        - 'sample_beryllium_sb_idle_stability_mininet-{branch}'

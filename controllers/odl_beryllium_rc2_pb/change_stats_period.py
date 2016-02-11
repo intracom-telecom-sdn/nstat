@@ -5,8 +5,8 @@ import sys
 import os
 
 
-def manipulate_xml(input_filename, output_filename,
-                   string_to_find,target_value):
+def manipulate_xml(input_filename, output_filename, string_to_find,
+                   target_value):
     """It gets a configuration (.xml in our case) file, defined by the
     input_filename parameter and changes its contents defied by the
     string_to_find parameter. The new values are defined in the target_value

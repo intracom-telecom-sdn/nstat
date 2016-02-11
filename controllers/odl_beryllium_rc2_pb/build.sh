@@ -16,9 +16,6 @@ cd $SCRIPT_DIR
 ODL_ZIP_FILE="distribution-karaf-0.4.0-Beryllium-RC2.zip"
 ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/repositories/autorelease-1058/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium-RC2/"
 
-#ODL_ZIP_FILE="distribution-karaf-0.2.3-Helium-SR3.zip"
-#ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.2.3-Helium-SR3/"
-
 wget -nc "$ODL_NEXUS_LOCATION$ODL_ZIP_FILE" -P /opt/
 if [ $? -ne 0 ]; then
     exit 1
