@@ -21,7 +21,7 @@ else
 fi
 
 # Do not remove 2>/dev/null, or else the output result might be corrupted
-CONTROLLER_PID=$(./client "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
+CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
 if [ -z "$CONTROLLER_PID" ]; then
     echo "0" #controller is  not running
 else

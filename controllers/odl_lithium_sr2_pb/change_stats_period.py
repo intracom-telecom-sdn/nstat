@@ -4,7 +4,7 @@ from lxml import etree
 import sys
 import os
 
-#the path for this file is /odl_lithium_sr2_pb/controller/opendaylight/distribution/opendaylight-karaf/target/assembly/etc/opendaylight/karaf/
+
 def manipulate_xml(input_filename, output_filename,
                    string_to_find, target_value):
     """It gets a configuration (.xml in our case) file, defined by the

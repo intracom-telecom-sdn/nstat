@@ -18,7 +18,7 @@ KARAF_PATH="distribution-karaf-0.4.0-Beryllium-RC2"
 function exec_client_command()
 {
     UNTIL_COUNTER=0
-    until ./client "$@" > /dev/null 2>&1;
+    until ./client -u karaf "$@" > /dev/null 2>&1;
     do
         UNTIL_COUNTER=$(($UNTIL_COUNTER+1))
         if [ $UNTIL_COUNTER -eq $UNTIL_MAX_TRIES ]; then
@@ -40,7 +40,13 @@ else
     exit 1
 fi
 
+# Remove data folder to have a fresh installation of desired features
 rm -rf data > /dev/null 2>&1
+
+if [ -d journal ]; then
+    rm -rf journal/* > /dev/null 2>&1
+    echo "Cleanup contents of journal folder"
+fi
 
 echo "Starting ODL controller"
 cd bin
@@ -51,10 +57,10 @@ if [ $? -eq 0 ]
 then
     sleep $INIT_CONTROLLER
     UNTIL_COUNTER=0
-    CONTROLLER_PID=$(./client "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
+    CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
     until [ ! -z "$CONTROLLER_PID" ] ;
     do
-        CONTROLLER_PID=$(./client "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
+        CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
         UNTIL_COUNTER=$(($UNTIL_COUNTER+1))
         if [ $UNTIL_COUNTER -eq $UNTIL_MAX_TRIES ]; then
             # The following line covers the case where the controller starts with
@@ -92,7 +98,7 @@ echo -n "Checking if bundle drop-test is active"
 state=""
 until [ "$state" == "Active" ]
 do
-    state=$(./client "bundle:list" 2>/dev/null | grep "drop-test" | awk '{print $3}')
+    state=$(./client -u karaf "bundle:list" 2>/dev/null | grep "drop-test" | awk '{print $3}')
     sleep 1
 done
 echo "drop-test is active"

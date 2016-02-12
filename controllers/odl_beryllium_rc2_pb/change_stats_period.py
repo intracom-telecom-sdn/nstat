@@ -28,7 +28,7 @@ def manipulate_xml(input_filename, output_filename, string_to_find,
     #go inside snapshot
     for  elt in doc.getiterator():
         if string_to_find in elt.tag:
-            elt.text=target_value
+            elt.text = target_value
     outFile = open(output_filename, 'w')
     doc.write(outFile)
 
@@ -41,7 +41,8 @@ def change_stats_period_main():
     string_to_find = 'min-request-net-monitor-interval'
     input_file = os.path.dirname(os.path.realpath(__file__)) + \
         '/distribution-karaf-0.3.0-SNAPSHOT/etc/opendaylight/karaf/30-statistics-manager.xml'
-    manipulate_xml(input_file,input_file,string_to_find,str(int(sys.argv[1])))
+    manipulate_xml(input_file,input_file,string_to_find,
+                   str(int(sys.argv[1])))
 
 if __name__ == '__main__':
     change_stats_period_main()

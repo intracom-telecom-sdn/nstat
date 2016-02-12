@@ -26,5 +26,3 @@ unzip -o /opt/$ODL_ZIP_FILE -d ./
 if [ $? -ne 0 ]; then
     exit 1
 fi
-
-
