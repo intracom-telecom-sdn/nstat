@@ -5,8 +5,8 @@ import sys
 import os
 
 
-def manipulate_xml(input_filename, output_filename, string_to_find,
-                   target_value):
+def manipulate_xml(input_filename, output_filename,
+                   string_to_find, target_value):
     """It gets a configuration (.xml in our case) file, defined by the
     input_filename parameter and changes its contents defied by the
     string_to_find parameter. The new values are defined in the target_value
@@ -29,7 +29,7 @@ def manipulate_xml(input_filename, output_filename, string_to_find,
     for  elt in doc.getiterator():
         if string_to_find in elt.tag:
             elt.text = target_value
-    outFile = open(output_filename, 'w')
+    outFile = open(output_filename, 'wb')
     doc.write(outFile)
 
 def change_stats_period_main():
@@ -40,7 +40,7 @@ def change_stats_period_main():
 
     string_to_find = 'min-request-net-monitor-interval'
     input_file = os.path.dirname(os.path.realpath(__file__)) + \
-        '/distribution-karaf-0.3.0-SNAPSHOT/etc/opendaylight/karaf/30-statistics-manager.xml'
+        '/distribution-karaf-0.4.0-Beryllium-RC2/etc/opendaylight/karaf/30-statistics-manager.xml'
     manipulate_xml(input_file,input_file,string_to_find,
                    str(int(sys.argv[1])))
 
