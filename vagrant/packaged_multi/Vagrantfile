@@ -12,18 +12,18 @@
 # VM configuration.
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-nstat_nodes_number = 4
-nstat_node_names = ['nodecontroller', 'nodemininet', 'nodenstat', 'nodecbench']
-nstat_nodes_private_network_ip = '192.168.10.25' # the first IP address in the NSTAT VMs IP Address range
+nstat_nodes_number = 2
+#nstat_node_names = ['ndcontroller', 'ndmininet', 'ndnstat', 'ndcbench']
+nstat_node_names = ['ndcontroller', 'ndmininet']
+nstat_nodes_private_network_ip = '10.1.1.90' # the first IP address in the NSTAT VMs IP Address range
 
-nstat_node_vm_ram = '2048'
-nstat_node_vm_cpus = '1'
+nstat_node_vm_ram = 2048
+nstat_node_vm_cpus = 1
 
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
 RUNNING_ENV = 'no-proxy'
-#ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
 # configure proxy settings
