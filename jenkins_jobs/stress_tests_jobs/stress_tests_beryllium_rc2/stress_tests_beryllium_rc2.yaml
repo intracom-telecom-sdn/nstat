@@ -331,7 +331,7 @@
 - project:
     name: beryllium_nstat-stress-jenkins-jobs
     description: 'Enter the job description here'
-    branch: 'develop_release_1.2'
+    branch: 'develop_release_1.3'
     jobs:
 
         - 'beryllium_DS_sb_active_scalability_mtcbench-{branch}'
