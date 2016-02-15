@@ -28,7 +28,7 @@ nstat_vm_name = 'vm_worker_'
 nstat_vm_hostname_mini = 'multinet'
 
 nstat_vm_private_network_ip_mini = '192.168.10.30' # The first IP Address in the
-forwarded_ports_master = []                     # multinet VMs IP Address range
+forwarded_ports_master = []                        # multinet VMs IP Address range
 forwarded_ports_host = []
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'

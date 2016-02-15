@@ -12,11 +12,12 @@
 # VM configuration.
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-nstat_node_names = ['ndcntrlr', 'ndmininet', 'ndnstat', 'ndcbench']
-nstat_nodes_private_network_ip = '10.1.1.90' # the first IP address in the NSTAT VMs IP Address range
+#nstat_node_names = ['ndcntrlr', 'ndmininet', 'ndnstat', 'ndcbench']
+nstat_node_names = ['ndmininet']
+nstat_nodes_private_network_ip = '192.168.10.17' # the first IP address in the NSTAT VMs IP Address range
 
-nstat_node_vm_ram = 2048
-nstat_node_vm_cpus = 1
+nstat_node_vm_ram = 4096
+nstat_node_vm_cpus = 2
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
 
@@ -100,6 +101,10 @@ Vagrant.configure(2) do |config|
             machine.vm.box = nstat_vm_basebox
             machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
             machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst
+            #machine.vm.network :public_network,
+            #    :dev => "virbr7",
+            #    :mode => "bridge",
+            #    :type => "bridge"
 
             machine.vm.provider :virtualbox do |vb|
                 # Customize the amount of memory on the VM:
@@ -113,10 +118,14 @@ Vagrant.configure(2) do |config|
             machine.vm.provider :libvirt do |libvirt|
                 libvirt.memory = nstat_node_vm_ram
                 libvirt.cpus = nstat_node_vm_cpus
-                #libvirt.management_network_name = 'vagrant-libvirt-nstat'
             end
 
         end
+# ------------------------------------------------------------------------------
+# Provisioning actions
+# ------------------------------------------------------------------------------
+  config.vm.provision :shell, privileged: true, inline: 'sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins'
+
     end
 
 end
