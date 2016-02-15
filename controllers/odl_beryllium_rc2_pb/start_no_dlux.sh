@@ -9,11 +9,11 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $SCRIPT_DIR
 
-L_UNTIL_MAX_TRIES=120
-L_UNTIL_SLEEP_TIME=5
-L_UNTIL_COUNTER=0
-L_INIT_CONTROLLER=60
-L_KARAF_PATH="distribution-karaf-0.4.0-Beryllium-RC2"
+UNTIL_MAX_TRIES=120
+UNTIL_SLEEP_TIME=5
+UNTIL_COUNTER=0
+INIT_CONTROLLER=60
+KARAF_PATH="distribution-karaf-0.4.0-Beryllium-RC2"
 
 function exec_client_command()
 {
