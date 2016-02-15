@@ -12,13 +12,13 @@
 # VM configuration.
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-nstat_nodes_number = 2
-#nstat_node_names = ['ndcontroller', 'ndmininet', 'ndnstat', 'ndcbench']
-nstat_node_names = ['ndcontroller', 'ndmininet']
+nstat_node_names = ['ndcntrlr', 'ndmininet', 'ndnstat', 'ndcbench']
 nstat_nodes_private_network_ip = '10.1.1.90' # the first IP address in the NSTAT VMs IP Address range
 
 nstat_node_vm_ram = 2048
 nstat_node_vm_cpus = 1
+nstat_nodes_number = nstat_node_names.length
+printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
 
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
