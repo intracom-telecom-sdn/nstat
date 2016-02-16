@@ -20,8 +20,9 @@ import util.file_ops
 import util.netutil
 
 
-def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
-                          mininet_base_dir, conf, output_dir, log_level):
+def nb_active_scalability_mininet_run(out_json, ctrl_base_dir,
+                                      nb_generator_base_dir, mininet_base_dir,
+                                      conf, output_dir, log_level):
 
     """Run northbound active test with Mininet.
 
@@ -42,7 +43,7 @@ def nb_active_mininet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     :type log_level: str
     """
 
-    test_type = '[nb_active_mininet]'
+    test_type = '[nb_active_scalability_mininet]'
     logging.info('{0} initializing test parameters.'.format(test_type))
 
     # Global variables read-write shared between monitor and main thread

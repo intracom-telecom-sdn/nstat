@@ -22,8 +22,9 @@ import util.file_ops
 import util.netutil
 
 
-def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
-                           multinet_base_dir, conf, output_dir, log_level):
+def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
+                                       nb_generator_base_dir, multinet_base_dir,
+                                       conf, output_dir, log_level):
 
     """Run northbound active test with Multinet.
 
@@ -44,7 +45,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     :type log_level: str
     """
 
-    test_type = '[nb_active_multinet]'
+    test_type = '[nb_active_scalability_multinet]'
     logging.info('{0} initializing test parameters.'.format(test_type))
 
     # Global variables read-write shared between monitor and main thread
