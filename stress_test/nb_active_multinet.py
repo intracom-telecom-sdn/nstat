@@ -228,15 +228,13 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 multinet_handlers_set.start_topo_handler,
                 'start_topo_handler_multinet', multinet_base_dir)
 
-            flow_discovery_deadline_ms = 240000
 
-            cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}'.
+            cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
                 format(nb_generator_base_dir, nb_generator_cpus,
                        nb_generator_handlers_set.run_handler,
                        controller_node.ip, controller_nb_interface.port,
                        total_flows, flow_workers, flow_operations_delay_ms,
-                       flow_delete_flag, flow_discovery_deadline_ms,
-                       controller_nb_interface.username,
+                       flow_delete_flag, controller_nb_interface.username,
                        controller_nb_interface.password, log_level))
             logging.debug('{0} Generator handler command:{1}.'.
                           format(test_type, cmd))
