@@ -45,7 +45,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
     global_sample_id = 0
 
     t_start = multiprocessing.Value('d', 0.0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
     bootup_time_ms = multiprocessing.Value('i', 0)
 
     # Multinet parameters
@@ -201,9 +200,6 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
 
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
-
-            # We define a maximum value of 120000 ms to discover the switches
-            discovery_deadline_ms.value = 120000
 
             logging.info(
                 '{0} initiating topology on REST server and start '
