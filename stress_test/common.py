@@ -209,7 +209,7 @@ def open_ssh_connections(connections_list):
 
 
 def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
-                   expected_switches, discovery_deadline_ms, queuecomm):
+                   expected_switches, queuecomm):
     """
     Poll operational DS to discover installed switches
 
@@ -220,18 +220,16 @@ def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
     :param bootup_time_ms: Time to bootup switches topology (in ms). We start
     discovery process after this time.
     :param expected_switches: switches expected to find in the DS
-    :param discovery_deadline_ms: deadline (in ms) at which the thread
     should discover switches (in milliseconds)
     :param queuecomm: queue for communicating with the main context
     :type controller_nb_interface: namedtuple<str,int,str,str>
     :type boot_start_time: int
     :type bootup_time_ms: int
     :type expected_switches: int
-    :type discovery_deadline_ms: float
     :type queuecomm: multiprocessing.Queue
     """
 
-    discovery_deadline = float(discovery_deadline_ms.value) / 1000
+    discovery_deadline = 120
     sleep_before_discovery = float(bootup_time_ms.value) / 1000
 
     logging.info('[poll_ds_thread] Monitor thread started')
@@ -239,6 +237,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
     time.sleep(sleep_before_discovery)
     logging.info('[poll_ds_thread] Starting discovery')
     t_discovery_start = time.time()
+    previous_discovered_switches = 0
     discovered_switches = 0
 
     while True:
@@ -253,6 +252,9 @@ def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
             return
         else:
             discovered_switches = check_ds_switches(controller_nb_interface)
+            if discovered_switches - previous_discovered_switches > 0:
+                t_discovery_start = time.time()
+                previous_discovered_switches = discovered_switches
 
             if discovered_switches == expected_switches:
                 delta_t = time.time() - t_start

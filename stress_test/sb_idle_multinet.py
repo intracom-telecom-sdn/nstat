@@ -13,7 +13,6 @@ import itertools
 import logging
 import multiprocessing
 import multinet_utils
-import oftraf_utils
 import os
 import report_spec
 import sys
@@ -245,7 +244,7 @@ def sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir, conf,
                 args=(controller_nb_interface,
                       t_start, bootup_time_ms,
                       multinet_worker_topo_size.value * len(multinet_worker_ip_list),
-                      discovery_deadline_ms, result_queue))
+                      result_queue))
 
             monitor_thread.start()
             res = result_queue.get(block=True)

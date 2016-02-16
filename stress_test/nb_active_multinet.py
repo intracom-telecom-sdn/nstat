@@ -12,9 +12,7 @@ import controller_utils
 import itertools
 import json
 import logging
-import mininet_utils
 import multinet_utils
-import multiprocessing
 import os
 import report_spec
 import sys

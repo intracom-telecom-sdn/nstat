@@ -45,7 +45,6 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     global_sample_id = 0
 
     t_start = multiprocessing.Value('d', 0.0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
     bootup_time_ms = multiprocessing.Value('i', 0)
 
     # Mininet parameters
@@ -169,8 +168,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            # We define a maximum value of 120000 ms to discover the switches
-            discovery_deadline_ms.value = 120000
+
 
             logging.info(
                 '{0} initiating topology on REST server and start '
@@ -201,8 +199,8 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, bootup_time_ms, topology_size,
-                      discovery_deadline_ms, result_queue))
+                      t_start, bootup_time_ms, topology_size, result_queue)
+                                                     )
 
             monitor_thread.start()
             res = result_queue.get(block=True)

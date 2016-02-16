@@ -53,7 +53,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
     t_start = multiprocessing.Value('d', 0.0)
     bootup_time_ms = multiprocessing.Value('i', 0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
 
     # Cbench parameters
     cbench_rebuild = conf['cbench_rebuild']
@@ -190,15 +189,13 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             bootup_time_ms.value = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
 
-            discovery_deadline_ms.value = 120000
-
             t_start.value = time.time()
 
             logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface, t_start, bootup_time_ms,
-                      cbench_switches, discovery_deadline_ms, result_queue))
+                      cbench_switches, result_queue))
 
 
             logging.info('{0} creating Cbench thread'.format(test_type))
