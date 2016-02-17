@@ -80,7 +80,7 @@ def nb_active_scalability_mininet_run(out_json, ctrl_base_dir,
         mininet_base_dir + conf['topology_get_switches_handler'],
         mininet_base_dir + conf['topology_init_handler'],
         mininet_base_dir + conf['topology_start_switches_handler'],
-        mininet_base_dir + conf['topology_rest_server_stop']
+        mininet_base_dir + conf['topology_rest_server_stop'], ''
         )
     nb_generator_handlers_set = conf_collections_util.nb_generator_handlers(
         nb_generator_base_dir + conf['nb_generator_run_handler'])

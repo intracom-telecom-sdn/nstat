@@ -32,4 +32,5 @@ node_parameters = collections.namedtuple('ssh_connection',
 topology_generator_handlers = collections.namedtuple(
     'topology_generator_handlers' ,
     ['rest_server_boot', 'stop_switches_handler', 'get_switches_handler',
-     'init_topo_handler', 'start_topo_handler', 'rest_server_stop'])
+     'init_topo_handler', 'start_topo_handler', 'rest_server_stop',
+     'topology_traffic_gen_handler'])

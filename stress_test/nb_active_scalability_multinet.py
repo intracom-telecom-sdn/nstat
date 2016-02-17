@@ -88,7 +88,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         multinet_base_dir + conf['topology_get_switches_handler'],
         multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
-        multinet_base_dir + conf['topology_rest_server_stop']
+        multinet_base_dir + conf['topology_rest_server_stop'], ''
         )
     multinet_local_handlers_set = \
         conf_collections_util.multinet_local_handlers(
@@ -137,7 +137,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler])
 
-        logging.info('{0} Deploy Multinet nodes.'.format(test_type))
+        logging.info('{0} Cloning Multinet repository.'.format(test_type))
         multinet_utils.multinet_pre_post_actions(
                         multinet_local_handlers_set.build_handler)
 
