@@ -17,7 +17,6 @@ import logging
 import nb_active_scalability_mininet
 import nb_active_scalability_multinet
 import os
-import sb_active_multinet_scalability
 import sb_active_scalability_cbench
 import sb_active_stability_cbench
 import sb_idle_scalability_cbench
