@@ -217,7 +217,7 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, t_start, auth_token):
             odl_inventory.get_inventory_flows_stats()
             logging.debug('Found {0} flows at inventory'.
                           format(odl_inventory.found_flows))
-            if odl_inventory.found_flows > previous_discovered_flows:
+            if (odl_inventory.found_flows - previous_discovered_flows) != 0:
                 t_discovery_start = time.time()
                 previous_discovered_flows = odl_inventory.found_flows
             if odl_inventory.found_flows == expected_flows:

@@ -252,7 +252,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time, bootup_time_ms,
             return
         else:
             discovered_switches = check_ds_switches(controller_nb_interface)
-            if discovered_switches - previous_discovered_switches > 0:
+            if (discovered_switches - previous_discovered_switches) != 0:
                 t_discovery_start = time.time()
                 previous_discovered_switches = discovered_switches
 
