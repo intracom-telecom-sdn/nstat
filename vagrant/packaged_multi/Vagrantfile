@@ -13,12 +13,12 @@
 nstat_vm_basebox = 'nstat_vm_base'
 # ------------------------------------------------------------------------------
 #nstat_node_names = ['ndcntrlr', 'ndmininet', 'ndnstat', 'ndcbench']
-#nstat_node_vm_ram_arr = [16384, 2048 , 2048 , 2048 ]
-#nstat_node_vm_cpu_arr = [2, 2, 2, 2]
+#nstat_node_vm_ram_arr = [16384, 2048 , 2048 , 2048] # in MB
+#nstat_node_vm_cpu_arr = [2, 2, 2, 2] # number of CPUs
 # ------------------------------------------------------------------------------
-nstat_node_names = ['ndmininet', 'ndnstat']
-nstat_node_vm_ram_arr = [4096, 8192]
-nstat_node_vm_cpu_arr = [2, 4]
+nstat_node_names = ['ndmininet']
+nstat_node_vm_ram_arr = [4096]
+nstat_node_vm_cpu_arr = [2]
 # ------------------------------------------------------------------------------
 nstat_nodes_private_network_ip = '192.168.10.17' # the first IP address in the NSTAT VMs IP Address range
 
@@ -37,6 +37,7 @@ ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 # ------------------------------------------------------------------------------
 if RUNNING_ENV == 'with-proxy'
     http_proxy = 'http:/<IP_address>:<port_number>'
+    https_proxy = 'http://172.28.40.9:3128'
     puts '--------------------------------------------------------'
     puts 'running: with-proxy RUNNING_ENV'
      if !Vagrant.has_plugin?('vagrant-proxyconf')

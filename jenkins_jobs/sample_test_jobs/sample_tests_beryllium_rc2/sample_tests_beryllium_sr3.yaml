@@ -345,7 +345,7 @@
 
 - project:
     name: sample_nstat-jenkins-jobs
-    branch: master
+    branch: develop_active_scallability_multinet_test
     jobs:
 
         - 'sample_beryllium_DS_sb_active_scalability_mtcbench-{branch}'
