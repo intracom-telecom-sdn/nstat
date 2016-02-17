@@ -44,7 +44,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
@@ -75,7 +75,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_nb_active_scalability_mininet_100sw
@@ -105,7 +105,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_nb_active_scalability_mininet_10sw
@@ -135,7 +135,7 @@
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 
 # ------------------------------------------------------------------------------
@@ -167,7 +167,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
@@ -198,7 +198,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_RPC_sb_idle_scalability_mtcbench
@@ -229,7 +229,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_sb_idle_scalability_mininet_DisconnectedTopo
@@ -260,7 +260,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_sb_idle_scalability_mininet_LinearTopo
@@ -291,7 +291,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # beryllium_sb_idle_scalability_mininet_MeshTopo
@@ -322,7 +322,7 @@
           --html-report=$WORKSPACE/report.html \
           --output-dir=$WORKSPACE/$RESULTS_DIR/
 
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # job instances
