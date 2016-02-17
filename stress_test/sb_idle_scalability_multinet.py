@@ -45,7 +45,6 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     global_sample_id = 0
 
     t_start = multiprocessing.Value('d', 0.0)
-    bootup_time_ms = multiprocessing.Value('i', 0)
 
     # Multinet parameters
     multinet_hosts_per_switch = multiprocessing.Value('i', 0)
@@ -179,7 +178,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch.value, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
-                multinet_worker_port_list, multinet_base_dir)
+                multinet_worker_port_list, multinet_base_dir, 0, 0)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_handlers_set,
@@ -238,7 +237,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, bootup_time_ms,
+                      t_start,
                       multinet_worker_topo_size.value * len(multinet_worker_ip_list),
                       result_queue))
 

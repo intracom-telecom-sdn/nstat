@@ -45,7 +45,6 @@ def sb_idle_scalability_mininet_run(out_json, ctrl_base_dir, mininet_base_dir,
     global_sample_id = 0
 
     t_start = multiprocessing.Value('d', 0.0)
-    bootup_time_ms = multiprocessing.Value('i', 0)
 
     # Mininet parameters
     topology_hosts_per_switch = multiprocessing.Value('i', 0)
@@ -199,7 +198,7 @@ def sb_idle_scalability_mininet_run(out_json, ctrl_base_dir, mininet_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, bootup_time_ms, topology_size, result_queue)
+                      t_start, topology_size, result_queue)
                                                      )
 
             monitor_thread.start()

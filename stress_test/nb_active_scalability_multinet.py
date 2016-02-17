@@ -204,7 +204,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
-                multinet_worker_port_list, multinet_base_dir)
+                multinet_worker_port_list, multinet_base_dir, 0, 0)
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))

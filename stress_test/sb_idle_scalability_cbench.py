@@ -52,7 +52,6 @@ def sb_idle_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
     cbench_simulated_hosts = multiprocessing.Value('i', 0)
 
     t_start = multiprocessing.Value('d', 0.0)
-    bootup_time_ms = multiprocessing.Value('i', 0)
 
     # Cbench parameters
     cbench_rebuild = conf['cbench_rebuild']
@@ -186,16 +185,13 @@ def sb_idle_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            bootup_time_ms.value = \
-                cbench_threads.value * cbench_thread_creation_delay_ms.value
-
             t_start.value = time.time()
 
             logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
-                args=(controller_nb_interface, t_start, bootup_time_ms,
-                      cbench_switches, result_queue))
+                args=(controller_nb_interface, t_start, cbench_switches,
+                      result_queue))
 
 
             logging.info('{0} creating Cbench thread'.format(test_type))

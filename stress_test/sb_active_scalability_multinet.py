@@ -21,8 +21,9 @@ import time
 import util.file_ops
 import util.netutil
 
-def sb_active_multinet_scalability_run(out_json, ctrl_base_dir,
-                                       multinet_base_dir, conf, output_dir):
+def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
+                                       multinet_base_dir, conf, output_dir,
+                                       oftraf_base_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 
@@ -46,7 +47,6 @@ def sb_active_multinet_scalability_run(out_json, ctrl_base_dir,
     global_sample_id = 0
 
     t_start = multiprocessing.Value('d', 0.0)
-    bootup_time_ms = multiprocessing.Value('i', 0)
 
     # Multinet parameters
     #multinet_hosts_per_switch = multiprocessing.Value('i', 0)
