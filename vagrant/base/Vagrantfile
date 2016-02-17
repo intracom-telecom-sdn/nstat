@@ -29,6 +29,7 @@ RUNNING_ENV = 'no-proxy'
 # ------------------------------------------------------------------------------
 if RUNNING_ENV == 'with-proxy'
   http_proxy = 'http://172.28.40.9:3128'
+  https_proxy = 'http://172.28.40.9:3128'
   puts '--------------------------------------------------------'
   puts 'running: with-proxy RUNNING_ENV'
   if !Vagrant.has_plugin?('vagrant-proxyconf')

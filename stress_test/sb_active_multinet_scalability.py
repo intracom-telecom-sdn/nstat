@@ -11,8 +11,9 @@ import conf_collections_util
 import controller_utils
 import itertools
 import logging
-import mininet_utils
 import multiprocessing
+import multinet_utils
+import oftraf_utils
 import os
 import report_spec
 import sys
@@ -20,24 +21,24 @@ import time
 import util.file_ops
 import util.netutil
 
-def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
-                        output_dir):
+def sb_active_multinet_scalability_run(out_json, ctrl_base_dir,
+                                       multinet_base_dir, conf, output_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 
     :param out_json: the JSON output file
     :param ctrl_base_dir: controller base directory
-    :param mininet_base_dir: Mininet base directory
+    :param multinet_base_dir: Multinet base directory
     :param conf: JSON configuration dictionary
     :param output_dir: directory to store output files
     :type out_json: str
     :type ctrl_base_dir: str
-    :type mininet_base_dir: str
+    :type multinet_base_dir: str
     :type conf: str
     :type output_dir: str
     """
 
-    test_type = '[sb_idle_mininet]'
+    test_type = '[sb_active_multinet_scalability]'
     logging.info('{0} initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.
@@ -45,11 +46,14 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     global_sample_id = 0
 
     t_start = multiprocessing.Value('d', 0.0)
+    discovery_deadline_ms = multiprocessing.Value('i', 0)
     bootup_time_ms = multiprocessing.Value('i', 0)
 
-    # Mininet parameters
-    topology_hosts_per_switch = multiprocessing.Value('i', 0)
-    topology_size = multiprocessing.Value('i', 0)
+    # Multinet parameters
+    multinet_hosts_per_switch = multiprocessing.Value('i', 0)
+    multinet_worker_topo_size = multiprocessing.Value('i', 0)
+    multinet_worker_ip_list = conf['multinet_worker_ip_list']
+    multinet_worker_port_list = conf['multinet_worker_port_list']
 
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -59,6 +63,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
         controller_cpu_shares = 100
+    multinet_switch_type = conf['multinet_switch_type']
 
     controller_handlers_set = conf_collections_util.controller_handlers(
         ctrl_base_dir + conf['controller_build_handler'],
@@ -68,18 +73,24 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler']
         )
-    mininet_handlers_set = conf_collections_util.topology_generator_handlers(
-        mininet_base_dir + conf['topology_rest_server_boot'],
-        mininet_base_dir + conf['topology_stop_switches_handler'],
-        mininet_base_dir + conf['topology_get_switches_handler'],
-        mininet_base_dir + conf['topology_init_handler'],
-        mininet_base_dir + conf['topology_start_switches_handler'],
-        mininet_base_dir + conf['topology_rest_server_stop']
+    multinet_handlers_set = conf_collections_util.topology_generator_handlers(
+        multinet_base_dir + conf['topology_rest_server_boot'],
+        multinet_base_dir + conf['topology_stop_switches_handler'],
+        multinet_base_dir + conf['topology_get_switches_handler'],
+        multinet_base_dir + conf['topology_init_handler'],
+        multinet_base_dir + conf['topology_start_switches_handler'],
+        multinet_base_dir + conf['topology_rest_server_stop']
         )
+
+    multinet_local_handlers_set = \
+        conf_collections_util.multinet_local_handlers(
+        multinet_base_dir + conf['multinet_build_handler'],
+        multinet_base_dir + conf['multinet_clean_handler'])
+
     controller_node = conf_collections_util.node_parameters('Controller',
         conf['controller_node_ip'], int(conf['controller_node_ssh_port']),
         conf['controller_node_username'], conf['controller_node_password'])
-    mininet_node = conf_collections_util.node_parameters('Mininet',
+    multinet_node = conf_collections_util.node_parameters('Multinet',
         conf['topology_node_ip'], int(conf['topology_node_ssh_port']),
         conf['topology_node_username'], conf['topology_node_password'])
     controller_sb_interface = conf_collections_util.controller_southbound(
@@ -87,7 +98,7 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     controller_nb_interface = conf_collections_util.controller_northbound(
         conf['controller_node_ip'], conf['controller_restconf_port'],
         conf['controller_restconf_user'], conf['controller_restconf_password'])
-    mininet_rest_server = conf_collections_util.mininet_server(
+    multinet_rest_server = conf_collections_util.multinet_server(
         conf['topology_node_ip'], conf['topology_rest_server_port'])
 
     # list of samples: each sample is a dictionary that contains
@@ -100,9 +111,11 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
     java_opts = conf['java_opts']
 
     try:
+
         # Before proceeding with the experiments check validity
         # of all handlers
-        logging.info('{0} checking handler files.'.format(test_type))
+        logging.info('{0} checking controller/local multinet handler files.'.
+                     format(test_type))
         util.file_ops.check_filelist([
             controller_handlers_set.ctrl_build_handler,
             controller_handlers_set.ctrl_start_handler,
@@ -110,16 +123,27 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
-            mininet_handlers_set.rest_server_boot,
-            mininet_handlers_set.stop_switches_handler,
-            mininet_handlers_set.get_switches_handler,
-            mininet_handlers_set.init_topo_handler,
-            mininet_handlers_set.start_topo_handler])
+            multinet_local_handlers_set.build_handler,
+            multinet_local_handlers_set.clean_handler])
 
-        # Opening connection with mininet_node_ip and returning
-        # cbench_ssh_client to be utilized in the sequel
-        mininet_ssh_client, controller_ssh_client, = \
-            common.open_ssh_connections([mininet_node, controller_node])
+        logging.info('{0} Deploy Multinet nodes.'.format(test_type))
+        multinet_utils.multinet_pre_post_actions(
+                        multinet_local_handlers_set.build_handler)
+
+        # Before proceeding with the experiments check validity
+        # of all multinet handlers
+        logging.info('{0} checking multinet handler files.'.format(test_type))
+        util.file_ops.check_filelist([
+            multinet_handlers_set.rest_server_boot,
+            multinet_handlers_set.stop_switches_handler,
+            multinet_handlers_set.get_switches_handler,
+            multinet_handlers_set.init_topo_handler,
+            multinet_handlers_set.start_topo_handler,
+            multinet_handlers_set.rest_server_stop])
+
+        # Opening connection with controller node and returning
+        # ontroller_ssh_client to be utilized in the sequel
+        controller_ssh_client = common.open_ssh_connections([controller_node])[0]
 
         controller_cpus = common.create_cpu_shares(
             controller_cpu_shares, 100)[0]
@@ -132,11 +156,11 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                                       controller_cpus)
 
         # Run tests for all possible dimensions
-        for (topology_size.value,
-             topology_group_size,
-             topology_group_delay_ms,
-             topology_hosts_per_switch.value,
-             topology_type,
+        for (multinet_worker_topo_size.value,
+             multinet_group_size,
+             multinet_group_delay_ms,
+             multinet_hosts_per_switch.value,
+             multinet_topology_type,
              controller_statistics_period_ms) in \
              itertools.product(conf['topology_size'],
                                conf['topology_group_size'],
@@ -151,10 +175,13 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 controller_handlers_set.ctrl_statistics_handler,
                 controller_statistics_period_ms, controller_ssh_client)
 
-            logging.info('{0} booting up Mininet REST server'.
-                          format(test_type))
-            mininet_utils.start_mininet_server(mininet_ssh_client,
-                mininet_handlers_set.rest_server_boot, mininet_rest_server)
+            logging.info('{0} generating new configuration file'.format(test_type))
+            multinet_utils.generate_multinet_config(controller_sb_interface,
+                multinet_rest_server, multinet_node, multinet_worker_topo_size.value,
+                multinet_group_size, multinet_group_delay_ms,
+                multinet_hosts_per_switch.value, multinet_topology_type,
+                multinet_switch_type, multinet_worker_ip_list,
+                multinet_worker_port_list, multinet_base_dir)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_handlers_set,
@@ -165,42 +192,60 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             # is done inside controller_utils.start_controller()
             logging.info('{0} OK, controller status is 1.'.format(test_type))
 
+            logging.info('{0} booting up Multinet REST server'.
+                          format(test_type))
+            #mininet_utils.start_mininet_server(mininet_ssh_client,
+            #    mininet_handlers_set.rest_server_boot, mininet_rest_server)
+
+            multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
+                'deploy_multinet', multinet_base_dir, is_privileged=False)
+
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-
+            # We define a maximum value of 120000 ms to discover the switches
+            discovery_deadline_ms.value = 120000
 
             logging.info(
                 '{0} initiating topology on REST server and start '
                 'monitor thread to check for discovered switches '
                 'on controller.'.format(test_type))
 
-            logging.info('{0} initializing Mininet topology.'.
+            logging.info('{0} initializing Multinet topology.'.
                          format(test_type))
-            mininet_utils.init_mininet_topo(
-                mininet_handlers_set.init_topo_handler, mininet_rest_server,
-                controller_node.ip, controller_node.ssh_port,
-                topology_type, topology_size.value, topology_group_size,
-                topology_group_delay_ms, topology_hosts_per_switch.value)
+
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.init_topo_handler,
+                'init_topo_handler_multinet', multinet_base_dir)
+
+            #mininet_utils.init_mininet_topo(
+            #    mininet_handlers_set.init_topo_handler, mininet_rest_server,
+            #    controller_node.ip, controller_node.ssh_port,
+            #    multinet_topology_type, multinet_size.value, multinet_group_size,
+            #    multinet_group_delay_ms, multinet_hosts_per_switch.value)
 
             t_start.value = time.time()
 
-
-            logging.info('{0} starting Mininet topology.'.format(test_type))
-            mininet_utils.start_stop_mininet_topo(
-                mininet_handlers_set.start_topo_handler, mininet_rest_server,
-                'start')
+            logging.info('{0} starting Multinet topology.'.format(test_type))
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.start_topo_handler,
+                'start_topo_handler_multinet', multinet_base_dir)
+            #mininet_utils.start_stop_mininet_topo(
+            #    mininet_handlers_set.start_topo_handler, mininet_rest_server,
+            #    'start')
 
             # Parallel section.
             # We have boot_up_time equal to 0 because start_mininet_topo()
             # is a blocking function and topology is booted up after we have
             # call it
-            logging.info('{0} creating monitor thread'.format(test_type))
+            logging.info('{0} creating switch scalability monitor thread'.
+                         format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start, bootup_time_ms, topology_size, result_queue)
-                                                     )
+                      t_start, bootup_time_ms,
+                      multinet_worker_topo_size.value * len(multinet_worker_ip_list),
+                      discovery_deadline_ms, result_queue))
 
             monitor_thread.start()
             res = result_queue.get(block=True)
@@ -210,12 +255,15 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
-            statistics['topology_size'] = topology_size.value
-            statistics['topology_type'] = topology_type
-            statistics['topology_hosts_per_switch'] = \
-                topology_hosts_per_switch.value
-            statistics['topology_group_size'] = topology_group_size
-            statistics['topology_group_delay_ms'] = topology_group_delay_ms
+            statistics['multinet_workers'] = len(multinet_worker_ip_list)
+            statistics['multinet_size'] = \
+                multinet_worker_topo_size.value * len(multinet_worker_ip_list)
+            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size.value
+            statistics['multinet_topology_type'] = multinet_topology_type
+            statistics['multinet_hosts_per_switch'] = \
+                multinet_hosts_per_switch.value
+            statistics['multinet_group_size'] = multinet_group_size
+            statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
             statistics['controller_statistics_period_ms'] = \
                 controller_statistics_period_ms
             statistics['controller_node_ip'] = controller_node.ip
@@ -224,22 +272,30 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
                 '{0}'.format(controller_cpu_shares)
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
-            total_samples.append(statistics)
 
+            total_samples.append(statistics)
 
             logging.debug('{0} stopping controller.'.format(test_type))
             controller_utils.stop_controller(controller_handlers_set, cpid,
                                              controller_ssh_client)
 
-            logging.info('{0} stopping Mininet topology.'.format(test_type))
-            mininet_utils.start_stop_mininet_topo(
-                mininet_handlers_set.stop_switches_handler,
-                mininet_rest_server, 'stop')
+            logging.info('{0} stopping Multinet topology.'.format(test_type))
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.stop_switches_handler,
+                'stop_switches_handler_multinet', multinet_base_dir)
 
-            logging.info('{0} stopping REST daemon in Mininet node'.
+            #mininet_utils.start_stop_mininet_topo(
+            #    mininet_handlers_set.stop_switches_handler,
+            #    mininet_rest_server, 'stop')
+
+            logging.info('{0} stopping REST daemon in Multinet node'.
                 format(test_type))
-            mininet_utils.stop_mininet_server(mininet_ssh_client,
-                                              mininet_rest_server.port)
+
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
+                multinet_base_dir, is_privileged=True)
+            #mininet_utils.stop_mininet_server(mininet_ssh_client,
+            #                                  mininet_rest_server.port)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -287,16 +343,22 @@ def sb_idle_mininet_run(out_json, ctrl_base_dir, mininet_base_dir, conf,
 
         try:
             logging.info(
-                '{0} stopping REST daemon in Mininet node.'.
+                '{0} stopping REST daemon in Multinet node.'.
                 format(test_type))
-            mininet_utils.stop_mininet_server(mininet_ssh_client,
-                                              mininet_rest_server.port)
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
+                multinet_base_dir)
+            #mininet_utils.stop_mininet_server(mininet_ssh_client,
+            #                                  mininet_rest_server.port)
         except:
             pass
 
-        # Closing ssh connections with controller/Mininet nodes
-        common.close_ssh_connections([controller_ssh_client,
-                                      mininet_ssh_client])
+        logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
+        multinet_utils.multinet_pre_post_actions(
+            multinet_local_handlers_set.clean_handler)
+
+        # Closing ssh connections with controller/Multinet nodes
+        common.close_ssh_connections([controller_ssh_client])
 
 
 def get_report_spec(test_type, config_json, results_json):
@@ -335,18 +397,18 @@ def get_report_spec(test_type, config_json, results_json):
              ('controller_rebuild', 'Controller rebuild between test repeats'),
              ('controller_logs_dir', 'Controller log save directory'),
              ('controller_restconf_port', 'Controller RESTconf port'),
-             ('topology_rest_server_boot', 'Mininet boot handler'),
+             ('topology_rest_server_boot', 'Multinet boot handler'),
              ('topology_stop_switches_handler',
-              'Mininet stop switches handler'),
-             ('topology_get_switches_handler', 'Mininet get switches handler'),
+              'Multinet stop switches handler'),
+             ('topology_get_switches_handler', 'Multinet get switches handler'),
              ('topology_init_handler',
-              'Mininet initialize topology handler'),
-             ('topology_start_switches_handler', 'Mininet start topology handler'),
-             ('topology_node_ip', 'Mininet IP address'),
-             ('topology_rest_server_port', 'Mininet port'),
-             ('topology_size', 'Mininet network size'),
-             ('topology_type', 'Mininet topology type'),
-             ('topology_hosts_per_switch', 'Mininet hosts per switch'),
+              'Multinet initialize topology handler'),
+             ('topology_start_switches_handler', 'Multinet start topology handler'),
+             ('topology_node_ip', 'Multinet IP address'),
+             ('topology_rest_server_port', 'Multinet port'),
+             ('topology_size', 'Multinet network size per worker'),
+             ('topology_type', 'Multinet topology type'),
+             ('topology_hosts_per_switch', 'Multinet hosts per switch'),
              ('java_opts', 'JVM options')], config_json)],
         [report_spec.TableSpec('2d', 'Test results',
             [('global_sample_id', 'Sample ID'),
@@ -354,11 +416,14 @@ def get_report_spec(test_type, config_json, results_json):
              ('date', 'Sample timestamp (date)'),
              ('bootup_time_secs', 'Time to discover switches (seconds)'),
              ('discovered_switches', 'Discovered switches'),
-             ('mininet_size', 'Mininet Size'),
-             ('topology_type', 'Mininet Topology Type'),
-             ('topology_hosts_per_switch', 'Mininet Hosts per Switch'),
-             ('topology_group_size', 'Mininet Group Size'),
-             ('topology_group_delay_ms', 'Mininet Group Delay (ms)'),
+             ('multinet_size', 'Multinet Size'),
+             ('multinet_worker_topo_size',
+              'Topology size per Multinet worker'),
+             ('multinet_workers','number of Multinet workers'),
+             ('multinet_topology_type', 'Multinet topology Type'),
+             ('multinet_hosts_per_switch', 'Multinet hosts per Switch'),
+             ('multinet_group_size', 'Multinet group size'),
+             ('multinet_group_delay_ms', 'Multinet group delay (ms)'),
              ('controller_node_ip', 'Controller IP'),
              ('controller_port', 'Controller port'),
              ('controller_java_xopts', 'Java options'),

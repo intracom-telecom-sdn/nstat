@@ -17,8 +17,8 @@ import logging
 import nb_active_mininet
 import os
 import sb_active_cbench
-import sb_idle_cbench
-import sb_idle_mininet
+import sb_idle_cbench_scalability
+import sb_idle_mininet_scalability
 import shutil
 import sys
 import util.plot_json

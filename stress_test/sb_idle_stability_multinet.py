@@ -19,7 +19,7 @@ import sys
 import util.file_ops
 import util.netutil
 
-def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
+def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                    conf, output_dir, oftraf_base_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
@@ -36,7 +36,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     :type output_dir: str
     """
 
-    test_type = '[sb_idle_multinet]'
+    test_type = '[sb_idle_stability_multinet]'
     logging.info('{0} initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.

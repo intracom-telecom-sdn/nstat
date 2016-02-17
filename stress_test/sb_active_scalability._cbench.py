@@ -176,8 +176,8 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
             logging.error('[monitor_thread] {0}'.format(str(exept)))
 
 
-def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
-                         output_dir):
+def sb_active_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
+                                     conf, output_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 
@@ -193,7 +193,7 @@ def sb_active_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     :type output_dir: str
     """
 
-    test_type = '[sb_active_cbench]'
+    test_type = '[sb_active_scalability_cbench]'
     logging.info('{0} initializing test parameters'.format(test_type))
 
     # Cbench parameters: multiprocessing objects
