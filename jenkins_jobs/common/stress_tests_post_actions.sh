@@ -21,33 +21,33 @@ cp -r $WORKSPACE/$RESULTS_DIR/$OUTPUT_FILENAME"_results.json" /tmp
 
 # list all active remote heads (useful for the console output)
 # ------------------------------------------------------------------------------
-git branch -a
+# git branch -a
 
 # checkout to the 'develop' branch (since you are checked out to the
 # commit with no head pointing to the develop)
 # ------------------------------------------------------------------------------
-git checkout develop_release_1.2
+# git checkout develop_release_1.2
 
 # make a git pull to avoid conflicts and get the latest state of the
 # 'develop' branch
 # ------------------------------------------------------------------------------
-git pull
+# git pull
 
 # restore the result output file from the /tmp directory to the stress
 # test folder directory
 # ------------------------------------------------------------------------------
-mv /tmp/$OUTPUT_FILENAME"_results.json" $WORKSPACE/stress_test/stress_test_results/
+# mv /tmp/$OUTPUT_FILENAME"_results.json" $WORKSPACE/stress_test/stress_test_results/
 
 # add the new result file to index and prepare the commit message
 # ------------------------------------------------------------------------------
-git add $WORKSPACE/stress_test/stress_test_results/$OUTPUT_FILENAME"_results.json"
-git commit -m "$COMMIT_MESSAGE"
+# git add $WORKSPACE/stress_test/stress_test_results/$OUTPUT_FILENAME"_results.json"
+# git commit -m "$COMMIT_MESSAGE"
 
 #push changes to branch develop
 # ------------------------------------------------------------------------------
-git push
+# git push
 
 # cleanup machine
 # ------------------------------------------------------------------------------
-cd $PARENT_DIRECTORY
-rm -rf $JOB_NAME
+# cd $PARENT_DIRECTORY
+# rm -rf $JOB_NAME
