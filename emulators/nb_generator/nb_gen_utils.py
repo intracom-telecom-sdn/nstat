@@ -314,7 +314,7 @@ def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
 
     """Function executed by flow_master method
     :param flow_ops_params: namedtuple ['ctrl_ip', 'ctrl_port', 'nflows',
-    'nworkers', 'discovery_deadline_ms'], (controller IP, controller RESTconf port,
+    'nworkers'], (controller IP, controller RESTconf port,
     total number of flows to distribute, number of worker threads to create,
     deadline for flow discovery (in milliseconds)
     :param op_delay_ms: delay between thread operations (in milliseconds)
@@ -336,7 +336,6 @@ def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
     :type ctrl_port: str
     :type nflows: int
     :type nworkers: int
-    :type discovery_deadline_ms: int
     :type op_delay_ms: int
     :type node_names:  list<str>
     :type url_template: str
