@@ -70,7 +70,8 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         ctrl_base_dir + conf['controller_status_handler'],
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
-        ctrl_base_dir + conf['controller_statistics_handler']
+        ctrl_base_dir + conf['controller_statistics_handler'],
+        ctrl_base_dir + conf['controller_flowmods_conf_handler']
         )
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
@@ -95,9 +96,6 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         conf['topology_node_username'], conf['topology_node_password'])
     controller_sb_interface = conf_collections_util.controller_southbound(
         conf['controller_node_ip'], conf['controller_port'])
-    controller_nb_interface = conf_collections_util.controller_northbound(
-        conf['controller_node_ip'], conf['controller_restconf_port'],
-        conf['controller_restconf_user'], conf['controller_restconf_password'])
     multinet_rest_server = conf_collections_util.multinet_server(
         conf['topology_node_ip'], conf['topology_rest_server_port'])
 
@@ -108,7 +106,6 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         oftraf_base_dir + 'build.sh', oftraf_base_dir + 'start.sh',
         oftraf_base_dir + 'stop.sh', oftraf_base_dir + 'clean.sh')
     #oftraf_test_interval_ms = conf['oftraf_test_interval_ms']
-    previous_oftraf_result = (0,0)
 
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
@@ -132,6 +129,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
+            controller_handlers_set.ctrl_flowmods_conf_handler,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler,
             oftraf_handlers_set.oftraf_build_handler,
@@ -168,6 +166,12 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
                                       controller_cpus)
+
+        logging.info('{0} Configure controller to send FLOW_MODs as a response '
+                     'to ARP PACKET_INs.'.format(test_type))
+        controller_utils.flowmod_configure_controller(
+            controller_handlers_set.ctrl_flowmods_conf_handler,
+            controller_ssh_client)
 
         logging.info('{0} Building oftraf.'.format(test_type))
         oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,

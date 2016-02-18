@@ -68,7 +68,8 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         ctrl_base_dir + conf['controller_status_handler'],
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
-        ctrl_base_dir + conf['controller_statistics_handler']
+        ctrl_base_dir + conf['controller_statistics_handler'],
+        ''
         )
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
