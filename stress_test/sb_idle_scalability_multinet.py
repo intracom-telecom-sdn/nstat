@@ -208,26 +208,13 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
             logging.info('{0} initializing Multinet topology.'.
                          format(test_type))
-
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.init_topo_handler,
                 'init_topo_handler_multinet', multinet_base_dir)
 
-            #mininet_utils.init_mininet_topo(
-            #    mininet_handlers_set.init_topo_handler, mininet_rest_server,
-            #    controller_node.ip, controller_node.ssh_port,
-            #    multinet_topology_type, multinet_size.value, multinet_group_size,
-            #    multinet_group_delay_ms, multinet_hosts_per_switch.value)
-
+            topology_start_time_ms = \
+                (multinet_worker_topo_size.value // multinet_group_size) * multinet_group_delay_ms
             t_start.value = time.time()
-
-            logging.info('{0} starting Multinet topology.'.format(test_type))
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.start_topo_handler,
-                'start_topo_handler_multinet', multinet_base_dir)
-            #mininet_utils.start_stop_mininet_topo(
-            #    mininet_handlers_set.start_topo_handler, mininet_rest_server,
-            #    'start')
 
             # Parallel section.
             # We have boot_up_time equal to 0 because start_mininet_topo()
@@ -238,11 +225,16 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
-                      t_start,
+                      t_start, topology_start_time_ms,
                       multinet_worker_topo_size.value * len(multinet_worker_ip_list),
                       result_queue))
-
             monitor_thread.start()
+
+            logging.info('{0} starting Multinet topology.'.format(test_type))
+            multinet_utils.multinet_command_runner(
+                multinet_handlers_set.start_topo_handler,
+                'start_topo_handler_multinet', multinet_base_dir)
+
             res = result_queue.get(block=True)
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()

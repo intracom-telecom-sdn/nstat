@@ -209,7 +209,7 @@ def open_ssh_connections(connections_list):
 
 
 def poll_ds_thread(controller_nb_interface, boot_start_time,
-                   expected_switches, queuecomm):
+                   sleep_before_discovery_ms, expected_switches, queuecomm):
     """
     Poll operational DS to discover installed switches
 
@@ -217,23 +217,27 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
     2)controller_restconf_port 3) controller_restconf_user
     4) controller_restconf_password
     :param boot_start_time: The time we begin starting topology switches
+    :param sleep_before_discovery_ms: amount of time (in milliseconds) to sleep
+    before starting polling datastore to discover switches
     :param expected_switches: switches expected to find in the DS
     should discover switches (in milliseconds)
     :param queuecomm: queue for communicating with the main context
     :type controller_nb_interface: namedtuple<str,int,str,str>
     :type boot_start_time: int
+    :type sleep_before_discovery_ms:
     :type expected_switches: int
     :type queuecomm: multiprocessing.Queue
     """
 
     discovery_deadline = 120
-
+    sleep_before_discovery = sleep_before_discovery_ms / 1000
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time.value
     logging.info('[poll_ds_thread] Starting discovery')
     t_discovery_start = time.time()
     previous_discovered_switches = 0
     discovered_switches = 0
+    time.sleep(sleep_before_discovery)
 
     while True:
 

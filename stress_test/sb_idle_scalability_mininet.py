@@ -183,13 +183,9 @@ def sb_idle_scalability_mininet_run(out_json, ctrl_base_dir, mininet_base_dir,
                 topology_type, topology_size.value, topology_group_size,
                 topology_group_delay_ms, topology_hosts_per_switch.value)
 
+            topology_start_time_ms = \
+                (topology_size.value // topology_group_size) * topology_group_delay_ms
             t_start.value = time.time()
-
-
-            logging.info('{0} starting Mininet topology.'.format(test_type))
-            mininet_utils.start_stop_mininet_topo(
-                mininet_handlers_set.start_topo_handler, mininet_rest_server,
-                'start')
 
             # Parallel section.
             # We have boot_up_time equal to 0 because start_mininet_topo()
@@ -198,11 +194,16 @@ def sb_idle_scalability_mininet_run(out_json, ctrl_base_dir, mininet_base_dir,
             logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
-                args=(controller_nb_interface,
-                      t_start, topology_size, result_queue)
+                args=(controller_nb_interface, t_start, topology_start_time_ms,
+                      topology_size, result_queue)
                                                      )
-
             monitor_thread.start()
+
+            logging.info('{0} starting Mininet topology.'.format(test_type))
+            mininet_utils.start_stop_mininet_topo(
+                mininet_handlers_set.start_topo_handler, mininet_rest_server,
+                'start')
+
             res = result_queue.get(block=True)
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
