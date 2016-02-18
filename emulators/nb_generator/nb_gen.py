@@ -61,8 +61,7 @@ def flow_master(args):
     distribute), nworkers (number of worker threads to create),
     op_delay_ms (delay between thread operations (in milliseconds)),
     delete_flows_flag (whether to delete or not the added flows as part
-    of the test), discovery_deadline_ms (deadline for flow discovery (in
-    milliseconds)), controller_restconf_user (controller RESTconf username),
+    of the test), controller_restconf_user (controller RESTconf username),
     controller_restconf_password (controller RESTconf password)
     :returns: output_msg
     :rtype: str
@@ -71,7 +70,7 @@ def flow_master(args):
     """
 
     flow_ops_params = collections.namedtuple('flow_ops_params', ['ctrl_ip',
-        'ctrl_port', 'nflows', 'nworkers', 'discovery_deadline_ms'])
+        'ctrl_port', 'nflows', 'nworkers'])
     auth_token = collections.namedtuple('auth_token',
                                         ['controller_restconf_user',
                                          'controller_restconf_password'])
