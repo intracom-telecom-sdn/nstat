@@ -20,7 +20,7 @@ nstat_node_names = ['mininet', 'nbgen', 'mn1', 'mn2', 'mn3']
 nstat_node_vm_ram_arr = [2048, 2048, 2048, 2048, 2048]
 nstat_node_vm_cpu_arr = [2, 2, 2, 2, 2]
 # ------------------------------------------------------------------------------
-nstat_nodes_private_network_ip = '192.168.10.17' # the first IP address in the NSTAT VMs IP Address range
+nstat_nodes_private_network_ip = '192.168.100.17' # the first IP address in the NSTAT VMs IP Address range
 
 #nstat_node_vm_ram = 4096
 #nstat_node_vm_cpus = 2
