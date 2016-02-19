@@ -90,9 +90,13 @@ def check_ds_switches(controller_nb_interface):
         datastore = requests.get(url=url,
             auth=auth_token).json()['topology'][0]
     except:
+        logging.error('[check_ds_switches] Fail getting responce from '
+                      'operational datastore')
         return -1
 
     switches = [node for node in datastore.get('node', []) if not node['node-id'].startswith('host:')]
+    logging.debug('[check_ds_switches] Discovered switches: {0}'.
+                  format(switches))
     return len(switches)
 
 def close_ssh_connections(ssh_clients_list):
