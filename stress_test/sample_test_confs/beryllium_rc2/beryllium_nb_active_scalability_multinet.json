@@ -67,7 +67,7 @@
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_worker_ip_list":["192.168.10.30", "192.168.10.31", "192.168.10.32"],
+"multinet_worker_ip_list":["192.168.10.19", "192.168.10.20", "192.168.10.21"],
 "multinet_worker_port_list":[3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
