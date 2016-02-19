@@ -90,7 +90,7 @@ def check_ds_switches(controller_nb_interface):
         datastore = requests.get(url=url,
             auth=auth_token).json()['topology'][0]
     except:
-        logging.error('[check_ds_switches] Fail getting responce from '
+        logging.error('[check_ds_switches] Fail getting response from '
                       'operational datastore')
         return -1
 
