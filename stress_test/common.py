@@ -235,7 +235,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
     """
 
     discovery_deadline = 120
-    sleep_before_discovery = sleep_before_discovery_ms / 1000
+    sleep_before_discovery = float(sleep_before_discovery_ms) / 1000
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time.value
     logging.info('[poll_ds_thread] Starting discovery')
@@ -256,11 +256,11 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
             return
         else:
             discovered_switches = check_ds_switches(controller_nb_interface)
-            if (discovered_switches - previous_discovered_switches) != 0:
+            if discovered_switches != previous_discovered_switches:
                 t_discovery_start = time.time()
                 previous_discovered_switches = discovered_switches
 
-            if discovered_switches == expected_switches:
+            if discovered_switches == expected_switches.value:
                 delta_t = time.time() - t_start
                 logging.info(
                     '[poll_ds_thread] {0} switches found in {1} seconds'.
