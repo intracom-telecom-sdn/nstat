@@ -139,7 +139,6 @@ def sb_idle_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         controller_cpus, cbench_cpus = common.create_cpu_shares(
             controller_cpu_shares, mtcbench_cpu_shares)
-        cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
