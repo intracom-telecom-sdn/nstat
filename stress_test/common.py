@@ -234,10 +234,10 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
     logging.info('[poll_ds_thread] Monitor thread started')
     t_start = boot_start_time.value
     logging.info('[poll_ds_thread] Starting discovery')
-    t_discovery_start = time.time()
     previous_discovered_switches = 0
     discovered_switches = 0
     time.sleep(sleep_before_discovery)
+    t_discovery_start = time.time()
 
     while True:
 
