@@ -192,8 +192,12 @@ def nstat_test_selector(args, test_config):
                          format(args.test_type))
             oftraf_path = get_oftraf_path()
             sb_idle_stability_multinet.sb_idle_stability_multinet_run(
-                args.json_output, args.ctrl_base_dir, args.sb_gen_base_dir,
-                test_config, args.output_dir, oftraf_path)
+                args.json_output,
+                args.ctrl_base_dir,
+                args.sb_gen_base_dir,
+                test_config,
+                args.output_dir,
+                oftraf_path)
 
         report_spec = sb_idle_stability_multinet.get_report_spec(
             args.test_type,

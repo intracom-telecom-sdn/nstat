@@ -51,6 +51,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     multinet_group_delay_ms = conf['topology_group_delay_ms']
     multinet_hosts_per_switch = conf['topology_hosts_per_switch']
     multinet_topology_type = conf['topology_type']
+
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
