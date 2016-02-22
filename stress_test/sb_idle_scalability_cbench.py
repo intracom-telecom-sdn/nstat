@@ -104,11 +104,11 @@ def sb_idle_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         sb_gen_base_dir + conf['cbench_build_handler'],
         sb_gen_base_dir + conf['cbench_clean_handler'],
         sb_gen_base_dir + conf['cbench_run_handler'])
-    controller_sb_interface = conf_collections_util.controller_southbound(conf['controller_node_ip'],
-                                                    conf['controller_port'])
+    controller_sb_interface = conf_collections_util.controller_southbound(
+        conf['controller_node_ip'], conf['controller_port'])
     controller_nb_interface = conf_collections_util.controller_northbound(
-        conf['controller_node_ip'], conf['controller_restconf_port'], conf['controller_restconf_user'],
-        conf['controller_restconf_password'])
+        conf['controller_node_ip'], conf['controller_restconf_port'],
+        conf['controller_restconf_user'], conf['controller_restconf_password'])
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
