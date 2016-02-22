@@ -216,6 +216,9 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 (multinet_worker_topo_size.value // multinet_group_size) * multinet_group_delay_ms
             t_start.value = time.time()
 
+            multinet_worker_topo_size.value = \
+                multinet_worker_topo_size.value * len(multinet_worker_ip_list)
+
             # Parallel section.
             # We have boot_up_time equal to 0 because start_mininet_topo()
             # is a blocking function and topology is booted up after we have
@@ -226,7 +229,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
                       t_start, topology_start_time_ms,
-                      multinet_worker_topo_size.value * len(multinet_worker_ip_list),
+                      multinet_worker_topo_size,
                       result_queue))
             monitor_thread.start()
 
