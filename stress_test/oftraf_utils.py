@@ -70,7 +70,7 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
                                      block_flag=False)
     else:
         util.customsubprocess.check_output_streaming(
-            oftraf_start_command.split(' '), queue=None, block_flag=False)
+            oftraf_start_command, queue=None, block_flag=False)
 
 
 def oftraf_stop(oftraf_stop_handler, oftraf_rest_server, ssh_client=None):
