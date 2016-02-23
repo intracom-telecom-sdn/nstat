@@ -24,14 +24,12 @@ def northbound_generator():
     Flows will be added to nodes [0, n-1]
     4.  nflows: total number of flows to distribute
     5.  nworkers: number of worker threads to create
-
-    7.  op_delay_ms: delay between thread operations (in milliseconds)
-    8.  delete_flows_flag: whether to delete or not the added flows as part of
+    6.  op_delay_ms: delay between thread operations (in milliseconds)
+    7.  delete_flows_flag: whether to delete or not the added flows as part of
     the test
-    9.  discovery_deadline_ms: deadline for flow discovery (in milliseconds)
-    10. controller_restconf_user: controller NorthBound RESTconf username
-    11. controller_restconf_password: controller NorthBound RESTconf password
-    12. logging_level: nb generator logging level (is passed from
+    8. controller_restconf_user: controller NorthBound RESTconf username
+    9. controller_restconf_password: controller NorthBound RESTconf password
+    10. logging_level: nb generator logging level (is passed from
     nstat orchestrator)
     """
 
@@ -40,15 +38,15 @@ def northbound_generator():
                             '--number-of-flows=\'{2}\' '
                             '--number-of-workers=\'{3}\' '
                             '--operation-delay=\'{4}\' '
-                            '--discovery-deadline=\'{5}\' '
-                            '--restconf-user=\'{6}\' '
-                            '--restconf-password=\'{7}\' '
-                            '--logging-level=\'{8}\'')
+                            '--restconf-user=\'{5}\' '
+                            '--restconf-password=\'{6}\' '
+                            '--logging-level=\'{7}\'')
     if sys.argv[6] == 'True':
         cmd += ' --delete-flows'
     cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
-                     sys.argv[5], sys.argv[7], sys.argv[8], sys.argv[9],
-                     sys.argv[10])
+                     sys.argv[5], sys.argv[7], sys.argv[8],
+                     sys.argv[9])
+
     p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     cmd_output = p.stdout.read().decode(sys.stdout.encoding)

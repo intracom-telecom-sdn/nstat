@@ -61,8 +61,7 @@ def flow_master(args):
     distribute), nworkers (number of worker threads to create),
     op_delay_ms (delay between thread operations (in milliseconds)),
     delete_flows_flag (whether to delete or not the added flows as part
-    of the test), discovery_deadline_ms (deadline for flow discovery (in
-    milliseconds)), controller_restconf_user (controller RESTconf username),
+    of the test), controller_restconf_user (controller RESTconf username),
     controller_restconf_password (controller RESTconf password)
     :returns: output_msg
     :rtype: str
@@ -71,7 +70,7 @@ def flow_master(args):
     """
 
     flow_ops_params = collections.namedtuple('flow_ops_params', ['ctrl_ip',
-        'ctrl_port', 'nflows', 'nworkers', 'discovery_deadline_ms'])
+        'ctrl_port', 'nflows', 'nworkers'])
     auth_token = collections.namedtuple('auth_token',
                                         ['controller_restconf_user',
                                          'controller_restconf_password'])
@@ -80,8 +79,7 @@ def flow_master(args):
                                             args.restconf_password)
 
     flow_ops_params_set = flow_ops_params(args.ctrl_ip, args.ctrl_port,
-                                          int(args.nflows), int(args.nworkers),
-                                          int(args.discovery_deadline_ms))
+                                          int(args.nflows), int(args.nworkers))
     delete_flows_flag = args.delete_flows_flag
 
     failed_flow_ops_del=0
@@ -184,15 +182,6 @@ if __name__ == '__main__':
                               "equivalent delete operations. \n"
                               "The default value is False. \n"
                               "Example: --delete-flag"))
-    parser.add_argument('--discovery-deadline',
-                        required=False,
-                        type=str,
-                        dest='discovery_deadline_ms',
-                        action='store',
-                        default='240000',
-                        help=("The deadline to discover flows (in ms). \n"
-                              "The default value is '240000'.\n"
-                              "Example: --discovery-deadline='240000'"))
     parser.add_argument('--restconf-user',
                         required=False,
                         type=str,

@@ -62,7 +62,8 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
                              multinet_group_delay_ms, multinet_hosts_per_switch,
                              multinet_topology_type, multinet_switch_type,
                              multinet_worker_ip_list, multinet_worker_port_list,
-                             multinet_base_dir):
+                             multinet_base_dir, traffic_generation_duration_ms,
+                             interpacket_delay_ms):
     """
     Generates a new json configuration file for multinet, according to the
     configuration values that are passed as parameters.
@@ -89,6 +90,8 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
     :param multinet_worker_ip_list: a list of ip addresses of multinet workers
     :param multinet_worker_port_list: a list of port numbers of multinet workers
     :param multinet_base_dir: the full path to the multinet root folder
+    :param traffic_generation_duration_ms:
+    :param interpacket_delay_ms:
     :type controller_sb_interface: collection.namedtuple(<str>, <int>)
     :type multinet_rest_server: collection.namedtuple(<str>, <int>)
     :type multinet_node: collection.namedtuple(<str>, <str>, <int>, <str>, <str>)
@@ -101,6 +104,8 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
     :type multinet_worker_ip_list: list<str>
     :type multinet_worker_port_list: list<int>
     :type multinet_base_dir:<str>
+    :type traffic_generation_duration_ms: int
+    :type interpacket_delay_ms: int
     """
 
     multinet_config_path = '{0}/config/config.json'.format(multinet_base_dir)
@@ -123,6 +128,9 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
     config_json['topo']['group_size'] = multinet_group_size
     config_json['topo']['group_delay'] = multinet_group_delay_ms
     config_json['topo']['hosts_per_switch'] = multinet_hosts_per_switch
+    config_json['topo']['traffic_generation_duration_ms'] = \
+        traffic_generation_duration_ms
+    config_json['topo']['interpacket_delay_ms'] = interpacket_delay_ms
 
     with open(multinet_config_path, 'w') as config_json_file:
         json.dump(config_json, config_json_file)

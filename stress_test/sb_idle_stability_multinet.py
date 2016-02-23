@@ -19,7 +19,7 @@ import sys
 import util.file_ops
 import util.netutil
 
-def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
+def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                    conf, output_dir, oftraf_base_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
@@ -36,7 +36,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     :type output_dir: str
     """
 
-    test_type = '[sb_idle_multinet]'
+    test_type = '[sb_idle_stability_multinet]'
     logging.info('{0} initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.
@@ -51,6 +51,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     multinet_group_delay_ms = conf['topology_group_delay_ms']
     multinet_hosts_per_switch = conf['topology_hosts_per_switch']
     multinet_topology_type = conf['topology_type']
+
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
     controller_rebuild = conf['controller_rebuild']
@@ -68,7 +69,8 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         ctrl_base_dir + conf['controller_status_handler'],
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
-        ctrl_base_dir + conf['controller_statistics_handler']
+        ctrl_base_dir + conf['controller_statistics_handler'],
+        ''
         )
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
@@ -76,7 +78,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         multinet_base_dir + conf['topology_get_switches_handler'],
         multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
-        multinet_base_dir + conf['topology_rest_server_stop']
+        multinet_base_dir + conf['topology_rest_server_stop'], ''
         )
 
     multinet_local_handlers_set = \
@@ -131,7 +133,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             oftraf_handlers_set.oftraf_stop_handler,
             oftraf_handlers_set.oftraf_clean_handler])
 
-        logging.info('{0} Deploy Multinet nodes.'.format(test_type))
+        logging.info('{0} Cloning Multinet repository.'.format(test_type))
         multinet_utils.multinet_pre_post_actions(
                         multinet_local_handlers_set.build_handler)
 
@@ -159,10 +161,11 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
                                       controller_cpus)
-
+        """
         logging.info('{0} Building oftraf.'.format(test_type))
         oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
                                   controller_ssh_client)
+        """
 
         logging.info('{0} changing controller statistics period to {1} ms'.
             format(test_type, controller_statistics_period_ms))
@@ -184,7 +187,7 @@ def stability_sb_idle_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             multinet_group_size, multinet_group_delay_ms,
             multinet_hosts_per_switch, multinet_topology_type,
             multinet_switch_type, multinet_worker_ip_list,
-            multinet_worker_port_list, multinet_base_dir)
+            multinet_worker_port_list, multinet_base_dir, 0, 0)
 
         logging.info('{0} booting up Multinet REST server'.
                       format(test_type))

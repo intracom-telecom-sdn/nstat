@@ -15,8 +15,6 @@ url: https://wiki.opendaylight.org/view/CrossProject:Integration_Group:Performan
 Acknowledgement: Jan Medved, jmedved@cisco.com, Cisco Systems, Inc.
 """
 
-
-import argparse
 import requests
 import re
 import json

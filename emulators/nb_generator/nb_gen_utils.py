@@ -180,8 +180,7 @@ def join_workers(opqueues, resqueues, wthr):
 
     return failed_flow_ops
 
-def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
-               t_start, auth_token):
+def poll_flows(expected_flows, ctrl_ip, ctrl_port, t_start, auth_token):
     """
     Monitors operational DS until the expected number of flows are found or the
     deadline is reached.
@@ -189,7 +188,6 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
     :param expected_flows: expected number of flows
     :param ctrl_ip: controller IP
     :param ctrl_port: controller RESTconf port
-    :param discovery_deadline_ms: discover deadline (in milliseconds)
     :param t_start: timestamp for begin of discovery
     :param auth_token: RESTconf authorization token (username/password tuple)
 
@@ -199,15 +197,15 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
     :type expected_flows: int
     :type ctrl_ip: str
     :type ctrl_port: int
-    :type discovery_deadline_ms: int
     :type t_start: float
     :type auth_token: tuple<str>
     """
 
-    deadline = float(discovery_deadline_ms)/1000
+    deadline = 240
     odl_inventory = flow_utils.FlowExplorer(ctrl_ip, ctrl_port, 'operational',
                                             auth_token)
     t_discovery_start = time.time()
+    previous_discovered_flows = 0
 
     while True:
         if (time.time() - t_discovery_start) > deadline:
@@ -219,6 +217,9 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, discovery_deadline_ms,
             odl_inventory.get_inventory_flows_stats()
             logging.debug('Found {0} flows at inventory'.
                           format(odl_inventory.found_flows))
+            if (odl_inventory.found_flows - previous_discovered_flows) != 0:
+                t_discovery_start = time.time()
+                previous_discovered_flows = odl_inventory.found_flows
             if odl_inventory.found_flows == expected_flows:
                 time_interval = time.time() - t_start
                 logging.debug('[flow_master_thread] Flow-Master '
@@ -266,7 +267,7 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
     return node_names
 
 def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
-                       discovery_deadline_ms, auth_token):
+                       auth_token):
     """Calculates transmission_interval, operation_time, failed_flow_ops
     :param opqueues: workers operation queues
     :param resqueues: workers result queues
@@ -274,7 +275,6 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
     :param nflows:
     :param ctrl_ip:
     :param ctrl_port:
-    :param discovery_deadline_ms:
     :param auth_token:
     :returns (transmission_interval, operation_time, failed_flow_ops):
     transmission interval: time interval between requested flow operations
@@ -287,7 +287,6 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
     :type nflows: int
     :type ctrl_ip: str
     :type ctrl_port: str
-    :type discovery_deadline_ms: int
     :type auth_token: tuple<str>
     """
     failed_flow_ops = 0
@@ -304,8 +303,8 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
     transmission_interval = t_stop - t_start
 
     logging.info('[flow_operations_calc_time] initiate flow polling')
-    operation_time = poll_flows(nflows, ctrl_ip, ctrl_port,
-                                discovery_deadline_ms, t_start, auth_token)
+    operation_time = poll_flows(nflows, ctrl_ip, ctrl_port, t_start,
+                                auth_token)
 
     return (transmission_interval, operation_time, failed_flow_ops)
 
@@ -315,7 +314,7 @@ def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
 
     """Function executed by flow_master method
     :param flow_ops_params: namedtuple ['ctrl_ip', 'ctrl_port', 'nflows',
-    'nworkers', 'discovery_deadline_ms'], (controller IP, controller RESTconf port,
+    'nworkers'], (controller IP, controller RESTconf port,
     total number of flows to distribute, number of worker threads to create,
     deadline for flow discovery (in milliseconds)
     :param op_delay_ms: delay between thread operations (in milliseconds)
@@ -337,7 +336,6 @@ def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
     :type ctrl_port: str
     :type nflows: int
     :type nworkers: int
-    :type discovery_deadline_ms: int
     :type op_delay_ms: int
     :type node_names:  list<str>
     :type url_template: str
@@ -372,6 +370,6 @@ def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
     transmission_interval, operation_time, failed_flow_ops =  \
     flow_ops_calc_time(opqueues, resqueues, wthr, flow_ops_params.nflows,
                        flow_ops_params.ctrl_ip, flow_ops_params.ctrl_port,
-                       flow_ops_params.discovery_deadline_ms, auth_token)
+                       auth_token)
 
     return (transmission_interval, operation_time, failed_flow_ops)

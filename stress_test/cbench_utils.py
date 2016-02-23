@@ -6,7 +6,6 @@
 
 """ Reusable functions for processes that are cbench related """
 
-import collections
 import common
 import logging
 import subprocess
@@ -158,6 +157,8 @@ def run_cbench(cbench_run_handler, cbench_cpus, controller_ip, controller_port,
                 str(threads), str(sw_per_thread), str(switches),
                 str(thr_delay_ms), str(traf_delay_ms), str(ms_per_test),
                 str(internal_repeats), str(hosts), str(warmup), mode]
+    logging.debug('[run_cbench] Executed command: {0}'.
+                  format(' '.join(cmd_list)))
     common.command_exec_wrapper(cmd_list, '[cbench_run_handler]', ssh_client,
                          data_queue)
 

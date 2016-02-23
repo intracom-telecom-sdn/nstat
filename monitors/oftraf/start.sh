@@ -15,7 +15,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 MAX_START_TRIES=10
 
-sudo python $SCRIPT_DIR/oftraf.py --rest-host $1 --rest-port $2 --of-port $3 --ifname $(ip addr show | grep $1 | awk '{print $5}') --server
+sudo python $SCRIPT_DIR/oftraf.py --rest-host $1 --rest-port $2 --of-port $3 --ifname $(ip addr show | grep $1"/" | awk '{print $NF}') --server
 if [ $? -ne 0 ]; then
     echo "[start.sh] start of oftraf failed. Exiting ..."
     exit $?

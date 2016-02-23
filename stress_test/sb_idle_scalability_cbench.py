@@ -20,8 +20,8 @@ import time
 import util.file_ops
 
 
-def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
-                       output_dir):
+def sb_idle_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
+                                   conf, output_dir):
     """Run test. This is the main function that is called from
     nstat_orchestrator and performs the specific test.
 
@@ -37,7 +37,7 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     :type output_dir: str
     """
 
-    test_type = '[sb_idle_cbench]'
+    test_type = '[sb_idle_scalability_cbench]'
     logging.info('{0} initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.
@@ -52,8 +52,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
     cbench_simulated_hosts = multiprocessing.Value('i', 0)
 
     t_start = multiprocessing.Value('d', 0.0)
-    bootup_time_ms = multiprocessing.Value('i', 0)
-    discovery_deadline_ms = multiprocessing.Value('i', 0)
 
     # Cbench parameters
     cbench_rebuild = conf['cbench_rebuild']
@@ -99,17 +97,18 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
         ctrl_base_dir + conf['controller_status_handler'],
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
-        ctrl_base_dir + conf['controller_statistics_handler']
+        ctrl_base_dir + conf['controller_statistics_handler'],
+        ''
         )
     cbench_handlers_set = conf_collections_util.cbench_handlers(
         sb_gen_base_dir + conf['cbench_build_handler'],
         sb_gen_base_dir + conf['cbench_clean_handler'],
         sb_gen_base_dir + conf['cbench_run_handler'])
-    controller_sb_interface = conf_collections_util.controller_southbound(conf['controller_node_ip'],
-                                                    conf['controller_port'])
+    controller_sb_interface = conf_collections_util.controller_southbound(
+        conf['controller_node_ip'], conf['controller_port'])
     controller_nb_interface = conf_collections_util.controller_northbound(
-        conf['controller_node_ip'], conf['controller_restconf_port'], conf['controller_restconf_user'],
-        conf['controller_restconf_password'])
+        conf['controller_node_ip'], conf['controller_restconf_port'],
+        conf['controller_restconf_user'], conf['controller_restconf_password'])
     # list of samples: each sample is a dictionary that contains all
     # information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -140,7 +139,6 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
 
         controller_cpus, cbench_cpus = common.create_cpu_shares(
             controller_cpu_shares, mtcbench_cpu_shares)
-        cbench_cpus = multiprocessing.Array('c', str(cbench_cpus).encode())
 
         if cbench_rebuild:
             logging.info('{0} building cbench.'.format(test_type))
@@ -187,18 +185,15 @@ def sb_idle_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir, conf,
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            bootup_time_ms.value = \
+            topology_start_time_ms = \
                 cbench_threads.value * cbench_thread_creation_delay_ms.value
-
-            discovery_deadline_ms.value = 120000
-
             t_start.value = time.time()
 
             logging.info('{0} creating monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
-                args=(controller_nb_interface, t_start, bootup_time_ms,
-                      cbench_switches, discovery_deadline_ms, result_queue))
+                args=(controller_nb_interface, t_start, topology_start_time_ms,
+                      cbench_switches, result_queue))
 
 
             logging.info('{0} creating Cbench thread'.format(test_type))

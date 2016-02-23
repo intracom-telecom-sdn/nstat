@@ -27,7 +27,7 @@ nstat_vm_hostname = 'node_worker_'
 nstat_vm_name = 'vm_worker_'
 nstat_vm_hostname_mini = 'multinet'
 
-nstat_vm_private_network_ip_mini = '192.168.10.30' # The first IP Address in the
+nstat_vm_private_network_ip_mini = '192.168.100.30' # The first IP Address in the
 forwarded_ports_master = []                        # multinet VMs IP Address range
 forwarded_ports_host = []
 # ------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ Vagrant.configure(2) do |config|
   if RUNNING_ENV == 'with-proxy'
     config.proxy.http = http_proxy
     config.proxy.https = http_proxy
-    config.proxy.no_proxy = 'localhost,127.0.0.1,192.168.10.15,192.168.10.16,192.168.10.17,192.168.10.18'
+    config.proxy.no_proxy = 'localhost,127.0.0.1,192.168.100.15,192.168.100.16,192.168.100.17,192.168.100.18'
   end
 
 

@@ -66,7 +66,20 @@ def cleanup_controller(controller_clean_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
     common.command_exec_wrapper([controller_clean_handler],
-                         '[controller_clean_handler]')
+                                '[controller_clean_handler]')
+
+def flowmod_configure_controller(controller_flowmod_configure_handler,
+                                 ssh_client=None):
+    """configure controller to send flow modifications as a responce to ARP
+    Packet_INs.
+
+    :param controller_flowmod_configure_handler:
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :type controller_flowmod_configure_handler: str
+    :type ssh_client: paramiko.SSHClient
+    """
+    common.command_exec_wrapper([controller_flowmod_configure_handler],
+                                '[controller_flowmod_configure_handler]')
 
 def controller_changestatsperiod(controller_statistics_handler, stat_period_ms,
                                  ssh_client=None):

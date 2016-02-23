@@ -12,9 +12,7 @@ import controller_utils
 import itertools
 import json
 import logging
-import mininet_utils
 import multinet_utils
-import multiprocessing
 import os
 import report_spec
 import sys
@@ -22,8 +20,9 @@ import util.file_ops
 import util.netutil
 
 
-def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
-                           multinet_base_dir, conf, output_dir, log_level):
+def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
+                                       nb_generator_base_dir, multinet_base_dir,
+                                       conf, output_dir, log_level):
 
     """Run northbound active test with Multinet.
 
@@ -44,7 +43,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
     :type log_level: str
     """
 
-    test_type = '[nb_active_multinet]'
+    test_type = '[nb_active_scalability_multinet]'
     logging.info('{0} initializing test parameters.'.format(test_type))
 
     # Global variables read-write shared between monitor and main thread
@@ -81,7 +80,8 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         ctrl_base_dir + conf['controller_status_handler'],
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
-        ctrl_base_dir + conf['controller_statistics_handler']
+        ctrl_base_dir + conf['controller_statistics_handler'],
+        ''
         )
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
@@ -89,7 +89,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
         multinet_base_dir + conf['topology_get_switches_handler'],
         multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
-        multinet_base_dir + conf['topology_rest_server_stop']
+        multinet_base_dir + conf['topology_rest_server_stop'], ''
         )
     multinet_local_handlers_set = \
         conf_collections_util.multinet_local_handlers(
@@ -138,7 +138,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler])
 
-        logging.info('{0} Deploy Multinet nodes.'.format(test_type))
+        logging.info('{0} Cloning Multinet repository.'.format(test_type))
         multinet_utils.multinet_pre_post_actions(
                         multinet_local_handlers_set.build_handler)
 
@@ -205,7 +205,7 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
-                multinet_worker_port_list, multinet_base_dir)
+                multinet_worker_port_list, multinet_base_dir, 0, 0)
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
@@ -230,15 +230,13 @@ def nb_active_multinet_run(out_json, ctrl_base_dir, nb_generator_base_dir,
                 multinet_handlers_set.start_topo_handler,
                 'start_topo_handler_multinet', multinet_base_dir)
 
-            flow_discovery_deadline_ms = 240000
 
-            cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}'.
+            cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
                 format(nb_generator_base_dir, nb_generator_cpus,
                        nb_generator_handlers_set.run_handler,
                        controller_node.ip, controller_nb_interface.port,
                        total_flows, flow_workers, flow_operations_delay_ms,
-                       flow_delete_flag, flow_discovery_deadline_ms,
-                       controller_nb_interface.username,
+                       flow_delete_flag, controller_nb_interface.username,
                        controller_nb_interface.password, log_level))
             logging.debug('{0} Generator handler command:{1}.'.
                           format(test_type, cmd))
