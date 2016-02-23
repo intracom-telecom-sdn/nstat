@@ -13,7 +13,6 @@ import util.customsubprocess
 import json
 import logging
 import requests
-import os
 import time
 import util.netutil
 
@@ -60,7 +59,7 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
     :type ssh_client: paramiko.SSHClient
     """
 
-    oftraf_start_command = '{0} {1} {2} {3}'.format(oftraf_start_handler,
+    oftraf_start_command = 'bash {0} {1} {2} {3}'.format(oftraf_start_handler,
                             controller_sb_interface.ip, oftraf_rest_port,
                             controller_sb_interface.port)
     if ssh_client is not None:
@@ -70,7 +69,7 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
                                      block_flag=False)
     else:
         util.customsubprocess.check_output_streaming(
-            oftraf_start_command.split(' '), queue=None, block_flag=False)
+            oftraf_start_command, queue=None, block_flag=False)
 
 
 def oftraf_stop(oftraf_stop_handler, oftraf_rest_server, ssh_client=None):
