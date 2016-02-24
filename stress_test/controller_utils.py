@@ -237,11 +237,10 @@ def start_controller(controller_handlers_set, controller_port, java_opts,
         cmd = ['export JAVA_OPTS="{0}";'.format(java_opts),
                'taskset', '-c', '{0}'.format(controller_cpus),
                controller_handlers_set.ctrl_start_handler]
-
+    logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
     if check_controller_status(controller_handlers_set.ctrl_status_handler,
                                ssh_client) == '0':
         common.command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
-        logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
         logging.info(
             '[start_controller] Waiting until controller starts listening')
         cpid = wait_until_controller_listens(420000, controller_port,

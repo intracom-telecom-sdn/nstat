@@ -6,7 +6,6 @@
 
 """ General network utilities """
 
-import collections
 import logging
 import os
 import paramiko
@@ -283,6 +282,8 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     printed on screen
     :param block_flag: Defines if we block execution waiting for the running
     command to return its exit status
+    :param getpty_flag: add a pseudo-terminal console (pty console) to the
+    channel
     :returns: the exit code of the command to be executed remotely and the
     combined stdout - stderr of the executed command
     :rtype: tuple<int, str>
@@ -292,6 +293,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     :type lines_queue: queue<str>
     :type print_flag: bool
     :type block_flag: bool
+    :type getpty_flag: bool
     """
 
     channel = ssh_client.get_transport().open_session()
