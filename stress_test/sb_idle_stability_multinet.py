@@ -161,6 +161,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
                                       controller_cpus)
+        exit(0)
         """
         logging.info('{0} Building oftraf.'.format(test_type))
         oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
