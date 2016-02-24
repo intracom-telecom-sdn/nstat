@@ -272,7 +272,7 @@ def ssh_delete_file_if_exists(connection, remote_file):
 
 
 def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
-                    print_flag=True, block_flag=True):
+                    print_flag=True, block_flag=True, getpty_flag=False):
     """Runs the specified command on a remote machine
 
     :param ssh_client : SSH client provided by paramiko to run the command
@@ -300,7 +300,8 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel.setblocking(1)
     channel.set_combine_stderr(True)
     channel.settimeout(channel_timeout)
-    channel.get_pty()
+    if getpty_flag:
+        channel.get_pty()
     channel.exec_command(command_to_run)
 
     if not block_flag:

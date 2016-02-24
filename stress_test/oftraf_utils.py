@@ -63,10 +63,13 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
                             controller_sb_interface.ip, oftraf_rest_port,
                             controller_sb_interface.port)
     if ssh_client is not None:
+        
         util.netutil.ssh_run_command(ssh_client, oftraf_start_command,
                                      prefix='[oftraf_start]',
                                      lines_queue=None, print_flag=True,
-                                     block_flag=True)
+                                     block_flag=True, getpty_flag=True)
+        
+        #ssh_client.exec_command(oftraf_start_command, get_pty=True)
     else:
         util.customsubprocess.check_output_streaming(
             oftraf_start_command, queue=None, block_flag=False)
