@@ -66,7 +66,7 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
         util.netutil.ssh_run_command(ssh_client, oftraf_start_command,
                                      prefix='[oftraf_start]',
                                      lines_queue=None, print_flag=True,
-                                     block_flag=False)
+                                     block_flag=True)
     else:
         util.customsubprocess.check_output_streaming(
             oftraf_start_command, queue=None, block_flag=False)

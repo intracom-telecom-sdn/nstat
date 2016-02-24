@@ -294,16 +294,17 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     :type block_flag: bool
     """
 
-    if not block_flag:
-        ssh_client.exec_command(command_to_run)
-        return 0
     channel = ssh_client.get_transport().open_session()
     bufferSize = 4*1024
     channel_timeout = None
     channel.setblocking(1)
     channel.set_combine_stderr(True)
     channel.settimeout(channel_timeout)
+    channel.get_pty()
     channel.exec_command(command_to_run)
+
+    if not block_flag:
+        return 0
 
     channel_output = ''
     while not channel.exit_status_ready():
