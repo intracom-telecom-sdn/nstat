@@ -73,7 +73,7 @@
 
 "plots":[
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"throughput_responses_sec",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -89,7 +89,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"used_memory_bytes",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -105,7 +105,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_vm_size",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -121,7 +121,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_num_threads",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -137,7 +137,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_cpu_user_time",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -153,7 +153,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"one_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -169,7 +169,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"five_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -185,7 +185,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"fifteen_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
