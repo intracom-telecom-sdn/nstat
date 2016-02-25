@@ -17,8 +17,8 @@
 "topology_host_ip":"127.0.0.1",
 "topology_node_ip":"192.168.100.19",
 "topology_node_ssh_port":"22",
-"topology_node_username":"jenkins",
-"topology_node_password":"jenkins",
+"topology_node_username":"vagrant",
+"topology_node_password":"vagrant",
 
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start_droptestDS.sh",
