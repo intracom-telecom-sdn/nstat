@@ -21,6 +21,7 @@ import time
 import util.file_ops
 import util.netutil
 
+
 def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                        multinet_base_dir, conf, output_dir,
                                        oftraf_base_dir):
@@ -53,6 +54,8 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     #multinet_worker_topo_size = multiprocessing.Value('i', 0)
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
+    traffic_generation_duration_ms = conf['traffic_generation_duration_ms']
+    interpacket_delay_ms = conf['interpacket_delay_ms']
 
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -204,7 +207,8 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
-                multinet_worker_port_list, multinet_base_dir)
+                multinet_worker_port_list, multinet_base_dir,
+                traffic_generation_duration_ms, interpacket_delay_ms)
 
             logging.info('{0} Starting oftraf traffic monitor in REST '
                          'server mode.'.format(test_type))
