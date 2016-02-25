@@ -66,7 +66,7 @@ def cleanup_controller(controller_clean_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
     common.command_exec_wrapper([controller_clean_handler],
-                                '[controller_clean_handler]')
+                                '[controller_clean_handler]', ssh_client)
 
 def flowmod_configure_controller(controller_flowmod_configure_handler,
                                  ssh_client=None):
@@ -78,8 +78,10 @@ def flowmod_configure_controller(controller_flowmod_configure_handler,
     :type controller_flowmod_configure_handler: str
     :type ssh_client: paramiko.SSHClient
     """
+
     common.command_exec_wrapper([controller_flowmod_configure_handler],
-                                '[controller_flowmod_configure_handler]')
+                                '[controller_flowmod_configure_handler]',
+                                ssh_client)
 
 def controller_changestatsperiod(controller_statistics_handler, stat_period_ms,
                                  ssh_client=None):
@@ -237,11 +239,10 @@ def start_controller(controller_handlers_set, controller_port, java_opts,
         cmd = ['export JAVA_OPTS="{0}";'.format(java_opts),
                'taskset', '-c', '{0}'.format(controller_cpus),
                controller_handlers_set.ctrl_start_handler]
-
+    logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
     if check_controller_status(controller_handlers_set.ctrl_status_handler,
                                ssh_client) == '0':
         common.command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
-        logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(java_opts))
         logging.info(
             '[start_controller] Waiting until controller starts listening')
         cpid = wait_until_controller_listens(420000, controller_port,

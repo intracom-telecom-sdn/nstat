@@ -21,6 +21,7 @@ import time
 import util.file_ops
 import util.netutil
 
+
 def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                        multinet_base_dir, conf, output_dir,
                                        oftraf_base_dir):
@@ -53,6 +54,8 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     #multinet_worker_topo_size = multiprocessing.Value('i', 0)
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
+    traffic_generation_duration_ms = conf['traffic_generation_duration_ms']
+    interpacket_delay_ms = conf['interpacket_delay_ms']
 
     # Controller parameters
     controller_logs_dir = ctrl_base_dir + conf['controller_logs_dir']
@@ -204,7 +207,8 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
-                multinet_worker_port_list, multinet_base_dir)
+                multinet_worker_port_list, multinet_base_dir,
+                traffic_generation_duration_ms, interpacket_delay_ms)
 
             logging.info('{0} Starting oftraf traffic monitor in REST '
                          'server mode.'.format(test_type))
@@ -405,7 +409,6 @@ def get_report_spec(test_type, config_json, results_json):
     :type: config_json: str
     :type: results_json: str
     """
-
     report_spec_obj = report_spec.ReportSpec(config_json, results_json,
         '{0}'.format(test_type), [report_spec.TableSpec('1d',
             'Test configuration parameters (detailed)',
@@ -442,8 +445,8 @@ def get_report_spec(test_type, config_json, results_json):
             [('global_sample_id', 'Sample ID'),
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
-             ('bootup_time_secs', 'Time to discover switches (seconds)'),
-             ('discovered_switches', 'Discovered switches'),
+             ('of_out_packets_per_sec', ''),
+             ('of_out_bytes_per_sec', ''),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Topology size per Multinet worker'),

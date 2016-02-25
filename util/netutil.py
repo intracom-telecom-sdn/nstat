@@ -6,7 +6,6 @@
 
 """ General network utilities """
 
-import collections
 import logging
 import os
 import paramiko
@@ -272,7 +271,7 @@ def ssh_delete_file_if_exists(connection, remote_file):
 
 
 def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
-                    print_flag=True, block_flag=True):
+                    print_flag=True, block_flag=True, getpty_flag=False):
     """Runs the specified command on a remote machine
 
     :param ssh_client : SSH client provided by paramiko to run the command
@@ -283,6 +282,8 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     printed on screen
     :param block_flag: Defines if we block execution waiting for the running
     command to return its exit status
+    :param getpty_flag: add a pseudo-terminal console (pty console) to the
+    channel
     :returns: the exit code of the command to be executed remotely and the
     combined stdout - stderr of the executed command
     :rtype: tuple<int, str>
@@ -292,18 +293,21 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     :type lines_queue: queue<str>
     :type print_flag: bool
     :type block_flag: bool
+    :type getpty_flag: bool
     """
 
-    if not block_flag:
-        ssh_client.exec_command(command_to_run)
-        return 0
     channel = ssh_client.get_transport().open_session()
     bufferSize = 4*1024
     channel_timeout = None
     channel.setblocking(1)
     channel.set_combine_stderr(True)
     channel.settimeout(channel_timeout)
+    if getpty_flag:
+        channel.get_pty()
     channel.exec_command(command_to_run)
+
+    if not block_flag:
+        return 0
 
     channel_output = ''
     while not channel.exit_status_ready():

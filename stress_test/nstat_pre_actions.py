@@ -125,7 +125,7 @@ def nstat_test_selector(args, test_config):
                 args.output_dir,
                 oftraf_path)
 
-        report_spec = sb_active_stability_cbench.get_report_spec(
+        report_spec = sb_active_scalability_multinet.get_report_spec(
             args.test_type,
             args.json_config,
             args.json_output)
