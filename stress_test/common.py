@@ -135,7 +135,7 @@ def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
     """
 
     if ssh_client == None:
-        exit_status = util.customsubprocess.check_output_streaming(cmd_list,
+        exit_status = util.customsubprocess.check_output_streaming(' '.join(cmd_list),
             prefix, data_queue)
     else:
         exit_status = util.netutil.ssh_run_command(ssh_client,

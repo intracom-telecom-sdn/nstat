@@ -78,6 +78,7 @@ def flowmod_configure_controller(controller_flowmod_configure_handler,
     :type controller_flowmod_configure_handler: str
     :type ssh_client: paramiko.SSHClient
     """
+
     common.command_exec_wrapper([controller_flowmod_configure_handler],
                                 '[controller_flowmod_configure_handler]')
 
