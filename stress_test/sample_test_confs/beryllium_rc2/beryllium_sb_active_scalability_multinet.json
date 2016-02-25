@@ -1,5 +1,4 @@
 {
-
 "nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
 "nstat_host_ip":"127.0.0.1",
 "nstat_node_ip":"127.0.0.1",
@@ -9,17 +8,17 @@
 
 "controller_node_spec":"/nstat/vagrant/node_controller/Vagrantfile",
 "controller_host_ip":"127.0.0.1",
-"controller_node_ip":"127.0.0.1",
+"controller_node_ip":"192.168.100.1",
 "controller_node_ssh_port":"22",
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
 
-"cbench_node_spec":"/nstat/vagrant/node_cbench/Vagrantfile",
-"cbench_host_ip":"127.0.0.1",
-"cbench_node_ip":"127.0.0.1",
-"cbench_node_ssh_port":"22",
-"cbench_node_username":"jenkins",
-"cbench_node_password":"jenkins",
+"topology_node_spec":"/nstat/vagrant/node_cbench/Vagrantfile",
+"topology_host_ip":"127.0.0.1",
+"topology_node_ip":"192.168.100.19",
+"topology_node_ssh_port":"22",
+"topology_node_username":"jenkins",
+"topology_node_password":"jenkins",
 
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start_droptestDS.sh",
