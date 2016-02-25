@@ -66,7 +66,7 @@ def cleanup_controller(controller_clean_handler, ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
     common.command_exec_wrapper([controller_clean_handler],
-                                '[controller_clean_handler]')
+                                '[controller_clean_handler]', ssh_client)
 
 def flowmod_configure_controller(controller_flowmod_configure_handler,
                                  ssh_client=None):
@@ -80,7 +80,8 @@ def flowmod_configure_controller(controller_flowmod_configure_handler,
     """
 
     common.command_exec_wrapper([controller_flowmod_configure_handler],
-                                '[controller_flowmod_configure_handler]')
+                                '[controller_flowmod_configure_handler]',
+                                ssh_client)
 
 def controller_changestatsperiod(controller_statistics_handler, stat_period_ms,
                                  ssh_client=None):
