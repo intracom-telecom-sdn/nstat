@@ -409,7 +409,6 @@ def get_report_spec(test_type, config_json, results_json):
     :type: config_json: str
     :type: results_json: str
     """
-
     report_spec_obj = report_spec.ReportSpec(config_json, results_json,
         '{0}'.format(test_type), [report_spec.TableSpec('1d',
             'Test configuration parameters (detailed)',
@@ -446,8 +445,8 @@ def get_report_spec(test_type, config_json, results_json):
             [('global_sample_id', 'Sample ID'),
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
-             ('bootup_time_secs', 'Time to discover switches (seconds)'),
-             ('discovered_switches', 'Discovered switches'),
+             ('of_out_packets_per_sec', ''),
+             ('of_out_bytes_per_sec', ''),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Topology size per Multinet worker'),
