@@ -1,0 +1,346 @@
+# Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License v1.0 which accompanies this distribution,
+# and is available at http://www.eclipse.org/legal/epl-v10.html
+
+# ------------------------------------------------------------------------------
+# 01. beryllium_DS_sb_active_scalability_mtcbench.json
+# 02. beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
+# 03. beryllium_nb_active_scalability_mininet_100sw.json
+# 04. beryllium_nb_active_scalability_mininet_10sw.json
+# 05. beryllium_RPC_sb_active_scalability_mtcbench.json
+# 06. beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
+# 07. beryllium_RPC_sb_idle_scalability_mtcbench.json
+# 08. beryllium_sb_idle_scalability_mininet_DisconnectedTopo.json
+# 09. beryllium_sb_idle_scalability_mininet_LinearTopo.json
+# 10. beryllium_sb_idle_scalability_mininet_MeshTopo.json
+
+# ------------------------------------------------------------------------------
+# beryllium_DS_sb_active_scalability_mtcbench
+# ------------------------------------------------------------------------------
+- job-template:
+    name: beryllium_DS_sb_active_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_DS_sb_active_scalability_mtcbench"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_nb_active_scalability_mininet_100sw
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_nb_active_scalability_mininet_100sw-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet_100sw"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          python3.4 ./stress_test/nstat_orchestrator.py \
+               --test="nb_active_scalability_mininet" \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+               --html-report=$WORKSPACE/report.html \
+               --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_nb_active_scalability_mininet_10sw
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_nb_active_scalability_mininet_10sw-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet_10sw"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          python3.4 ./stress_test/nstat_orchestrator.py \
+               --test="nb_active_scalability_mininet" \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+               --html-report=$WORKSPACE/report.html \
+               --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+
+# ------------------------------------------------------------------------------
+# beryllium_RPC_sb_active_scalability_mtcbench
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_RPC_sb_active_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_RPC_sb_active_scalability_mtcbench"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_active_stability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_RPC_sb_idle_scalability_mtcbench
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_RPC_sb_idle_scalability_mtcbench-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_RPC_sb_idle_scalability_mtcbench"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mtcbench" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_sb_idle_scalability_mininet_DisconnectedTopo
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_DisconnectedTopo"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mininet" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_sb_idle_scalability_mininet_LinearTopo
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_sb_idle_scalability_mininet_LinearTopo-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_LinearTopo"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mininet" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_sb_idle_scalability_mininet_MeshTopo
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_sb_idle_scalability_mininet_MeshTopo-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_MeshTopo"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_mininet" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# job instances
+# ------------------------------------------------------------------------------
+
+- project:
+    name: beryllium_nstat-stress-jenkins-jobs
+    description: 'Enter the job description here'
+    branch: 'develop_release_1.3'
+    jobs:
+
+        - 'beryllium_DS_sb_active_scalability_mtcbench-{branch}'
+        - 'beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
+        - 'beryllium_nb_active_scalability_mininet_100sw-{branch}'
+        - 'beryllium_nb_active_scalability_mininet_10sw-{branch}'
+        - 'beryllium_RPC_sb_active_scalability_mtcbench-{branch}'
+        - 'beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
+        - 'beryllium_RPC_sb_idle_scalability_mtcbench-{branch}'
+        - 'beryllium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}'
+        - 'beryllium_sb_idle_scalability_mininet_LinearTopo-{branch}'
+        - 'beryllium_sb_idle_scalability_mininet_MeshTopo-{branch}'
