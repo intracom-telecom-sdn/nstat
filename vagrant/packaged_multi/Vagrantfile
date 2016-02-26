@@ -135,6 +135,7 @@ Vagrant.configure(2) do |config|
 # ------------------------------------------------------------------------------
 # Provisioning actions
 # ------------------------------------------------------------------------------
+  config.vm.provision :shell, privileged: true, inline: 'sudo apt-get update && sudo apt-get install --force-yes -y mz'
   config.vm.provision :shell, privileged: true, inline: 'sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins'
 
     end
