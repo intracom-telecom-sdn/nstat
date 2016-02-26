@@ -146,8 +146,10 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         controller_cpus = common.create_cpu_shares(
             controller_cpu_shares, 100)[0]
 
-        # Controller common actions: rebuild controller if controller_rebuild is
-        # SET, check_for_active controller, generate_controller_xml_files
+        # Controller common pre actions:
+        # 1. rebuild controller if controller_rebuild is SET
+        # 2. check_for_active controller,
+        # 3. generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
@@ -192,9 +194,6 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
-            #mininet_utils.start_mininet_server(mininet_ssh_client,
-            #    mininet_handlers_set.rest_server_boot, mininet_rest_server)
-
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
                 'deploy_multinet', multinet_base_dir, is_privileged=False)
 
@@ -242,6 +241,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
+            # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
