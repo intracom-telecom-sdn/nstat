@@ -20,9 +20,13 @@ nstat_vm_basebox = 'nstat_vm_base'
 #nstat_node_vm_ram_arr = [2048, 2048, 2048, 2048, 2048, 16384]
 #nstat_node_vm_cpu_arr = [2, 2, 2, 2, 2, 8]
 # ------------------------------------------------------------------------------
-nstat_node_names = ['mn01', 'mn02', 'mn03', 'mn04', 'mn05', 'mn06', 'mn07', 'mn08', 'mn09', 'mn10']
-nstat_node_vm_ram_arr = [4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096]
-nstat_node_vm_cpu_arr = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+#nstat_node_names = ['mn01', 'mn02', 'mn03', 'mn04', 'mn05', 'mn06', 'mn07', 'mn08', 'mn09', 'mn10']
+#nstat_node_vm_ram_arr = [4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096]
+#nstat_node_vm_cpu_arr = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+
+nstat_node_names = ['mn01']
+nstat_node_vm_ram_arr = [4096]
+nstat_node_vm_cpu_arr = [2]
 # ------------------------------------------------------------------------------
 nstat_nodes_private_network_ip = '192.168.100.20' # the first IP address in the NSTAT VMs IP Address range
 nstat_nodes_number = nstat_node_names.length
@@ -39,6 +43,7 @@ ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 if RUNNING_ENV == 'with-proxy'
     #http_proxy = 'http:/<IP_address>:<port_number>'
     http_proxy = '172.28.40.9:3128'
+    https_proxy = '172.28.40.9:3128'
     puts '--------------------------------------------------------'
     puts 'running: with-proxy RUNNING_ENV'
      if !Vagrant.has_plugin?('vagrant-proxyconf')
@@ -72,11 +77,11 @@ Vagrant.configure(2) do |config|
     no_proxy_nodes = 'localhost,127.0.0.1' + no_proxy_nstat_nodes_str
     puts "NSTAT no proxy nodes: " + no_proxy_nodes
 
-    #if RUNNING_ENV == 'with-proxy'
-    #    config.proxy.http = http_proxy
-    #    config.proxy.https = https_proxy
-    #    config.proxy.no_proxy = no_proxy_nodes
-    #end
+    if RUNNING_ENV == 'with-proxy'
+        config.proxy.http = http_proxy
+        config.proxy.https = https_proxy
+        config.proxy.no_proxy = no_proxy_nodes
+    end
 
     #If tty is not available
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
@@ -141,3 +146,4 @@ Vagrant.configure(2) do |config|
     end
 
 end
+
