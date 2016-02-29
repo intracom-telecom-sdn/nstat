@@ -31,7 +31,7 @@
 "nb_generator_cpu_shares":25,
 
 "controller_build_handler":"./build.sh",
-"controller_start_handler":"./start_no_dlux.sh",
+"controller_start_handler":"./start.sh",
 "controller_stop_handler":"./stop.sh",
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
