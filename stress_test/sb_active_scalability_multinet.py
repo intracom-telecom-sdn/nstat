@@ -295,8 +295,13 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             statistics['controller_port'] = str(controller_sb_interface.port)
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
-            statistics['of_out_packets_per_sec'] = res[0]
-            statistics['of_out_bytes_per_sec'] = res[1]
+            statistics['of_out_packets_per_sec'] = \
+                float(res[0]) / (float(traffic_generation_duration_ms) / 1000)
+            statistics['of_out_bytes_per_sec'] = \
+                float(res[1]) / (float(traffic_generation_duration_ms) / 1000)
+            statistics['traffic_generation_duration_ms'] = \
+                traffic_generation_duration_ms
+            statistics['interpacket_delay_ms'] = interpacket_delay_ms
 
             total_samples.append(statistics)
 
@@ -449,7 +454,11 @@ def get_report_spec(test_type, config_json, results_json):
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
              ('of_out_bytes_per_sec',
-              'Outgoing controller throughput (Bytes per second'),
+              'Outgoing controller throughput (Bytes per second)'),
+             ('traffic_generation_duration_ms',
+              'Traffic generation interval (milliseconds)'),
+              ('interpacket_delay_ms',
+              'Delay between transmitted Packet_IN (milliseconds)'),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Topology size per Multinet worker'),
