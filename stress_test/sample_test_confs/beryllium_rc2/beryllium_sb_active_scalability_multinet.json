@@ -17,8 +17,8 @@
 "topology_host_ip":"127.0.0.1",
 "topology_node_ip":"192.168.100.19",
 "topology_node_ssh_port":"22",
-"topology_node_username":"jenkins",
-"topology_node_password":"jenkins",
+"topology_node_username":"vagrant",
+"topology_node_password":"vagrant",
 
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start.sh",
@@ -48,7 +48,7 @@
 
 "topology_size":[10],
 "topology_type":["linear"],
-"topology_hosts_per_switch":[1],
+"topology_hosts_per_switch":[2],
 "topology_group_size":[3],
 "topology_group_delay_ms":[2000],
 
@@ -73,15 +73,15 @@
 
 "plots":[
     {
-        "x_axis_key":"cbench_switches",
-        "y_axis_key":"throughput_responses_sec",
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"of_out_packets_per_sec",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
-        "y_axis_label":"Throughput (responses/sec)",
-        "plot_title":"Controller throughput for varying switches",
+        "y_axis_label":"Packets/sec",
+        "plot_title":"Controller of_out_packets_per_sec for varying switches",
         "plot_type":"errorbar",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
-        "plot_filename":"throughput",
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
+        "plot_filename":"throughput_of_out_packets_per_sec",
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",
@@ -89,14 +89,30 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"of_out_bytes_per_sec",
+        "z_axis_key":null,
+        "x_axis_label":"# Total switches",
+        "y_axis_label":" Bytes/sec",
+        "plot_title":"Controller of_out_bytes_per_sec for varying switches",
+        "plot_type":"errorbar",
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
+        "plot_filename":"throughput_of_out_bytes_per_sec",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"multinet_size",
         "y_axis_key":"used_memory_bytes",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Used memory (MB)",
         "plot_type":"errorbar",
         "plot_title":"Controller memory usage for varying switches",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"memory_usage",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -105,14 +121,14 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_vm_size",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Controller VM size (MB)",
         "plot_type":"errorbar",
         "plot_title":"Controller VM size for varying switches",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"vm_size",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -121,14 +137,14 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_num_threads",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Controller threads",
         "plot_type":"errorbar",
         "plot_title":"Controller threads for varying switches",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"num_threads",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -137,14 +153,14 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_cpu_user_time",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Controller CPU user time",
         "plot_type":"errorbar",
         "plot_title":"Controller CPU user time for varying switches",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"controller_cpu_user_time",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -153,7 +169,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"one_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -169,7 +185,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"five_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -185,7 +201,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"fifteen_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",

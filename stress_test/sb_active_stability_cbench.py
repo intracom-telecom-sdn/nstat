@@ -280,7 +280,6 @@ def sb_active_stability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
 
         # Before proceeding with the experiments check validity of all
         # handlers
-
         logging.info('{0} checking handler files.'.format(test_type))
         util.file_ops.check_filelist([
             controller_handlers_set.ctrl_build_handler,
@@ -310,7 +309,6 @@ def sb_active_stability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         # 1. rebuild controller if controller_rebuild is SET
         # 2. check_for_active controller,
         # 3. generate_controller_xml_files
-
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,

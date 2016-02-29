@@ -153,7 +153,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             multinet_handlers_set.start_topo_handler,
             multinet_handlers_set.rest_server_stop])
 
-        # opening connection with topology_node_ip and returning
+        # Opening connection with topology_node_ip and returning
         # controller_ssh_client, nb_generator_ssh_client to be utilized in the
         # sequel
         controller_ssh_client, nb_generator_ssh_client = \
@@ -166,7 +166,6 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         # 1. rebuild controller if controller_rebuild is SET
         # 2. check_for_active controller,
         # 3. generate_controller_xml_files
-
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
@@ -250,7 +249,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
             results = json.loads(output)
 
-            # Getting results
+            # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1

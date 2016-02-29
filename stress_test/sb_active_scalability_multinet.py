@@ -163,8 +163,10 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         controller_cpus = common.create_cpu_shares(
             controller_cpu_shares, 100)[0]
 
-        # Controller common actions: rebuild controller if controller_rebuild is
-        # SET, check_for_active controller, generate_controller_xml_files
+        # Controller common pre actions:
+        # 1. rebuild controller if controller_rebuild is SET
+        # 2. check_for_active controller,
+        # 3. generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
@@ -274,6 +276,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
+            # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
@@ -409,7 +412,6 @@ def get_report_spec(test_type, config_json, results_json):
     :type: config_json: str
     :type: results_json: str
     """
-
     report_spec_obj = report_spec.ReportSpec(config_json, results_json,
         '{0}'.format(test_type), [report_spec.TableSpec('1d',
             'Test configuration parameters (detailed)',
@@ -446,8 +448,8 @@ def get_report_spec(test_type, config_json, results_json):
             [('global_sample_id', 'Sample ID'),
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
-             ('bootup_time_secs', 'Time to discover switches (seconds)'),
-             ('discovered_switches', 'Discovered switches'),
+             ('of_out_packets_per_sec', ''),
+             ('of_out_bytes_per_sec', ''),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Topology size per Multinet worker'),

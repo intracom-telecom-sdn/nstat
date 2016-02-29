@@ -57,6 +57,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     controller_rebuild = conf['controller_rebuild']
     controller_cleanup = conf['controller_cleanup']
     controller_statistics_period_ms = conf['controller_statistics_period_ms']
+
     if 'controller_cpu_shares' in conf:
         controller_cpu_shares = conf['controller_cpu_shares']
     else:
@@ -70,16 +71,16 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler'],
-        ''
-        )
+        '')
+
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
         multinet_base_dir + conf['topology_stop_switches_handler'],
         multinet_base_dir + conf['topology_get_switches_handler'],
         multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
-        multinet_base_dir + conf['topology_rest_server_stop'], ''
-        )
+        multinet_base_dir + conf['topology_rest_server_stop'],
+        '')
 
     multinet_local_handlers_set = \
         conf_collections_util.multinet_local_handlers(
@@ -96,6 +97,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         conf['controller_node_ip'], conf['controller_port'])
     multinet_rest_server = conf_collections_util.multinet_server(
         conf['topology_node_ip'], conf['topology_rest_server_port'])
+
     # Check if this is an oftraf test
     oftraf_rest_server = conf_collections_util.oftraf_server(
         conf['controller_node_ip'], conf['oftraf_rest_server_port'])
@@ -138,7 +140,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                         multinet_local_handlers_set.build_handler)
 
         # Before proceeding with the experiments check validity
-        # of all multinet handlers
+        # of all cloned multinet handlers
         logging.info('{0} checking multinet handler files.'.format(test_type))
         util.file_ops.check_filelist([
             multinet_handlers_set.rest_server_boot,
@@ -149,18 +151,23 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             multinet_handlers_set.rest_server_stop])
 
         # Opening connection with controller node and returning
-        # ontroller_ssh_client to be utilized in the sequel
+        # controller_ssh_client to be utilized in the sequel
         controller_ssh_client = common.open_ssh_connections([controller_node])[0]
 
         controller_cpus = common.create_cpu_shares(
             controller_cpu_shares, 100)[0]
 
-        # Controller common actions: rebuild controller if controller_rebuild is
-        # SET, check_for_active controller, generate_controller_xml_files
+        # Controller common actions:
+        # 1. rebuild controller if controller_rebuild is SET,
+        # 2. check_for_active controller,
+        # 3. generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
                                       controller_cpus)
+        # OFTRAF actions:
+        # 1. build OFTRAF (remember to uncomment when bugs are fixed in OFTRAF
+        # repo)
         """
         logging.info('{0} Building oftraf.'.format(test_type))
         oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
@@ -177,6 +184,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         cpid = controller_utils.start_controller(controller_handlers_set,
             controller_sb_interface.port, ' '.join(conf['java_opts']),
             controller_cpus, controller_ssh_client)
+
         # Control of controller status
         # is done inside controller_utils.start_controller()
         logging.info('{0} OK, controller status is 1.'.format(test_type))
@@ -219,7 +227,8 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             controller_sb_interface, oftraf_rest_server.port,
             controller_ssh_client)
 
-        # Run tests for all possible dimensions
+        # Run test for N number of samples:total number of repeated test
+        # executions, during oftraf traffic measurements are taken
         for sample_id in list(range(conf['number_of_samples'])):
 
             logging.info('{0} creating queue'.format(test_type))
@@ -238,6 +247,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
+            # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1

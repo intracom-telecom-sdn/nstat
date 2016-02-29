@@ -124,8 +124,10 @@ def sb_idle_scalability_mininet_run(out_json, ctrl_base_dir, mininet_base_dir,
         controller_cpus = common.create_cpu_shares(
             controller_cpu_shares, 100)[0]
 
-        # Controller common actions: rebuild controller if controller_rebuild is
-        # SET, check_for_active controller, generate_controller_xml_files
+        # Controller common pre actions:
+        # 1. rebuild controller if controller_rebuild is SET
+        # 2. check_for_active controller,
+        # 3. generate_controller_xml_files
         controller_utils.controller_pre_actions(controller_handlers_set,
                                       controller_rebuild, controller_ssh_client,
                                       java_opts, controller_sb_interface.port,
@@ -168,8 +170,6 @@ def sb_idle_scalability_mininet_run(out_json, ctrl_base_dir, mininet_base_dir,
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-
-
             logging.info(
                 '{0} initiating topology on REST server and start '
                 'monitor thread to check for discovered switches '
@@ -208,6 +208,7 @@ def sb_idle_scalability_mininet_run(out_json, ctrl_base_dir, mininet_base_dir,
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
+            # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
