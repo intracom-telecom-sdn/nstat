@@ -16,28 +16,29 @@ nstat_vm_basebox = 'nstat_vm_base'
 #nstat_node_vm_ram_arr = [16384, 2048 , 2048 , 2048] # in MB
 #nstat_node_vm_cpu_arr = [2, 2, 2, 2] # number of CPUs
 # ------------------------------------------------------------------------------
-nstat_node_names = ['mininet', 'nbgen', 'mn1', 'mn2', 'mn3', 'cntrl']
-nstat_node_vm_ram_arr = [2048, 2048, 2048, 2048, 2048, 16384]
-nstat_node_vm_cpu_arr = [2, 2, 2, 2, 2, 8]
+#nstat_node_names = ['mininet', 'nbgen', 'mn1', 'mn2', 'mn3', 'cntrl']
+#nstat_node_vm_ram_arr = [2048, 2048, 2048, 2048, 2048, 16384]
+#nstat_node_vm_cpu_arr = [2, 2, 2, 2, 2, 8]
+# ------------------------------------------------------------------------------
+nstat_node_names = ['mininet']
+nstat_node_vm_ram_arr = [2048]
+nstat_node_vm_cpu_arr = [2]
 # ------------------------------------------------------------------------------
 nstat_nodes_private_network_ip = '192.168.100.17' # the first IP address in the NSTAT VMs IP Address range
-
-#nstat_node_vm_ram = 4096
-#nstat_node_vm_cpus = 2
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
 
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'no-proxy'
+RUNNING_ENV = 'with-proxy'
 ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
 if RUNNING_ENV == 'with-proxy'
-    http_proxy = 'http:/<IP_address>:<port_number>'
-    https_proxy = 'http://172.28.40.9:3128'
+    #http_proxy = 'http:/<IP_address>:<port_number>'
+    http_proxy = '172.28.40.9:3128'
     puts '--------------------------------------------------------'
     puts 'running: with-proxy RUNNING_ENV'
      if !Vagrant.has_plugin?('vagrant-proxyconf')
@@ -71,11 +72,11 @@ Vagrant.configure(2) do |config|
     no_proxy_nodes = 'localhost,127.0.0.1' + no_proxy_nstat_nodes_str
     puts "NSTAT no proxy nodes: " + no_proxy_nodes
 
-    if RUNNING_ENV == 'with-proxy'
-        config.proxy.http = http_proxy
-        config.proxy.https = http_proxy
-        config.proxy.no_proxy = no_proxy_nodes
-    end
+    #if RUNNING_ENV == 'with-proxy'
+    #    config.proxy.http = http_proxy
+    #    config.proxy.https = https_proxy
+    #    config.proxy.no_proxy = no_proxy_nodes
+    #end
 
     #If tty is not available
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
@@ -104,7 +105,7 @@ Vagrant.configure(2) do |config|
         #nstat_node_hostname_inst = nstat_node_names[nstat_vm]
 
         config.vm.define nstat_node_name_inst do |machine|
-            machine.proxy.no_proxy = 'localhost,127.0.0.1,' + ',' + nstat_nodes_private_network_ip_inst
+            machine.proxy.no_proxy = 'localhost,127.0.0.1' + ',' + nstat_nodes_private_network_ip_inst
             machine.vm.box = nstat_vm_basebox
             machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
             machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst
@@ -130,14 +131,13 @@ Vagrant.configure(2) do |config|
                 libvirt.memory = nstat_node_vm_ram
                 libvirt.cpus = nstat_node_vm_cpus
             end
-
         end
 # ------------------------------------------------------------------------------
 # Provisioning actions
 # ------------------------------------------------------------------------------
   config.vm.provision :shell, privileged: true, inline: 'sudo apt-get update && sudo apt-get install --force-yes -y mz'
   config.vm.provision :shell, privileged: true, inline: 'sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins'
-
+  config.vm.provision :shell, privileged: true, :path => 'provisioning/provision.sh'
     end
 
 end
