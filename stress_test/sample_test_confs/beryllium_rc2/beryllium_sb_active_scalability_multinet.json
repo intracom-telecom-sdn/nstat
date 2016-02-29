@@ -21,7 +21,7 @@
 "topology_node_password":"jenkins",
 
 "controller_build_handler":"./build.sh",
-"controller_start_handler":"./start_droptestDS.sh",
+"controller_start_handler":"./start.sh",
 "controller_stop_handler":"./stop.sh",
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
