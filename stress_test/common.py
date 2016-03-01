@@ -260,7 +260,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
                 t_discovery_start = time.time()
                 previous_discovered_switches = discovered_switches
 
-            if discovered_switches == expected_switches.value:
+            if discovered_switches == expected_switches:
                 delta_t = time.time() - t_start
                 logging.info(
                     '[poll_ds_thread] {0} switches found in {1} seconds'.

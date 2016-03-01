@@ -215,7 +215,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 (multinet_worker_topo_size.value // multinet_group_size) * multinet_group_delay_ms
             t_start.value = time.time()
 
-            multinet_worker_topo_size.value = \
+            multinet_topo_size = \
                 multinet_worker_topo_size.value * len(multinet_worker_ip_list)
 
             # Parallel section.
@@ -228,7 +228,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 target=common.poll_ds_thread,
                 args=(controller_nb_interface,
                       t_start, topology_start_time_ms,
-                      multinet_worker_topo_size,
+                      multinet_topo_size,
                       result_queue))
             monitor_thread.start()
 
@@ -246,8 +246,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['multinet_workers'] = len(multinet_worker_ip_list)
-            statistics['multinet_size'] = \
-                multinet_worker_topo_size.value * len(multinet_worker_ip_list)
+            statistics['multinet_size'] = multinet_topo_size
             statistics['multinet_worker_topo_size'] = multinet_worker_topo_size.value
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
