@@ -48,7 +48,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
     # Multinet parameters
     multinet_hosts_per_switch = multiprocessing.Value('i', 0)
-    multinet_worker_topo_size = multiprocessing.Value('i', 0)
+
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
 
@@ -156,7 +156,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                       controller_cpus)
 
         # Run tests for all possible dimensions
-        for (multinet_worker_topo_size.value,
+        for (multinet_worker_topo_size,
              multinet_group_size,
              multinet_group_delay_ms,
              multinet_hosts_per_switch.value,
@@ -177,7 +177,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
             logging.info('{0} generating new configuration file'.format(test_type))
             multinet_utils.generate_multinet_config(controller_sb_interface,
-                multinet_rest_server, multinet_node, multinet_worker_topo_size.value,
+                multinet_rest_server, multinet_node, multinet_worker_topo_size,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_hosts_per_switch.value, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
@@ -212,11 +212,11 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 'init_topo_handler_multinet', multinet_base_dir)
 
             topology_start_time_ms = \
-                (multinet_worker_topo_size.value // multinet_group_size) * multinet_group_delay_ms
+                (multinet_worker_topo_size // multinet_group_size) * multinet_group_delay_ms
             t_start.value = time.time()
 
             multinet_topo_size = \
-                multinet_worker_topo_size.value * len(multinet_worker_ip_list)
+                multinet_worker_topo_size * len(multinet_worker_ip_list)
 
             # Parallel section.
             # We have boot_up_time equal to 0 because start_mininet_topo()
@@ -247,7 +247,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             global_sample_id += 1
             statistics['multinet_workers'] = len(multinet_worker_ip_list)
             statistics['multinet_size'] = multinet_topo_size
-            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size.value
+            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
                 multinet_hosts_per_switch.value
