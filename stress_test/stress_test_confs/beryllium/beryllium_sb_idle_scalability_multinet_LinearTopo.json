@@ -26,7 +26,7 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
-"controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
+"controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium/data/log/",
 
 "controller_rebuild":true,
 "controller_cleanup":false,
@@ -48,7 +48,7 @@
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 
 "topology_size":[100, 200, 300, 400, 500, 600],
-"topology_type":["disconnected"],
+"topology_type":["linear"],
 "topology_hosts_per_switch":[0],
 "topology_group_size":[1, 5],
 "topology_group_delay_ms":[5000],
