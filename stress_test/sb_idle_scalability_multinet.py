@@ -273,18 +273,12 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 multinet_handlers_set.stop_switches_handler,
                 'stop_switches_handler_multinet', multinet_base_dir)
 
-            #mininet_utils.start_stop_mininet_topo(
-            #    mininet_handlers_set.stop_switches_handler,
-            #    mininet_rest_server, 'stop')
-
             logging.info('{0} stopping REST daemon in Multinet node'.
                 format(test_type))
 
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir, is_privileged=True)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -337,8 +331,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
+
         except:
             pass
 

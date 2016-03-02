@@ -108,7 +108,6 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     oftraf_handlers_set = conf_collections_util.oftraf_handlers(
         oftraf_base_dir + 'build.sh', oftraf_base_dir + 'start.sh',
         oftraf_base_dir + 'stop.sh', oftraf_base_dir + 'clean.sh')
-    #oftraf_test_interval_ms = conf['oftraf_test_interval_ms']
 
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
@@ -378,8 +377,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
                 multinet_base_dir)
-            #mininet_utils.stop_mininet_server(mininet_ssh_client,
-            #                                  mininet_rest_server.port)
+
         except:
             pass
 
