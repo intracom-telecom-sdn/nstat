@@ -16,6 +16,7 @@
 # 09. beryllium_sb_idle_scalability_mininet_LinearTopo.json
 # 10. beryllium_sb_idle_scalability_mininet_MeshTopo.json
 # 11. beryllium_sb_idle_scalability_multinet_LinearTopo.json
+# 12. beryllium_sb_idle_scalability_multinet_DisconnectedTopo.json
 
 # ------------------------------------------------------------------------------
 # beryllium_DS_sb_active_scalability_mtcbench
@@ -28,6 +29,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_DS_sb_active_scalability_mtcbench"
@@ -59,6 +62,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
@@ -90,6 +95,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet_100sw"
@@ -120,6 +127,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet_10sw"
@@ -151,6 +160,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_active_scalability_mtcbench"
@@ -182,6 +193,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
@@ -213,6 +226,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_idle_scalability_mtcbench"
@@ -244,6 +259,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_DisconnectedTopo"
@@ -275,6 +292,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_LinearTopo"
@@ -306,6 +325,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_MeshTopo"
@@ -337,6 +358,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_multinet_LinearTopo"
@@ -346,7 +369,40 @@
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-          --test="sb_idle_scalability_mininet" \
+          --test="sb_idle_scalability_multinet" \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/  \
+          --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
+          --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+          --html-report=$WORKSPACE/report.html \
+          --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
+
+# ------------------------------------------------------------------------------
+# beryllium_sb_idle_scalability_multinet_DisconnectedTopo
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: beryllium_sb_idle_scalability_multinet_DisconnectedTopo-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    wrappers:
+      - timestamps:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_sb_idle_scalability_multinet_DisconnectedTopo"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+          --test="sb_idle_scalability_multinet" \
           --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
           --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
@@ -376,4 +432,5 @@
  #       - 'beryllium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}'
  #       - 'beryllium_sb_idle_scalability_mininet_LinearTopo-{branch}'
  #       - 'beryllium_sb_idle_scalability_mininet_MeshTopo-{branch}'
-        - 'beryllium_sb_idle_scalability_multinet_LinearTopo-{branch}'
+ #       - 'beryllium_sb_idle_scalability_multinet_LinearTopo-{branch}'
+        - 'beryllium_sb_idle_scalability_multinet_DisconnectedTopo-{branch}'

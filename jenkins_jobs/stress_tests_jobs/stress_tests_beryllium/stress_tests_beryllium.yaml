@@ -27,6 +27,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_DS_sb_active_scalability_mtcbench"
@@ -58,6 +60,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
@@ -89,6 +93,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet_100sw"
@@ -119,6 +125,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet_10sw"
@@ -150,6 +158,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_active_scalability_mtcbench"
@@ -181,6 +191,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
@@ -212,6 +224,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_idle_scalability_mtcbench"
@@ -243,6 +257,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_DisconnectedTopo"
@@ -274,6 +290,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_LinearTopo"
@@ -305,6 +323,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet_MeshTopo"

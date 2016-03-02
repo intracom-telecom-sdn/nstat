@@ -15,6 +15,8 @@
 # 08. beryllium_sb_idle_scalability_mininet
 # 09. beryllium_sb_idle_stability_mininet
 # 10. beryllium_sb_active_scalability_multinet
+# 11. beryllium_sb_idle_scalability_multinet
+# 12. beryllium_sb_idle_stability_multinet
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -41,6 +43,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps: |
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_DS_sb_active_scalability_mtcbench"
@@ -80,6 +84,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_DS_sb_active_stability_mtcbench"
@@ -113,6 +119,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_DS_sb_idle_scalability_mtcbench"
@@ -151,6 +159,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet"
@@ -192,6 +202,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_active_scalability_mtcbench"
@@ -228,6 +240,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench"
@@ -259,6 +273,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_RPC_sb_idle_scalability_mtcbench"
@@ -290,6 +306,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet"
@@ -321,6 +339,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_stability_mininet"
@@ -352,6 +372,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_active_scalability_multinet"
@@ -384,6 +406,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_nb_active_scalability_multinet"
@@ -417,6 +441,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_scalability_multinet"
@@ -449,6 +475,8 @@
     defaults: github-sample
     triggers:
      #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="beryllium_sb_idle_stability_multinet"

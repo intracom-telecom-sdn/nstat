@@ -28,6 +28,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -70,6 +72,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -112,6 +116,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -154,6 +160,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -196,6 +204,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -238,6 +248,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -280,6 +292,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -322,6 +336,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -364,6 +380,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd
@@ -406,6 +424,8 @@
     defaults: github-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           pwd

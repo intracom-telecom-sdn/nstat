@@ -34,6 +34,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_active_scalability_mtcbench"
@@ -65,6 +67,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_active_scalability_mtcbench_largescale"
@@ -96,6 +100,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_active_stability_mtcbench_no_restart_16Switches"
@@ -127,6 +133,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours"
@@ -158,6 +166,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches"
@@ -189,6 +199,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_DS_sb_idle_scalability_mtcbench"
@@ -220,6 +232,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_active_scalability_mtcbench"
@@ -251,6 +265,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_active_stability_mtcbench_no_restart_16Switches"
@@ -282,6 +298,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches"
@@ -313,6 +331,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_active_stability_mtcbench_restart_16Switches_restart"
@@ -344,6 +364,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_RPC_sb_idle_scalability_mtcbench"
@@ -376,6 +398,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_DisconnectedTopo"
@@ -407,6 +431,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_LinearTopo"
@@ -438,6 +464,8 @@
     defaults: gitlab-stress
     triggers:
       - timed:
+    wrappers:
+      - timestamps:
     builders:
       - shell: |
           export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_MeshTopo"
