@@ -253,7 +253,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
                 '[poll_ds_thread] Deadline of {0} seconds passed, discovered '
                 '{1} switches.'.format(discovery_deadline,
                                        discovered_switches))
-            discovery_time = time.time() - t_discovery_start - discovery_deadline
+            discovery_time = time.time() - t_start - discovery_deadline
             print('disc time {0}, disc switches {1} error code {2}'.format(discovery_time, discovered_switches, error_code))
             queuecomm.put((discovery_time, discovered_switches, error_code))
             return
