@@ -243,16 +243,19 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
     discovered_switches = 0
     time.sleep(sleep_before_discovery)
     t_discovery_start = time.time()
+    error_code  = 0
 
     while True:
 
         if (time.time() - t_discovery_start) > discovery_deadline:
+            error_code = 201
             logging.info(
                 '[poll_ds_thread] Deadline of {0} seconds passed, discovered '
                 '{1} switches.'.format(discovery_deadline,
                                        discovered_switches))
+            discovery_time = time.time() - t_discovery_start - discovery_deadline
 
-            queuecomm.put((-1.0, discovered_switches))
+            queuecomm.put((discovery_time, discovered_switches, error_code))
             return
         else:
             discovered_switches = check_ds_switches(controller_nb_interface)
@@ -270,7 +273,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
                     '[poll_ds_thread] {0} switches found in {1} seconds'.
                     format(discovered_switches, delta_t))
 
-                queuecomm.put((delta_t, discovered_switches))
+                queuecomm.put((delta_t, discovered_switches, error_code))
                 return
         time.sleep(1)
 
