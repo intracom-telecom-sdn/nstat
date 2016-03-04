@@ -51,7 +51,7 @@
 "topology_type":["linear"],
 "topology_hosts_per_switch":[0],
 "topology_group_size":[5],
-"topology_group_delay_ms":[5000],
+"topology_group_delay_ms":[500],
 
 
 "multinet_clean_handler":"./clean.sh",
