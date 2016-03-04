@@ -67,7 +67,7 @@
 "plots":[
   {
       "x_axis_key":"multinet_size",
-      "y_axis_key":"bootup_time_secs",
+      "y_axis_key":"successful_bootup_time",
       "z_axis_key":"multinet_group_delay_ms",
       "x_axis_label":"# Total switches",
       "y_axis_label":"Bootup time (secs)",
