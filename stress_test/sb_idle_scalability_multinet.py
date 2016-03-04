@@ -261,8 +261,9 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 '{0}'.format(controller_cpu_shares)
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
-            statistics['discovered_switches_error_code'] = res[2]
-
+            statistics['max_discovered_switches'] = res[2]
+            statistics['discovered_switches_error_code'] = res[-1]
+            statistics['successful_bootup_time'] = res[0] if (res[-1] == 0) else -1
             total_samples.append(statistics)
 
             logging.debug('{0} stopping controller.'.format(test_type))
@@ -398,7 +399,9 @@ def get_report_spec(test_type, config_json, results_json):
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
              ('discovered_switches_error_code','Error code'),
+             ('successful_bootup_time', 'Successful bootup time (seconds)'),
              ('bootup_time_secs', 'Time to discover switches (seconds)'),
+             ('max_discovered_switches', 'Max discovered switches'),
              ('discovered_switches', 'Discovered switches'),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
