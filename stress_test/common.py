@@ -255,9 +255,9 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
                 '{1} switches.'.format(discovery_deadline,
                                        discovered_switches))
             discovery_time = time.time() - t_start - discovery_deadline
-            print('disc time {0}, disc switches {1} error code {2}'.format(discovery_time, discovered_switches, error_code))
+            print('disc time {0}, disc switches {1} max switches {2} error code {3} '.format(discovery_time, discovered_switches, max_discovered_switches, error_code))
             queuecomm.put((discovery_time, discovered_switches, max_discovered_switches, error_code))
-            return
+            return error_code
         else:
             discovered_switches = check_ds_switches(controller_nb_interface)
 
@@ -277,7 +277,7 @@ def poll_ds_thread(controller_nb_interface, boot_start_time,
                     format(discovered_switches, delta_t))
 
                 queuecomm.put((delta_t, discovered_switches,  max_discovered_switches, error_code))
-                return
+                return error_code
         time.sleep(1)
 
 
