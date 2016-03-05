@@ -12,7 +12,6 @@
 "controller_node_ssh_port":"22",
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
-"controller_port":6653,
 
 "topology_node_spec":"/nstat/vagrant/node_mininet/Vagrantfile",
 "topology_host_ip":"127.0.0.1",
@@ -51,10 +50,12 @@
 "controller_cpu_shares":75,
 
 "topology_rest_server_boot":"./topology_custom_boot.py",
+"topology_rest_server_stop":"./topology_custom_boot.py",
 "topology_stop_switches_handler":"./start_stop_topology_handler.py",
+
+"topology_init_handler":"./init_topology_handler.py",
 "topology_get_switches_handler":"./get_switches_handler.py",
 "topology_start_switches_handler":"./start_stop_topology_handler.py",
-"topology_init_handler":"./init_topology_handler.py",
 "topology_rest_server_port":3333,
 
 "topology_size":[100],
