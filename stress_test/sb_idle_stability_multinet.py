@@ -227,25 +227,24 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             controller_sb_interface, oftraf_rest_server.port,
             controller_ssh_client)
 
+
+        logging.info('{0} creating Idle stability with oftraf '
+                         'monitor thread'.format(test_type))
+        logging.info('{0} creating queue'.format(test_type))
+        result_queue = multiprocessing.Queue()
+
+        monitor_thread = multiprocessing.Process(
+                target=oftraf_utils.oftraf_monitor_thread,
+                args=(oftraf_test_interval_ms, oftraf_rest_server,
+                      result_queue))
+        monitor_thread.start()
+
         # Run test for N number of samples:total number of repeated test
         # executions, during oftraf traffic measurements are taken
         for sample_id in list(range(conf['number_of_samples'])):
 
-            logging.info('{0} creating queue'.format(test_type))
-            result_queue = multiprocessing.Queue()
-
-            # Parallel section.
-            logging.info('{0} creating Idle stability with oftraf '
-                         'monitor thread'.format(test_type))
-            monitor_thread = multiprocessing.Process(
-                target=oftraf_utils.oftraf_monitor_thread,
-                args=(oftraf_test_interval_ms, oftraf_rest_server,
-                      result_queue))
-
-            monitor_thread.start()
             res = result_queue.get(block=True)
             logging.info('{0} joining monitor thread'.format(test_type))
-            monitor_thread.join()
 
             # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
@@ -286,6 +285,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         logging.exception('')
 
     finally:
+        monitor_thread.join()
         logging.info('{0} finalizing test'.format(test_type))
 
         logging.info('{0} creating test output directory if not exist.'.
