@@ -15,7 +15,7 @@
 
 "topology_node_spec":"/nstat/vagrant/node_mininet/Vagrantfile",
 "topology_host_ip":"127.0.0.1",
-"topology_node_ip":"192.168.100.19",
+"topology_node_ip":"192.168.100.20",
 "topology_node_ssh_port":"22",
 "topology_node_username":"vagrant",
 "topology_node_password":"vagrant",
@@ -57,8 +57,8 @@
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_worker_ip_list":["192.168.100.19", "192.168.100.20", "192.168.100.21"],
-"multinet_worker_port_list":[3333, 3333, 3333],
+"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22", "192.168.100.23", "192.168.100.24", "192.168.100.25", "192.168.100.26", "192.168.100.27", "192.168.100.28", "192.168.100.29", "192.168.100.30", "192.168.100.31", "192.168.100.32", "192.168.100.33", "192.168.100.34", "192.168.100.35"],
+"multinet_worker_port_list":[3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
 "oftraf_test_interval_ms":10000,
