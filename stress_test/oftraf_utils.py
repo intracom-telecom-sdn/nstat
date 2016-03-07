@@ -63,12 +63,12 @@ def oftraf_start(oftraf_start_handler, controller_sb_interface,
                             controller_sb_interface.ip, oftraf_rest_port,
                             controller_sb_interface.port)
     if ssh_client is not None:
-        
+
         util.netutil.ssh_run_command(ssh_client, oftraf_start_command,
                                      prefix='[oftraf_start]',
                                      lines_queue=None, print_flag=True,
                                      block_flag=True, getpty_flag=True)
-        
+
         #ssh_client.exec_command(oftraf_start_command, get_pty=True)
     else:
         util.customsubprocess.check_output_streaming(
@@ -109,7 +109,7 @@ def oftraf_get_of_counts(oftraf_rest_server):
 
 
 def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
-                          results_queue):
+                          results_queue, exit_flag):
     """Function executed inside a thread and returns the output in json format,
     of openflow packets counts
 
@@ -124,13 +124,16 @@ def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
     :type oftraf_rest_server: collections.namedtuple<str,int>
     :type results_queue: multiprocessing.Queue
     """
+    while exit_flag.value == False:
 
-    oftraf_interval_sec = oftraf_interval_ms / 1000
-    logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'.
-                 format(oftraf_interval_sec))
-    time.sleep(oftraf_interval_sec)
-    logging.info('[oftraf_monitor_thread] get throughput of controller')
-    response_data = json.loads(oftraf_get_of_counts(oftraf_rest_server, ))
-    out_traffic = tuple(response_data['OF_out_counts'])
-    results_queue.put(out_traffic)
+        oftraf_interval_sec = oftraf_interval_ms / 1000
+        logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'.
+                     format(oftraf_interval_sec))
+        time.sleep(oftraf_interval_sec)
+        logging.info('[oftraf_monitor_thread] get throughput of controller')
+        response_data = json.loads(oftraf_get_of_counts(oftraf_rest_server, ))
+        out_traffic = tuple(response_data['OF_out_counts'])
+        results_queue.put(out_traffic)
+
+    return
 

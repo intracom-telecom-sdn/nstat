@@ -106,6 +106,8 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         oftraf_base_dir + 'stop.sh', oftraf_base_dir + 'clean.sh')
     oftraf_test_interval_ms = conf['oftraf_test_interval_ms']
     previous_oftraf_result = (0,0)
+    exit_flag = multiprocessing.Value('b', False)
+
     # list of samples: each sample is a dictionary that contains
     # all information that describes a single measurement, i.e.:
     #    - the actual performance results
@@ -236,7 +238,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         monitor_thread = multiprocessing.Process(
                 target=oftraf_utils.oftraf_monitor_thread,
                 args=(oftraf_test_interval_ms, oftraf_rest_server,
-                      result_queue))
+                      result_queue, exit_flag))
         monitor_thread.start()
 
         # Run test for N number of samples:total number of repeated test
@@ -285,7 +287,10 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         logging.exception('')
 
     finally:
+
+        exit_flag.value = True
         monitor_thread.join()
+
         logging.info('{0} finalizing test'.format(test_type))
 
         logging.info('{0} creating test output directory if not exist.'.
