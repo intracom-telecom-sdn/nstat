@@ -503,7 +503,7 @@
 
 - project:
     name: sample_nstat-jenkins-jobs
-    branch: develop_active_scallability_multinet_test
+    branch: develop_release_1.3
     jobs:
 
         - 'sample_beryllium_DS_sb_active_scalability_mtcbench-{branch}'
