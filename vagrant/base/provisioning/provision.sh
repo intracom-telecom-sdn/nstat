@@ -9,7 +9,8 @@
 # Display distribution release version
 #-------------------------------------------------------------------------------
 
-cd $HOME
+BASE_DIR=$(pwd)
+cd $BASE_DIR
 
 # Remove comments from the following lines to make proxy settings persistent
 # ------------------------------------------------------------------------------
@@ -99,7 +100,7 @@ git clone https://github.com/mininet/mininet.git
 cd mininet
 git checkout -b 2.2.1 2.2.1
 ./util/install.sh -vwnf3
-cd $HOME
+cd $BASE_DIR
 
 # Install NTSTAT for vagrant user
 #-------------------------------------------------------------------------------
@@ -109,7 +110,7 @@ git branch -a # list NSTAT branches
 git checkout master # checkout to master branch
 git tag -l # list NSTAT tags
 # git checkout v1.2 comment out to check out at a certain tag
-cd $HOME
+cd $BASE_DIR
 
 # Install NSTAT for jenkins user
 #-------------------------------------------------------------------------------
@@ -121,11 +122,11 @@ cd /home/jenkins/nstat
 git branch -a       # list NSTAT branches
 git checkout master # checkout to master branch
 #git tag -l          # list NSTAT tags
-cd $HOME
+cd $BASE_DIR
 
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
-cd $HOME
+cd $BASE_DIR
