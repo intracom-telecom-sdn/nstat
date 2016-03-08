@@ -48,6 +48,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     global_sample_id = 0
 
     t_start = multiprocessing.Value('d', 0.0)
+    exit_flag = multiprocessing.Value('b', False)
 
     # Multinet parameters
     #multinet_hosts_per_switch = multiprocessing.Value('i', 0)
@@ -196,6 +197,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                conf['topology_type'],
                                conf['controller_statistics_period_ms']):
 
+
             logging.info('{0} changing controller statistics period to {1} ms'.
                 format(test_type, controller_statistics_period_ms))
             controller_utils.controller_changestatsperiod(
@@ -263,15 +265,18 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
 
-            # Parallel section.
+            # Parallel section
+            exit_flag.value = False
             logging.info('{0} creating idle stability with oftraf '
                          'monitor thread'.format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=oftraf_utils.oftraf_monitor_thread,
-                args=(0, oftraf_rest_server, result_queue))
+                args=(0, oftraf_rest_server, result_queue, exit_flag))
 
             monitor_thread.start()
             res = result_queue.get(block=True)
+            exit_flag.value = True
+
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()
 
