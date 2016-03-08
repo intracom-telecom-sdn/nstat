@@ -13,11 +13,14 @@
 # ------------------------------------------------------------------------------
 export http_proxy='172.28.40.9:3128'
 export https_proxy='172.28.40.9:3128'
+printf -v no_proxy '%s,' 192.168.100.{1..255};export no_proxy="${no_proxy%,}"",127.0.0.1,localhost";
 
 sudo echo "http_proxy="$http_proxy >> /etc/environment
 sudo echo "https_proxy="$https_proxy >> /etc/environment
 sudo echo "HTTP_PROXY="$http_proxy >> /etc/environment
 sudo echo "HTTPS_PROXY="$https_proxy >> /etc/environment
+sudo echo "no_proxy="$no_proxy >> /etc/environment
+
 # ------------------------------------------------------------------------------
 
 # Create a jenkins user with jenkins password
