@@ -9,6 +9,8 @@
 # Display distribution release version
 #-------------------------------------------------------------------------------
 
+cd $HOME
+
 # Remove comments from the following lines to make proxy settings persistent
 # ------------------------------------------------------------------------------
 #export http_proxy='172.28.40.9:3128'
@@ -49,8 +51,7 @@ sudo apt-get install --force-yes -y \
     make \
     automake \
     libtool \
-    libconfig-dev \
-    build-essential
+    libconfig-dev
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
@@ -102,8 +103,8 @@ cd $HOME
 
 # Install NTSTAT for vagrant user
 #-------------------------------------------------------------------------------
-git clone https://github.com/intracom-telecom-sdn/nstat.git nstat
-cd nstat
+git clone https://github.com/intracom-telecom-sdn/nstat.git /home/vagrant/nstat
+cd /home/vagrant/nstat
 git branch -a # list NSTAT branches
 git checkout master # checkout to master branch
 git tag -l # list NSTAT tags
