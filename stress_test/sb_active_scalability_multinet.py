@@ -263,7 +263,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             # is a blocking function and topology is booted up after we have
             # call it
             logging.info('{0} creating queue'.format(test_type))
-            result_queue = multiprocessing.Queue()
+            result_queue = multiprocessing.Queue(maxsize=1)
 
             # Parallel section
             exit_flag.value = False
@@ -276,6 +276,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             monitor_thread.start()
             res = result_queue.get(block=True)
             exit_flag.value = True
+            result_queue.close()
 
             logging.info('{0} joining monitor thread'.format(test_type))
             monitor_thread.join()

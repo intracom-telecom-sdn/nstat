@@ -37,7 +37,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
     """
 
     test_type = '[sb_idle_stability_multinet]'
-    logging.info('{0} initializing test parameters'.format(test_type))
+    logging.info('{0} Initializing test parameters'.format(test_type))
 
     # Global variables read-write shared between monitor-main thread.
     cpid = 0
@@ -143,7 +143,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
         # Before proceeding with the experiments check validity
         # of all cloned multinet handlers
-        logging.info('{0} checking multinet handler files.'.format(test_type))
+        logging.info('{0} Checking multinet handler files.'.format(test_type))
         util.file_ops.check_filelist([
             multinet_handlers_set.rest_server_boot,
             multinet_handlers_set.stop_switches_handler,
@@ -176,13 +176,13 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                                   controller_ssh_client)
         """
 
-        logging.info('{0} changing controller statistics period to {1} ms'.
+        logging.info('{0} Changing controller statistics period to {1} ms'.
             format(test_type, controller_statistics_period_ms))
         controller_utils.controller_changestatsperiod(
             controller_handlers_set.ctrl_statistics_handler,
             controller_statistics_period_ms, controller_ssh_client)
 
-        logging.info('{0} starting controller'.format(test_type))
+        logging.info('{0} Starting controller'.format(test_type))
         cpid = controller_utils.start_controller(controller_handlers_set,
             controller_sb_interface.port, ' '.join(conf['java_opts']),
             controller_cpus, controller_ssh_client)
@@ -191,7 +191,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         # is done inside controller_utils.start_controller()
         logging.info('{0} OK, controller status is 1.'.format(test_type))
 
-        logging.info('{0} generating new configuration file'.format(test_type))
+        logging.info('{0} Generating new configuration file'.format(test_type))
         multinet_utils.generate_multinet_config(controller_sb_interface,
             multinet_rest_server, multinet_node, multinet_worker_topo_size,
             multinet_group_size, multinet_group_delay_ms,
@@ -199,18 +199,18 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             multinet_switch_type, multinet_worker_ip_list,
             multinet_worker_port_list, multinet_base_dir, 0, 0)
 
-        logging.info('{0} booting up Multinet REST server'.
+        logging.info('{0} Booting up Multinet REST server'.
                       format(test_type))
 
         multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
             'deploy_multinet', multinet_base_dir, is_privileged=False)
 
         logging.info(
-            '{0} initiating topology on REST server and start '
+            '{0} Initiating topology on REST server and start '
             'monitor thread to check for discovered switches '
             'on controller.'.format(test_type))
 
-        logging.info('{0} initializing Multinet topology.'.
+        logging.info('{0} Initializing Multinet topology.'.
                      format(test_type))
 
         multinet_utils.multinet_command_runner(
@@ -218,7 +218,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             'init_topo_handler_multinet', multinet_base_dir)
 
 
-        logging.info('{0} starting Multinet topology.'.format(test_type))
+        logging.info('{0} Starting Multinet topology.'.format(test_type))
         multinet_utils.multinet_command_runner(
             multinet_handlers_set.start_topo_handler,
             'start_topo_handler_multinet', multinet_base_dir)
@@ -229,12 +229,10 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             controller_sb_interface, oftraf_rest_server.port,
             controller_ssh_client)
 
-
-        logging.info('{0} creating Idle stability with oftraf '
-                         'monitor thread'.format(test_type))
-        logging.info('{0} creating queue'.format(test_type))
+        logging.info('{0} Creating queue'.format(test_type))
         result_queue = multiprocessing.Queue()
-
+        logging.info('{0} Creating Idle stability with oftraf '
+                         'monitor thread'.format(test_type))
         monitor_thread = multiprocessing.Process(
                 target=oftraf_utils.oftraf_monitor_thread,
                 args=(oftraf_test_interval_ms, oftraf_rest_server,
@@ -244,9 +242,9 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         # Run test for N number of samples:total number of repeated test
         # executions, during oftraf traffic measurements are taken
         for sample_id in list(range(conf['number_of_samples'])):
-
+            logging.info('{0} Getting results from monitor thread'
+                         ' for sample_id={1}'.format(test_type, sample_id))
             res = result_queue.get(block=True)
-            logging.info('{0} joining monitor thread'.format(test_type))
 
             # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
@@ -287,22 +285,22 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         logging.exception('')
 
     finally:
-
+        logging.info('{0} Joining monitor thread'.format(test_type))
         exit_flag.value = True
         monitor_thread.join()
 
-        logging.info('{0} finalizing test'.format(test_type))
+        logging.info('{0} Finalizing test'.format(test_type))
 
-        logging.info('{0} creating test output directory if not exist.'.
+        logging.info('{0} Creating test output directory if not exist.'.
                      format(test_type))
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
 
-        logging.info('{0} saving results to JSON file.'.format(test_type))
+        logging.info('{0} Saving results to JSON file.'.format(test_type))
         common.generate_json_results(total_samples, out_json)
 
         try:
-            logging.info('{0} stopping controller.'.
+            logging.info('{0} Stopping controller.'.
                          format(test_type))
             controller_utils.stop_controller( controller_handlers_set, cpid,
                                               controller_ssh_client)
@@ -310,22 +308,22 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             pass
 
         try:
-            logging.info('{0} collecting logs'.format(test_type))
+            logging.info('{0} Collecting logs'.format(test_type))
             util.netutil.copy_dir_remote_to_local(controller_node,
                 controller_logs_dir, output_dir+'/log')
         except:
             logging.error('{0} {1}'.format(
-                test_type, 'failed transferring controller logs dir.'))
+                test_type, 'Failed transferring controller logs dir.'))
 
         if controller_cleanup:
-            logging.info('{0} cleaning controller directory'.format(test_type))
+            logging.info('{0} Cleaning controller directory'.format(test_type))
             controller_utils.cleanup_controller(
                 controller_handlers_set.ctrl_clean_handler,
                 controller_ssh_client)
 
         try:
             logging.info(
-                '{0} stopping REST daemon in Multinet node.'.
+                '{0} Stopping REST daemon in Multinet node.'.
                 format(test_type))
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
@@ -334,7 +332,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             pass
 
         try:
-            logging.info('{0} stopping oftraf REST server.'.
+            logging.info('{0} Stopping oftraf REST server.'.
                          format(test_type))
             oftraf_utils.oftraf_stop(
                 oftraf_handlers_set.oftraf_stop_handler,
