@@ -363,7 +363,7 @@ def get_report_spec(test_type, config_json, results_json):
     :returns: A ReportSpec object that holds all the test report information
     and is passed as input to the generate_html() function in the
     html_generation.py, that is responsible for the report generation.
-    :rtype: ReportSpec
+    :rtype: ReportSpec object
     :type: test_type: str
     :type: config_json: str
     :type: results_json: str

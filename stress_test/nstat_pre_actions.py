@@ -19,17 +19,16 @@ import sb_idle_scalability_cbench
 import sb_idle_scalability_mininet
 import sb_idle_scalability_multinet
 import sb_idle_stability_multinet
-
 import sys
 
 
 def nstat_test_set_log_level(args):
     """Setting log level for NSTAT experiment
 
-    :param args:
-    :returns:
-    :rtype:
-    :type args:
+    :param args: ArgumentParser object containing user specified
+    parameters (i.e test type, controller base directory, generator base
+    directory) when running NSTAT
+    :type args: ArgumentParser object
     """
 
     logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
@@ -58,10 +57,13 @@ def nstat_load_test_conf(args):
     """Loading test configuration for NSTAT experiment. Parsing configuration
     options from JSON input file
 
-    :param args:
-    :returns:
-    :rtype:
-    :type args:
+    :param args: ArgumentParser object containing user specified
+    parameters (i.e test type, controller base directory, generator base
+    directory) when running NSTAT
+    :returns: test_config:
+    :rtype: test_config:  python object resulting from a deserialized file like
+    object containing a json document
+    :type args: ArgumentParser object
     """
 
     logging.info('[nstat_orchestrator] Parsing test configuration')
@@ -73,10 +75,16 @@ def nstat_test_selector(args, test_config):
     """NSTAT test selector: depending on the test_type defined on the command
     line options of NSTAT
 
-    :param args:
-    :returns:
-    :rtype:
-    :type args:
+    :param args: ArgumentParser object containing user specified
+    parameters (i.e test type, controller base directory, generator base
+    directory) when running NSTAT
+    :param test_config: JSON input configuration
+    :returns: report_spec: A ReportSpec object that holds all the test report
+    information and is passed as input to the generate_html() function in the
+    html_generation.py, that is responsible for the report generation.
+    :rtype: report_spec: ReportSpec object
+    :type args: ArgumentParser object
+    :type test_config: JSON configuration dictionary
     """
     # sb_active_scalability_mtcbench
     if args.test_type == 'sb_active_scalability_mtcbench':
