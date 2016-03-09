@@ -29,7 +29,7 @@ cd $BASE_DIR
 # Create a jenkins user with jenkins password and passwordless sudo privileges
 # ------------------------------------------------------------------------------
 sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins
-echo "jenkins ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
