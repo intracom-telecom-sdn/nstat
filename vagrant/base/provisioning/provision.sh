@@ -106,8 +106,8 @@ sudo pip3 install collections-extended
 
 # Install Mininet
 #-------------------------------------------------------------------------------
-git clone https://github.com/mininet/mininet.git
-cd mininet
+git clone https://github.com/mininet/mininet.git /home/vagrant/mininet
+cd /home/vagrant/mininet
 git checkout -b 2.2.1 2.2.1
 ./util/install.sh -vwnf3
 cd $BASE_DIR

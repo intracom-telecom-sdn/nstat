@@ -11,10 +11,22 @@
 # VM configuration.
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
-# VMs setup for installation example--------------------------------------------
+
+# VMs setup for sample MT-Cbench tests------------------------------------------
 #nstat_node_names = ['ndnstat', 'ndcntrlr', 'ndcbench']
 #nstat_node_vm_ram_arr = [2048, 16384, 2048]
 #nstat_node_vm_cpu_arr = [1, 4, 1]
+
+# VMs setup for sample Mininet tests--------------------------------------------
+#nstat_node_names = ['ndmn', 'ndcntrlr', 'ndnstat']
+#nstat_node_vm_ram_arr = [2048, 16384, 2048]
+#nstat_node_vm_cpu_arr = [1, 4, 1]
+
+# VMs setup for sample Multinet tests-------------------------------------------
+#nstat_node_names = ['mn01', 'mn02', 'mn03', 'ndcntrlr', 'ndnstat']
+#nstat_node_vm_ram_arr = [2048, 2048, 2048, 16384, 2048]
+#nstat_node_vm_cpu_arr = [1, 1, 1, 4, 1]
+
 # VMs setup for non multinet tests----------------------------------------------
 nstat_node_names = ['mn01']
 nstat_node_vm_ram_arr = [4096] # in MB
