@@ -12,6 +12,7 @@ def change_flow_timeouts():
 
     string_to_find_1 = 'reactive-flow-idle-timeout'
     string_to_find_2 = 'reactive-flow-hard-timeout'
+
     # path to xml config file
     input_file = os.path.sep.join([os.path.dirname(os.path.realpath(__file__)),
         CONTROLLER_DIR_NAME, 'etc', 'opendaylight', 'karaf',
