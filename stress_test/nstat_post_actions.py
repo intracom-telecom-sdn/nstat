@@ -29,9 +29,21 @@ import util.plot_json
 
 
 def nstat_post_test_actions(args, test_config, report_spec):
+    """NSTAT post test actions
 
-    # 03. if results have been produced, generate plots, report and gather
-    # output files
+    :param args: argparse.ArgumentParser object containing user specified
+    parameters (i.e test type, controller base directory, generator base
+    directory) when running NSTAT
+    :param test_config : JSON input configuration
+    :param report_spec : A ReportSpec object that holds all the test report
+    information and is passed as input to the generate_html() function in the
+    html_generation.py, that is responsible for the report generation.
+    :type args: ArgumentParser object
+    :type test_config: python object resulting from a deserialized file like
+    object containing a json document
+    :type report_spec: ReportSpec object
+    """
+
     if os.path.isfile(args.json_output):
         logging.info(
             '[nstat_orchestrator] Creating output directory of test results.')
@@ -97,16 +109,32 @@ def nstat_post_test_actions(args, test_config, report_spec):
             format(args.json_output))
 
 def nstat_test_save_logfile(args):
+    """NSTAT save log file
 
-        # Move controller log file if exist inside the test output dir
-        if args.log_file:
-            shutil.move(args.log_file, args.output_dir)
-        shutil.copy(args.json_output, args.output_dir)
-        shutil.copy(args.json_config, args.output_dir)
+    :param args: argparse.ArgumentParser object containing user specified
+    parameters (i.e test type, controller base directory, generator base
+    directory) when running NSTAT
+    :type args: ArgumentParser object
+    """
+     # Move controller log file if exist inside the test output dir
+    if args.log_file:
+        shutil.move(args.log_file, args.output_dir)
+    shutil.copy(args.json_output, args.output_dir)
+    shutil.copy(args.json_config, args.output_dir)
 
 def nstat_test_save_report(args, report_spec):
+    """NSTAT save log file
 
-        # Generate html report and move it within test output dir
-        logging.info('[nstat_orchestrator] Generating html report')
-        html_generation.generate_html(report_spec, args.html_report)
-        shutil.move(args.html_report, args.output_dir)
+    :param args: argparse.ArgumentParser object containing user specified
+    parameters (i.e test type, controller base directory, generator base
+    directory) when running NSTAT
+    :param report_spec: A ReportSpec object that holds all the test report
+    information and is passed as input to the generate_html() function in the
+    html_generation.py, that is responsible for the report generation.
+    :type args: ArgumentParser object
+    :type report_spec: ReportSpec object
+    """
+    # Generate html report and move it within test output dir
+    logging.info('[nstat_orchestrator] Generating html report')
+    html_generation.generate_html(report_spec, args.html_report)
+    shutil.move(args.html_report, args.output_dir)

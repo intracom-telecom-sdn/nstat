@@ -40,61 +40,62 @@ def main():
                         dest='bypass_test',
                         action='store_true',
                         default=False,
-                        help=('Bypass test execution and proceed to report '
-                              'generation, based on a previous output.'))
+                        help="bypass test execution and proceed to report\n"
+                             "generation, based on a previous output.")
     parser.add_argument('--ctrl-base-dir',
                         required=True,
                         type=str,
                         dest='ctrl_base_dir',
                         action='store',
-                        help='Controller base directory')
+                        help='controller base directory')
     parser.add_argument('--sb-generator-base-dir',
                         required=True,
                         type=str,
                         dest='sb_gen_base_dir',
                         action='store',
-                        help='MT-Cbench, Mininet or Multinet generator base directory')
+                        help='southbound traffic generator base directory,\n'
+                             'supported generators: MT-Cbench, Mininet or Multinet')
     parser.add_argument('--nb-generator-base-dir',
                         required=False,
                         type=str,
                         dest='nb_gen_base_dir',
                         action='store',
-                        help='Northbound traffic generator base directory')
+                        help='northbound traffic generator base directory')
     parser.add_argument('--json-config',
                         required=True,
                         type=str,
                         dest='json_config',
                         action='store',
-                        help='Test configuration file (JSON)')
+                        help='json test input (configuration) file name')
     parser.add_argument('--json-output',
                         required=True,
                         type=str,
                         dest='json_output',
                         action='store',
-                        help='Output JSON file')
+                        help='json test output (results) file name')
     parser.add_argument('--html-report',
                         required=True,
                         type=str,
                         dest='html_report',
                         action='store',
-                        help='Generated HTML report file')
+                        help='html report file name')
     parser.add_argument('--log-file',
                         dest='log_file',
                         action='store',
-                        help='File to keep test logs')
+                        help='log file name')
     parser.add_argument('--output-dir',
                         required=True,
                         type=str,
                         dest='output_dir',
                         action='store',
-                        help='Output directory to store produced files')
+                        help='result files output directory ')
     parser.add_argument('--logging-level',
                         type=str,
                         dest='logging_level',
                         action='store',
                         default='DEBUG',
-                        help="Setting the level of the logging messages."
-                             "Can have one of the following values:\n"
+                        help="log level set."
+                             "possible values are:\n"
                              "INFO\n"
                              "DEBUG (default)\n"
                              "ERROR")

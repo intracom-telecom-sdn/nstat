@@ -177,11 +177,11 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         controller_utils.flowmod_configure_controller(
             controller_handlers_set.ctrl_flowmods_conf_handler,
             controller_ssh_client)
-        """
+
         logging.info('{0} Building oftraf.'.format(test_type))
         oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
                                   controller_ssh_client)
-        """
+
 
         # Run tests for all possible dimensions
         for (multinet_worker_topo_size,
@@ -416,7 +416,7 @@ def get_report_spec(test_type, config_json, results_json):
     :returns: A ReportSpec object that holds all the test report information
     and is passed as input to the generate_html() function in the
     html_generation.py, that is responsible for the report generation.
-    :rtype: ReportSpec
+    :rtype: ReportSpec object
     :type: test_type: str
     :type: config_json: str
     :type: results_json: str
