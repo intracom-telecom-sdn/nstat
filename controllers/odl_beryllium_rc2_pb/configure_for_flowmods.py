@@ -1,6 +1,6 @@
 #! /usr/bin/env python3.4
 
-import xml_utils
+import util.xml_utils
 import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.4.0-Beryllium-RC2'
