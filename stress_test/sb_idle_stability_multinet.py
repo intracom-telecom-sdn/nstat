@@ -229,7 +229,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             controller_ssh_client)
 
         logging.info('{0} Creating queue'.format(test_type))
-        result_queue = multiprocessing.Queue()
+        result_queue = multiprocessing.Queue(maxsize=1)
         logging.info('{0} Creating Idle stability with oftraf '
                          'monitor thread'.format(test_type))
         monitor_thread = multiprocessing.Process(
@@ -244,7 +244,8 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             logging.info('{0} Getting results from monitor thread'
                          ' for sample_id={1}'.format(test_type, sample_id))
             res = result_queue.get(block=True)
-
+            logging.info('{0} Returned results from of_traf: (Packets:{1}, '
+                         'Bytes:{2})'.format(test_type, res[0], res[1]))
             # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
