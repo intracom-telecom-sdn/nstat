@@ -26,7 +26,7 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
-"controller_flowmods_conf_handler":"/configure_for_flowmods.py",
+"controller_flowmods_conf_handler":"/controller_flowmods_configure.py",
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
 
 "controller_rebuild":true,
