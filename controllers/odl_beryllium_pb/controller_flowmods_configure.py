@@ -1,6 +1,6 @@
 #! /usr/bin/env python3.4
 
-import util.xml_utils
+import xml_utils
 import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.4.0-Beryllium'
@@ -17,9 +17,9 @@ def change_flow_timeouts():
     input_file = os.path.sep.join([os.path.dirname(os.path.realpath(__file__)),
         CONTROLLER_DIR_NAME, 'etc', 'opendaylight', 'karaf',
         '58-l2switchmain.xml'])
-    util.xml_utils.manipulate_xml(input_file, input_file, string_to_find_1,
+    xml_utils.manipulate_xml(input_file, input_file, string_to_find_1,
                              '1')
-    util.xml_utils.manipulate_xml(input_file, input_file, string_to_find_2,
+    xml_utils.manipulate_xml(input_file, input_file, string_to_find_2,
                              '1')
 
 def change_proactive_flow_mod():
@@ -29,7 +29,7 @@ def change_proactive_flow_mod():
     input_file = os.path.sep.join([os.path.dirname(os.path.realpath(__file__)),
         CONTROLLER_DIR_NAME, 'etc', 'opendaylight', 'karaf',
         '54-arphandler.xml'])
-    util.xml_utils.manipulate_xml(input_file, input_file, string_to_find,
+    xml_utils.manipulate_xml(input_file, input_file, string_to_find,
                              'false')
 
 if __name__ == '__main__':
