@@ -19,7 +19,7 @@ Key features in brief:
   * SouthBound idle switch scalability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-MT-Cbench-switches) and [Mininet](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-Mininet-switches))
   * SouthBound active switch scalability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-active-MT-Cbench-switches))
   * SouthBound active switch stability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-MT-Cbench-switches))
-  * [Northbound flow scalablity](https://github.com/intracom-telecom-sdn/nstat/wiki/Flow-scalability-test-with-idle-Mininet-switches)
+  * [Northbound flow scalablity](https://github.com/intracom-telecom-sdn/nstat/wiki/Flow-scalability-test-with-idle-Multinet-switches)
 - Comprehensive reporting and configurable plotting
 
 For a detailed features listing have a look at the [features](https://github.com/intracom-telecom-sdn/nstat/wiki/Features) page.
