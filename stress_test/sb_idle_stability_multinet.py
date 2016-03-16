@@ -200,7 +200,6 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
         logging.info('{0} Booting up Multinet REST server'.
                       format(test_type))
-
         multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
             'deploy_multinet', multinet_base_dir, is_privileged=False)
 
@@ -211,11 +210,9 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
         logging.info('{0} Initializing Multinet topology.'.
                      format(test_type))
-
         multinet_utils.multinet_command_runner(
             multinet_handlers_set.init_topo_handler,
             'init_topo_handler_multinet', multinet_base_dir)
-
 
         logging.info('{0} Starting Multinet topology.'.format(test_type))
         multinet_utils.multinet_command_runner(
@@ -240,37 +237,40 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
         # Run test for N number of samples:total number of repeated test
         # executions, during oftraf traffic measurements are taken
-        for sample_id in list(range(conf['number_of_samples'])):
+        for sample_id in list(range(conf['number_of_samples'] + 1)):
             logging.info('{0} Getting results from monitor thread'
                          ' for sample_id={1}'.format(test_type, sample_id))
             res = result_queue.get(block=True)
             logging.info('{0} Returned results from of_traf: (Packets:{1}, '
                          'Bytes:{2})'.format(test_type, res[0], res[1]))
             # Results collection
-            statistics = common.sample_stats(cpid, controller_ssh_client)
-            statistics['global_sample_id'] = global_sample_id
-            global_sample_id += 1
-            statistics['multinet_workers'] = len(multinet_worker_ip_list)
-            statistics['multinet_size'] = \
-                multinet_worker_topo_size * len(multinet_worker_ip_list)
-            statistics['multinet_worker_topo_size'] = multinet_worker_topo_size
-            statistics['multinet_topology_type'] = multinet_topology_type
-            statistics['multinet_hosts_per_switch'] = \
-                multinet_hosts_per_switch
-            statistics['multinet_group_size'] = multinet_group_size
-            statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
-            statistics['controller_statistics_period_ms'] = \
-                controller_statistics_period_ms
-            statistics['controller_node_ip'] = controller_node.ip
-            statistics['controller_port'] = str(controller_sb_interface.port)
-            statistics['controller_cpu_shares'] = \
-                '{0}'.format(controller_cpu_shares)
-            statistics['of_out_packets_per_sec'] = \
-                abs(res[0] - previous_oftraf_result[0]) / (oftraf_test_interval_ms / 1000)
-            statistics['of_out_bytes_per_sec'] = \
-                abs(res[1] - previous_oftraf_result[1]) / (oftraf_test_interval_ms / 1000)
-            statistics['sample_id'] = sample_id
-            total_samples.append(statistics)
+            if sample_id > 0:
+                statistics = common.sample_stats(cpid, controller_ssh_client)
+                statistics['global_sample_id'] = global_sample_id
+                global_sample_id += 1
+                statistics['multinet_workers'] = len(multinet_worker_ip_list)
+                statistics['multinet_size'] = \
+                    multinet_worker_topo_size * len(multinet_worker_ip_list)
+                statistics['multinet_worker_topo_size'] = \
+                    multinet_worker_topo_size
+                statistics['multinet_topology_type'] = multinet_topology_type
+                statistics['multinet_hosts_per_switch'] = \
+                    multinet_hosts_per_switch
+                statistics['multinet_group_size'] = multinet_group_size
+                statistics['multinet_group_delay_ms'] = multinet_group_delay_ms
+                statistics['controller_statistics_period_ms'] = \
+                    controller_statistics_period_ms
+                statistics['controller_node_ip'] = controller_node.ip
+                statistics['controller_port'] = \
+                    str(controller_sb_interface.port)
+                statistics['controller_cpu_shares'] = \
+                    '{0}'.format(controller_cpu_shares)
+                statistics['of_out_packets_per_sec'] = \
+                    abs(res[0] - previous_oftraf_result[0]) / (oftraf_test_interval_ms / 1000)
+                statistics['of_out_bytes_per_sec'] = \
+                    abs(res[1] - previous_oftraf_result[1]) / (oftraf_test_interval_ms / 1000)
+                statistics['sample_id'] = sample_id
+                total_samples.append(statistics)
             previous_oftraf_result = res
 
     except:
@@ -337,7 +337,6 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             oftraf_utils.oftraf_stop(
                 oftraf_handlers_set.oftraf_stop_handler,
                 oftraf_rest_server, controller_ssh_client)
-
         except:
             pass
         logging.info('{0} Cleanup oftraf.'.format(test_type))
