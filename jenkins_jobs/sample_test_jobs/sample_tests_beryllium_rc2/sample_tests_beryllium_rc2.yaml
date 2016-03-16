@@ -496,6 +496,38 @@
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
+# ------------------------------------------------------------------------------
+# sample_beryllium_sb_active_stability_multinet
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: sample_beryllium_sb_active_stability_multinet-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-sample
+    triggers:
+     #- pollscm: '0 19 * * *'
+    wrappers:
+      - timestamps:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="beryllium_sb_active_stability_multinet"
+
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
+
+          # test execution
+          # --------------------------------------------------------------------
+          python3.4 ./stress_test/nstat_orchestrator.py \
+               --test="sb_active_stability_multinet" \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
+               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+               --html-report=$WORKSPACE/report.html \
+               --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # job instances
@@ -506,15 +538,16 @@
     branch: develop_release_1.3
     jobs:
 
-        - 'sample_beryllium_DS_sb_active_scalability_mtcbench-{branch}'
-        - 'sample_beryllium_DS_sb_active_stability_mtcbench-{branch}'
-        - 'sample_beryllium_DS_sb_idle_scalability_mtcbench-{branch}'
-        - 'sample_beryllium_nb_active_scalability_mininet-{branch}'
-        - 'sample_beryllium_RPC_sb_active_scalability_mtcbench-{branch}'
-        - 'sample_beryllium_RPC_sb_active_stability_mtcbench-{branch}'
-        - 'sample_beryllium_RPC_sb_idle_scalability_mtcbench-{branch}'
-        - 'sample_beryllium_sb_idle_scalability_mininet-{branch}'
-        - 'sample_beryllium_sb_active_scalability_multinet-{branch}'
-        - 'sample_beryllium_nb_active_scalability_multinet-{branch}'
-        - 'sample_beryllium_sb_idle_scalability_multinet-{branch}'
-        - 'sample_beryllium_sb_idle_stability_multinet-{branch}'
+#        - 'sample_beryllium_DS_sb_active_scalability_mtcbench-{branch}'
+#        - 'sample_beryllium_DS_sb_active_stability_mtcbench-{branch}'
+#        - 'sample_beryllium_DS_sb_idle_scalability_mtcbench-{branch}'
+#        - 'sample_beryllium_nb_active_scalability_mininet-{branch}'
+#        - 'sample_beryllium_RPC_sb_active_scalability_mtcbench-{branch}'
+#        - 'sample_beryllium_RPC_sb_active_stability_mtcbench-{branch}'
+#        - 'sample_beryllium_RPC_sb_idle_scalability_mtcbench-{branch}'
+#        - 'sample_beryllium_sb_idle_scalability_mininet-{branch}'
+#        - 'sample_beryllium_sb_active_scalability_multinet-{branch}'
+#        - 'sample_beryllium_nb_active_scalability_multinet-{branch}'
+#        - 'sample_beryllium_sb_idle_scalability_multinet-{branch}'
+#        - 'sample_beryllium_sb_idle_stability_multinet-{branch}'
+        - 'sample_beryllium_sb_active_stability_multinet-{branch}'
