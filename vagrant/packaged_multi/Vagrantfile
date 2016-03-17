@@ -13,9 +13,9 @@
 nstat_vm_basebox = 'nstat_vm_base'
 
 # VMs setup for sample MT-Cbench tests------------------------------------------
-#nstat_node_names = ['ndnstat', 'ndcntrlr', 'ndcbench']
-#nstat_node_vm_ram_arr = [2048, 16384, 2048]
-#nstat_node_vm_cpu_arr = [1, 4, 1]
+nstat_node_names = ['ndnstat', 'ndcntrlr', 'ndcbench']
+nstat_node_vm_ram_arr = [2048, 4192, 2048]
+nstat_node_vm_cpu_arr = [1, 2, 1]
 
 # VMs setup for sample Mininet tests--------------------------------------------
 #nstat_node_names = ['ndmn', 'ndcntrlr', 'ndnstat']
@@ -28,9 +28,9 @@ nstat_vm_basebox = 'nstat_vm_base'
 #nstat_node_vm_cpu_arr = [1, 1, 1, 4, 1]
 
 # VMs setup for non multinet stress tests----------------------------------------------
-nstat_node_names = ['mn01']
-nstat_node_vm_ram_arr = [4096] # in MB
-nstat_node_vm_cpu_arr = [2] # number of CPUs
+#nstat_node_names = ['mn01']
+#nstat_node_vm_ram_arr = [4096] # in MB
+#nstat_node_vm_cpu_arr = [2] # number of CPUs
 
 # VMs setup for multinet stress tests--------------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03', 'mn04', 'mn05', 'mn06', 'mn07', 'mn08', 'mn09', 'mn10', 'mn11', 'mn12', 'mn13', 'mn14', 'mn15', 'mn16']
@@ -38,60 +38,17 @@ nstat_node_vm_cpu_arr = [2] # number of CPUs
 #nstat_node_vm_cpu_arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 # ------------------------------------------------------------------------------
 
+ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
+
 nstat_nodes_private_network_ip = '192.168.100.20' # the first IP address in the NSTAT VMs IP Address range
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
-
-# ------------------------------------------------------------------------------
-# RUNNING_ENV options: 'with-proxy', 'no-proxy'
-# ------------------------------------------------------------------------------
-RUNNING_ENV = 'no-proxy'
-ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
-
-# configure proxy settings
-# ------------------------------------------------------------------------------
-if RUNNING_ENV == 'with-proxy'
-    #http_proxy = 'http:/<IP_address>:<port_number>'
-    http_proxy = '172.28.40.9:3128'
-    https_proxy = '172.28.40.9:3128'
-    puts '--------------------------------------------------------'
-    puts 'running: with-proxy RUNNING_ENV'
-     if !Vagrant.has_plugin?('vagrant-proxyconf')
-         abort("                -vagrant-proxyconf plugin missing.
-                -install it manually by typing:
---------------------------------------------------------
-                vagrant plugin install vagrant-proxyconf
---------------------------------------------------------
-                re-run: vagrant up")
-     end
-elsif RUNNING_ENV == 'no-proxy'
-    puts '--------------------------------------------------------'
-    puts 'running: no-proxy RUNNING_ENV'
-else
-    puts 'RUNNING_ENV not set'
-end
-     no_proxy_nstat_nodes = Array.new
-    (1..nstat_nodes_number).each do |nstat_vm|
-        last_two_ip_digits = nstat_nodes_private_network_ip[-2..-1].to_i
-        new_last_two_ip_digits = last_two_ip_digits + (nstat_vm - 1)
-        base_ip = nstat_nodes_private_network_ip[0..-3]
-        nstat_nodes_private_network_ip_inst = base_ip + new_last_two_ip_digits.to_s
-        no_proxy_nstat_nodes[nstat_vm] = nstat_nodes_private_network_ip_inst.to_s
-    end
-    no_proxy_nstat_nodes_str = no_proxy_nstat_nodes.join(",")
 
 Vagrant.configure(2) do |config|
 
     config.ssh.username = 'vagrant'
     config.ssh.password = 'vagrant'
-    no_proxy_nodes = 'localhost,127.0.0.1' + no_proxy_nstat_nodes_str
-    puts "NSTAT no proxy nodes: " + no_proxy_nodes
 
-    #if RUNNING_ENV == 'with-proxy'
-    #    config.proxy.http = http_proxy
-    #    config.proxy.https = https_proxy
-    #    config.proxy.no_proxy = no_proxy_nodes
-    #end
 
     #If tty is not available
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
@@ -120,7 +77,6 @@ Vagrant.configure(2) do |config|
         #nstat_node_hostname_inst = nstat_node_names[nstat_vm]
 
         config.vm.define nstat_node_name_inst do |machine|
-            machine.proxy.no_proxy = 'localhost,127.0.0.1' + ',' + nstat_nodes_private_network_ip_inst
             machine.vm.box = nstat_vm_basebox
             machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
             machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst
@@ -153,4 +109,3 @@ Vagrant.configure(2) do |config|
     end
 
 end
-
