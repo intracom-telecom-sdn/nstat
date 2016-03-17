@@ -34,6 +34,7 @@ echo 'Acquire::ftp::Proxy "ftp://'$ftp_proxy'/";' | sudo tee -a /etc/apt/apt.con
 echo 'Acquire::https::Proxy "https://'$https_proxy'/";' | sudo tee -a /etc/apt/apt.conf
 
 sudo apt-get update
+sudo apt-get install --force-yes -y mz
 
 # Install NTSTAT
 #-------------------------------------------------------------------------------
