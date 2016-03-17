@@ -20,7 +20,6 @@ import os
 import sb_active_scalability_cbench
 import sb_active_stability_cbench
 import sb_idle_scalability_cbench
-import sb_idle_scalability_mininet
 import sb_idle_scalability_multinet
 import sb_idle_stability_multinet
 import shutil

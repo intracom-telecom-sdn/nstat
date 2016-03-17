@@ -16,7 +16,6 @@ import sb_active_scalability_cbench
 import sb_active_scalability_multinet
 import sb_active_stability_cbench
 import sb_idle_scalability_cbench
-import sb_idle_scalability_mininet
 import sb_idle_scalability_multinet
 import sb_idle_stability_multinet
 import sys
@@ -152,24 +151,6 @@ def nstat_test_selector(args, test_config):
                 args.output_dir)
 
         report_spec = sb_idle_scalability_cbench.get_report_spec(
-            args.test_type,
-            args.json_config,
-            args.json_output)
-
-    # sb_idle_scalability_mininet
-    elif args.test_type == 'sb_idle_scalability_mininet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            sb_idle_scalability_mininet.sb_idle_scalability_mininet_run(
-                args.json_output,
-                args.ctrl_base_dir,
-                args.sb_gen_base_dir,
-                test_config,
-                args.output_dir)
-
-        report_spec = sb_idle_scalability_mininet.get_report_spec(
             args.test_type,
             args.json_config,
             args.json_output)

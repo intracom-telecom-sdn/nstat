@@ -30,7 +30,6 @@ def main():
                              "sb_active_stability_mtcbench\n"
                              "sb_active_scalability_multinet\n"
                              "sb_idle_scalability_mtcbench\n"
-                             "sb_idle_scalability_mininet\n"
                              "sb_idle_scalability_multinet\n"
                              "sb_idle_stability_multinet\n"
                              "nb_active_scalability_mininet\n"
