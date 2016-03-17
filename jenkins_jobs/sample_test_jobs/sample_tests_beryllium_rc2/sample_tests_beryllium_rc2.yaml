@@ -462,7 +462,6 @@
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
-
 # ------------------------------------------------------------------------------
 # sample_beryllium_sb_idle_stability_multinet
 # ------------------------------------------------------------------------------
