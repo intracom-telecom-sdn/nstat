@@ -3,7 +3,7 @@
 import xml_utils
 import os
 
-CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.3-Lithium-SR3'
+CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.2-Lithium-SR2'
 
 def change_flow_timeouts():
     """ Set the minimum idle and hard flow timeouts in the controller's
@@ -12,6 +12,7 @@ def change_flow_timeouts():
 
     string_to_find_1 = 'reactive-flow-idle-timeout'
     string_to_find_2 = 'reactive-flow-hard-timeout'
+
     # path to xml config file
     input_file = os.path.sep.join([os.path.dirname(os.path.realpath(__file__)),
         CONTROLLER_DIR_NAME, 'etc', 'opendaylight', 'karaf',

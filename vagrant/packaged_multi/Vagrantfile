@@ -27,15 +27,16 @@ nstat_vm_basebox = 'nstat_vm_base'
 #nstat_node_vm_ram_arr = [2048, 2048, 2048, 16384, 2048]
 #nstat_node_vm_cpu_arr = [1, 1, 1, 4, 1]
 
-# VMs setup for non multinet tests----------------------------------------------
+# VMs setup for non multinet stress tests----------------------------------------------
 nstat_node_names = ['mn01']
 nstat_node_vm_ram_arr = [4096] # in MB
 nstat_node_vm_cpu_arr = [2] # number of CPUs
-# VMs setup for multinet tests--------------------------------------------------
+# VMs setup for multinet stress tests--------------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03', 'mn04', 'mn05', 'mn06', 'mn07', 'mn08', 'mn09', 'mn10', 'mn11', 'mn12', 'mn13', 'mn14', 'mn15', 'mn16']
 #nstat_node_vm_ram_arr = [4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096]
 #nstat_node_vm_cpu_arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 # ------------------------------------------------------------------------------
+
 nstat_nodes_private_network_ip = '192.168.100.20' # the first IP address in the NSTAT VMs IP Address range
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
@@ -148,7 +149,6 @@ Vagrant.configure(2) do |config|
 # ------------------------------------------------------------------------------
 # Provisioning actions
 # ------------------------------------------------------------------------------
-
     end
 
 end
