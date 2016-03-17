@@ -549,4 +549,4 @@
 #        - 'sample_beryllium_nb_active_scalability_multinet-{branch}'
 #        - 'sample_beryllium_sb_idle_scalability_multinet-{branch}'
 #        - 'sample_beryllium_sb_idle_stability_multinet-{branch}'
-        - 'sample_beryllium_sb_active_stability_multinet-{branch}'
+         - 'sample_beryllium_sb_active_stability_multinet-{branch}'
