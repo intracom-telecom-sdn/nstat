@@ -11,15 +11,29 @@
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
-sudo apt-get update
+
+BASE_DIR=$(pwd)
 
 export http_proxy='172.28.40.9:3128'
 export https_proxy='172.28.40.9:3128'
+export ftp_proxy='172.28.40.9:3128'
+printf -v no_proxy '%s,' 192.168.100.{1..255};export no_proxy="${no_proxy%,}"",127.0.0.1,localhost";
 
-sudo echo "http_proxy=172.28.40.9:3128" >> /etc/environment
-sudo echo "https_proxy=172.28.40.9:3128" >> /etc/environment
-sudo echo "HTTP_PROXY=172.28.40.9:3128" >> /etc/environment
-sudo echo "HTTPS_PROXY=172.28.40.9:3128" >> /etc/environment
+echo "http_proxy="$http_proxy | sudo tee -a /etc/environment
+echo "https_proxy="$https_proxy | sudo tee -a /etc/environment
+echo "ftp_proxy="$ftp_proxy | sudo tee -a /etc/environment
+echo "HTTP_PROXY="$http_proxy | sudo tee -a /etc/environment
+echo "HTTPS_PROXY="$https_proxy | sudo tee -a /etc/environment
+echo "FTP_PROXY="$ftp_proxy | sudo tee -a /etc/environment
+echo "no_proxy="$no_proxy | sudo tee -a /etc/environment
+if [ ! -f /etc/apt/apt.conf ]; then
+    sudo touch /etc/apt/apt.conf
+fi
+echo 'Acquire::http::Proxy "http://'$http_proxy'/";' | sudo tee -a /etc/apt/apt.conf
+echo 'Acquire::ftp::Proxy "ftp://'$ftp_proxy'/";' | sudo tee -a /etc/apt/apt.conf
+echo 'Acquire::https::Proxy "https://'$https_proxy'/";' | sudo tee -a /etc/apt/apt.conf
+
+sudo apt-get update
 
 # Install NTSTAT
 #-------------------------------------------------------------------------------
@@ -32,11 +46,11 @@ git branch -a       # list NSTAT branches
 git checkout master # checkout to master branch
 #git tag -l          # list NSTAT tags
 #git checkout v1.2   # comment out to check out at a certain tag
-cd $HOME
+cd $BASE_DIR
 
 # Giving write access to ./opt (default directory where controller build
 # handler downloads OpenDaylight from official repository)
 #-------------------------------------------------------------------------------
 cd /
 sudo chmod 777 -R /opt
-cd $HOME
+cd $BASE_DIR
