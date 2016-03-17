@@ -47,6 +47,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
     # Multinet parameters
     multinet_hosts_per_switch = multiprocessing.Value('i', 0)
+    multinet_topo_size = multiprocessing.Value('i', 0)
 
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
     multinet_worker_port_list = conf['multinet_worker_port_list']
@@ -214,7 +215,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 (multinet_worker_topo_size // multinet_group_size) * multinet_group_delay_ms
             t_start.value = time.time()
 
-            multinet_topo_size = \
+            multinet_topo_size.value = \
                 multinet_worker_topo_size * len(multinet_worker_ip_list)
 
             # Parallel section.
@@ -225,10 +226,8 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                          format(test_type))
             monitor_thread = multiprocessing.Process(
                 target=common.poll_ds_thread,
-                args=(controller_nb_interface,
-                      t_start, topology_start_time_ms,
-                      multinet_topo_size,
-                      result_queue))
+                args=(controller_nb_interface, t_start, topology_start_time_ms,
+                      multinet_topo_size, result_queue))
             monitor_thread.start()
 
             logging.info('{0} starting Multinet topology.'.format(test_type))
@@ -245,7 +244,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             statistics['global_sample_id'] = global_sample_id
             global_sample_id += 1
             statistics['multinet_workers'] = len(multinet_worker_ip_list)
-            statistics['multinet_size'] = multinet_topo_size
+            statistics['multinet_size'] = multinet_topo_size.value
             statistics['multinet_worker_topo_size'] = multinet_worker_topo_size
             statistics['multinet_topology_type'] = multinet_topology_type
             statistics['multinet_hosts_per_switch'] = \
