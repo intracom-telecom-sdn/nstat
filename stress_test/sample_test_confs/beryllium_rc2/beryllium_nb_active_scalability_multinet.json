@@ -71,7 +71,6 @@
 "multinet_worker_port_list":[3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
-
 "flow_workers":[4],
 "total_flows":[64],
 "flow_operations_delay_ms":[100],
