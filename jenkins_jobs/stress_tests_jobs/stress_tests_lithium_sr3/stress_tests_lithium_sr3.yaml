@@ -500,4 +500,4 @@
 #        - 'lithium_sb_idle_scalability_mininet_MeshTopo-{branch}'
 #        - 'lithium_sb_idle_scalability_multinet_LinearTopo-{branch}'
 #        - 'lithium_sb_idle_scalability_multinet_DisconnectedTopo-{branch}'
-         - 'lithium_sb_idle_stability_multinet-{branch}'
+#         - 'lithium_sb_idle_stability_multinet-{branch}'
