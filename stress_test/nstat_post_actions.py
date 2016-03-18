@@ -14,7 +14,6 @@ import argparse
 import html_generation
 import json
 import logging
-import nb_active_scalability_mininet
 import nb_active_scalability_multinet
 import os
 import sb_active_scalability_cbench

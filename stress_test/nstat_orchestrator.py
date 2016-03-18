@@ -32,7 +32,6 @@ def main():
                              "sb_idle_scalability_mtcbench\n"
                              "sb_idle_scalability_multinet\n"
                              "sb_idle_stability_multinet\n"
-                             "nb_active_scalability_mininet\n"
                              "nb_active_scalability_multinet"
                              )
     parser.add_argument('--bypass-execution',
