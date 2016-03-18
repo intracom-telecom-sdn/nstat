@@ -7,16 +7,17 @@
 # ------------------------------------------------------------------------------
 # 01. lithium_DS_sb_active_scalability_mtcbench.json
 # 02. lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
-# 03. lithium_nb_active_scalability_mininet_100sw.json
-# 04. lithium_nb_active_scalability_mininet_10sw.json
-# 05. lithium_RPC_sb_active_scalability_mtcbench.json
-# 06. lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
-# 07. lithium_RPC_sb_idle_scalability_mtcbench.json
-# 08. lithium_sb_idle_scalability_mininet_DisconnectedTopo.json
-# 09. lithium_sb_idle_scalability_mininet_LinearTopo.json
-# 10. lithium_sb_idle_scalability_mininet_MeshTopo.json
-# 11. lithium_sb_idle_scalability_multinet_LinearTopo.json
-# 12. lithium_sb_idle_scalability_multinet_DisconnectedTopo.json
+# 03. lithium_nb_active_scalability_multinet_100sw.json
+# 04. lithium_nb_active_scalability_multinet_10sw.json
+# 05. lithium_nb_active_scalability_multinet.json
+# 06. lithium_RPC_sb_active_scalability_mtcbench.json
+# 07. lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours.json
+# 08. lithium_RPC_sb_idle_scalability_mtcbench.json
+# 09. lithium_sb_idle_scalability_mininet_DisconnectedTopo.json
+# 10. lithium_sb_idle_scalability_mininet_LinearTopo.json
+# 11. lithium_sb_idle_scalability_mininet_MeshTopo.json
+# 12. lithium_sb_idle_scalability_multinet_LinearTopo.json
+# 13. lithium_sb_idle_scalability_multinet_DisconnectedTopo.json
 
 # ------------------------------------------------------------------------------
 # lithium_DS_sb_active_scalability_mtcbench
@@ -84,11 +85,11 @@
             source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# lithium_nb_active_scalability_mininet_100sw
+# lithium_nb_active_scalability_multinet_100sw
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: lithium_nb_active_scalability_mininet_100sw-{branch}
+    name: lithium_nb_active_scalability_multinet_100sw-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -99,14 +100,14 @@
       - timestamps:
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_nb_active_scalability_mininet_100sw"
+          export CONFIG_FILENAME="lithium_nb_active_scalability_multinet_100sw"
 
           source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
 
           python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="nb_active_scalability_mininet" \
+               --test="nb_active_scalability_multinet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
                --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
                --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -116,11 +117,11 @@
             source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# lithium_nb_active_scalability_mininet_10sw
+# lithium_nb_active_scalability_multinet_10sw
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: lithium_nb_active_scalability_mininet_10sw-{branch}
+    name: lithium_nb_active_scalability_multinet_10sw-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -131,14 +132,14 @@
       - timestamps:
     builders:
       - shell: |
-          export CONFIG_FILENAME="lithium_nb_active_scalability_mininet_10sw"
+          export CONFIG_FILENAME="lithium_nb_active_scalability_multinet_10sw"
 
           source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
 
           python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="nb_active_scalability_mininet" \
+               --test="nb_active_scalability_multinet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
                --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
                --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -147,6 +148,37 @@
 
             source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
+# ------------------------------------------------------------------------------
+# lithium_nb_active_scalability_multinet_10sw
+# ------------------------------------------------------------------------------
+
+- job-template:
+    name: lithium_nb_active_scalability_multinet-{branch}
+    description: 'Enter the job description here'
+    block-downstream: false
+    block-upstream: false
+    defaults: github-stress
+    triggers:
+      - timed:
+    wrappers:
+      - timestamps:
+    builders:
+      - shell: |
+          export CONFIG_FILENAME="lithium_nb_active_scalability_multinet"
+
+          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
+
+          python3.4 ./stress_test/nstat_orchestrator.py \
+               --test="nb_active_scalability_multinet" \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
+               --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
+               --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
+               --html-report=$WORKSPACE/report.html \
+               --output-dir=$WORKSPACE/$RESULTS_DIR/
+
+            source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # lithium_RPC_sb_active_scalability_mtcbench
@@ -457,8 +489,9 @@
 
 #        - 'lithium_DS_sb_active_scalability_mtcbench-{branch}'
 #        - 'lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
-#        - 'lithium_nb_active_scalability_mininet_100sw-{branch}'
-#        - 'lithium_nb_active_scalability_mininet_10sw-{branch}'
+        - 'lithium_nb_active_scalability_multinet_100sw-{branch}'
+        - 'lithium_nb_active_scalability_multinet_10sw-{branch}'
+        - 'lithium_nb_active_scalability_multinet-{branch}'
 #        - 'lithium_RPC_sb_active_scalability_mtcbench-{branch}'
 #        - 'lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
 #        - 'lithium_RPC_sb_idle_scalability_mtcbench-{branch}'
@@ -467,4 +500,4 @@
 #        - 'lithium_sb_idle_scalability_mininet_MeshTopo-{branch}'
 #        - 'lithium_sb_idle_scalability_multinet_LinearTopo-{branch}'
 #        - 'lithium_sb_idle_scalability_multinet_DisconnectedTopo-{branch}'
-         - 'lithium_sb_idle_stability_multinet-{branch}'
+#         - 'lithium_sb_idle_stability_multinet-{branch}'
