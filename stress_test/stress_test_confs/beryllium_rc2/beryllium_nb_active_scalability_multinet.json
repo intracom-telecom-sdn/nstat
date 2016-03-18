@@ -40,7 +40,7 @@
 
 "controller_rebuild":true,
 "controller_cleanup":false,
-"controller_name":"ODL  (Beryllium RC2)",
+"controller_name":"ODL (Beryllium RC2)",
 "controller_restart":true,
 "controller_port":6653,
 "controller_restconf_port":8181,

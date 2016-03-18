@@ -196,12 +196,11 @@ def nb_active_scalability_mininet_run(out_json, ctrl_base_dir,
                 mininet_handlers_set.start_topo_handler, mininet_rest_server,
                 'start')
 
-            mininet_utils.mininet_topo_check_booted(topology_size,
-                                      topology_group_size,
-                                      topology_group_delay_ms,
-                                      mininet_handlers_set.get_switches_handler,
-                                      mininet_rest_server,
-                                      controller_nb_interface)
+            common.check_topo_booted(topology_size, topology_group_size,
+                                     topology_group_delay_ms,
+                                     mininet_handlers_set.get_switches_handler,
+                                     mininet_rest_server,
+                                     controller_nb_interface)
 
 
             cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
