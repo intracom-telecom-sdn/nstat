@@ -266,9 +266,13 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                 statistics['controller_cpu_shares'] = \
                     '{0}'.format(controller_cpu_shares)
                 statistics['of_out_packets_per_sec'] = \
-                    abs(res[0] - previous_oftraf_result[0]) / (oftraf_test_interval_ms / 1000)
+                    abs(res['out_traffic'][0] - previous_oftraf_result['out_traffic'][0]) / (oftraf_test_interval_ms / 1000)
                 statistics['of_out_bytes_per_sec'] = \
-                    abs(res[1] - previous_oftraf_result[1]) / (oftraf_test_interval_ms / 1000)
+                    abs(res['out_traffic'][1] - previous_oftraf_result['out_traffic'][1]) / (oftraf_test_interval_ms / 1000)
+                statistics['of_in_packets_per_sec'] = \
+                    abs(res['in_traffic'][0] - previous_oftraf_result['in_traffic'][0]) / (oftraf_test_interval_ms / 1000)
+                statistics['of_in_bytes_per_sec'] = \
+                    abs(res['in_traffic'][1] - previous_oftraf_result['in_traffic'][1]) / (oftraf_test_interval_ms / 1000)
                 statistics['sample_id'] = sample_id
                 total_samples.append(statistics)
             previous_oftraf_result = res
@@ -408,6 +412,8 @@ def get_report_spec(test_type, config_json, results_json):
               'Openflow outgoing packets per second'),
              ('of_out_bytes_per_sec',
               'Openflow outgoing bytes per second'),
+             ('of_in_bytes_per_sec',
+              'Openflow incoming bytes per second'),
              ('multinet_size', 'Multinet Size'),
              ('multinet_worker_topo_size',
               'Topology size per Multinet worker'),

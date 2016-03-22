@@ -58,7 +58,7 @@
 "topology_stop_switches_handler":"./bin/handlers/stop_topos",
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 
-"topology_size":[63, 125, 188],
+"topology_size":[7, 63, 125, 188],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[1],
 "topology_group_size":[3],
@@ -71,12 +71,12 @@
 "multinet_worker_port_list":[3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
-"flow_workers":[1, 10, 20],
-"total_flows":[10000, 100000, 1000000, 10000000],
-"flow_operations_delay_ms":[0 ,5, 10],
+"flow_workers":[20],
+"total_flows":[10000, 100000, 1000000],
+"flow_operations_delay_ms":[5],
 "flow_delete_flag":true,
 
-"java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
+"java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 
 
 "plots":[
