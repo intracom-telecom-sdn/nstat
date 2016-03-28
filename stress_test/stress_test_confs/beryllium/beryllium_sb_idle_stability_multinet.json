@@ -66,7 +66,7 @@
 
 "number_of_samples":4320,
 
-"java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
+"java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 
 "plots":[
   {

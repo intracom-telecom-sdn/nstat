@@ -40,7 +40,7 @@
 
 "controller_rebuild":true,
 "controller_cleanup":false,
-"controller_name":"ODL",
+"controller_name":"ODL (Beryllium RC2)",
 "controller_restart":true,
 "controller_port":6653,
 "controller_restconf_port":8181,
@@ -67,10 +67,9 @@
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_worker_ip_list":["192.168.100.19", "192.168.100.20", "192.168.100.21"],
+"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22"],
 "multinet_worker_port_list":[3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
-
 
 "flow_workers":[4],
 "total_flows":[64],

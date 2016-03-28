@@ -82,37 +82,45 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
     # Read request from queue
     # Op type could be A/D/T, for add/deletion and termination respectively.
     while True:
-        op_type,of_node,flow_id,current_ip = opqueue.get(block=True,
+        try:
+            op_type,of_node,flow_id,current_ip = opqueue.get(block=True,
                                                          timeout=10000)
-        logging.debug(
-            '[flow_worker_thread] Worker {0}, received operation'
-            ' = ( OP = {1}, Node = {2}, Flow-id = {3})'.format(wid, op_type,
-                                                               of_node,
-                                                               flow_id))
+            logging.debug(
+                '[flow_worker_thread] Worker {0}, received operation'
+                ' = ( OP = {1}, Node = {2}, Flow-id = {3})'.format(wid, op_type,
+                                                                   of_node,
+                                                                   flow_id))
 
-        if op_type == 'T':
-            logging.debug('[flow_worker_thread] '
+            if op_type == 'T':
+                logging.debug('[flow_worker_thread] '
+                              'Worker {0} will terminate.'.format(wid))
+                resqueue.put(failed_flow_ops)
+                return 0
+
+            elif op_type == 'A':
+                status = flow_processor.add_flow(flow_id, of_node, current_ip)
+                logging.debug('[flow_worker_thread] [op_type]: op_type = A '
+                              '(Adding flow)| Status code of the response: '
+                              '{0}.'.format(status))
+                if status != 200:
+                    logging.debug('[flow_worker_thread] failed to add flow.')
+                    failed_flow_ops += 1
+
+            elif op_type == 'D':
+                status = flow_processor.remove_flow(flow_id, of_node)
+                logging.debug('[flow_worker_thread] [op_type]: op_type = D '
+                              '(Remove flow)| Status code of the response: '
+                              '{0}.'.format(status))
+                if status != 200:
+                    logging.debug('[flow_worker_thread] failed to delete flow.')
+                    failed_flow_ops += 1
+
+            time.sleep(float(op_delay_ms)/1000)
+        except:
+            logging.error('[flow_worker_thread] Unable to process rest requests. '
                           'Worker {0} will terminate.'.format(wid))
             resqueue.put(failed_flow_ops)
-            return
-
-        elif op_type == 'A':
-            status = flow_processor.add_flow(flow_id, of_node, current_ip)
-            logging.debug('[flow_worker_thread] [op_type]: op_type = A '
-                          '(Adding flow)| Status code of the response: '
-                          '{0}.'.format(status))
-            if status != 200:
-                failed_flow_ops += 1
-
-        elif op_type == 'D':
-            status = flow_processor.remove_flow(flow_id, of_node)
-            logging.debug('[flow_worker_thread] [op_type]: op_type = D '
-                          '(Remove flow)| Status code of the response: '
-                          '{0}.'.format(status))
-            if status != 200:
-                failed_flow_ops += 1
-
-        time.sleep(float(op_delay_ms)/1000)
+            return -1
 
 
 def distribute_workload(nflows, opqueues, operation, node_names):
@@ -230,6 +238,7 @@ def poll_flows(expected_flows, ctrl_ip, ctrl_port, t_start, auth_token):
 
         time.sleep(1)
 
+
 def get_node_names(ctrl_ip, ctrl_port, auth_token):
     """
     Fetch node names from the OpenDaylight operational DS
@@ -250,21 +259,26 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
                    format(ctrl_ip, ctrl_port))
     node_names = []
     session = requests.Session()
-    while True:
-        logging.debug(
-            '[flow_master_thread] Trying to fetch node names from datastore')
-        request = session.get(url_request, headers=getheaders, stream=False,
-                              auth=(auth_token.controller_restconf_user,
-                                    auth_token.controller_restconf_password))
-        json_topology = json.loads(request.text)
-        nodes = json_topology.get('topology')[0].get('node')
-        if nodes is not None:
-            break
+    try:
+        while True:
+            logging.debug(
+                '[flow_master_thread] Trying to fetch node names from datastore')
+            request = session.get(url_request, headers=getheaders, stream=False,
+                                 auth=(auth_token.controller_restconf_user,
+                                        auth_token.controller_restconf_password))
+            json_topology = json.loads(request.text)
+            nodes = json_topology.get('topology')[0].get('node')
+            if nodes is not None:
+                break
 
-    for node in nodes:
-        node_names.append(node.get('node-id'))
 
-    return node_names
+        for node in nodes:
+            node_names.append(node.get('node-id'))
+
+        return node_names
+    except:
+        raise ValueError('[ERROR] Fail getting node names')
+
 
 def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
                        auth_token):
@@ -305,8 +319,8 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
     logging.info('[flow_operations_calc_time] initiate flow polling')
     operation_time = poll_flows(nflows, ctrl_ip, ctrl_port, t_start,
                                 auth_token)
-
     return (transmission_interval, operation_time, failed_flow_ops)
+
 
 def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
                            url_template, flow_template, auth_token,

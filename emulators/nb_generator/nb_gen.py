@@ -86,31 +86,41 @@ def flow_master(args):
     failed_flow_ops_add=0
     failed_flow_ops_total=0
     results = []
-    node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
-                                             flow_ops_params_set.ctrl_port,
-                                             controller_rest_auth_token)
-    op_delay_ms = int(args.op_delay_ms)
-    flow_template = F_TEMP
-    url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
-        flow_ops_params_set.ctrl_port + \
-        '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
-        'table/0/flow/%d'
-    # Calculate time needed for add flow operations
-    transmission_interval_add, operation_time_add, failed_flow_ops_add = \
-    nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
-                                        node_names, url_template, flow_template,
-                                        controller_rest_auth_token)
+    try:
+        node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
+                                                 flow_ops_params_set.ctrl_port,
+                                                 controller_rest_auth_token)
 
+        op_delay_ms = int(args.op_delay_ms)
+        flow_template = F_TEMP
+        url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
+            flow_ops_params_set.ctrl_port + \
+            '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
+            'table/0/flow/%d'
+        # Calculate time needed for add flow operations
+        transmission_interval_add, operation_time_add, failed_flow_ops_add = \
+        nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
+                                            node_names, url_template, flow_template,
+                                            controller_rest_auth_token)
+    except:
+        transmission_interval_add = 0
+        operation_time_add = 0
+        failed_flow_ops_add = flow_ops_params_set.nflows
     results.append(transmission_interval_add)
     results.append(operation_time_add)
 
     # Calculate time needed for delete flow operations
     if delete_flows_flag:
-        transmission_interval_del, operation_time_del, failed_flow_ops_del = \
-        nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
-                                            node_names, url_template, flow_template,
-                                            controller_rest_auth_token,
-                                            delete_flows_flag=True)
+        try:
+            transmission_interval_del, operation_time_del, failed_flow_ops_del = \
+            nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
+                                                node_names, url_template, flow_template,
+                                                controller_rest_auth_token,
+                                                delete_flows_flag=True)
+        except:
+            transmission_interval_del = 0
+            operation_time_del = 0
+            failed_flow_ops_del = flow_ops_params_set.nflows
         results.append(transmission_interval_del)
         results.append(operation_time_del)
 

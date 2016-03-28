@@ -65,13 +65,16 @@ class FlowProcessor(object):
         flow_data = self.flow_template % (flow_id, 'TestFlow-%d' % flow_id,
                                           65000, str(flow_id), 65000, ip_dest)
         flow_url = self.url_template % (node_id, flow_id)
-
-        request = self.session.put(flow_url, data=flow_data,
-                                   headers=self.putheaders, stream=False,
-                                   auth=self.auth_token)
-        # Enable logging after performing requests
-        logging.disable(logging.NOTSET)
-        return request.status_code
+        try:
+            request = self.session.put(flow_url, data=flow_data,
+                                       headers=self.putheaders, stream=False,
+                                       auth=self.auth_token)
+            return request.status_code
+        except:
+            return -1
+        finally:
+            # Enable logging after performing requests
+            logging.disable(logging.NOTSET)
 
     def remove_flow(self, flow_id, node_id):
         """
@@ -88,11 +91,15 @@ class FlowProcessor(object):
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
         flow_url = self.url_template % (node_id, flow_id)
-        request = self.session.delete(flow_url, headers=self.getheaders,
-                                      auth=self.auth_token)
-        # Enable logging after performing requests
-        logging.disable(logging.NOTSET)
-        return request.status_code
+        try:
+            request = self.session.delete(flow_url, headers=self.getheaders,
+                                          auth=self.auth_token)
+            return request.status_code
+        except:
+            return -1
+        finally:
+            # Enable logging after performing requests
+            logging.disable(logging.NOTSET)
 
 
 class FlowExplorer(object):
@@ -137,13 +144,19 @@ class FlowExplorer(object):
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
         s = requests.Session()
-        req = s.get(self.inventory_stats_url,
-                    headers=self.getheaders,
-                    stream=False,
-                    auth=self.auth_token)
-        str_response = req.content.decode('utf-8')
-        # Enable logging after performing requests
-        logging.disable(logging.NOTSET)
+        try:
+            req = s.get(self.inventory_stats_url,
+                        headers=self.getheaders,
+                        stream=False,
+                        auth=self.auth_token)
+            str_response = req.content.decode('utf-8')
+        except:
+            self.active_flows = 0
+            self.found_flows = 0
+            return -1
+        finally:
+            # Enable logging after performing requests
+            logging.disable(logging.NOTSET)
 
         if req.status_code == 200:
             try:

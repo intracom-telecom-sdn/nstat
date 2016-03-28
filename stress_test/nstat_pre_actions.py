@@ -9,14 +9,12 @@ Orchestrator for stress tests.
 
 import json
 import logging
-import nb_active_scalability_mininet
 import nb_active_scalability_multinet
 import os
 import sb_active_scalability_cbench
 import sb_active_scalability_multinet
 import sb_active_stability_cbench
 import sb_idle_scalability_cbench
-import sb_idle_scalability_mininet
 import sb_idle_scalability_multinet
 import sb_idle_stability_multinet
 import sys
@@ -156,24 +154,6 @@ def nstat_test_selector(args, test_config):
             args.json_config,
             args.json_output)
 
-    # sb_idle_scalability_mininet
-    elif args.test_type == 'sb_idle_scalability_mininet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            sb_idle_scalability_mininet.sb_idle_scalability_mininet_run(
-                args.json_output,
-                args.ctrl_base_dir,
-                args.sb_gen_base_dir,
-                test_config,
-                args.output_dir)
-
-        report_spec = sb_idle_scalability_mininet.get_report_spec(
-            args.test_type,
-            args.json_config,
-            args.json_output)
-
     # sb_idle_scalability_multinet
     elif args.test_type == 'sb_idle_scalability_multinet':
 
@@ -208,26 +188,6 @@ def nstat_test_selector(args, test_config):
                 oftraf_path)
 
         report_spec = sb_idle_stability_multinet.get_report_spec(
-            args.test_type,
-            args.json_config,
-            args.json_output)
-
-    # nb_active_scalability_mininet
-    elif args.test_type == 'nb_active_scalability_mininet':
-
-        if not args.bypass_test:
-            logging.info('[nstat_orchestrator] Running test {0}'.
-                         format(args.test_type))
-            nb_active_scalability_mininet.nb_active_scalability_mininet_run(
-                args.json_output,
-                args.ctrl_base_dir,
-                args.nb_gen_base_dir,
-                args.sb_gen_base_dir,
-                test_config,
-                args.output_dir,
-                args.logging_level)
-
-        report_spec = nb_active_scalability_mininet.get_report_spec(
             args.test_type,
             args.json_config,
             args.json_output)

@@ -1,5 +1,4 @@
 {
-
 "nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
 "nstat_host_ip":"127.0.0.1",
 "nstat_node_ip":"127.0.0.1",
@@ -9,24 +8,25 @@
 
 "controller_node_spec":"/nstat/vagrant/node_controller/Vagrantfile",
 "controller_host_ip":"127.0.0.1",
-"controller_node_ip":"127.0.0.1",
+"controller_node_ip":"192.168.100.1",
 "controller_node_ssh_port":"22",
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
 
-"cbench_node_spec":"/nstat/vagrant/node_cbench/Vagrantfile",
-"cbench_host_ip":"127.0.0.1",
-"cbench_node_ip":"127.0.0.1",
-"cbench_node_ssh_port":"22",
-"cbench_node_username":"jenkins",
-"cbench_node_password":"jenkins",
+"topology_node_spec":"/nstat/vagrant/node_cbench/Vagrantfile",
+"topology_host_ip":"127.0.0.1",
+"topology_node_ip":"192.168.100.20",
+"topology_node_ssh_port":"22",
+"topology_node_username":"vagrant",
+"topology_node_password":"vagrant",
 
 "controller_build_handler":"./build.sh",
-"controller_start_handler":"./start_droptestDS.sh",
+"controller_start_handler":"./start.sh",
 "controller_stop_handler":"./stop.sh",
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
+"controller_flowmods_conf_handler":"/controller_flowmods_configure.py",
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
 
 "controller_rebuild":true,
@@ -36,22 +36,35 @@
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":75,
 
-"cbench_build_handler":"./build.sh",
-"cbench_run_handler":"./run.sh",
-"cbench_clean_handler":"./clean.sh",
-"cbench_rebuild":true,
-"cbench_cleanup":false,
-"cbench_name":"MT-Cbench",
-"cbench_simulated_hosts":[100],
-"cbench_switches_per_thread":[50],
-"cbench_threads":[1,2,4,8,16,20,40,60,80,100],
-"cbench_thread_creation_delay_ms":[15000],
-"cbench_delay_before_traffic_ms":[15000],
-"cbench_mode":"Latency",
-"cbench_warmup":0,
-"cbench_ms_per_test":20000,
-"cbench_internal_repeats":1,
-"mtcbench_cpu_shares":25,
+"topology_rest_server_boot":"./bin/deploy",
+"topology_rest_server_stop":"./bin/cleanup",
+"topology_rest_server_port":3300,
+
+"topology_init_handler":"./bin/handlers/init_topos",
+"topology_start_switches_handler":"./bin/handlers/start_topos",
+"topology_stop_switches_handler":"./bin/handlers/stop_topos",
+"topology_get_switches_handler":"./bin/handlers/get_switches",
+"topology_traffic_gen_handler":"./bin/handlers/traffic_gen",
+
+"topology_size":[12, 25, 50, 100, 200, 300],
+"topology_type":["linear"],
+"topology_hosts_per_switch":[2],
+"topology_group_size":[1],
+"topology_group_delay_ms":[5000],
+
+
+"multinet_clean_handler":"./clean.sh",
+"multinet_build_handler":"./build.sh",
+
+"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22", "192.168.100.23", "192.168.100.24", "192.168.100.25", "192.168.100.26", "192.168.100.27", "192.168.100.28", "192.168.100.29", "192.168.100.30", "192.168.100.31", "192.168.100.32", "192.168.100.33", "192.168.100.34", "192.168.100.35"],
+"multinet_worker_port_list":[3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333],
+"multinet_switch_type":"ovsk",
+
+"traffic_generation_duration_ms":60000,
+"interpacket_delay_ms":500,
+
+"oftraf_rest_server_port":5555,
+
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 
@@ -59,15 +72,15 @@
 
 "plots":[
     {
-        "x_axis_key":"cbench_switches",
-        "y_axis_key":"throughput_responses_sec",
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"of_out_packets_per_sec",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
-        "y_axis_label":"Throughput (responses/sec)",
+        "y_axis_label":"Packets/sec",
+        "plot_title":"Controller output packets per second for varying switches (Beryllium RC2)",
         "plot_type":"errorbar",
-        "plot_title":"Controller throughput for varying switches (Beryllium RC2)",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
-        "plot_filename":"throughput",
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
+        "plot_filename":"throughput_of_out_packets_per_sec",
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",
@@ -75,14 +88,62 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"of_out_bytes_per_sec",
+        "z_axis_key":null,
+        "x_axis_label":"# Total switches",
+        "y_axis_label":" Bytes/sec",
+        "plot_title":"Controller output bytes per second for varying switches (Beryllium RC2)",
+        "plot_type":"errorbar",
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
+        "plot_filename":"throughput_of_out_bytes_per_sec",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"of_in_packets_per_sec",
+        "z_axis_key":null,
+        "x_axis_label":"# Total switches",
+        "y_axis_label":"Packets/sec",
+        "plot_title":"Controller incoming packets per second for varying switches (Beryllium RC2)",
+        "plot_type":"errorbar",
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
+        "plot_filename":"throughput_of_in_packets_per_sec",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"of_in_bytes_per_sec",
+        "z_axis_key":null,
+        "x_axis_label":"# Total switches",
+        "y_axis_label":" Bytes/sec",
+        "plot_title":"Controller incoming bytes per second for varying switches (Beryllium RC2)",
+        "plot_type":"errorbar",
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
+        "plot_filename":"throughput_of_in_bytes_per_sec",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"multinet_size",
         "y_axis_key":"used_memory_bytes",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Used memory (MB)",
         "plot_type":"errorbar",
         "plot_title":"Controller memory usage for varying switches (Beryllium RC2)",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"memory_usage",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -91,14 +152,14 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_vm_size",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Controller VM size (MB)",
         "plot_type":"errorbar",
         "plot_title":"Controller VM size for varying switches (Beryllium RC2)",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"vm_size",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -107,14 +168,14 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_num_threads",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Controller threads",
         "plot_type":"errorbar",
         "plot_title":"Controller threads for varying switches (Beryllium RC2)",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"num_threads",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -123,14 +184,14 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"controller_cpu_user_time",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Controller CPU user time",
         "plot_type":"errorbar",
         "plot_title":"Controller CPU user time for varying switches (Beryllium RC2)",
-        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"controller_cpu_user_time",
         "x_min":null, "x_max":null, "y_min":null, "y_max":null,
         "x_axis_factor":"1.0",
@@ -139,7 +200,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"one_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -155,7 +216,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"five_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
@@ -171,7 +232,7 @@
         "y_axis_scale": "linear"
     },
     {
-        "x_axis_key":"cbench_switches",
+        "x_axis_key":"multinet_size",
         "y_axis_key":"fifteen_minute_load",
         "z_axis_key":null,
         "x_axis_label":"# Total switches",

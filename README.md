@@ -16,10 +16,13 @@ Key features in brief:
 - Scalable traffic generation with [MT-Cbench](https://github.com/intracom-telecom-sdn/mtcbench) emulator,
   able to emulate networks in the order of thousands of switches
 - Unification of different stress tests, see below:
-  * SouthBound idle switch scalability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-MT-Cbench-switches) and [Mininet](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-Mininet-switches))
-  * SouthBound active switch scalability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-active-MT-Cbench-switches))
-  * SouthBound active switch stability (with [MT-Cbench](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-MT-Cbench-switches))
-  * [Northbound flow scalablity](https://github.com/intracom-telecom-sdn/nstat/wiki/Flow-scalability-test-with-idle-Multinet-switches)
+    - [Switch scalability test with active MT-Cbench switches](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-active-MT-Cbench-switches)
+    - [Switch scalability test with active Multinet switches](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-active-Multinet-switches)
+    - [Switch scalability test with idle MT-Cbench switches](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-MT-Cbench-switches)
+    - [Switch scalability test with idle Multinet switches](https://github.com/intracom-telecom-sdn/nstat/wiki/Switch-scalability-test-with-idle-Multinet-switches)
+    - [Controller stability test with active MT-Cbench switches](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-active-MT-Cbench-switches)
+    - [Controller stability test with idle Multinet switches](https://github.com/intracom-telecom-sdn/nstat/wiki/Controller-stability-test-with-idle-Multinet-switches)
+    - [Flow scalability test with idle Multinet switches](https://github.com/intracom-telecom-sdn/nstat/wiki/Flow-scalability-test-with-idle-Multinet-switches)
 - Comprehensive reporting and configurable plotting
 
 For a detailed features listing have a look at the [features](https://github.com/intracom-telecom-sdn/nstat/wiki/Features) page.
@@ -47,15 +50,19 @@ page.
 
 ## Browse performance results
 
+- [3/29/2016]: Performance Stress Tests Report v1.2: "Berylium Vs Lithium SR3" [[pdf]]()
+
 - [1/2/2016]: Performance Stress Tests Report v1.1: "Lithium SR3" [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.1.pdf)
 
 - [6/29/2015]: Performance Stress Tests Report v1.0: "Lithium vs Helium Comparison": [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.0.pdf)
 
-- We provide indicative experimental results from [switch  scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-Helium-SR3-switch-scalability-results)
+Indicative experimental results from [switch  scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-Helium-SR3-switch-scalability-results)
 and [stability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-Helium-SR3-stability-results)
-test cases with OpenDaylight controller. The [CPU shares](https://github.com/intracom-telecom-sdn/nstat/wiki/Capping-controller-and-generator-CPU-resources-in-collocated-tests) page
+test cases with OpenDaylight controller are also provided.
+
+The [CPU shares](https://github.com/intracom-telecom-sdn/nstat/wiki/Capping-controller-and-generator-CPU-resources-in-collocated-tests) page
 shows the performance effect of allocating different CPU partitions
-to test components.
+to individual NSTAT test components.
 
 -----------------------------------------------------------
 
