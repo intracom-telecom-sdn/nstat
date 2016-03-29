@@ -178,11 +178,9 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             controller_handlers_set.ctrl_flowmods_conf_handler,
             controller_ssh_client)
 
-        # TODO remove the following comments and oftraf files from repo
-        #when pull requests are accepted
-        #logging.info('{0} Building oftraf.'.format(test_type))
-        #oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
-        #                          controller_ssh_client)
+        logging.info('{0} Building oftraf.'.format(test_type))
+        oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
+                                  controller_ssh_client)
 
         # Run tests for all possible dimensions
         for (multinet_worker_topo_size,
