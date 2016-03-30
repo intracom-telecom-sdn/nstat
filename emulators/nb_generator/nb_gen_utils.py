@@ -115,7 +115,7 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
                     logging.debug('[flow_worker_thread] failed to delete flow.')
                     failed_flow_ops += 1
 
-            #time.sleep(float(op_delay_ms)/1000)
+            time.sleep(float(op_delay_ms)/1000)
         except:
             logging.error('[flow_worker_thread] Unable to process rest requests. '
                           'Worker {0} will terminate.'.format(wid))
