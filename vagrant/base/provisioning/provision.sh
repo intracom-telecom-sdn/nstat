@@ -25,10 +25,11 @@ cd $BASE_DIR
 #echo "http_proxy="$http_proxy | sudo tee -a /etc/environment
 #echo "https_proxy="$https_proxy | sudo tee -a /etc/environment
 #echo "ftp_proxy="$ftp_proxy | sudo tee -a /etc/environment
+#echo "no_proxy="$no_proxy | sudo tee -a /etc/environment
 #echo "HTTP_PROXY="$http_proxy | sudo tee -a /etc/environment
 #echo "HTTPS_PROXY="$https_proxy | sudo tee -a /etc/environment
 #echo "FTP_PROXY="$ftp_proxy | sudo tee -a /etc/environment
-#echo "no_proxy="$no_proxy | sudo tee -a /etc/environment
+#echo "NO_PROXY="$no_proxy | sudo tee -a /etc/environment
 #if [ ! -f /etc/apt/apt.conf ]; then
 #    sudo touch /etc/apt/apt.conf
 #fi
