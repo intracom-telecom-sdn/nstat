@@ -71,9 +71,9 @@
 "multinet_worker_port_list":[3333],
 "multinet_switch_type":"ovsk",
 
-"flow_workers":[20],
+"flow_workers":[1],
 "total_flows":[1000, 10000, 100000],
-"flow_operations_delay_ms":[5],
+"flow_operations_delay_ms":[0],
 "flow_delete_flag":true,
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
