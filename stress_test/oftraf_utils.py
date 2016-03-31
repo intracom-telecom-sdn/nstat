@@ -132,9 +132,13 @@ def oftraf_monitor_thread(oftraf_interval_ms, oftraf_rest_server,
         time.sleep(oftraf_interval_sec)
         logging.info('[oftraf_monitor_thread] get throughput of controller')
         response_data = json.loads(oftraf_get_of_counts(oftraf_rest_server))
+        tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
+        tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
         out_traffic = tuple(response_data['OF_out_counts'])
         in_traffic = tuple(response_data['OF_in_counts'])
-        results = {'out_traffic':out_traffic, 'in_traffic':in_traffic}
+        results = {'of_out_traffic':out_traffic, 'of_in_traffic':in_traffic,
+                   'tcp_of_out_traffic':tcp_out_traffic,
+                   'tcp_of_in_traffic':tcp_in_traffic}
         results_queue.put(results, block=True)
 
     return
