@@ -178,11 +178,9 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             controller_handlers_set.ctrl_flowmods_conf_handler,
             controller_ssh_client)
 
-        # TODO remove the following comments and oftraf files from repo
-        #when pull requests are accepted
-        #logging.info('{0} Building oftraf.'.format(test_type))
-        #oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
-        #                          controller_ssh_client)
+        logging.info('{0} Building oftraf.'.format(test_type))
+        oftraf_utils.oftraf_build(oftraf_handlers_set.oftraf_build_handler,
+                                  controller_ssh_client)
 
         # Run tests for all possible dimensions
         for (multinet_worker_topo_size,
@@ -302,13 +300,21 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             statistics['controller_cpu_shares'] = \
                 '{0}'.format(controller_cpu_shares)
             statistics['of_out_packets_per_sec'] = \
-                float(res['out_traffic'][0]) / (float(traffic_generation_duration_ms) / 1000)
+                float(res['of_out_traffic'][0]) / (float(traffic_generation_duration_ms) / 1000)
             statistics['of_out_bytes_per_sec'] = \
-                float(res['out_traffic'][1]) / (float(traffic_generation_duration_ms) / 1000)
+                float(res['of_out_traffic'][1]) / (float(traffic_generation_duration_ms) / 1000)
             statistics['of_in_packets_per_sec'] = \
-                float(res['in_traffic'][0]) / (float(traffic_generation_duration_ms) / 1000)
+                float(res['of_in_traffic'][0]) / (float(traffic_generation_duration_ms) / 1000)
             statistics['of_in_bytes_per_sec'] = \
-                float(res['in_traffic'][1]) / (float(traffic_generation_duration_ms) / 1000)
+                float(res['of_in_traffic'][1]) / (float(traffic_generation_duration_ms) / 1000)
+            statistics['tcp_of_out_packets_per_sec'] = \
+                float(res['tcp_of_out_traffic'][0]) / (float(traffic_generation_duration_ms) / 1000)
+            statistics['tcp_of_out_bytes_per_sec'] = \
+                float(res['tcp_of_out_traffic'][1]) / (float(traffic_generation_duration_ms) / 1000)
+            statistics['tcp_of_in_packets_per_sec'] = \
+                float(res['tcp_of_in_traffic'][0]) / (float(traffic_generation_duration_ms) / 1000)
+            statistics['tcp_of_in_bytes_per_sec'] = \
+                float(res['tcp_of_in_traffic'][1]) / (float(traffic_generation_duration_ms) / 1000)
             statistics['traffic_generation_duration_ms'] = \
                 traffic_generation_duration_ms
             statistics['interpacket_delay_ms'] = interpacket_delay_ms
@@ -465,7 +471,11 @@ def get_report_spec(test_type, config_json, results_json):
              ('of_out_bytes_per_sec',
               'Outgoing controller throughput (Bytes per second)'),
              ('of_in_bytes_per_sec',
-              'Incoming controller throughput (Bytes per second)'),
+              'Incoming controller traffic (Bytes per second)'),
+             ('tcp_of_out_bytes_per_sec',
+              'Outgoing TCP with OpenFlow Payload controller throughput (Bytes per second)'),
+             ('tcp_of_in_bytes_per_sec',
+              'Incoming TCP with OpenFlow Payload controller traffic (Bytes per second)'),
              ('traffic_generation_duration_ms',
               'Traffic generation interval (ms)'),
               ('interpacket_delay_ms',

@@ -58,22 +58,22 @@
 "topology_stop_switches_handler":"./bin/handlers/stop_topos",
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 
-"topology_size":[7, 63, 125, 188],
+"topology_size":[100],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[1],
-"topology_group_size":[3],
-"topology_group_delay_ms":[2000],
+"topology_group_size":[1],
+"topology_group_delay_ms":[3000],
 
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22", "192.168.100.23", "192.168.100.24", "192.168.100.25", "192.168.100.26", "192.168.100.27", "192.168.100.28", "192.168.100.29", "192.168.100.30", "192.168.100.31", "192.168.100.32", "192.168.100.33", "192.168.100.34", "192.168.100.35"],
-"multinet_worker_port_list":[3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333],
+"multinet_worker_ip_list":["192.168.100.20"],
+"multinet_worker_port_list":[3333],
 "multinet_switch_type":"ovsk",
 
-"flow_workers":[20],
-"total_flows":[10000, 100000, 1000000],
-"flow_operations_delay_ms":[5],
+"flow_workers":[2],
+"total_flows":[2000, 10000, 100000],
+"flow_operations_delay_ms":[0],
 "flow_delete_flag":true,
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
