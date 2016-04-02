@@ -240,8 +240,8 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                          ' for sample_id={1}'.format(test_type, sample_id))
             res = result_queue.get(block=True)
             logging.info('{0} Returned results from of_traf: (Packets:{1}, '
-                         'Bytes:{2})'.format(test_type, res['out_traffic'][0],
-                                             res['out_traffic'][1]))
+                         'Bytes:{2})'.format(test_type, res['of_out_traffic'][0],
+                                             res['of_out_traffic'][1]))
             # Results collection
             if sample_id > 0:
                 statistics = common.sample_stats(cpid, controller_ssh_client)
