@@ -34,7 +34,7 @@
 "controller_name":"ODL (Lithium SR3)",
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":75,
+"controller_cpu_shares":100,
 
 "topology_rest_server_boot":"./bin/deploy",
 "topology_rest_server_stop":"./bin/cleanup",

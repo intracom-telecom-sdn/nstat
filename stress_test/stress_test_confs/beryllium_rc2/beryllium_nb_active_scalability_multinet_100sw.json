@@ -27,7 +27,6 @@
 "nb_generator_node_ssh_port":"22",
 "nb_generator_node_username":"jenkins",
 "nb_generator_node_password":"jenkins",
-
 "nb_generator_cpu_shares":25,
 
 "controller_build_handler":"./build.sh",
