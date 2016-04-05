@@ -21,7 +21,6 @@ controller_northbound = collections.namedtuple('controller_northbound',
     ['ip', 'port', 'username', 'password'])
 controller_southbound = collections.namedtuple('controller_southbound',
                                                ['ip', 'port'])
-mininet_server = collections.namedtuple('mininet_server', ['ip', 'port'])
 multinet_server = collections.namedtuple('multinet_server', ['ip', 'port'])
 oftraf_server = collections.namedtuple('oftraf_server', ['ip', 'port'])
 multinet_local_handlers = collections.namedtuple('multinet_local_handlers' ,

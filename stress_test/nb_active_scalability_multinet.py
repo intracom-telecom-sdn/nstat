@@ -55,6 +55,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     multinet_hosts_per_switch = conf['topology_hosts_per_switch']
     multinet_worker_topo_size = conf['topology_size']
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
+    multinet_workers = len(multinet_worker_ip_list)
     multinet_worker_port_list = conf['multinet_worker_port_list']
 
     # Northbound generator node parameters
@@ -228,6 +229,15 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.start_topo_handler,
                 'start_topo_handler_multinet', multinet_base_dir)
+
+            logging.info('{0} Check if topology has successfully booted and '
+                         'controller has identified all switches.'.
+                         format(test_type))
+            multinet_utils.check_topo_booted(
+                multinet_worker_topo_size*multinet_workers,
+                multinet_group_size, multinet_group_delay_ms,
+                multinet_handlers_set.get_switches_handler,
+                multinet_rest_server, controller_nb_interface)
 
             cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
                 format(nb_generator_base_dir, nb_generator_cpus,
