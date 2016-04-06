@@ -93,7 +93,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         multinet_base_dir + conf['topology_start_switches_handler'],
         multinet_base_dir + conf['topology_rest_server_stop'],
         '',
-        ctrl_base_dir + conf['controller_change_persistent']
+        ctrl_base_dir + conf['controller_persistent_handler']
         )
     multinet_local_handlers_set = \
         conf_collections_util.multinet_local_handlers(

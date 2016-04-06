@@ -13,14 +13,13 @@
 nstat_vm_basebox = 'nstat_vm_base'
 
 # VMs setup for sample MT-Cbench tests------------------------------------------
-#nstat_node_names = ['ndmn']
-#nstat_node_vm_ram_arr = [4192]
-#nstat_node_vm_cpu_arr = [1]
+nstat_node_names = ['ndmn']
+nstat_node_vm_ram_arr = [4192]
+nstat_node_vm_cpu_arr = [1]
 
-nstat_node_names = ['ndcntrl']
-nstat_node_vm_ram_arr = [16384]
-nstat_node_vm_cpu_arr = [4]
-
+#nstat_node_names = ['ndcntrl']
+#nstat_node_vm_ram_arr = [16384]
+#nstat_node_vm_cpu_arr = [4]
 
 # VMs setup for sample Mininet tests--------------------------------------------
 #nstat_node_names = ['ndmn', 'ndcntrlr', 'ndnstat']
@@ -45,7 +44,7 @@ nstat_node_vm_cpu_arr = [4]
 
 ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
-nstat_nodes_private_network_ip = '192.168.100.51' # the first IP address in the NSTAT VMs IP Address range
+nstat_nodes_private_network_ip = '192.168.100.20' # the first IP address in the NSTAT VMs IP Address range
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
 
