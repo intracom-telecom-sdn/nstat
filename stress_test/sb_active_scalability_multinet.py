@@ -75,7 +75,8 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler'],
-        ctrl_base_dir + conf['controller_flowmods_conf_handler']
+        ctrl_base_dir + conf['controller_flowmods_conf_handler'],
+        ctrl_base_dir + conf['controller_persistent_handler']
         )
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
@@ -133,6 +134,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
             controller_handlers_set.ctrl_flowmods_conf_handler,
+            controller_handlers_set.ctrl_change_persistent,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler,
             oftraf_handlers_set.oftraf_build_handler,

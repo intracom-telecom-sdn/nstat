@@ -71,7 +71,9 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler'],
-        '')
+        '',
+        ctrl_base_dir + conf['controller_persistent_handler']
+        )
 
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
@@ -130,6 +132,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
+            controller_handlers_set.ctrl_change_persistent,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler,
             oftraf_handlers_set.oftraf_build_handler,
@@ -240,8 +243,8 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
                          ' for sample_id={1}'.format(test_type, sample_id))
             res = result_queue.get(block=True)
             logging.info('{0} Returned results from of_traf: (Packets:{1}, '
-                         'Bytes:{2})'.format(test_type, res['out_traffic'][0],
-                                             res['out_traffic'][1]))
+                         'Bytes:{2})'.format(test_type, res['of_out_traffic'][0],
+                                             res['of_out_traffic'][1]))
             # Results collection
             if sample_id > 0:
                 statistics = common.sample_stats(cpid, controller_ssh_client)

@@ -27,6 +27,8 @@
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
 "controller_flowmods_conf_handler":"/controller_flowmods_configure.py",
+"controller_persistent_handler":"/change_persistent.py",
+
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
 
 "controller_rebuild":true,
@@ -34,7 +36,7 @@
 "controller_name":"ODL (Beryllium RC2)",
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":75,
+"controller_cpu_shares":100,
 
 "topology_rest_server_boot":"./bin/deploy",
 "topology_rest_server_stop":"./bin/cleanup",
@@ -141,7 +143,7 @@
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":"Packets/sec",
-        "plot_title":"Controller output packets per second for varying switches (Beryllium RC2)",
+        "plot_title":"Controller TCP output packets per second with OpenFlow payload for varying switches (Beryllium RC2)",
         "plot_type":"errorbar",
         "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"throughput_tcp_of_out_packets_per_sec",
@@ -157,7 +159,7 @@
         "z_axis_key":null,
         "x_axis_label":"# Total switches",
         "y_axis_label":" Bytes/sec",
-        "plot_title":"Controller output bytes per second for varying switches (Beryllium RC2)",
+        "plot_title":"Controller TCP output bytes per second with OpenFlow payload for varying switches (Beryllium RC2)",
         "plot_type":"errorbar",
         "plot_subtitle_keys":["controller_java_xopts", "multinet_size"],
         "plot_filename":"throughput_tcp_of_out_bytes_per_sec",

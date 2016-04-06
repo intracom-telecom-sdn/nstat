@@ -27,7 +27,6 @@
 "nb_generator_node_ssh_port":"22",
 "nb_generator_node_username":"jenkins",
 "nb_generator_node_password":"jenkins",
-
 "nb_generator_cpu_shares":25,
 
 "controller_build_handler":"./build.sh",
@@ -36,6 +35,8 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
+"controller_persistent_handler":"/change_persistent.py",
+
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
 
 "controller_rebuild":true,
