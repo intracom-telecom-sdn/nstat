@@ -253,7 +253,7 @@ def sb_active_stability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler'],
-        ''
+        '', ''
         )
     cbench_handlers_set = conf_collections_util.cbench_handlers(
         sb_gen_base_dir + conf['cbench_build_handler'],

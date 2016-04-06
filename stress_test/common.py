@@ -8,7 +8,6 @@
 
 import json
 import logging
-import multiprocessing
 import requests
 import subprocess
 import time
@@ -117,6 +116,7 @@ def close_ssh_connections(ssh_clients_list):
             logging.error('[close_ssh_connections] Connection object with '
                           'id = {0} does not exist.'.format(object_id))
         object_id += 1
+
 
 def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
                          data_queue=None):

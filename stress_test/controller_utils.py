@@ -83,6 +83,21 @@ def flowmod_configure_controller(controller_flowmod_configure_handler,
                                 '[controller_flowmod_configure_handler]',
                                 ssh_client)
 
+def change_persistent_controller(controller_change_persistent_handler,
+                                 ssh_client=None):
+    """configure controller persistent to false in order not to backup
+    datastore on the disk.
+
+    :param controller_change_persistent_handler:
+    :param ssh_client : SSH client provided by paramiko to run the command
+    :type controller_change_persistent_handler: str
+    :type ssh_client: paramiko.SSHClient
+    """
+
+    common.command_exec_wrapper([controller_change_persistent_handler],
+                                '[controller_change_persistent_handler]',
+                                ssh_client)
+
 def controller_changestatsperiod(controller_statistics_handler, stat_period_ms,
                                  ssh_client=None):
     """Wrapper to the controller statistics handler
@@ -140,6 +155,10 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     generate_controller_xml_files(controller_handlers_set, controller_port,
                                   ' '.join(java_opts), controller_ssh_client,
                                   controller_cpus)
+    if controller_handlers_set.ctrl_change_persistent != '':
+        change_persistent_controller(
+            controller_handlers_set.ctrl_change_persistent,
+            controller_ssh_client)
 
 
 def generate_controller_xml_files(controller_handlers_set, controller_port,
