@@ -311,7 +311,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
-                multinet_base_dir, is_privileged=True)
+                multinet_base_dir)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
