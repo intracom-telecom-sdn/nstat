@@ -13,6 +13,7 @@ import json
 import logging
 import multiprocessing
 import os
+import subprocess
 import time
 import util.customsubprocess
 
@@ -57,12 +58,12 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
                                    multinet_base_dir + 'config/config.json'))
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
-    os.system(multinet_run_cmd)
+    return subprocess.check_output(multinet_run_cmd, shell=True).decode('utf-8')
 
 
 def check_topo_booted(expected_switches, group_size, group_delay_ms,
                      get_switches_handler, rest_server,
-                     controller_nb_interface, num_tries=3):
+                     controller_nb_interface, multinet_base_dir, num_tries=3):
     """
     Check if a topology has been booted. Check both from the Mininet
     side and from the controller operational DS.
@@ -80,6 +81,7 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
     :param controller_nb_interface: named tuple containing 1) controller_node_ip
     2) controller_restconf_port 3) controller_restconf_user
     4) controller_restconf_password
+    :param multinet_base_dir: the full path to the multinet root folder
     :param num_tries: maximum number of tries until the method identifies that
     number of discovered switches of the Mininet topology is equal to the
     number of expected Mininet switches
@@ -91,6 +93,7 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
     :type get_switches_handler: str
     :type rest_server: namedtuple<str,int>
     :type controller_nb_interface: namedtuple<str,int,str,str>
+    :type multinet_base_dir: str
     :type num_tries: int
     """
 
@@ -106,14 +109,12 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
         # topology through the LLDP protocol.
         time.sleep(int(expected_switches/group_size) * \
                    mininet_group_delay + 15)
-        outq = multiprocessing.Queue()
 
         try:
-            util.customsubprocess.check_output_streaming(
-                [get_switches_handler, rest_server.ip,
-                 str(rest_server.port)],
-                '[get_switches_handler]', queue=outq)
-            result_get_sw = outq.get()
+            result_get_sw = multinet_command_runner(get_switches_handler,
+                '[get_switches_handler]', multinet_base_dir,
+                is_privileged=False)
+            print('debug_message:'+result_get_sw)
             discovered_switches = sum([json.loads(v).values()[0] for v in result_get_sw])
             logging.info('[check_topo_booted] Discovered {0} switches'
                           ' at the Mininet side'.format(discovered_switches))

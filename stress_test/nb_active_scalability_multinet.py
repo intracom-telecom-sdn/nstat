@@ -240,7 +240,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_worker_topo_size*multinet_workers,
                 multinet_group_size, multinet_group_delay_ms,
                 multinet_handlers_set.get_switches_handler,
-                multinet_rest_server, controller_nb_interface)
+                multinet_rest_server, controller_nb_interface,
+                multinet_base_dir)
             """
             cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
                 format(nb_generator_base_dir, nb_generator_cpus,
@@ -292,6 +293,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 statistics['delete_flows_transmission_time'] = results[-3]
                 statistics['delete_flows_time'] = results[-2]
             statistics['failed_flow_operations'] = results[-1]
+            statistics['add_controller_rate'] = float(total_flows) / results[0]
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)
 
@@ -425,6 +427,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
              ('total_flows', 'Total flow operations'),
+             ('add_controller_rate', 'Add controller rate (Flows/s)'),
              ('failed_flow_operations', 'Total failed flow operations'),
              ('add_flows_transmission_time',
               'Total time of NB Restconf calls for flows addition (seconds)'),

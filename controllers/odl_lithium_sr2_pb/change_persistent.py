@@ -6,9 +6,8 @@ import os
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.2-Lithium-SR2'
 
 def change_persistent():
-    """Takes as command line argument the new interval of statistics period we
-    want to set in the configuration file of the controller and writes it in
-    this file.
+    """Change the persistence attribute to false. The controller will not
+    backup datastore on the disk.
     """
 
     string_to_find = '#persistent=true'
@@ -23,9 +22,8 @@ def change_persistent():
         sys.exit(1)
     filedata = filedata.replace(string_to_find, string_to_replace)
     try:
-        f = open(input_file, 'wb')
-        f.write(filedata.encode('utf-8'))
-        f.close()
+        with open(input_file, 'wb') as f:
+            f.write(filedata.encode('utf-8'))
     except:
         print('[change_persistent] Fail to write file')
         sys.exit(1)
