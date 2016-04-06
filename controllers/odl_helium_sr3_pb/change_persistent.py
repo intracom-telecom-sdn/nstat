@@ -3,7 +3,7 @@
 import sys
 import os
 
-CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.3-Lithium-SR3'
+CONTROLLER_DIR_NAME = 'distribution-karaf-0.2.3-Helium-SR3'
 
 def change_persistent():
     """Takes as command line argument the new interval of statistics period we
