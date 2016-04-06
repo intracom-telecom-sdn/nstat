@@ -36,6 +36,8 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
+"controller_persistent_handler":"/change_persistent.py",
+
 "controller_logs_dir":"./distribution-karaf-0.3.3-Lithium-SR3/data/log/",
 
 "controller_rebuild":true,
@@ -58,7 +60,7 @@
 "topology_stop_switches_handler":"./bin/handlers/stop_topos",
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 
-"topology_size":[100],
+"topology_size":[1, 2, 4, 35, 70, 330],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[1],
 "topology_group_size":[1],
@@ -67,13 +69,13 @@
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_worker_ip_list":["192.168.100.20"],
-"multinet_worker_port_list":[3333],
+"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22", "192.168.100.23", "192.168.100.24", "192.168.100.25", "192.168.100.26", "192.168.100.27", "192.168.100.28", "192.168.100.29", "192.168.100.30", "192.168.100.31", "192.168.100.32", "192.168.100.33", "192.168.100.34"],
+"multinet_worker_port_list":[3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
-"flow_workers":[20],
+"flow_workers":[5],
 "total_flows":[1000, 10000, 100000, 1000000],
-"flow_operations_delay_ms":[5],
+"flow_operations_delay_ms":[0],
 "flow_delete_flag":false,
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
@@ -83,7 +85,7 @@
     {
         "x_axis_key":"total_flows",
         "y_axis_key":"add_flows_time",
-        "z_axis_key":"flow_workers",
+        "z_axis_key":"multinet_size",
         "x_axis_label":"# Total Added Flows",
         "y_axis_label":" Time to add Flows (sec)",
         "plot_type":"multi_scatter",
@@ -99,7 +101,7 @@
     {
         "x_axis_key":"total_flows",
         "y_axis_key":"add_flows_time",
-        "z_axis_key":"flow_operation_delay_ms",
+        "z_axis_key":"multinet_size",
         "x_axis_label":"# Total Added Flows",
         "y_axis_label":" Time to add Flows (sec)",
         "plot_type":"multi_scatter",
@@ -110,6 +112,38 @@
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",
         "x_axis_scale": "log",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"add_flows_transmission_time",
+        "z_axis_key":"total_flows",
+        "x_axis_label":"# Number of switches",
+        "y_axis_label":" Add controller time (sec)",
+        "plot_type":"errorbar_connected",
+        "plot_title":"Add controller time Vs Number of switches (Lithium SR3)",
+        "plot_subtitle_keys":["controller_java_xopts", "controller_restart"],
+        "plot_filename":"add_flows_transmission_time",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"add_controller_rate",
+        "z_axis_key":"total_flows",
+        "x_axis_label":"# Number of switches",
+        "y_axis_label":" Add controller rate (Flows/sec)",
+        "plot_type":"errorbar_connected",
+        "plot_title":"Add controller rate Vs Number of switches (Lithium SR3)",
+        "plot_subtitle_keys":["controller_java_xopts", "controller_restart"],
+        "plot_filename":"add_controller_rate",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
         "y_axis_scale": "linear"
     },
     {
