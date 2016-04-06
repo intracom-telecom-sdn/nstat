@@ -13,7 +13,7 @@ cbench_handlers = collections.namedtuple('cbench_handlers' ,
 controller_handlers = collections.namedtuple('controller_handlers',
     ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
      'ctrl_stop_handler', 'ctrl_clean_handler', 'ctrl_statistics_handler',
-     'ctrl_flowmods_conf_handler'])
+     'ctrl_flowmods_conf_handler', 'ctrl_change_persistent'])
 oftraf_handlers = collections.namedtuple('oftraf_handlers',
     ['oftraf_build_handler','oftraf_start_handler', 'oftraf_stop_handler',
      'oftraf_clean_handler'])
@@ -21,7 +21,6 @@ controller_northbound = collections.namedtuple('controller_northbound',
     ['ip', 'port', 'username', 'password'])
 controller_southbound = collections.namedtuple('controller_southbound',
                                                ['ip', 'port'])
-mininet_server = collections.namedtuple('mininet_server', ['ip', 'port'])
 multinet_server = collections.namedtuple('multinet_server', ['ip', 'port'])
 oftraf_server = collections.namedtuple('oftraf_server', ['ip', 'port'])
 multinet_local_handlers = collections.namedtuple('multinet_local_handlers' ,

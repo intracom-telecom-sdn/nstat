@@ -8,7 +8,6 @@
 
 import json
 import logging
-import multiprocessing
 import requests
 import subprocess
 import time
@@ -102,81 +101,6 @@ def check_ds_switches(controller_nb_interface):
     return len(switches)
 
 
-def check_topo_booted(expected_switches, group_size, group_delay_ms,
-                     get_switches_handler, rest_server,
-                     controller_nb_interface, num_tries=3):
-    """
-    Check if a topology has been booted. Check both from the Mininet
-    side and from the controller operational DS.
-
-    :param expected_switches: expected switches that should be created by
-    topology emulator
-    :param group_size: group size at which switches are added in a
-    Mininet topo
-    :param group_delay_ms: delay between group additions
-    (in milliseconds)
-    :param get_switches_handler: Handler used to query the
-    current number of switches in a topology from topology emulator side
-    :param rest_server: named tuple containing 1) topology_node_ip
-    2)rest_server_port the REST server listens to
-    :param controller_nb_interface: named tuple containing 1) controller_node_ip
-    2) controller_restconf_port 3) controller_restconf_user
-    4) controller_restconf_password
-    :param num_tries: maximum number of tries until the method identifies that
-    number of discovered switches of the Mininet topology is equal to the
-    number of expected Mininet switches
-    :raises Exception: if we reach max number of tries and either the
-    controller has not seen the topology or the topology has failed to start.
-    :type expected_switches: int
-    :type group_size: int
-    :type group_delay_ms: int
-    :type get_switches_handler: str
-    :type rest_server: namedtuple<str,int>
-    :type controller_nb_interface: namedtuple<str,int,str,str>
-    :type num_tries: int
-    """
-
-    mininet_group_delay = float(group_delay_ms)/1000
-    discovered_switches = 0
-    ds_switches = 0
-    tries = 0
-
-    while tries < num_tries:
-        logging.info('[check_topo_booted] Check if topology is up.')
-
-        # Here we sleep in order to give time to the controller to discover
-        # topology through the LLDP protocol.
-        time.sleep(int(expected_switches/group_size) * \
-                   mininet_group_delay + 15)
-        outq = multiprocessing.Queue()
-
-        try:
-            util.customsubprocess.check_output_streaming(
-                [get_switches_handler, rest_server.ip,
-                 str(rest_server.port)],
-                '[get_switches_handler]', queue=outq)
-            discovered_switches = int(outq.get().strip())
-            logging.info('[check_topo_booted] Discovered {0} switches'
-                          ' at the Mininet side'.format(discovered_switches))
-
-            ds_switches = check_ds_switches(controller_nb_interface)
-            logging.info('[check_topo_booted] Discovered {0} switches'
-                          ' at the controller side'.format(ds_switches))
-            if discovered_switches == expected_switches and \
-                ds_switches == expected_switches and expected_switches != 0:
-                return
-
-        except:
-            pass
-
-        tries += 1
-
-    raise Exception('Topology did not fully initialize. Expected {0} '
-                    'switches, but found {1} at the Mininet side and {2} '
-                    'at the controller side.'.
-                    format(expected_switches, discovered_switches,ds_switches))
-
-
 def close_ssh_connections(ssh_clients_list):
     """Gets a list of open ssh connections (ssh_clients) and closes them.
 
@@ -192,6 +116,7 @@ def close_ssh_connections(ssh_clients_list):
             logging.error('[close_ssh_connections] Connection object with '
                           'id = {0} does not exist.'.format(object_id))
         object_id += 1
+
 
 def command_exec_wrapper(cmd_list, prefix='', ssh_client=None,
                          data_queue=None):

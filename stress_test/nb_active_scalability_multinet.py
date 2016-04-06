@@ -55,6 +55,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     multinet_hosts_per_switch = conf['topology_hosts_per_switch']
     multinet_worker_topo_size = conf['topology_size']
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
+    multinet_workers = len(multinet_worker_ip_list)
     multinet_worker_port_list = conf['multinet_worker_port_list']
 
     # Northbound generator node parameters
@@ -81,7 +82,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         ctrl_base_dir + conf['controller_stop_handler'],
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler'],
-        ''
+        '',
+        ctrl_base_dir + conf['controller_persistent_handler']
         )
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
@@ -89,7 +91,9 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         multinet_base_dir + conf['topology_get_switches_handler'],
         multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
-        multinet_base_dir + conf['topology_rest_server_stop'], ''
+        multinet_base_dir + conf['topology_rest_server_stop'],
+        '',
+        ctrl_base_dir + conf['controller_change_persistent']
         )
     multinet_local_handlers_set = \
         conf_collections_util.multinet_local_handlers(
@@ -135,6 +139,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
+            controller_handlers_set.ctrl_change_persistent,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler])
 
@@ -228,6 +233,15 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.start_topo_handler,
                 'start_topo_handler_multinet', multinet_base_dir)
+
+            logging.info('{0} Check if topology has successfully booted and '
+                         'controller has identified all switches.'.
+                         format(test_type))
+            multinet_utils.check_topo_booted(
+                multinet_worker_topo_size*multinet_workers,
+                multinet_group_size, multinet_group_delay_ms,
+                multinet_handlers_set.get_switches_handler,
+                multinet_rest_server, controller_nb_interface)
 
             cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
                 format(nb_generator_base_dir, nb_generator_cpus,
