@@ -36,6 +36,8 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
+"controller_persistent_handler":"/change_persistent.py",
+
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
 
 "controller_rebuild":true,
@@ -58,23 +60,23 @@
 "topology_stop_switches_handler":"./bin/handlers/stop_topos",
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 
-"topology_size":[10],
+"topology_size":[15],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[1],
-"topology_group_size":[3],
+"topology_group_size":[1],
 "topology_group_delay_ms":[2000],
 
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22"],
-"multinet_worker_port_list":[3333, 3333, 3333],
+"multinet_worker_ip_list":["192.168.100.20"],
+"multinet_worker_port_list":[3333],
 "multinet_switch_type":"ovsk",
 
-"flow_workers":[4],
-"total_flows":[64],
-"flow_operations_delay_ms":[100],
-"flow_delete_flag":true,
+"flow_workers":[5],
+"total_flows":[100000],
+"flow_operations_delay_ms":[0],
+"flow_delete_flag":false,
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
 
