@@ -55,7 +55,6 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     multinet_hosts_per_switch = conf['topology_hosts_per_switch']
     multinet_worker_topo_size = conf['topology_size']
     multinet_worker_ip_list = conf['multinet_worker_ip_list']
-    multinet_workers = len(multinet_worker_ip_list)
     multinet_worker_port_list = conf['multinet_worker_port_list']
 
     # Northbound generator node parameters
@@ -294,6 +293,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 statistics['delete_flows_time'] = results[-2]
             statistics['failed_flow_operations'] = results[-1]
             statistics['add_controller_rate'] = float(total_flows) / results[0]
+            statistics['flows_controller_installation_rate'] = \
+                float(total_flows) / results[1]
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)
 
@@ -431,6 +432,8 @@ def get_report_spec(test_type, config_json, results_json):
              ('add_flows_transmission_time',
               'Total time of NB Restconf calls for flows addition (seconds)'),
              ('add_controller_rate', 'Add controller rate (Flows/s)'),
+             ('flows_controller_installation_rate',
+              'Flows installation rate on controller operational DS (Flows/s)'),
              ('add_flows_time', 'Add flows time (seconds)'),
              ('delete_flows_transmission_time',
               'Total time of NB Restconf calls for flows deletion (seconds)'),

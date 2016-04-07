@@ -111,7 +111,7 @@
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",
-        "x_axis_scale": "linear",
+        "x_axis_scale": "log",
         "y_axis_scale": "linear"
     },
     {
@@ -127,7 +127,23 @@
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",
-        "x_axis_scale": "linear",
+        "x_axis_scale": "log",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"multinet_size",
+        "y_axis_key":"flows_controller_installation_rate",
+        "z_axis_key":"total_flows",
+        "x_axis_label":"# Number of switches",
+        "y_axis_label":"Flows installation rate on controller (Flows/sec)",
+        "plot_type":"multi_scatter",
+        "plot_title":"Flows installation rate Vs Number of switches (Lithium SR3)",
+        "plot_subtitle_keys":["controller_java_xopts", "controller_restart"],
+        "plot_filename":"flows_controller_installation_rate",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "log",
         "y_axis_scale": "linear"
     },
     {
@@ -143,7 +159,7 @@
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",
-        "x_axis_scale": "linear",
+        "x_axis_scale": "log",
         "y_axis_scale": "linear"
     },
     {
