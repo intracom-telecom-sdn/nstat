@@ -293,8 +293,11 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 statistics['delete_flows_time'] = results[-2]
             statistics['failed_flow_operations'] = results[-1]
             statistics['add_controller_rate'] = float(total_flows) / results[0]
-            statistics['flows_controller_installation_rate'] = \
-                float(total_flows) / results[1]
+            if results[1] != -1:
+                statistics['flows_controller_installation_rate'] = \
+                    float(total_flows) / results[1]
+            else:
+                statistics['flows_controller_installation_rate'] = -1
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)
 
