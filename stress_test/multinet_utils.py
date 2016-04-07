@@ -11,8 +11,6 @@ Multinet-related utilities
 import common
 import json
 import logging
-import multiprocessing
-import os
 import subprocess
 import time
 import util.customsubprocess
