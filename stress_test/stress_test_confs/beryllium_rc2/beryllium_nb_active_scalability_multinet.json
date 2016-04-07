@@ -91,7 +91,7 @@
         "plot_type":"multi_scatter",
         "plot_title":"Addition time for flows (Beryllium RC2)",
         "plot_subtitle_keys":["controller_java_xopts", "controller_restart"],
-        "plot_filename":"addition_time_vs_flow_workers",
+        "plot_filename":"addition_time_vs_topology_size",
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",
@@ -149,7 +149,7 @@
     {
         "x_axis_key":"total_flows",
         "y_axis_key":"delete_flows_time",
-        "z_axis_key":"topology_type",
+        "z_axis_key":"multinet_size",
         "x_axis_label":"# Total Deleted Flows",
         "y_axis_label":" Time to delete Flows (sec)",
         "plot_type":"errorbar_connected",
