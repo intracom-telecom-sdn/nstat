@@ -11,6 +11,7 @@ Multinet-related utilities
 import common
 import json
 import logging
+import re
 import subprocess
 import time
 import util.customsubprocess
@@ -56,7 +57,8 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
                                    multinet_base_dir + 'config/config.json'))
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
-    return subprocess.check_output(multinet_run_cmd, shell=True).decode('utf-8')
+    return subprocess.check_output(multinet_run_cmd, stderr=subprocess.STDOUT,
+                                   shell=True).decode('utf-8')
 
 
 def check_topo_booted(expected_switches, group_size, group_delay_ms,
@@ -107,26 +109,29 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
         # topology through the LLDP protocol.
         time.sleep(int(expected_switches/group_size) * \
                    mininet_group_delay + 15)
-
         try:
             result_get_sw = multinet_command_runner(get_switches_handler,
                 '[get_switches_handler]', multinet_base_dir,
                 is_privileged=False)
-            print('debug_message:'+result_get_sw)
-            discovered_switches = sum([json.loads(v).values()[0] for v in result_get_sw])
+            # get Multinet switches number
+            regex_result = re.search(r'DEBUG:root:.*', result_get_sw)
+            if regex_result == None:
+                result_get_sw = ''
+            else:
+                result_get_sw = regex_result.group(0).replace('DEBUG:root:', '')
+            discovered_switches = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_sw)])
             logging.info('[check_topo_booted] Discovered {0} switches'
-                          ' at the Mininet side'.format(discovered_switches))
-
+                          ' at the Multinet side'.format(discovered_switches))
+            # get controller switches number from DS
             ds_switches = common.check_ds_switches(controller_nb_interface)
             logging.info('[check_topo_booted] Discovered {0} switches'
                           ' at the controller side'.format(ds_switches))
+            # check if the controller has discovered Multinet topology
             if discovered_switches == expected_switches and \
                 ds_switches == expected_switches and expected_switches != 0:
                 return
-
         except:
             pass
-
         tries += 1
 
     raise Exception('Topology did not fully initialize. Expected {0} '
