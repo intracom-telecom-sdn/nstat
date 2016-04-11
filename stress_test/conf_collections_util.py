@@ -9,28 +9,53 @@
 import collections
 
 cbench_handlers = collections.namedtuple('cbench_handlers' ,
-    ['cbench_build_handler','cbench_clean_handler','cbench_run_handler'])
+    ['cbench_build_handler',
+     'cbench_clean_handler',
+     'cbench_run_handler'])
 controller_handlers = collections.namedtuple('controller_handlers',
-    ['ctrl_build_handler','ctrl_start_handler','ctrl_status_handler',
-     'ctrl_stop_handler', 'ctrl_clean_handler', 'ctrl_statistics_handler',
-     'ctrl_flowmods_conf_handler', 'ctrl_change_persistent'])
+    ['ctrl_build_handler',
+     'ctrl_start_handler',
+     'ctrl_status_handler',
+     'ctrl_stop_handler',
+     'ctrl_clean_handler',
+     'ctrl_statistics_handler',
+     'ctrl_flowmods_conf_handler',
+     'ctrl_change_persistent'])
 oftraf_handlers = collections.namedtuple('oftraf_handlers',
-    ['oftraf_build_handler','oftraf_start_handler', 'oftraf_stop_handler',
+    ['oftraf_build_handler',
+     'oftraf_start_handler',
+     'oftraf_stop_handler',
      'oftraf_clean_handler'])
 controller_northbound = collections.namedtuple('controller_northbound',
-    ['ip', 'port', 'username', 'password'])
+    ['ip',
+     'port',
+     'username',
+     'password'])
 controller_southbound = collections.namedtuple('controller_southbound',
-                                               ['ip', 'port'])
-multinet_server = collections.namedtuple('multinet_server', ['ip', 'port'])
-oftraf_server = collections.namedtuple('oftraf_server', ['ip', 'port'])
+    ['ip',
+     'port'])
+multinet_server = collections.namedtuple('multinet_server',
+    ['ip',
+     'port'])
+oftraf_server = collections.namedtuple('oftraf_server',
+    ['ip',
+     'port'])
 multinet_local_handlers = collections.namedtuple('multinet_local_handlers' ,
     ['build_handler', 'clean_handler'])
 nb_generator_handlers = collections.namedtuple('nb_generator_handlers',
-                                               ['run_handler'])
+    ['run_handler'])
 node_parameters = collections.namedtuple('ssh_connection',
-    ['name', 'ip', 'ssh_port', 'username', 'password'])
+    ['name',
+     'ip',
+     'ssh_port',
+     'username',
+     'password'])
 topology_generator_handlers = collections.namedtuple(
     'topology_generator_handlers' ,
-    ['rest_server_boot', 'stop_switches_handler', 'get_switches_handler',
-     'init_topo_handler', 'start_topo_handler', 'rest_server_stop',
+    ['rest_server_boot',
+     'stop_switches_handler',
+     'get_switches_handler',
+     'init_topo_handler',
+     'start_topo_handler',
+     'rest_server_stop',
      'topology_traffic_gen_handler'])
