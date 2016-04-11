@@ -27,11 +27,13 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
+"controller_persistent_handler":"/change_persistent.py",
+
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium/data/log/",
 
 "controller_rebuild":true,
 "controller_cleanup":false,
-"controller_name":"ODL",
+"controller_name":"ODL (Beryllium)",
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":75,
