@@ -13,7 +13,7 @@
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
 
-"topology_node_spec":"/nstat/vagrant/node_mininet/Vagrantfile",
+"topology_node_spec":"/nstat/vagrant/node_multinet/Vagrantfile",
 "topology_host_ip":"127.0.0.1",
 "topology_node_ip":"192.168.100.20",
 "topology_node_ssh_port":"22",
