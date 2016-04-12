@@ -15,7 +15,7 @@ from pprint import pprint
 def json2csv(filename):
     with open(filename, 'r') as filenameresultfile:
         lines = json.load(filenameresultfile)
-    pprint(lines)
+    #pprint(lines)
     f = csv.writer(open("nstatresults.csv", "wb+"))
 
     # Write CSV Header, If you dont need that, remove this line
@@ -36,15 +36,18 @@ def nstatperfreportplot():
         add_flows_time.append(nstatdata[x][1])
         multinet_size.append(nstatdata[x][2])
 
-    numberofsapmples = np.linspace(0, 7, 7, endpoint=True)
+    numberofsapmples = np.linspace(0, len(add_controller_rate),
+                                   len(add_controller_rate),
+                                   endpoint=True)
     plt.xlabel('add controller rate')
     plt.ylabel('number of samples')
-    plt.xlim(0,7)
+    plt.xlim(0,10)
     plt.ylim(0,1200)
     plt.plot(numberofsapmples, add_controller_rate)
     plt.grid(True)
     plt.show()
 
 if __name__ == '__main__':
-    json2csv('beryllium_nb_active_scalability_multinet_results.json')
+    filename = 'beryllium_nb_active_scalability_multinet_results.json'
+    json2csv(filename)
     nstatperfreportplot()
