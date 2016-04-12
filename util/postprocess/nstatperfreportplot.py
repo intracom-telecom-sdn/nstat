@@ -10,44 +10,57 @@ import matplotlib.mlab as mlb
 import json
 import csv
 from pprint import pprint
-
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 def json2csv(filename):
-    with open(filename, 'r') as filenameresultfile:
+    csvfilename = filename + ".csv"
+    jsonfilename = filename + ".json"
+    with open(jsonfilename, 'r') as filenameresultfile:
         lines = json.load(filenameresultfile)
-    #pprint(lines)
-    f = csv.writer(open("nstatresults.csv", "wb+"))
+    f = csv.writer(open(csvfilename, "wb+"))
 
-    # Write CSV Header, If you dont need that, remove this line
-    f.writerow(["add_controller_rate","add_flows_time","multinet_size"])
+    f.writerow(["throughput_responses_sec",
+                "internal_repeat_id",
+                "internal_repeat_id"])
     for lines in lines:
-        f.writerow([lines["add_controller_rate"],
-                    lines["add_flows_time"],
-                    lines["multinet_size"]])
+        f.writerow([lines["throughput_responses_sec"],
+                    lines["internal_repeat_id"],
+                    lines["internal_repeat_id"]])
 
-def nstatperfreportplot():
-    nstatdata = mlb.csv2rec('nstatresults.csv',delimiter=',')
-    add_controller_rate = []
-    add_flows_time = []
-    multinet_size = []
+def create_xyz_data(filename):
+    csvfilename = filename + ".csv"
+    nstatdata = mlb.csv2rec(csvfilename,delimiter=',')
+    y_data_01 = []
+    y_data_02 = []
+    y_data_03 = []
 
-    for x in xrange(0,len(nstatdata)):
-        add_controller_rate.append(nstatdata[x][0])
-        add_flows_time.append(nstatdata[x][1])
-        multinet_size.append(nstatdata[x][2])
+    for x in xrange(0,len(nstatdata)-1):
+        y_data_01.append(nstatdata[x][0])
+        y_data_02.append(nstatdata[x][1])
+        y_data_03.append(nstatdata[x][2])
 
-    numberofsapmples = np.linspace(0, len(add_controller_rate),
-                                   len(add_controller_rate),
-                                   endpoint=True)
-    plt.xlabel('add controller rate')
-    plt.ylabel('number of samples')
-    plt.xlim(0,10)
-    plt.ylim(0,1200)
-    plt.plot(numberofsapmples, add_controller_rate)
-    plt.grid(True)
+    return y_data_01, y_data_02, y_data_03
+
+def plot_xyz_data():
+    ydata01, ydata02, ydata03 = create_xyz_data(filename)
+    numberoffigures = 3
+
+    for i in xrange(1,3):
+        figureindex = i
+        plt.figure(figureindex)
+        plt.xlabel('add controller rate')
+        plt.ylabel('number of samples')
+        plt.xlim(0,5000)
+        plt.ylim(0,50)
+        plt.plot(ydata02, ydata01,'-or')
+        plt.grid(True)
+
     plt.show()
 
 if __name__ == '__main__':
-    filename = 'beryllium_nb_active_scalability_multinet_results.json'
+    filename = 'beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours_results'
     json2csv(filename)
-    nstatperfreportplot()
+    create_xyz_data(filename)
+    plot_xyz_data()
