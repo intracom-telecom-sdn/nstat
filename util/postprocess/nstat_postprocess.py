@@ -15,20 +15,54 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from matplotlib.font_manager import FontProperties
 
-def plot_cbench_througput_comparison(filenames):
+def compare_controllers(filenames,number_of_runs):
     """ Method definition
 
     :param
     :param
     :type
     """
-    for j in xrange(0,len(filenames)):
-        filename = filenames[j]
+    data_collected = {}
+    for k in xrange(0,len(filenames)):
+        filename = filenames[k]
+
+        x_data_list = []
         y_data_01, y_data_02, y_data_03 = create_xyz_data(filename)
-        y_data_avg = calculate_average_values(y_data_01,2)
+        y_data_avg, y_data_min, y_data_max = calculate_min_max_avg_values(y_data_01,2)
+
+        for j in xrange(0,len(y_data_01), number_of_runs):
+            if j == len(y_data_01):
+                break
+            x_data_value = y_data_02[j]
+            x_data_list.append(x_data_value)
+
+        plot_data = (x_data_list,) + (y_data_avg, y_data_min, y_data_max)
+        data_collected[k] = plot_data
+
+    plt.figure()
+    plt.subplot(2,1,1)
+    plt.grid(True)
+    plt.xlim(0,6000)
+    plt.ylim(0,120000)
+    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('ODL Beryllium (RC2)',
+               fontsize=10)
+    plt.plot(data_collected[0][0], data_collected[0][1],'-or', label='average')
+
+    plt.subplot(2,1,2)
+    plt.grid(True)
+    plt.xlim(0,6000)
+    plt.ylim(0,120000)
+    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('ODL Lithium (SR3)',
+               fontsize=10)
+    plt.plot(data_collected[1][0], data_collected[1][1],'-ob', label='average')
+    plt.show()
 
 
-def plot_cbench_througput(filename,number_of_runs):
+def plot_cbench_throughput(filename,number_of_runs):
     """ Method definition
 
     :param
@@ -37,7 +71,7 @@ def plot_cbench_througput(filename,number_of_runs):
     """
     x_data_list = []
     y_data_01, y_data_02, y_data_03 = create_xyz_data(filename)
-    y_data_avg = calculate_average_values(y_data_01,2)
+    y_data_avg, y_data_min, y_data_max = calculate_min_max_avg_values(y_data_01,2)
 
     for j in xrange(0,len(y_data_01), number_of_runs):
         if j == len(y_data_01):
@@ -53,7 +87,10 @@ def plot_cbench_througput(filename,number_of_runs):
     plt.title('ODL Beryllium (RC2) \n'
               'Throughput Vs Number of network switches',
                fontsize=10)
-    plt.plot(x_data_list, y_data_avg,'-or')
+    plt.plot(x_data_list, y_data_avg,'-or', label='average')
+    plt.plot(x_data_list, y_data_min,'-ob', label='min value')
+    plt.plot(x_data_list, y_data_max,'-og', label='max value')
+    plt.legend()
     plt.grid(True)
     plt.show()
 
@@ -100,7 +137,7 @@ def create_xyz_data(filename):
 
     return y_data_01, y_data_02, y_data_03
 
-def calculate_average_values(y_data,number_of_runs):
+def calculate_min_max_avg_values(y_data,number_of_runs):
     """ Method definition
 
     :param
@@ -108,12 +145,20 @@ def calculate_average_values(y_data,number_of_runs):
     :type
     """
     y_data_avg = []
+    y_data_min = []
+    y_data_max = []
+
     for j in xrange(0,len(y_data), number_of_runs):
         if j == len(y_data)-1:
             break
         y_data_avg_value = (y_data[j] + y_data[j+1])/float(number_of_runs)
         y_data_avg.append(y_data_avg_value)
-    return y_data_avg
+        y_min_value = min([y_data[j],y_data[j+1]])
+        y_data_min.append(y_min_value)
+        y_max_value = max([y_data[j],y_data[j+1]])
+        y_data_max.append(y_max_value)
+
+    return y_data_avg, y_data_min, y_data_max
 
 def plot_xyz_data(filenames):
     """ Method definition
@@ -170,10 +215,11 @@ def plot_xyz_data(filenames):
 if __name__ == '__main__':
     filenames = ['beryllium_RPC_sb_active_scalability_mtcbench_results',
                  'lithium_RPC_sb_active_scalability_mtcbench_results']
-    #filenames = ['lithium_RPC_sb_active_scalability_mtcbench_results']
+
     for j in xrange(0,len(filenames)):
         filename = filenames[j]
-        #json2csv(filename)
+        json2csv(filename)
         create_xyz_data(filename)
-        plot_cbench_througput(filename,2)
-    plot_cbench_througput_comparison(filenames)
+        plot_cbench_throughput(filename,2)
+
+    compare_controllers(filenames,2)
