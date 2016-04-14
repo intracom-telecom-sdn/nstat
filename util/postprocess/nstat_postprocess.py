@@ -53,7 +53,7 @@ def compare_controllers(filenames,number_of_runs):
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][1],'-or')
     plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
 
     plt.subplot(2,2,2)
     plt.grid(True)
@@ -65,7 +65,7 @@ def compare_controllers(filenames,number_of_runs):
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][2],'-or')
     plt.plot(data_collected[1][0], data_collected[1][2],'-ob')
-    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
 
     plt.subplot(2,2,3)
     plt.grid(True)
@@ -77,7 +77,7 @@ def compare_controllers(filenames,number_of_runs):
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][3],'-or')
     plt.plot(data_collected[1][0], data_collected[1][3],'-ob')
-    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
 
     plt.subplot(2,2,4)
     plt.grid(True)
@@ -85,7 +85,7 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,120000)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput max value',
+    plt.title('throughput min/max/average values',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][1],'-or')
     plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
@@ -93,13 +93,13 @@ def compare_controllers(filenames,number_of_runs):
     plt.plot(data_collected[0][0], data_collected[0][2],'--or')
     plt.plot(data_collected[1][0], data_collected[1][2],'--ob')
 
-    plt.plot(data_collected[0][0], data_collected[0][3],'--or')
-    plt.plot(data_collected[1][0], data_collected[1][3],'--ob')
+    plt.plot(data_collected[0][0], data_collected[0][3],'-.or')
+    plt.plot(data_collected[1][0], data_collected[1][3],'-.ob')
 
-    plt.legend(['ODL Beryllium (RC2) [mean]','ODL Lithium SR3 [mean]',
-                'ODL Beryllium (RC2) [min]','ODL Lithium SR3 [min]',
-                'ODL Beryllium (RC2) [max]','ODL Lithium SR3 [max]'],
-               loc='lower right')
+    plt.legend(['Beryllium (RC2) [mean]','Lithium SR3 [mean]',
+                'Beryllium (RC2) [min]','Lithium SR3 [min]',
+                'Beryllium (RC2) [max]','Lithium SR3 [max]'],
+               loc='lower right', prop={'size':8})
     plt.xticks(data_collected[1][0])
 
     figindex +=1
@@ -113,7 +113,7 @@ def compare_controllers(filenames,number_of_runs):
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][1],'-or')
     plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
     plt.xticks(data_collected[1][0])
     plt.show()
 
@@ -140,13 +140,13 @@ def plot_cbench_throughput(filename,number_of_runs):
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.xlim(0,6000)
     plt.ylim(0,120000)
-    plt.title('ODL Beryllium (RC2) \n'
+    plt.title('Beryllium (RC2) \n'
               'Throughput Vs Number of network switches',
                fontsize=10)
     plt.plot(x_data_list, y_data_avg,'-or', label='average')
     plt.plot(x_data_list, y_data_min,'-ob', label='min value')
     plt.plot(x_data_list, y_data_max,'-og', label='max value')
-    plt.legend()
+    plt.legend(prop={'size':8})
     plt.grid(True)
     plt.show()
 
@@ -233,7 +233,7 @@ def plot_xyz_data(filenames):
         plt.figure(figureindex)
         plt.xlabel('number of network switches', fontsize=10)
         plt.ylabel('throughput [responses/sec]', fontsize=10)
-        plt.title('ODL Beryllium (RC2) \n'
+        plt.title('Beryllium (RC2) \n'
                   'Throughput Vs Number of network switches',
                   fontsize=10)
         plt.xlim(0,5000)
@@ -248,7 +248,7 @@ def plot_xyz_data(filenames):
             plt.ylim(0,120000)
             plt.xlabel('number of network switches', fontsize=10)
             plt.ylabel('throughput [responses/sec]', fontsize=10)
-            plt.title('ODL Beryllium (RC2) \n'
+            plt.title('Beryllium (RC2) \n'
                   'Throughput Vs Number of network switches',
                   fontsize=10)
             plt.plot(ydata02, ydata01,'-or')
@@ -259,7 +259,7 @@ def plot_xyz_data(filenames):
             plt.ylim(0,120000)
             plt.xlabel('number of network switches', fontsize=10)
             plt.ylabel('throughput [responses/sec]', fontsize=10)
-            plt.title('ODL Lithium (RC2) \n'
+            plt.title('Lithium (RC2) \n'
                   'Throughput Vs Number of network switches',
                   fontsize=10)
             plt.plot(ydata02, ydata01,'-ob')
