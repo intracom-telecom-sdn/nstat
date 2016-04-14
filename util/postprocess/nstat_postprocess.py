@@ -117,6 +117,16 @@ def compare_controllers(filenames,number_of_runs):
     plt.xticks(data_collected[1][0])
     plt.show()
 
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
+    for xy in zip(data_collected[0][0], data_collected[0][1]):
+        ax.annotate('(%s, %s)' % xy, xy=xy,
+                    textcoords='data')
+    plt.xlim(0,6000)
+    plt.ylim(0,120000)
+    plt.grid()
+    plt.show()
 
 def plot_cbench_throughput(filename,number_of_runs):
     """ Method definition
