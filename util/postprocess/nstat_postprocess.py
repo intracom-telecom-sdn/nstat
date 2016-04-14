@@ -14,6 +14,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from matplotlib.font_manager import FontProperties
+import matplotlib
 
 def compare_controllers(filenames,number_of_runs):
     """ Method definition
@@ -39,26 +40,81 @@ def compare_controllers(filenames,number_of_runs):
         plot_data = (x_data_list,) + (y_data_avg, y_data_min, y_data_max)
         data_collected[k] = plot_data
 
-    plt.figure()
-    plt.subplot(2,1,1)
+    matplotlib.rcParams.update({'font.size': 8})
+    figindex = 1
+    plt.figure(figindex)
+    plt.subplot(2,2,1)
     plt.grid(True)
     plt.xlim(0,6000)
     plt.ylim(0,120000)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('ODL Beryllium (RC2)',
+    plt.title('throughput average value',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or', label='average')
+    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
+    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
+    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
 
-    plt.subplot(2,1,2)
+    plt.subplot(2,2,2)
     plt.grid(True)
     plt.xlim(0,6000)
     plt.ylim(0,120000)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('ODL Lithium (SR3)',
+    plt.title('throughput min value',
                fontsize=10)
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob', label='average')
+    plt.plot(data_collected[0][0], data_collected[0][2],'-or')
+    plt.plot(data_collected[1][0], data_collected[1][2],'-ob')
+    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
+
+    plt.subplot(2,2,3)
+    plt.grid(True)
+    plt.xlim(0,6000)
+    plt.ylim(0,120000)
+    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('throughput max value',
+               fontsize=10)
+    plt.plot(data_collected[0][0], data_collected[0][3],'-or')
+    plt.plot(data_collected[1][0], data_collected[1][3],'-ob')
+    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
+
+    plt.subplot(2,2,4)
+    plt.grid(True)
+    plt.xlim(0,6000)
+    plt.ylim(0,120000)
+    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('throughput max value',
+               fontsize=10)
+    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
+    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
+
+    plt.plot(data_collected[0][0], data_collected[0][2],'--or')
+    plt.plot(data_collected[1][0], data_collected[1][2],'--ob')
+
+    plt.plot(data_collected[0][0], data_collected[0][3],'--or')
+    plt.plot(data_collected[1][0], data_collected[1][3],'--ob')
+
+    plt.legend(['ODL Beryllium (RC2) [mean]','ODL Lithium SR3 [mean]',
+                'ODL Beryllium (RC2) [min]','ODL Lithium SR3 [min]',
+                'ODL Beryllium (RC2) [max]','ODL Lithium SR3 [max]'],
+               loc='lower right')
+    plt.xticks(data_collected[1][0])
+
+    figindex +=1
+    plt.figure(figindex)
+    plt.grid(True)
+    plt.xlim(0,6000)
+    plt.ylim(0,120000)
+    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('throughput max value',
+               fontsize=10)
+    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
+    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
+    plt.legend(['ODL Beryllium (RC2)','ODL Lithium SR3'])
+    plt.xticks(data_collected[1][0])
     plt.show()
 
 
@@ -218,7 +274,7 @@ if __name__ == '__main__':
 
     for j in xrange(0,len(filenames)):
         filename = filenames[j]
-        json2csv(filename)
+        #json2csv(filename)
         create_xyz_data(filename)
         plot_cbench_throughput(filename,2)
 
