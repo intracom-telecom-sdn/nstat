@@ -39,32 +39,22 @@ def compare_controllers(filenames):
         plot_data = (x_data_list,) + (y_data_01, y_data_02, y_data_03)
         data_collected[k] = plot_data
 
-    matplotlib.rcParams.update({'font.size': 8})
+    matplotlib.rcParams.update({'font.size':12})
     figindex = 1
-    plt.figure(figindex)
-    plt.subplot(1,2,1)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,15000000)
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('bytes/s', fontsize=10)
-    plt.title('controller output bytes for various switches',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
 
-    plt.subplot(1,2,2)
+    plt.figure()
     plt.grid(True)
     plt.xlim(0,6000)
     plt.ylim(0,15000000)
     plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('bytes/s', fontsize=10)
-    plt.title('controller output bytes/s for various switches',
+    plt.ylabel('bytes/sec', fontsize=10)
+    plt.title('controller output [bytes/s] for various switches',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][1],'-or')
     plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],
+               loc='lower right',
+               prop={'size':8})
     plt.xticks(data_collected[1][0])
     plt.show()
 
@@ -77,7 +67,6 @@ def plot_multinet_throughput(filename):
     """
     x_data_list = []
     y_data_01, y_data_02, y_data_03 = create_xyz_data(filename)
-
 
     for j in xrange(0,len(y_data_01)):
         if j == len(y_data_01):
@@ -97,7 +86,6 @@ def plot_multinet_throughput(filename):
     plt.legend(prop={'size':8})
     plt.grid(True)
     plt.show()
-
 
 def json2csv(filename):
     """ Method definition
@@ -141,29 +129,6 @@ def create_xyz_data(filename):
 
     return y_data_01, y_data_02, y_data_03
 
-def calculate_min_max_avg_values(y_data,number_of_runs):
-    """ Method definition
-
-    :param
-    :param
-    :type
-    """
-    y_data_avg = []
-    y_data_min = []
-    y_data_max = []
-
-    for j in xrange(0,len(y_data), number_of_runs):
-        if j == len(y_data)-1:
-            break
-        y_data_avg_value = (y_data[j] + y_data[j+1])/float(number_of_runs)
-        y_data_avg.append(y_data_avg_value)
-        y_min_value = min([y_data[j],y_data[j+1]])
-        y_data_min.append(y_min_value)
-        y_max_value = max([y_data[j],y_data[j+1]])
-        y_data_max.append(y_max_value)
-
-    return y_data_avg, y_data_min, y_data_max
-
 if __name__ == '__main__':
     filenames = ['beryllium_sb_active_scalability_multinet_LinearTopo_results',
                  'lithium_sb_active_scalability_multinet_LinearTopo_results']
@@ -172,6 +137,6 @@ if __name__ == '__main__':
         filename = filenames[j]
         #json2csv(filename)
         create_xyz_data(filename)
-        plot_multinet_throughput(filename)
+        #plot_multinet_throughput(filename)
 
     compare_controllers(filenames)

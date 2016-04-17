@@ -38,8 +38,6 @@ def compare_controllers(filenames,number_of_runs):
 
         plot_data = (x_data_list,) + (y_data_01, y_data_02, y_data_03)
         data_collected[k] = plot_data
-    print(len(x_data_list))
-    print(len(y_data_01))
     matplotlib.rcParams.update({'font.size': 8})
 
     figindex = 1
@@ -48,9 +46,9 @@ def compare_controllers(filenames,number_of_runs):
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,100)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('controller throughput',
+    plt.title('controller throughput [Beryllium (RC2)]',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][1],'-or')
 
@@ -58,31 +56,30 @@ def compare_controllers(filenames,number_of_runs):
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,100)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('controller throughput',
+    plt.title('controller throughput [Lithium (SR3)',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[1][1],'-or')
+    plt.plot(data_collected[0][0], data_collected[1][1],'-ob')
 
     plt.subplot(2,2,3)
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,1000000000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('used memory [bytes]', fontsize=10)
-    plt.title('used memory bytes',
+    plt.title('used memory bytes, [Beryllium (RC2)]',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][3],'-ob')
-
+    plt.plot(data_collected[0][0], data_collected[0][3],'-or')
 
     plt.subplot(2,2,4)
     plt.grid(True)
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,1000000000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('used memory [bytes]', fontsize=10)
-    plt.title('used memory bytes',
+    plt.title('used memory bytes, [Lithium (RC2)]',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[1][3],'-ob')
 

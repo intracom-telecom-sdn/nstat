@@ -40,13 +40,13 @@ def compare_controllers(filenames,number_of_runs):
         plot_data = (x_data_list,) + (y_data_avg, y_data_min, y_data_max)
         data_collected[k] = plot_data
 
-    matplotlib.rcParams.update({'font.size': 8})
+    matplotlib.rcParams.update({'font.size': 12})
     figindex = 1
     plt.figure(figindex)
     plt.subplot(2,2,1)
     plt.grid(True)
     plt.xlim(0,6000)
-    plt.ylim(0,120000)
+    plt.ylim(0,500)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.title('throughput average value',
@@ -58,8 +58,8 @@ def compare_controllers(filenames,number_of_runs):
     plt.subplot(2,2,2)
     plt.grid(True)
     plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylim(0,500)
+    plt.xlabel('number of network switches [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.title('throughput min value',
                fontsize=10)
@@ -70,8 +70,8 @@ def compare_controllers(filenames,number_of_runs):
     plt.subplot(2,2,3)
     plt.grid(True)
     plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylim(0,500)
+    plt.xlabel('number of network switches [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.title('throughput max value',
                fontsize=10)
@@ -82,8 +82,8 @@ def compare_controllers(filenames,number_of_runs):
     plt.subplot(2,2,4)
     plt.grid(True)
     plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylim(0,500)
+    plt.xlabel('number of network switches [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.title('throughput min/max/average values',
                fontsize=10)
@@ -99,14 +99,14 @@ def compare_controllers(filenames,number_of_runs):
     plt.legend(['Beryllium (RC2) [mean]','Lithium SR3 [mean]',
                 'Beryllium (RC2) [min]','Lithium SR3 [min]',
                 'Beryllium (RC2) [max]','Lithium SR3 [max]'],
-               loc='lower right', prop={'size':8})
+               loc='lower right', prop={'size':12})
     plt.xticks(data_collected[1][0])
-
+    """
     figindex +=1
     plt.figure(figindex)
     plt.grid(True)
     plt.xlim(0,6000)
-    plt.ylim(0,120000)
+    plt.ylim(0,500)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.title('throughput max value',
@@ -124,8 +124,34 @@ def compare_controllers(filenames,number_of_runs):
         ax.annotate('(%s, %s)' % xy, xy=xy,
                     textcoords='data')
     plt.xlim(0,6000)
-    plt.ylim(0,120000)
+    plt.ylim(0,500)
     plt.grid()
+    plt.show()
+"""
+
+    figindex += 1
+    plt.figure()
+    plt.grid(True)
+    plt.xlim(0,6000)
+    plt.ylim(0,300)
+    plt.xlabel('number of network switches [N]', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('throughput min/max/average values',
+               fontsize=10)
+    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
+    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
+
+    plt.plot(data_collected[0][0], data_collected[0][2],'--or')
+    plt.plot(data_collected[1][0], data_collected[1][2],'--ob')
+
+    plt.plot(data_collected[0][0], data_collected[0][3],'-.or')
+    plt.plot(data_collected[1][0], data_collected[1][3],'-.ob')
+
+    plt.legend(['Beryllium (RC2) [mean]','Lithium SR3 [mean]',
+                'Beryllium (RC2) [min]','Lithium SR3 [min]',
+                'Beryllium (RC2) [max]','Lithium SR3 [max]'],
+               loc='lower right', prop={'size':12})
+    plt.xticks(data_collected[1][0])
     plt.show()
 
 def plot_cbench_throughput(filename,number_of_runs):
@@ -149,7 +175,7 @@ def plot_cbench_throughput(filename,number_of_runs):
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.xlim(0,6000)
-    plt.ylim(0,120000)
+    plt.ylim(0,500)
     plt.title('Beryllium (RC2) \n'
               'Throughput Vs Number of network switches',
                fontsize=10)
@@ -226,61 +252,9 @@ def calculate_min_max_avg_values(y_data,number_of_runs):
 
     return y_data_avg, y_data_min, y_data_max
 
-def plot_xyz_data(filenames):
-    """ Method definition
-
-    :param
-    :param
-    :type
-    """
-
-    ydata01, ydata02, ydata03 = create_xyz_data(filename)
-    numberoffigures = 3
-    font0 = FontProperties()
-
-    for i in xrange(1,5):
-        figureindex = i
-        plt.figure(figureindex)
-        plt.xlabel('number of network switches', fontsize=10)
-        plt.ylabel('throughput [responses/sec]', fontsize=10)
-        plt.title('Beryllium (RC2) \n'
-                  'Throughput Vs Number of network switches',
-                  fontsize=10)
-        plt.xlim(0,5000)
-        plt.ylim(0,120000)
-        plt.plot(ydata02, ydata01,'-or')
-        plt.grid(True)
-
-        if i == 4:
-            plt.figure(figureindex)
-            plt.subplot(2,1,1)
-            plt.xlim(0,5000)
-            plt.ylim(0,120000)
-            plt.xlabel('number of network switches', fontsize=10)
-            plt.ylabel('throughput [responses/sec]', fontsize=10)
-            plt.title('Beryllium (RC2) \n'
-                  'Throughput Vs Number of network switches',
-                  fontsize=10)
-            plt.plot(ydata02, ydata01,'-or')
-            plt.grid(True)
-
-            plt.subplot(2,1,2)
-            plt.xlim(0,5000)
-            plt.ylim(0,120000)
-            plt.xlabel('number of network switches', fontsize=10)
-            plt.ylabel('throughput [responses/sec]', fontsize=10)
-            plt.title('Lithium (RC2) \n'
-                  'Throughput Vs Number of network switches',
-                  fontsize=10)
-            plt.plot(ydata02, ydata01,'-ob')
-            plt.grid(True)
-
-
-    plt.show()
-
 if __name__ == '__main__':
-    filenames = ['beryllium_RPC_sb_active_scalability_mtcbench_results',
-                 'lithium_RPC_sb_active_scalability_mtcbench_results']
+    filenames = ['beryllium_DS_sb_active_scalability_mtcbench_results',
+                 'lithium_DS_sb_active_scalability_mtcbench_results']
 
     for j in xrange(0,len(filenames)):
         filename = filenames[j]

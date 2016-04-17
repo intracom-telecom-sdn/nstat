@@ -48,7 +48,7 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,120000)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('controller throughput',
+    plt.title('controller throughput [Beryllium (RC2)]',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][1],'-or')
 
@@ -58,9 +58,9 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,120000)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('controller throughput',
+    plt.title('controller throughput [Lithium (SR3)',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[1][1],'-or')
+    plt.plot(data_collected[0][0], data_collected[1][1],'-ob')
 
     plt.subplot(2,2,3)
     plt.grid(True)
@@ -68,10 +68,9 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,1000000000)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('used memory [bytes]', fontsize=10)
-    plt.title('used memory bytes',
+    plt.title('used memory bytes, [Beryllium (RC2)]',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][3],'-ob')
-
+    plt.plot(data_collected[0][0], data_collected[0][3],'-or')
 
     plt.subplot(2,2,4)
     plt.grid(True)
@@ -80,7 +79,7 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,1000000000)
     plt.xlabel('number of network switches', fontsize=10)
     plt.ylabel('used memory [bytes]', fontsize=10)
-    plt.title('used memory bytes',
+    plt.title('used memory bytes, [Lithium (RC2)]',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[1][3],'-ob')
 
