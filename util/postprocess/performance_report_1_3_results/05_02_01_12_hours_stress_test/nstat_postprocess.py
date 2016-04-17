@@ -48,8 +48,7 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,3000)
     plt.xlabel('sample ID', fontsize=10)
     plt.ylabel('outgoing packets per [s]', fontsize=10)
-    plt.title('Beryllium (RC2) \n'
-              'controller outgoing openflow packets per [s]',
+    plt.title('Beryllium (RC2) controller outgoing openflow packets per [s]',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][2],'-or')
 
@@ -59,10 +58,9 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,3000)
     plt.xlabel('sample ID', fontsize=10)
     plt.ylabel('outgoing packets per [s]', fontsize=10)
-    plt.title('Lithium (SR3) \n'
-              'controller outgoing openflow packets per [s]',
+    plt.title('Lithium (SR3) controller outgoing openflow packets per [s]',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[1][2],'-or')
+    plt.plot(data_collected[0][0], data_collected[1][2],'-ob')
 
 
     plt.subplot(2,2,3)
@@ -71,10 +69,9 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,200000)
     plt.xlabel('sample ID', fontsize=10)
     plt.ylabel('outgoing bytes per [s]', fontsize=10)
-    plt.title('Beryllium (RC2) \n'
-              'controller outgoing openflow bytes per [s]',
+    plt.title('Beryllium (RC2) controller outgoing openflow bytes per [s]',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][3],'-ob')
+    plt.plot(data_collected[0][0], data_collected[0][3],'-or')
 
 
     plt.subplot(2,2,4)
@@ -84,10 +81,36 @@ def compare_controllers(filenames,number_of_runs):
     plt.ylim(0,200000)
     plt.xlabel('sample ID', fontsize=10)
     plt.ylabel('outgoing bytes per [s]', fontsize=10)
-    plt.title('Lithium (SR3) \n'
-              'controller outgoing openflow bytes per [s]',
+    plt.title('Lithium (SR3) controller outgoing openflow bytes per [s]',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[1][3],'-ob')
+
+    #---------------------------------------------------------------------------
+    plt.figure()
+    plt.xlabel('repeat number [N]', fontsize=10)
+    plt.ylabel('outgoing packets per [s]', fontsize=10)
+    plt.xlim(0,5000)
+    plt.ylim(0,3000)
+    plt.title('outgoing packets per [s] Vs repeat number',
+               fontsize=10)
+    plt.plot(data_collected[0][0], data_collected[0][2],'-or')
+    plt.plot(data_collected[0][0], data_collected[1][2],'-ob')
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
+    plt.grid(True)
+
+    #---------------------------------------------------------------------------
+    plt.figure()
+    plt.xlabel('repeat number [N]', fontsize=10)
+    plt.ylabel('outgoing packets per [s]', fontsize=10)
+    plt.xlim(0,5000)
+    plt.ylim(0,160000)
+    plt.title('outgoing bytes per [s] Vs repeat number',
+               fontsize=10)
+    plt.plot(data_collected[0][0], data_collected[0][3],'-or')
+    plt.plot(data_collected[0][0], data_collected[1][3],'-ob')
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
+    plt.grid(True)
+
 
     plt.show()
 

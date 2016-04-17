@@ -46,7 +46,7 @@ def compare_controllers(filenames,number_of_runs):
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.title('controller throughput [Beryllium (RC2)]',
                fontsize=10)
@@ -56,7 +56,7 @@ def compare_controllers(filenames,number_of_runs):
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.title('controller throughput [Lithium (SR3)',
                fontsize=10)
@@ -66,7 +66,7 @@ def compare_controllers(filenames,number_of_runs):
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,1000000000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('used memory [bytes]', fontsize=10)
     plt.title('used memory bytes, [Beryllium (RC2)]',
                fontsize=10)
@@ -77,22 +77,22 @@ def compare_controllers(filenames,number_of_runs):
     plt.grid(True)
     plt.xlim(0,5000)
     plt.ylim(0,1000000000)
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('used memory [bytes]', fontsize=10)
     plt.title('used memory bytes, [Lithium (RC2)]',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[1][3],'-ob')
 
     plt.figure()
-    plt.xlabel('number of network switches', fontsize=10)
+    plt.xlabel('repeat number [N]', fontsize=10)
     plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.xlim(0,5000)
     plt.ylim(0,120000)
-    plt.title('Beryllium (RC2) \n'
-              'Throughput Vs Number of network switches',
+    plt.title('throughput Vs repeat number',
                fontsize=10)
     plt.plot(data_collected[0][0], data_collected[0][1],'-or')
     plt.plot(data_collected[0][0], data_collected[1][1],'-ob')
+    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
     plt.grid(True)
 
     plt.show()
