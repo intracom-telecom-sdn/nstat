@@ -114,11 +114,11 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
                 '[get_switches_handler]', multinet_base_dir,
                 is_privileged=False)
             # get Multinet switches number
-            regex_result = re.search(r'DEBUG:root:.*', result_get_sw)
+            regex_result = re.search(r'INFO:root:\[get_switches_topology_handler\]\[response data\].*', result_get_sw)
             if regex_result == None:
                 result_get_sw = ''
             else:
-                result_get_sw = regex_result.group(0).replace('DEBUG:root:', '')
+                result_get_sw = regex_result.group(0).replace('INFO:root:[get_switches_topology_handler][response data] ', '')
             discovered_switches = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_sw)])
             logging.info('[check_topo_booted] Discovered {0} switches'
                           ' at the Multinet side'.format(discovered_switches))
