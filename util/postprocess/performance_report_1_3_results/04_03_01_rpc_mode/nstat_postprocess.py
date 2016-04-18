@@ -23,109 +23,87 @@ def compare_controllers(filenames,number_of_runs):
     :param
     :type
     """
-    data_collected = {}
+    boot_up_time_500_compare = {}
+    boot_up_time_1000_compare  = {}
+    boot_up_time_2000_compare  = {}
+    boot_up_time_4000_compare  = {}
+    boot_up_time_8000_compare  = {}
+    boot_up_time_16000_compare = {}
+
     for k in xrange(0,len(filenames)):
         filename = filenames[k]
 
         x_data_list = []
         y_data_01, y_data_02, y_data_03 = create_xyz_data(filename)
-        y_data_avg, y_data_min, y_data_max = calculate_min_max_avg_values(y_data_01,2)
 
-        for j in xrange(0,len(y_data_01), number_of_runs):
+        for j in xrange(0,len(y_data_03), 6):
             if j == len(y_data_01):
                 break
-            x_data_value = y_data_02[j]
+            #print(y_data_03[j])
+            x_data_value = y_data_03[j]
             x_data_list.append(x_data_value)
 
-        plot_data = (x_data_list,) + (y_data_avg, y_data_min, y_data_max)
-        data_collected[k] = plot_data
+        boot_up_time_500   = []
+        boot_up_time_1000  = []
+        boot_up_time_2000  = []
+        boot_up_time_4000  = []
+        boot_up_time_8000  = []
+        boot_up_time_16000 = []
 
-    matplotlib.rcParams.update({'font.size': 8})
-    figindex = 1
-    plt.figure(figindex)
-    plt.subplot(2,2,1)
+        for j in xrange(0,len(y_data_01), 6):
+            if j == len(y_data_01):
+                break
+            boot_up_time_500_value = y_data_01[j]
+            boot_up_time_500.append(boot_up_time_500_value)
+
+            boot_up_time_1000_value = y_data_01[j+1]
+            boot_up_time_1000.append(boot_up_time_1000_value)
+
+            boot_up_time_2000_value = y_data_01[j+2]
+            boot_up_time_2000.append(boot_up_time_2000_value)
+
+            boot_up_time_4000_value = y_data_01[j+3]
+            boot_up_time_4000.append(boot_up_time_4000_value)
+
+            boot_up_time_8000_value = y_data_01[j+4]
+            boot_up_time_8000.append(boot_up_time_8000_value)
+
+            boot_up_time_16000_value = y_data_01[j+5]
+            boot_up_time_16000.append(boot_up_time_16000_value)
+
+        boot_up_time_500_all = x_data_list, boot_up_time_500
+        boot_up_time_500_compare[k] = boot_up_time_500_all
+
+        boot_up_time_1000_all = x_data_list, boot_up_time_1000
+        boot_up_time_1000_compare[k] = boot_up_time_1000_all
+
+        boot_up_time_2000_all = x_data_list, boot_up_time_2000
+        boot_up_time_2000_compare[k] = boot_up_time_2000_all
+
+        boot_up_time_4000_all = x_data_list, boot_up_time_4000
+        boot_up_time_4000_compare[k] = boot_up_time_4000_all
+
+        boot_up_time_8000_all = x_data_list, boot_up_time_8000
+        boot_up_time_8000_compare[k] = boot_up_time_8000_all
+
+        boot_up_time_16000_all = x_data_list, boot_up_time_16000
+        boot_up_time_16000_compare[k] = boot_up_time_16000_all
+
+
+    #pprint(boot_up_time_500_compare[0][1])
+    #pprint(boot_up_time_500_compare[1][1])
+
+
+    plt.figure()
     plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
     plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput average value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
+    plt.ylabel('bootup time [sec]', fontsize=10)
+    plt.xlim(0,6000)
+    plt.ylim(-5,2000)
+    plt.xticks(x_data_list)
+    plt.plot(x_data_list, boot_up_time_8000_compare[0][1],'-.or')
+    plt.plot(x_data_list, boot_up_time_8000_compare[1][1],'-vb')
     plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
-
-    plt.subplot(2,2,2)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput min value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][2],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][2],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
-
-    plt.subplot(2,2,3)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput max value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][3],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][3],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
-
-    plt.subplot(2,2,4)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput min/max/average values',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-
-    plt.plot(data_collected[0][0], data_collected[0][2],'--or')
-    plt.plot(data_collected[1][0], data_collected[1][2],'--ob')
-
-    plt.plot(data_collected[0][0], data_collected[0][3],'-.or')
-    plt.plot(data_collected[1][0], data_collected[1][3],'-.ob')
-
-    plt.legend(['Beryllium (RC2) [mean]','Lithium SR3 [mean]',
-                'Beryllium (RC2) [min]','Lithium SR3 [min]',
-                'Beryllium (RC2) [max]','Lithium SR3 [max]'],
-               loc='lower right', prop={'size':8})
-    plt.xticks(data_collected[1][0])
-
-    figindex +=1
-    plt.figure(figindex)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput max value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
-    plt.xticks(data_collected[1][0])
-    plt.show()
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    for xy in zip(data_collected[0][0], data_collected[0][1]):
-        ax.annotate('(%s, %s)' % xy, xy=xy,
-                    textcoords='data')
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.grid()
     plt.show()
 
 def plot_cbench_throughput(filename,number_of_runs):
@@ -176,12 +154,12 @@ def json2csv(filename):
     f = csv.writer(open(csvfilename, "wb+"))
 
     f.writerow(["bootup_time_secs",
-                "cbench_switches",
-                "cbench_thread_creation_delay_ms"])
+                "cbench_thread_creation_delay_ms",
+                "cbench_switches"])
     for lines in lines:
         f.writerow([lines["bootup_time_secs"],
-                    lines["cbench_switches"],
-                    lines["cbench_thread_creation_delay_ms"]])
+                    lines["cbench_thread_creation_delay_ms"],
+                    lines["cbench_switches"]])
 
 def create_xyz_data(filename):
     """ Method definition
@@ -201,6 +179,7 @@ def create_xyz_data(filename):
         y_data_02.append(nstatdata[x][1])
         y_data_03.append(nstatdata[x][2])
 
+    #print y_data_03
     return y_data_01, y_data_02, y_data_03
 
 def calculate_min_max_avg_values(y_data,number_of_runs):
@@ -229,11 +208,11 @@ def calculate_min_max_avg_values(y_data,number_of_runs):
 if __name__ == '__main__':
     filenames = ['beryllium_RPC_sb_idle_scalability_mtcbench_results',
                  'lithium_RPC_sb_idle_scalability_mtcbench_results']
-
+    #filenames = ['beryllium_RPC_sb_idle_scalability_mtcbench_results']
     for j in xrange(0,len(filenames)):
         filename = filenames[j]
-        json2csv(filename)
-        #create_xyz_data(filename)
+        #json2csv(filename)
+        create_xyz_data(filename)
         #plot_cbench_throughput(filename,2)
 
-    #compare_controllers(filenames,2)
+    compare_controllers(filenames,1)
