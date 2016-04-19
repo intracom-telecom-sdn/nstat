@@ -5,7 +5,7 @@ import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.2-Lithium-SR2'
 
-def change_persistent():
+def change_persistence():
     """Change the persistence attribute to false. The controller will not
     backup datastore on the disk.
     """
@@ -29,4 +29,4 @@ def change_persistent():
         sys.exit(1)
 
 if __name__ == '__main__':
-    change_persistent()
+    change_persistence()
