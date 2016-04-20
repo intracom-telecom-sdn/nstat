@@ -39,52 +39,31 @@ def compare_controllers(filenames):
         plot_data = (x_data_list,) + (y_data_01, y_data_02, y_data_03)
         data_collected[k] = plot_data
 
-    matplotlib.rcParams.update({'font.size':12})
-    figindex = 1
+    beryllium = []
+    lithium = []
+    myDiv = 1024*1024
+    beryllium_final_data = [i / myDiv for i in data_collected[0][1]]
+    lithium_final_data = [i / myDiv for i in data_collected[1][1]]
 
-    plt.figure()
+    matplotlib.rcParams.update({'font.size': 10})
+    fig, ax = plt.subplots()
+    plt.plot(data_collected[0][0], beryllium_final_data,'-or')
+    plt.plot(data_collected[1][0], lithium_final_data,'-ob')
+
+    ax.set_xscale('log')
+    #ax.set_xticks(data_collected[1][0])
+    for xy in zip(data_collected[0][0], beryllium_final_data):
+        ax.annotate('%0.0f|%0.2f' % xy, xy=xy, va='bottom', ha='center',
+                    textcoords='data')
+    for xy in zip(data_collected[0][0], lithium_final_data):
+        ax.annotate('%0.0f|%0.2f' % xy, xy=xy, va='bottom', ha='center',
+                    textcoords='data')
     plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,15000000)
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('bytes/sec', fontsize=10)
-    plt.title('controller output [bytes/s] for various switches',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],
-               loc='lower right',
-               prop={'size':8})
-    plt.xticks(data_collected[1][0])
-    plt.show()
 
-def plot_multinet_throughput(filename):
-    """ Method definition
-
-    :param
-    :param
-    :type
-    """
-    x_data_list = []
-    y_data_01, y_data_02, y_data_03 = create_xyz_data(filename)
-
-    for j in xrange(0,len(y_data_01)):
-        if j == len(y_data_01):
-            break
-        x_data_value = y_data_02[j]
-        x_data_list.append(x_data_value)
-
-    plt.figure()
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('bytes/s', fontsize=10)
-    plt.xlim(0,6000)
-    plt.ylim(0,15000000)
-    plt.title('Beryllium (RC2) \n'
-              'controller output bytes/s Vs Number of network switches',
-               fontsize=10)
-    plt.plot(x_data_list, y_data_01,'-or')
-    plt.legend(prop={'size':8})
-    plt.grid(True)
+    plt.xlabel('number of network switches [N]', fontsize=10)
+    plt.ylabel('[Mbytes/s]', fontsize=10)
+    plt.legend(['Beryllium (RC2)','Lithium (SR3)'],
+               loc='upper left', prop={'size':12})
     plt.show()
 
 def json2csv(filename):
@@ -137,6 +116,4 @@ if __name__ == '__main__':
         filename = filenames[j]
         #json2csv(filename)
         create_xyz_data(filename)
-        #plot_multinet_throughput(filename)
-
     compare_controllers(filenames)

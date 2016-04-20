@@ -12,7 +12,7 @@ import csv
 from pprint import pprint
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
+from matplotlib.ticker import LinearLocator, FormatStrFormatter, ScalarFormatter
 from matplotlib.font_manager import FontProperties
 import matplotlib
 
@@ -40,152 +40,34 @@ def compare_controllers(filenames,number_of_runs):
         plot_data = (x_data_list,) + (y_data_avg, y_data_min, y_data_max)
         data_collected[k] = plot_data
 
-    matplotlib.rcParams.update({'font.size': 12})
-    figindex = 1
-    plt.figure(figindex)
-    plt.subplot(2,2,1)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches [N]', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput average value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
+    matplotlib.rcParams.update({'font.size': 10})
+    fig, ax = plt.subplots()
+    ax.plot(data_collected[0][0], data_collected[0][1],'-or')
+    ax.plot(data_collected[1][0], data_collected[1][1],'-ob')
 
-    plt.subplot(2,2,2)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches [N]', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput min value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][2],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][2],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
+    ax.plot(data_collected[0][0], data_collected[0][2],'--or')
+    ax.plot(data_collected[1][0], data_collected[1][2],'--ob')
 
-    plt.subplot(2,2,3)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches [N]', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput max value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][3],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][3],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
-
-    plt.subplot(2,2,4)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches [N]', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput min/max/average values',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-
-    plt.plot(data_collected[0][0], data_collected[0][2],'--or')
-    plt.plot(data_collected[1][0], data_collected[1][2],'--ob')
-
-    plt.plot(data_collected[0][0], data_collected[0][3],'-.or')
-    plt.plot(data_collected[1][0], data_collected[1][3],'-.ob')
-
-    plt.legend(['Beryllium (RC2) [mean]','Lithium SR3 [mean]',
-                'Beryllium (RC2) [min]','Lithium SR3 [min]',
-                'Beryllium (RC2) [max]','Lithium SR3 [max]'],
-               loc='lower right', prop={'size':12})
-    plt.xticks(data_collected[1][0])
-    """
-    figindex +=1
-    plt.figure(figindex)
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput max value',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-    plt.legend(['Beryllium (RC2)','Lithium SR3'],prop={'size':8})
-    plt.xticks(data_collected[1][0])
-    plt.show()
-
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    for xy in zip(data_collected[0][0], data_collected[0][1]):
-        ax.annotate('(%s, %s)' % xy, xy=xy,
+    ax.plot(data_collected[0][0], data_collected[0][3],'-.or')
+    ax.plot(data_collected[1][0], data_collected[1][3],'-.ob')
+    ax.set_xscale('log')
+    ax.set_xticks(data_collected[1][0])
+    for xy in zip(data_collected[1][0], data_collected[1][2]):
+        ax.annotate('{}'.format(xy[0]), xy, va='bottom',
                     textcoords='data')
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.grid()
+
+    plt.ylim(60000,105000)
+    plt.grid(True)
+    plt.xticks(data_collected[1][0])
+    plt.xlabel('number of network switches [N]', fontsize=10)
+    plt.ylabel('throughput [responses/s]', fontsize=10)
     plt.show()
 """
-
-    figindex += 1
-    plt.figure()
-    plt.grid(True)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.xlabel('number of network switches [N]', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.title('throughput min/max/average values',
-               fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
-    plt.plot(data_collected[1][0], data_collected[1][1],'-ob')
-
-    plt.plot(data_collected[0][0], data_collected[0][2],'--or')
-    plt.plot(data_collected[1][0], data_collected[1][2],'--ob')
-
-    plt.plot(data_collected[0][0], data_collected[0][3],'-.or')
-    plt.plot(data_collected[1][0], data_collected[1][3],'-.ob')
-
     plt.legend(['Beryllium (RC2) [mean]','Lithium SR3 [mean]',
                 'Beryllium (RC2) [min]','Lithium SR3 [min]',
                 'Beryllium (RC2) [max]','Lithium SR3 [max]'],
                loc='lower right', prop={'size':12})
-    plt.xticks(data_collected[1][0])
-    plt.show()
-
-def plot_cbench_throughput(filename,number_of_runs):
-    """ Method definition
-
-    :param
-    :param
-    :type
-    """
-    x_data_list = []
-    y_data_01, y_data_02, y_data_03 = create_xyz_data(filename)
-    y_data_avg, y_data_min, y_data_max = calculate_min_max_avg_values(y_data_01,2)
-
-    for j in xrange(0,len(y_data_01), number_of_runs):
-        if j == len(y_data_01):
-            break
-        x_data_value = y_data_02[j]
-        x_data_list.append(x_data_value)
-
-    plt.figure()
-    plt.xlabel('number of network switches', fontsize=10)
-    plt.ylabel('throughput [responses/sec]', fontsize=10)
-    plt.xlim(0,6000)
-    plt.ylim(0,120000)
-    plt.title('Beryllium (RC2) \n'
-              'Throughput Vs Number of network switches',
-               fontsize=10)
-    plt.plot(x_data_list, y_data_avg,'-or', label='average')
-    plt.plot(x_data_list, y_data_min,'-ob', label='min value')
-    plt.plot(x_data_list, y_data_max,'-og', label='max value')
-    plt.legend(prop={'size':8})
-    plt.grid(True)
-    plt.show()
+"""
 
 
 def json2csv(filename):
@@ -261,6 +143,4 @@ if __name__ == '__main__':
         filename = filenames[j]
         #json2csv(filename)
         create_xyz_data(filename)
-        plot_cbench_throughput(filename,2)
-
     compare_controllers(filenames,2)
