@@ -155,10 +155,10 @@ def controller_pre_actions(controller_handlers_set, controller_rebuild,
     generate_controller_xml_files(controller_handlers_set, controller_port,
                                   ' '.join(java_opts), controller_ssh_client,
                                   controller_cpus)
-    #if controller_handlers_set.ctrl_change_persistent != '':
-    #    change_persistent_controller(
-    #        controller_handlers_set.ctrl_change_persistent,
-    #        controller_ssh_client)
+    if controller_handlers_set.ctrl_change_persistent != '':
+        change_persistent_controller(
+            controller_handlers_set.ctrl_change_persistent,
+            controller_ssh_client)
 
 
 def generate_controller_xml_files(controller_handlers_set, controller_port,
