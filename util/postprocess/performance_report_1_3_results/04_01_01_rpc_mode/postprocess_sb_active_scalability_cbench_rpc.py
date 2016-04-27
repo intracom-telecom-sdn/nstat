@@ -60,14 +60,19 @@ def compare_controllers(filenames,number_of_runs):
     plt.grid(True)
     plt.xticks(data_collected[1][0])
     plt.xlabel('number of network switches [N]', fontsize=10)
+
     plt.ylabel('throughput [responses/s]', fontsize=10)
-    plt.show()
-"""
     plt.legend(['Beryllium (RC2) [mean]','Lithium SR3 [mean]',
                 'Beryllium (RC2) [min]','Lithium SR3 [min]',
                 'Beryllium (RC2) [max]','Lithium SR3 [max]'],
                loc='lower right', prop={'size':12})
+    plt.show()
 """
+
+"""
+
+
+
 
 
 def json2csv(filename):

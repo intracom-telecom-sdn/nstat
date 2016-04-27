@@ -33,61 +33,68 @@ def compare_controllers(filenames,number_of_runs):
         for j in xrange(0,len(y_data_01), number_of_runs):
             if j == len(y_data_01):
                 break
-            x_data_value = y_data_01[j]
+            x_data_value = y_data_02[j]
             x_data_list.append(x_data_value)
 
         plot_data = (x_data_list,) + (y_data_01, y_data_02, y_data_03)
         data_collected[k] = plot_data
-    matplotlib.rcParams.update({'font.size': 8})
 
+    #---------------------------------------------------------------------------
+    matplotlib.rcParams.update({'font.size': 12})
+    #---------------------------------------------------------------------------
     figindex = 1
     plt.figure(figindex)
     plt.subplot(2,2,1)
     plt.grid(True)
-    plt.xlim(0,5000)
-    plt.ylim(0,3000)
-    plt.xlabel('sample ID', fontsize=10)
-    plt.ylabel('outgoing packets per [s]', fontsize=10)
-    plt.title('Beryllium (RC2) \n'
-              'controller outgoing openflow packets per [s]',
+    #plt.xlim(0,5000)
+    plt.xlim(1000,3500)
+    plt.ylim(0,35)
+    plt.xlabel('repeat number [N]', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('controller throughput [Beryllium (RC2)]',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][2],'-or')
-
+    plt.plot(data_collected[0][0], data_collected[0][1],'-or')
+    #---------------------------------------------------------------------------
     plt.subplot(2,2,2)
     plt.grid(True)
-    plt.xlim(0,5000)
-    plt.ylim(0,3000)
-    plt.xlabel('sample ID', fontsize=10)
-    plt.ylabel('outgoing packets per [s]', fontsize=10)
-    plt.title('Lithium (SR3) \n'
-              'controller outgoing openflow packets per [s]',
+    #plt.xlim(0,5000)
+    plt.xlim(1000,3500)
+    plt.ylim(0,35)
+    plt.xlabel('repeat number [N]', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
+    plt.title('controller throughput [Lithium (SR3)',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[1][2],'-or')
-
+    plt.plot(data_collected[0][0], data_collected[1][1],'-ob')
+    #---------------------------------------------------------------------------
+    # scale used memory both for Lithium and Beryllium
+    beryllium = []
+    lithium = []
+    myDiv = 1024*1024
+    beryllium_used_memory = [i / myDiv for i in data_collected[0][3]]
+    lithium_used_memory = [i / myDiv for i in data_collected[1][3]]
 
     plt.subplot(2,2,3)
     plt.grid(True)
-    plt.xlim(0,5000)
-    plt.ylim(0,200000)
-    plt.xlabel('sample ID', fontsize=10)
-    plt.ylabel('outgoing bytes per [s]', fontsize=10)
-    plt.title('Beryllium (RC2) \n'
-              'controller outgoing openflow bytes per [s]',
+    #plt.xlim(0,5000)
+    plt.xlim(1000,3500)
+    plt.ylim(0,275)
+    plt.xlabel('repeat number [N]', fontsize=10)
+    plt.ylabel('[Mbytes]', fontsize=10)
+    plt.title('used memory Mbytes, [Beryllium (RC2)]',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[0][3],'-ob')
-
-
+    plt.plot(data_collected[0][0],beryllium_used_memory,'-or')
+    #---------------------------------------------------------------------------
     plt.subplot(2,2,4)
     plt.grid(True)
     plt.grid(True)
-    plt.xlim(0,5000)
-    plt.ylim(0,200000)
-    plt.xlabel('sample ID', fontsize=10)
-    plt.ylabel('outgoing bytes per [s]', fontsize=10)
-    plt.title('Lithium (SR3) \n'
-              'controller outgoing openflow bytes per [s]',
+    #plt.xlim(0,5000)
+    plt.xlim(1000,3500)
+    plt.ylim(0,275)
+    plt.xlabel('repeat number [N]', fontsize=10)
+    plt.ylabel('[Mbytes]', fontsize=10)
+    plt.title('used memory Mbytes, [Lithium (RC2)]',
                fontsize=10)
-    plt.plot(data_collected[0][0], data_collected[1][3],'-ob')
+    plt.plot(data_collected[0][0], lithium_used_memory,'-ob')
 
     plt.show()
 
@@ -105,18 +112,18 @@ def plot_cbench_throughput(filename,number_of_runs):
     for j in xrange(0,len(y_data_01), number_of_runs):
         if j == len(y_data_01):
             break
-        x_data_value = y_data_01[j]
+        x_data_value = y_data_02[j]
         x_data_list.append(x_data_value)
 
     plt.figure()
-    plt.xlabel('sample ID', fontsize=10)
-    plt.ylabel('outgoing packets per [s]', fontsize=10)
+    plt.xlabel('number of network switches', fontsize=10)
+    plt.ylabel('throughput [responses/sec]', fontsize=10)
     plt.xlim(0,5000)
-    plt.ylim(0,3000)
+    plt.ylim(0,50)
     plt.title('Beryllium (RC2) \n'
-              'controller outgoing OpenFlow packets per second',
+              'Throughput Vs Number of network switches',
                fontsize=10)
-    plt.plot(x_data_list, y_data_02,'-or')
+    plt.plot(x_data_list, y_data_01,'-or')
     plt.grid(True)
     plt.show()
 
@@ -135,17 +142,13 @@ def json2csv(filename):
         lines = json.load(filenameresultfile)
     f = csv.writer(open(csvfilename, "wb+"))
 
-    f.writerow(["multinet_size",
-                "add_flows_transmission_time",
-                "add_controller_rate",
-                "flows_controller_installation_rate",
-                "total_flows"])
+    f.writerow(["throughput_responses_sec",
+                "global_sample_id",
+                "used_memory_bytes"])
     for lines in lines:
-        f.writerow([lines["multinet_size"],
-                    lines["add_flows_transmission_time"],
-                    lines["add_controller_rate"],
-                    lines["flows_controller_installation_rate"],
-                    lines["total_flows"]])
+        f.writerow([lines["throughput_responses_sec"],
+                    lines["global_sample_id"],
+                    lines["used_memory_bytes"]])
 
 def create_xyz_data(filename):
     """ Method definition
@@ -159,15 +162,13 @@ def create_xyz_data(filename):
     y_data_01 = []
     y_data_02 = []
     y_data_03 = []
-    y_data_04 = []
 
     for x in xrange(0,len(nstatdata)):
         y_data_01.append(nstatdata[x][0])
         y_data_02.append(nstatdata[x][1])
         y_data_03.append(nstatdata[x][2])
-        y_data_04.append(nstatdata[x][3])
 
-    return y_data_01, y_data_02, y_data_03, y_data_04
+    return y_data_01, y_data_02, y_data_03
 
 def calculate_min_max_avg_values(y_data,number_of_runs):
     """ Method definition
@@ -193,13 +194,13 @@ def calculate_min_max_avg_values(y_data,number_of_runs):
     return y_data_avg, y_data_min, y_data_max
 
 if __name__ == '__main__':
-    filenames = ['beryllium_nb_active_scalability_multinet_results',
-                 'lithium_nb_active_scalability_multinet_results']
+    filenames = ['beryllium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours_results',
+                 'lithium_DS_sb_active_stability_mtcbench_no_restart_500Switches_12Hours_results']
 
     for j in xrange(0,len(filenames)):
         filename = filenames[j]
-        json2csv(filename)
+        #json2csv(filename)
         create_xyz_data(filename)
         #plot_cbench_throughput(filename,1)
 
-    #compare_controllers(filenames,1)
+    compare_controllers(filenames,1)
