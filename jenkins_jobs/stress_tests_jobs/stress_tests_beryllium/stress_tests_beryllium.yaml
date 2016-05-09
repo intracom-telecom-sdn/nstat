@@ -135,7 +135,7 @@
 
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="nb_active_scalability_multinet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
                --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
                --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium/$CONFIG_FILENAME".json" \
@@ -302,7 +302,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_idle_scalability_multinet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
           --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -335,7 +335,7 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
           --test="sb_idle_scalability_multinet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/  \
+          --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_pb/  \
           --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
           --json-config=$WORKSPACE/stress_test/stress_test_confs/beryllium/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
