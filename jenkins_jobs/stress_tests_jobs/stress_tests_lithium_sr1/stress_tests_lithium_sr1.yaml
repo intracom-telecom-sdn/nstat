@@ -17,9 +17,6 @@
 # 10. lithium_RPC_sb_active_stability_mtcbench_restart_16Switches_restart.json
 # 11. lithium_RPC_sb_idle_scalability_cbench.json
 # 12. lithium_RPC_sb_idle_scalability_mtcbench.json
-# 13. lithium_sb_idle_scalability_mininet_DisconnectedTopo.json
-# 14. lithium_sb_idle_scalability_mininet_LinearTopo.json
-# 15. lithium_sb_idle_scalability_mininet_MeshTopo.json
 # ------------------------------------------------------------------------------
 
 
@@ -387,105 +384,6 @@
 
 
 # ------------------------------------------------------------------------------
-# lithium_sb_idle_scalability_mininet_DisconnectedTopo
-# ------------------------------------------------------------------------------
-
-- job-template:
-    name: lithium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}
-    description: 'Enter the job description here'
-    block-downstream: false
-    block-upstream: false
-    defaults: gitlab-stress
-    triggers:
-      - timed:
-    wrappers:
-      - timestamps:
-    builders:
-      - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_DisconnectedTopo"
-
-          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
-
-          # test execution
-          # --------------------------------------------------------------------
-          python3.4 ./stress_test/nstat_orchestrator.py \
-          --test="sb_idle_scalability_mininet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/  \
-          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
-          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
-          --html-report=$WORKSPACE/report.html \
-          --output-dir=$WORKSPACE/$RESULTS_DIR/
-
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
-
-# ------------------------------------------------------------------------------
-# lithium_sb_idle_scalability_mininet_LinearTopo
-# ------------------------------------------------------------------------------
-
-- job-template:
-    name: lithium_sb_idle_scalability_mininet_LinearTopo-{branch}
-    description: 'Enter the job description here'
-    block-downstream: false
-    block-upstream: false
-    defaults: gitlab-stress
-    triggers:
-      - timed:
-    wrappers:
-      - timestamps:
-    builders:
-      - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_LinearTopo"
-
-          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
-
-          # test execution
-          # --------------------------------------------------------------------
-          python3.4 ./stress_test/nstat_orchestrator.py \
-          --test="sb_idle_scalability_mininet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/  \
-          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
-          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
-          --html-report=$WORKSPACE/report.html \
-          --output-dir=$WORKSPACE/$RESULTS_DIR/
-
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
-
-# ------------------------------------------------------------------------------
-# lithium_sb_idle_scalability_mininet_MeshTopo
-# ------------------------------------------------------------------------------
-
-- job-template:
-    name: lithium_sb_idle_scalability_mininet_MeshTopo-{branch}
-    description: 'Enter the job description here'
-    block-downstream: false
-    block-upstream: false
-    defaults: gitlab-stress
-    triggers:
-      - timed:
-    wrappers:
-      - timestamps:
-    builders:
-      - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_mininet_MeshTopo"
-
-          source /$WORKSPACE/jenkins_jobs/common/stress_tests_pre_actions.sh
-
-          # test execution
-          # --------------------------------------------------------------------
-          python3.4 ./stress_test/nstat_orchestrator.py \
-          --test="sb_idle_scalability_mininet" \
-          --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr1_pb/  \
-          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
-          --json-config=$WORKSPACE/stress_test/stress_test_confs/$CONFIG_FILENAME".json" \
-          --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
-          --html-report=$WORKSPACE/report.html \
-          --output-dir=$WORKSPACE/$RESULTS_DIR/
-
-          # source /$WORKSPACE/jenkins_jobs/common/stress_tests_post_actions.sh
-
-# ------------------------------------------------------------------------------
 # job instances
 # ------------------------------------------------------------------------------
 
@@ -506,6 +404,3 @@
         - 'lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches-{branch}'
         - 'lithium_RPC_sb_active_stability_mtcbench_restart_16Switches_restart-{branch}'
         - 'lithium_RPC_sb_idle_scalability_mtcbench-{branch}'
-        - 'lithium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}'
-        - 'lithium_sb_idle_scalability_mininet_LinearTopo-{branch}'
-        - 'lithium_sb_idle_scalability_mininet_MeshTopo-{branch}'
