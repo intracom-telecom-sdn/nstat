@@ -302,9 +302,9 @@
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-          --test="sb_idle_scalability_mininet" \
+          --test="sb_idle_scalability_multinet" \
           --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
-          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
           --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
@@ -335,9 +335,9 @@
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-          --test="sb_idle_scalability_mininet" \
+          --test="sb_idle_scalability_multinet" \
           --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
-          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
           --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
@@ -368,9 +368,9 @@
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-          --test="sb_idle_scalability_mininet" \
+          --test="sb_idle_scalability_multinet" \
           --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/  \
-          --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+          --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
           --json-config=$WORKSPACE/stress_test/stress_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
           --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
           --html-report=$WORKSPACE/report.html \
@@ -495,9 +495,9 @@
 #        - 'lithium_RPC_sb_active_scalability_mtcbench-{branch}'
 #        - 'lithium_RPC_sb_active_stability_mtcbench_no_restart_500Switches_12Hours-{branch}'
 #        - 'lithium_RPC_sb_idle_scalability_mtcbench-{branch}'
-#        - 'lithium_sb_idle_scalability_mininet_DisconnectedTopo-{branch}'
-#        - 'lithium_sb_idle_scalability_mininet_LinearTopo-{branch}'
-#        - 'lithium_sb_idle_scalability_mininet_MeshTopo-{branch}'
+#        - 'lithium_sb_idle_scalability_multinet_DisconnectedTopo-{branch}'
+#        - 'lithium_sb_idle_scalability_multinet_LinearTopo-{branch}'
+#        - 'lithium_sb_idle_scalability_multinet_MeshTopo-{branch}'
 #        - 'lithium_sb_idle_scalability_multinet_LinearTopo-{branch}'
 #        - 'lithium_sb_idle_scalability_multinet_DisconnectedTopo-{branch}'
-#         - 'lithium_sb_idle_stability_multinet-{branch}'
+#        - 'lithium_sb_idle_stability_multinet-{branch}'

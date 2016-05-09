@@ -26,6 +26,8 @@
 "controller_status_handler":"./status.sh",
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
+"controller_persistent_handler":"/change_persistence.py",
+
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
 
 "controller_rebuild":true,

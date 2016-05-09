@@ -8,12 +8,12 @@
 # 01. beryllium_DS_sb_active_scalability_mtcbench.json
 # 02. beryllium_DS_sb_active_stability_mtcbench.json
 # 03. beryllium_DS_sb_idle_scalability_mtcbench.json
-# 04. beryllium_nb_active_scalability_mininet.json
+# 04. beryllium_nb_active_scalability_multinet.json
 # 05. beryllium_RPC_sb_active_scalability_mtcbench.json
 # 06. beryllium_RPC_sb_active_stability_mtcbench.json
 # 07. beryllium_RPC_sb_idle_scalability_mtcbench.json
-# 08. beryllium_sb_idle_scalability_mininet
-# 09. beryllium_sb_idle_stability_mininet
+# 08. beryllium_sb_idle_scalability_multinet
+# 09. beryllium_sb_idle_stability_multinet
 # 10. beryllium_sb_active_scalability_multinet
 # 11. beryllium_sb_idle_scalability_multinet
 # 12. beryllium_sb_idle_stability_multinet
@@ -141,11 +141,11 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_beryllium_nb_active_scalability_mininet
+# sample_beryllium_nb_active_scalability_multinet
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_beryllium_nb_active_scalability_mininet-{branch}
+    name: sample_beryllium_nb_active_scalability_multinet-{branch}
     description: "In Northbound tests we want to investigate how OpenDaylight\n
                  performs under heavy load of NB traffic. In the context of\n
                  OpenDaylight NBtraffic is translated in RESTCONF calls. In\n
@@ -163,16 +163,16 @@
       - timestamps:
     builders:
       - shell: |
-          export CONFIG_FILENAME="beryllium_nb_active_scalability_mininet"
+          export CONFIG_FILENAME="beryllium_nb_active_scalability_multinet"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-                  --test="nb_active_scalability_mininet" \
+                  --test="nb_active_scalability_multinet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
                --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
@@ -295,12 +295,12 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_beryllium_sb_idle_scalability_mininet
+# sample_beryllium_sb_idle_scalability_multinet
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_beryllium_sb_idle_scalability_mininet-{branch}
-    description: An idle mininet network is booted.
+    name: sample_beryllium_sb_idle_scalability_multinet-{branch}
+    description: An idle multinet network is booted.
     block-downstream: false
     block-upstream: false
     defaults: github-sample
@@ -310,16 +310,16 @@
       - timestamps:
     builders:
       - shell: |
-          export CONFIG_FILENAME="beryllium_sb_idle_scalability_mininet"
+          export CONFIG_FILENAME="beryllium_sb_idle_scalability_multinet"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="sb_idle_scalability_mininet" \
+               --test="sb_idle_scalability_multinet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
@@ -328,11 +328,11 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_beryllium_sb_idle_stability_mininet
+# sample_beryllium_sb_idle_stability_multinet
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_beryllium_sb_idle_stability_mininet-{branch}
+    name: sample_beryllium_sb_idle_stability_multinet-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -343,16 +343,16 @@
       - timestamps:
     builders:
       - shell: |
-          export CONFIG_FILENAME="beryllium_sb_idle_stability_mininet"
+          export CONFIG_FILENAME="beryllium_sb_idle_stability_multinet"
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
 
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="sb_idle_scalability_mininet" \
+               --test="sb_idle_scalability_multinet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_beryllium_rc2_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/mininet/ \
+               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
                --json-config=$WORKSPACE/stress_test/sample_test_confs/beryllium_rc2/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
@@ -540,11 +540,11 @@
         - 'sample_beryllium_DS_sb_active_scalability_mtcbench-{branch}'
         - 'sample_beryllium_DS_sb_active_stability_mtcbench-{branch}'
         - 'sample_beryllium_DS_sb_idle_scalability_mtcbench-{branch}'
-        - 'sample_beryllium_nb_active_scalability_mininet-{branch}'
+        - 'sample_beryllium_nb_active_scalability_multinet-{branch}'
         - 'sample_beryllium_RPC_sb_active_scalability_mtcbench-{branch}'
         - 'sample_beryllium_RPC_sb_active_stability_mtcbench-{branch}'
         - 'sample_beryllium_RPC_sb_idle_scalability_mtcbench-{branch}'
-        - 'sample_beryllium_sb_idle_scalability_mininet-{branch}'
+        - 'sample_beryllium_sb_idle_scalability_multinet-{branch}'
         - 'sample_beryllium_sb_active_scalability_multinet-{branch}'
         - 'sample_beryllium_nb_active_scalability_multinet-{branch}'
         - 'sample_beryllium_sb_idle_scalability_multinet-{branch}'
