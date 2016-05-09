@@ -262,6 +262,9 @@ def sb_idle_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             statistics['cbench_warmup'] = cbench_warmup
             statistics['bootup_time_secs'] = res[0]
             statistics['discovered_switches'] = res[1]
+            statistics['max_discovered_switches'] = res[2]
+            statistics['discovered_switches_error_code'] = res[-1]
+            statistics['successful_bootup_time'] = res[0] if (res[-1] == 0) else -1
             total_samples.append(statistics)
 
             controller_utils.stop_controller(controller_handlers_set, cpid,
@@ -382,7 +385,10 @@ def get_report_spec(test_type, config_json, results_json):
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
              ('cbench_internal_repeats', 'Generator Internal repeats'),
+             ('discovered_switches_error_code','Error code'),
+             ('successful_bootup_time', 'Successful bootup time (seconds)'),
              ('bootup_time_secs', 'Time to discover switches (seconds)'),
+             ('max_discovered_switches', 'Max discovered switches'),
              ('discovered_switches', 'Discovered switches'),
              ('cbench_simulated_hosts', 'Generator simulated hosts'),
              ('cbench_switches', 'Generated simulated switches'),
