@@ -27,6 +27,7 @@
 "controller_clean_handler":"./clean.sh",
 "controller_statistics_handler":"/change_stats_period.py",
 "controller_persistent_handler":"/change_persistence.py",
+
 "controller_logs_dir":"./distribution-karaf-0.3.3-Lithium-SR3/data/log/",
 
 "controller_rebuild":true,
