@@ -22,7 +22,6 @@ before_script:
   - sudo pip3 install coveralls
 script:
   - echo "Running Unittests"
-  - export PYTHONPATH=$(pwd)
   - cd util/unittests
   - coverage erase
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_stats.py
