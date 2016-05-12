@@ -88,6 +88,9 @@ sudo apt-get install --force-yes -y \
     python3.4 \
     python-pip \
     python3-pip
+# Update python setuptools
+pip install -U setuptools
+pip3 install -U setuptools
 
 # Install Python libraries
 #-------------------------------------------------------------------------------
