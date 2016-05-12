@@ -99,8 +99,10 @@ sudo apt-get install --force-yes -y \
     python3-requests \
     python3-matplotlib \
     python3-lxml \
+    python3-crypto \
     python-lxml \
     python-paramiko \
+    python-crypto \
     python-pypcap \
     python-dpkt \
     python-bottle
