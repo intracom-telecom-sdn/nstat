@@ -50,11 +50,11 @@ page.
 
 ## Browse performance results
 
-- [5/19/2016]: Performance Stress Tests Report v1.2: "Berylium Vs Lithium SR3" [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.2.pdf)
+- [5/19/2016]: Performance Stress Tests Report v1.2: **"Berylium Vs Lithium SR3"** [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.2.pdf)
 
-- [1/2/2016]: Performance Stress Tests Report v1.1: "Lithium SR3" [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.1.pdf)
+- [1/2/2016]: Performance Stress Tests Report v1.1: **"Lithium SR3"** [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.1.pdf)
 
-- [6/29/2015]: Performance Stress Tests Report v1.0: "Lithium vs Helium Comparison": [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.0.pdf)
+- [6/29/2015]: Performance Stress Tests Report v1.0: **"Lithium vs Helium Comparison"**: [[pdf]](https://raw.githubusercontent.com/wiki/intracom-telecom-sdn/nstat/files/ODL_performance_report_v1.0.pdf)
 
 Indicative experimental results from [switch  scalability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-Helium-SR3-switch-scalability-results)
 and [stability](https://github.com/intracom-telecom-sdn/nstat/wiki/ODL-Helium-SR3-stability-results)
