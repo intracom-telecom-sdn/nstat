@@ -84,7 +84,7 @@
 "plots":[
     {
         "x_axis_key":"total_flows",
-        "y_axis_key":"add_flows_time",
+        "y_axis_key":"end_to_end_installation_time",
         "z_axis_key":"flow_workers",
         "x_axis_label":"# Total Added Flows",
         "y_axis_label":" Time to add Flows (sec)",
@@ -100,7 +100,7 @@
     },
     {
         "x_axis_key":"total_flows",
-        "y_axis_key":"add_flows_time",
+        "y_axis_key":"end_to_end_installation_time",
         "z_axis_key":"flow_operation_delay_ms",
         "x_axis_label":"# Total Added Flows",
         "y_axis_label":" Time to add Flows (sec)",
@@ -116,14 +116,14 @@
     },
     {
         "x_axis_key":"multinet_size",
-        "y_axis_key":"add_flows_transmission_time",
+        "y_axis_key":"add_controller_time",
         "z_axis_key":null,
         "x_axis_label":"# Number of switches",
         "y_axis_label":" Add controller time (sec)",
         "plot_type":"errorbar_connected",
         "plot_title":"Add controller time Vs Number of switches",
         "plot_subtitle_keys":["controller_java_xopts", "controller_restart"],
-        "plot_filename":"add_flows_transmission_time",
+        "plot_filename":"add_controller_time",
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
         "x_axis_factor":"1.0",
         "y_axis_factor":"1.0",

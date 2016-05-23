@@ -83,7 +83,7 @@
 "plots":[
     {
         "x_axis_key":"total_flows",
-        "y_axis_key":"add_flows_time",
+        "y_axis_key":"end_to_end_installation_time",
         "z_axis_key":"flow_workers",
         "x_axis_label":"# Total Added Flows",
         "y_axis_label":" Time to add Flows (sec)",
@@ -99,7 +99,7 @@
     },
     {
         "x_axis_key":"total_flows",
-        "y_axis_key":"add_flows_time",
+        "y_axis_key":"end_to_end_installation_time",
         "z_axis_key":"flow_operation_delay_ms",
         "x_axis_label":"# Total Added Flows",
         "y_axis_label":" Time to add Flows (sec)",

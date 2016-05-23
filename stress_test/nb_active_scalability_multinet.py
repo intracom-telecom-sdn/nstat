@@ -287,18 +287,68 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 '{0}'.format(nb_generator_cpu_shares)
             statistics['flow_operation_delay_ms'] = flow_operations_delay_ms
             statistics['flow_workers'] = flow_workers
-            statistics['add_flows_transmission_time'] = results[0]
-            statistics['add_flows_time'] = results[1]
+
+            """
+            # Flow scalability tests metrics
+            # ------------------------------------------------------------------
+            # Add controller time: Time for all ADD REST requests to be sent
+                                   and their response to be received
+            # 01. add_controller_time =
+            # 02. add_controller_rate = Number of Flows / add_controller_time
+            """
+            statistics['add_controller_time'] = results[0]
+            statistics['add_controller_rate'] = float(total_flows) / results[0]
+
+            """
+            # End-to-end-installation-time:
+            # 03. end_to_end_installation_time =
+            # 04. end_to_end_installation_rate = Number of Flows / end_to_end_installation_time
+            """
+            statistics['end_to_end_installation_time'] = results[1]
+            if results[1] != -1:
+                statistics['end_to_end_installation_rate'] = \
+                    float(total_flows) / results[1]
+            else:
+                statistics['end_to_end_installation_rate'] = -1
+
+            """
+            # Add switch time: Time from the FIRST REST request until ALL flows
+            #                  are present in the network
+            # 05. add_switch_time =
+            # 06. add_switch_rate =
+
+            # Add confirm time: Time period started after the last flow was
+                                configured until we receive “confirmation” all
+                                flows are added.
+            # 07. add_confirm_time =
+            # 08. add_confirm_rate =
+
+            # Remove controller time: Time for all delete REST
+                                      requests to be sent and their response to
+                                      be received
+            # 09. remove_controller_time =
+            # 10. remove_controller_rate
+
+            # Remove switch time: Time from the first delete REST
+                                  request until all flows are removed from the
+                                  network.
+            # 11. remove_switch_time =
+            # 12. remove_switch_time =
+
+            # Remove confirm time:
+            # 13. remove_confirm_time = Time period started after the last
+                                        flow was unconfigured until we receive
+                                        “confirmation” all flows are removed.
+            # 13. remove_confirm_rate =
+
+            """
+
             if flow_delete_flag:
                 statistics['delete_flows_transmission_time'] = results[-3]
                 statistics['delete_flows_time'] = results[-2]
+
             statistics['failed_flow_operations'] = results[-1]
-            statistics['add_controller_rate'] = float(total_flows) / results[0]
-            if results[1] != -1:
-                statistics['flows_controller_installation_rate'] = \
-                    float(total_flows) / results[1]
-            else:
-                statistics['flows_controller_installation_rate'] = -1
+
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)
 
@@ -433,12 +483,12 @@ def get_report_spec(test_type, config_json, results_json):
              ('date', 'Sample timestamp (date)'),
              ('total_flows', 'Total flow operations'),
              ('failed_flow_operations', 'Total failed flow operations'),
-             ('add_flows_transmission_time',
-              'Total time of NB Restconf calls for flows addition (seconds)'),
-             ('add_controller_rate', 'Add controller rate (Flows/s)'),
-             ('flows_controller_installation_rate',
-              'Flows installation rate on controller operational DS (Flows/s)'),
-             ('add_flows_time', 'Add flows time (seconds)'),
+             ('add_controller_time',
+              'Time for all requests to be sent and their response to be received [s]'),
+             ('add_controller_rate', 'Total flow operations / Add controller time  (Flows/s)'),
+             ('end_to_end_installation_time', 'End-to-end installation time (seconds)'),
+             ('end_to_end_installation_rate',
+              'Total flow operations / end_to_end_installation_time (Flows/s)'),
              ('delete_flows_transmission_time',
               'Total time of NB Restconf calls for flows deletion (seconds)'),
              ('delete_flows_time', 'Delete flows time (seconds)'),
