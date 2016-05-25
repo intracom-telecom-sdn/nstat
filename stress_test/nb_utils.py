@@ -7,6 +7,7 @@
 """ NSTAT NorthBound  """
 
 import emulators.nb_generator.flow_utils
+import logging
 import time
 
 def nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
