@@ -6,7 +6,7 @@
 
 """ NSTAT NorthBound  """
 
-import nb_generator.flow_utils
+import emulators.nb_generator.flow_utils
 import time
 
 def nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
@@ -46,7 +46,7 @@ def poll_flows(expected_flows, t_start, controller_nb_interface):
     """
 
     deadline = 240
-    odl_inventory = nb_generator.flow_utils.FlowExplorer(controller_nb_interface.ip,
+    odl_inventory = emulators.nb_generator.flow_utils.FlowExplorer(controller_nb_interface.ip,
                                                          controller_nb_interface.port,
                                                          'operational',
                                                          (controller_nb_interface.username, controller_nb_interface.password))
