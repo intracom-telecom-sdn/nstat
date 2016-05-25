@@ -246,6 +246,10 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_base_dir)
 
             # start northbound generator flow_delete_flag SET
+            add_failed_flows_operations = 0
+            delete_failed_flows_operations = 0
+
+
             nb_generator_start_json_output = nb_utils.nb_generator_start(nb_generator_ssh_client,
                                                                          nb_generator_base_dir,nb_generator_cpus,
                            nb_generator_handlers_set,controller_node,
@@ -281,7 +285,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             nb_utils.
 
             # start monitor threads
-            """
+
 
             exit_status , output = util.netutil.ssh_run_command(
                 nb_generator_ssh_client, cmd , '[generator_run_handler]')
@@ -291,7 +295,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                 format(test_type))
 
             results = json.loads(output)
-
+            """
             # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
