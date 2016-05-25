@@ -21,7 +21,7 @@ def nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
                   total_flows, flow_workers, flow_operations_delay_ms,
                   flow_delete_flag, controller_nb_interface.username,
                   controller_nb_interface.password, log_level))
-    logging.debug('{0} Generator handler command:{1}.'.format(test_type, cmd))
+    logging.debug('Generator handler command:{0}.'.format(cmd))
 
 
 def poll_flows(expected_flows, t_start, controller_nb_interface):
