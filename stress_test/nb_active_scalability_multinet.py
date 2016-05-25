@@ -13,6 +13,7 @@ import itertools
 import json
 import logging
 import multinet_utils
+import nb_utils
 import os
 import report_spec
 import sys
@@ -243,15 +244,41 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_rest_server, controller_nb_interface,
                 multinet_base_dir)
 
-            cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
-                format(nb_generator_base_dir, nb_generator_cpus,
-                       nb_generator_handlers_set.run_handler,
-                       controller_node.ip, controller_nb_interface.port,
-                       total_flows, flow_workers, flow_operations_delay_ms,
-                       flow_delete_flag, controller_nb_interface.username,
-                       controller_nb_interface.password, log_level))
-            logging.debug('{0} Generator handler command:{1}.'.
-                          format(test_type, cmd))
+            # start northbound generator flow_delete_flag SET
+            nb_generator_start_json_output = nb_utils.nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
+                           nb_generator_handlers_set,controller_node,
+                           controller_nb_interface,total_flows,flow_workers,
+                           flow_operations_delay_ms,False,log_level)
+            nb_generator_start_output = json.loads(nb_generator_start_json_output)
+            time_of_first_REST_request = nb_generator_start_output[1]
+            add_failed_flows_operations = nb_generator_start_output[0]
+            add_controller_time = time.time() - time_of_first_REST_request
+            end_to_end_installation_time = nb_utils.poll_flows(total_flows,
+                                                               time_of_first_REST_request,
+                                                               controller_nb_interface)
+
+            # start northbound generator flow_delete_flag SET
+            if flow_delete_flag:
+                nb_utils.nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
+                           nb_generator_handlers_set,controller_node,
+                           controller_nb_interface,total_flows,flow_workers,
+                           flow_operations_delay_ms,True,log_level)
+                nb_generator_start_output = json.loads(nb_generator_start_json_output)
+                time_of_first_REST_request = nb_generator_start_output[1]
+                delete_failed_flows_operations = nb_generator_start_output[0]
+                delete_controller_time = time.time() - time_of_first_REST_request
+                end_to_end_deletion_time = nb_utils.poll_flows(total_flows,
+                                                               t_start,
+                                                               controller_nb_interface)
+
+            total_failed_flows_operations = add_failed_flows_operations + \
+                                            delete_failed_flows_operations
+            """
+            # start monitor threads
+            nb_utils.
+
+            # start monitor threads
+            """
 
             exit_status , output = util.netutil.ssh_run_command(
                 nb_generator_ssh_client, cmd , '[generator_run_handler]')
@@ -296,18 +323,18 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             # 01. add_controller_time =
             # 02. add_controller_rate = Number of Flows / add_controller_time
             """
-            statistics['add_controller_time'] = results[0]
-            statistics['add_controller_rate'] = float(total_flows) / results[0]
+            statistics['add_controller_time'] = add_controller_time
+            statistics['add_controller_rate'] = float(total_flows) / add_controller_time
 
             """
             # End-to-end-installation-time:
             # 03. end_to_end_installation_time =
             # 04. end_to_end_installation_rate = Number of Flows / end_to_end_installation_time
             """
-            statistics['end_to_end_installation_time'] = results[1]
-            if results[1] != -1:
+            statistics['end_to_end_installation_time'] = end_to_end_installation_time
+            if end_to_end_installation_time != -1:
                 statistics['end_to_end_installation_rate'] = \
-                    float(total_flows) / results[1]
+                    float(total_flows) / end_to_end_installation_time
             else:
                 statistics['end_to_end_installation_rate'] = -1
 
@@ -344,10 +371,10 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             """
 
             if flow_delete_flag:
-                statistics['delete_flows_transmission_time'] = results[-3]
-                statistics['delete_flows_time'] = results[-2]
+                statistics['delete_flows_transmission_time'] = delete_controller_time
+                statistics['delete_flows_time'] = end_to_end_deletion_time
 
-            statistics['failed_flow_operations'] = results[-1]
+            statistics['failed_flow_operations'] = total_failed_flows_operations
 
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)

@@ -188,56 +188,6 @@ def join_workers(opqueues, resqueues, wthr):
 
     return failed_flow_ops
 
-def poll_flows(expected_flows, ctrl_ip, ctrl_port, t_start, auth_token):
-    """
-    Monitors operational DS until the expected number of flows are found or the
-    deadline is reached.
-
-    :param expected_flows: expected number of flows
-    :param ctrl_ip: controller IP
-    :param ctrl_port: controller RESTconf port
-    :param t_start: timestamp for begin of discovery
-    :param auth_token: RESTconf authorization token (username/password tuple)
-
-    :returns: Returns a float number containing the time in which
-    expected_flows were discovered otherwise containing -1.0 on failure.
-    :rtype: float
-    :type expected_flows: int
-    :type ctrl_ip: str
-    :type ctrl_port: int
-    :type t_start: float
-    :type auth_token: tuple<str>
-    """
-
-    deadline = 240
-    odl_inventory = flow_utils.FlowExplorer(ctrl_ip, ctrl_port, 'operational',
-                                            auth_token)
-    t_discovery_start = time.time()
-    previous_discovered_flows = 0
-
-    while True:
-        if (time.time() - t_discovery_start) > deadline:
-            logging.info('[flow_master_thread] Deadline of {0} seconds '
-                         'passed'.format(deadline))
-            return -1.0
-
-        else:
-            odl_inventory.get_inventory_flows_stats()
-            logging.debug('Found {0} flows at inventory'.
-                          format(odl_inventory.found_flows))
-            if (odl_inventory.found_flows - previous_discovered_flows) != 0:
-                t_discovery_start = time.time()
-                previous_discovered_flows = odl_inventory.found_flows
-            if odl_inventory.found_flows == expected_flows:
-                time_interval = time.time() - t_start
-                logging.debug('[flow_master_thread] Flow-Master '
-                             '{0} flows found in {1} seconds'.
-                             format(expected_flows, time_interval))
-
-                return time_interval
-
-        time.sleep(1)
-
 
 def get_node_names(ctrl_ip, ctrl_port, auth_token):
     """
@@ -280,8 +230,8 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
         raise ValueError('[ERROR] Fail getting node names')
 
 
-def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
-                       auth_token):
+def flow_transmission_start(opqueues, resqueues, wthr, nflows, ctrl_ip,
+                            ctrl_port, auth_token):
     """Calculates transmission_interval, operation_time, failed_flow_ops
     :param opqueues: workers operation queues
     :param resqueues: workers result queues
@@ -313,16 +263,11 @@ def flow_ops_calc_time(opqueues, resqueues, wthr, nflows, ctrl_ip, ctrl_port,
 
     logging.info('[flow_operations_calc_time] joining workers')
     failed_flow_ops += join_workers(opqueues, resqueues, wthr)
-    t_stop = time.time()
-    transmission_interval = t_stop - t_start
 
-    logging.info('[flow_operations_calc_time] initiate flow polling')
-    operation_time = poll_flows(nflows, ctrl_ip, ctrl_port, t_start,
-                                auth_token)
-    return (transmission_interval, operation_time, failed_flow_ops)
+    return (failed_flow_ops, t_start)
 
 
-def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
+def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
                            url_template, flow_template, auth_token,
                            delete_flows_flag=False):
 
@@ -381,9 +326,10 @@ def flow_ops_calc_time_run(flow_ops_params, op_delay_ms, node_names,
     distribute_workload(flow_ops_params.nflows, opqueues,
                         operations_type, node_names)
 
-    transmission_interval, operation_time, failed_flow_ops =  \
-    flow_ops_calc_time(opqueues, resqueues, wthr, flow_ops_params.nflows,
-                       flow_ops_params.ctrl_ip, flow_ops_params.ctrl_port,
-                       auth_token)
+    failed_flow_ops, t_start =  flow_transmission_start(opqueues, resqueues,
+                                                        wthr, flow_ops_params.nflows,
+                                                        flow_ops_params.ctrl_ip,
+                                                        flow_ops_params.ctrl_port,
+                                                        auth_token)
 
-    return (transmission_interval, operation_time, failed_flow_ops)
+    return failed_flow_ops

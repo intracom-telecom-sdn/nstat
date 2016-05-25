@@ -85,55 +85,45 @@ def flow_master(args):
     failed_flow_ops_del=0
     failed_flow_ops_add=0
     failed_flow_ops_total=0
-    results = []
-    try:
-        node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
-                                                 flow_ops_params_set.ctrl_port,
-                                                 controller_rest_auth_token)
 
-        op_delay_ms = int(args.op_delay_ms)
-        flow_template = F_TEMP
-        url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
-            flow_ops_params_set.ctrl_port + \
-            '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
-            'table/0/flow/%d'
-        # Calculate time needed for add flow operations
-        transmission_interval_add, operation_time_add, failed_flow_ops_add = \
-        nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
-                                            node_names, url_template, flow_template,
-                                            controller_rest_auth_token)
-    except:
-        transmission_interval_add = 0
-        operation_time_add = 0
-        failed_flow_ops_add = flow_ops_params_set.nflows
-    results.append(transmission_interval_add)
-    results.append(operation_time_add)
-
-    # Calculate time needed for delete flow operations
-    if delete_flows_flag:
+    if delete_flows_flag == False:
         try:
-            transmission_interval_del, operation_time_del, failed_flow_ops_del = \
-            nb_gen_utils.flow_ops_calc_time_run(flow_ops_params_set, op_delay_ms,
+            node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
+                                                     flow_ops_params_set.ctrl_port,
+                                                     controller_rest_auth_token)
+
+            op_delay_ms = int(args.op_delay_ms)
+            flow_template = F_TEMP
+            url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
+                flow_ops_params_set.ctrl_port + \
+                '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
+                'table/0/flow/%d'
+            # Calculate time needed for add flow operations
+            failed_flow_ops_add, t_start= \
+            nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
+                                                node_names, url_template, flow_template,
+                                                controller_rest_auth_token)
+        except:
+
+            failed_flow_ops_add = flow_ops_params_set.nflows
+    else:
+
+        # Calculate time needed for delete flow operations
+        try:
+            failed_flow_ops_del, t_start= \
+            nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
                                                 node_names, url_template, flow_template,
                                                 controller_rest_auth_token,
                                                 delete_flows_flag=True)
         except:
-            transmission_interval_del = 0
-            operation_time_del = 0
+
             failed_flow_ops_del = flow_ops_params_set.nflows
-        results.append(transmission_interval_del)
-        results.append(operation_time_del)
 
     # sum up total failed flow operations
     failed_flow_ops_total = failed_flow_ops_add + failed_flow_ops_del
-    results.append(failed_flow_ops_total)
 
-    output_msg = 'Results:\nadd_controller_time/end_to_end_installation_time/'
-    if len(results) == 5:
-        output_msg += 'Delete_flows_transmission_time/Delete_flows_time/'
-    output_msg += 'Total_failed_flows = '
-    output_msg += '/'.join(str(result) for result in results)
-    output_msg += '\nAll times are in seconds.'
+    output_msg = 'Total_failed_flows/Transmission start = {0}/{1}'.format(failed_flow_ops_total,t_start)
+
     return output_msg
 
 if __name__ == '__main__':
