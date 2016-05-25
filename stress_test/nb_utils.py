@@ -10,7 +10,7 @@ import emulators.nb_generator.flow_utils
 import logging
 import time
 
-def nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
+def nb_generator_start(nb_generator_ssh_client,nb_generator_base_dir,nb_generator_cpus,
                        nb_generator_handlers_set,controller_node,
                        controller_nb_interface,total_flows,flow_workers,
                        flow_operations_delay_ms,flow_delete_flag,log_level):
@@ -23,6 +23,14 @@ def nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
                   controller_nb_interface.password, log_level))
     logging.debug('Generator handler command:{0}.'.format(cmd))
 
+    exit_status , output = util.netutil.ssh_run_command(nb_generator_ssh_client,
+                                                        cmd,
+                                                        '[generator_run_handler]')
+
+    if exit_status!=0:
+        raise Exception('{0} northbound generator failed'.format(test_type))
+
+    return output
 
 def poll_flows(expected_flows, t_start, controller_nb_interface):
     """

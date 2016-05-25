@@ -245,7 +245,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_base_dir)
 
             # start northbound generator flow_delete_flag SET
-            nb_generator_start_json_output = nb_utils.nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
+            nb_generator_start_json_output = nb_utils.nb_generator_start(nb_generator_ssh_client,
+                                                                         nb_generator_base_dir,nb_generator_cpus,
                            nb_generator_handlers_set,controller_node,
                            controller_nb_interface,total_flows,flow_workers,
                            flow_operations_delay_ms,False,log_level)
@@ -259,7 +260,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
             # start northbound generator flow_delete_flag SET
             if flow_delete_flag:
-                nb_utils.nb_generator_start(nb_generator_base_dir,nb_generator_cpus,
+                nb_utils.nb_generator_start(nb_generator_ssh_client,
+                                            nb_generator_base_dir,nb_generator_cpus,
                            nb_generator_handlers_set,controller_node,
                            controller_nb_interface,total_flows,flow_workers,
                            flow_operations_delay_ms,True,log_level)
