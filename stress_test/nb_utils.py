@@ -29,7 +29,7 @@ def nb_generator_start(nb_generator_ssh_client,nb_generator_base_dir,nb_generato
                                                         '[generator_run_handler]')
 
     if exit_status!=0:
-        raise Exception('{0} northbound generator failed'.format(test_type))
+        raise Exception('northbound generator failed')
 
     return output
 

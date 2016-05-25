@@ -332,4 +332,4 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
                                                         flow_ops_params.ctrl_port,
                                                         auth_token)
 
-    return failed_flow_ops
+    return (failed_flow_ops, t_start)
