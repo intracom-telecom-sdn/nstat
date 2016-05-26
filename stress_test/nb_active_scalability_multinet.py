@@ -94,7 +94,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
         multinet_base_dir + conf['topology_rest_server_stop'],
-        ''
+        '',
+        multinet_base_dir + conf['topology_get_flows_handler']
         )
     multinet_local_handlers_set = \
         conf_collections_util.multinet_local_handlers(
@@ -157,7 +158,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             multinet_handlers_set.get_switches_handler,
             multinet_handlers_set.init_topo_handler,
             multinet_handlers_set.start_topo_handler,
-            multinet_handlers_set.rest_server_stop])
+            multinet_handlers_set.rest_server_stop,
+            multinet_handlers_set.get_flows_handler])
 
         # Opening connection with topology_node_ip and returning
         # controller_ssh_client, nb_generator_ssh_client to be utilized in the
@@ -266,9 +268,10 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
             result_metrics_add.update(nb_utils.monitor_threads_run(total_flows,
                                          time_of_first_REST_request,
-                                         controller_nb_interface))
+                                         controller_nb_interface,
+                                         multinet_handlers_set.get_flows_handler,multinet_base_dir))
             end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
-
+            add_switch_time = result_metrics_add['add_switch_time']
 
             # start northbound generator flow_delete_flag SET
             if flow_delete_flag:
@@ -282,12 +285,14 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 nb_generator_start_output = json.loads(nb_generator_start_json_output)
 
                 delete_failed_flows_operations = nb_generator_start_output[0]
-                delete_controller_time = time.time() - time_of_first_REST_request
+                remove_controller_time = time.time() - time_of_first_REST_request
 
-                result_metrics_add.update(nb_utils.monitor_threads_run(total_flows,
+                result_metrics_add.update(nb_utils.monitor_threads_run(0,
                                          time_of_first_REST_request,
-                                         controller_nb_interface))
-                end_to_end_deletion_time = result_metrics_add['end_to_end_flows_operation_time']
+                                         controller_nb_interface,
+                                         multinet_handlers_set.get_flows_handler,multinet_base_dir))
+                end_to_end_remove_time = result_metrics_add['end_to_end_flows_operation_time']
+                remove_switch_time = result_metrics_add['switch_operation_time']
 
 
             total_failed_flows_operations = add_failed_flows_operations + \
@@ -348,7 +353,11 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             #                  are present in the network
             # 05. add_switch_time =
             # 06. add_switch_rate =
+            """
+            statistics['add_switch_time'] = add_switch_time
+            statistics['add_switch_rate'] = float(total_flows) / add_switch_time
 
+            """
             # Add confirm time: Time period started after the last flow was
                                 configured until we receive “confirmation” all
                                 flows are added.
@@ -376,8 +385,9 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             """
 
             if flow_delete_flag:
-                statistics['delete_controller_time'] = delete_controller_time
-                statistics['end_to_end_deletion_time'] = end_to_end_deletion_time
+                statistics['remove_controller_time'] = remove_controller_time
+                statistics['end_to_end_remove_time'] = end_to_end_remove_time
+                statistics['remove_switch_time'] = remove_switch_time
 
             statistics['total_failed_flows_operations'] = total_failed_flows_operations
 
@@ -518,14 +528,16 @@ def get_report_spec(test_type, config_json, results_json):
              ('total_flows', 'Total flow operations'),
              ('total_failed_flows_operations', 'Total failed flow operations'),
              ('add_controller_time',
-              'Time for all requests to be sent and their response to be received [s]'),
-             ('add_controller_rate', 'Total flow operations / Add controller time  (Flows/s)'),
+              'Add controller time [s]'),
+             ('add_controller_rate', 'Add controller rate  (Flows/s)'),
              ('end_to_end_installation_time', 'End-to-end installation time (seconds)'),
              ('end_to_end_installation_rate',
-              'Total flow operations / end_to_end_installation_time (Flows/s)'),
-             ('delete_controller_time',
+              'End-to-end installation rate (Flows/s)'),
+             ('remove_controller_time',
               'Total time of NB Restconf calls for flows deletion (seconds)'),
-             ('end_to_end_deletion_time', 'Delete flows time (seconds)'),
+             ('end_to_end_remove_time', 'Delete flows time (seconds)'),
+             ('remove_switch_time', 'Remove switch time (seconds)'),
+             ('remove_switch_rate', 'Remove switch rate (Flows/seconds)'),
              ('nb_generator_cpu_shares', 'NB traffic generator CPU percentage'),
              ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
              ('flow_workers', 'Flow workers'),

@@ -8,9 +8,11 @@
 
 import emulators.nb_generator.flow_utils
 import logging
+import multinet_utils
 import multiprocessing
 import time
 import util.netutil
+
 
 def nb_generator_start(nb_generator_ssh_client,nb_generator_base_dir,nb_generator_cpus,
                        nb_generator_handlers_set,controller_node,
@@ -90,11 +92,49 @@ def poll_flows_dastastore(result_queue, expected_flows, t_start, controller_nb_i
         time.sleep(1)
 
 
+def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,multinet_base_dir):
+    deadline = 240
+    t_discovery_start = time.time()
+    previous_discovered_flows = 0
 
-def poll_flows_switches(result_queue, expected_flows, t_start, controller_nb_interface):
+    while True:
+        if (time.time() - t_discovery_start) > deadline:
+            logging.info('[flow_master_thread] Deadline of {0} seconds '
+                         'passed'.format(deadline))
+            result_queue.put({'switch_operation_time': -1.0}, block=True)
+            return
+        else:
+            result_get_flows = multinet_utils.multinet_command_runner(get_flows_handler,
+                '[get_flows_handler]', multinet_base_dir,
+                is_privileged=False)
+
+            regex_result = re.search(r'INFO:root:\[get_flows_topology_handler\]\[response data\].*', result_get_flows)
+            if regex_result == None:
+                raise Exception('Failed to get number of flows from networ switches')
+            else:
+                result_get_flows = regex_result.group(0).replace('INFO:root:[get_flows_topology_handler][response data] ', '')
+            discovered_flows = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_flows)])
+
+            logging.debug('Found {0} flows at topology switches'.
+                          format(discovered_flows))
+            if (discovered_flows - previous_discovered_flows) != 0:
+                t_discovery_start = time.time()
+                previous_discovered_flows = discovered_flows
+            if discovered_flows == expected_flows:
+                time_interval = time.time() - t_start
+                logging.debug('expected flows = {0} \n '
+                             'discovered flows = {1}'.
+                             format(expected_flows, discovered_flows))
+
+                result_queue.put({'switch_operation_time': time_interval}, block=True)
+
+                return
+
+        time.sleep(1)
     return
 
-def monitor_threads_run(expected_flows, t_start, controller_nb_interface):
+def monitor_threads_run(expected_flows, t_start, controller_nb_interface,
+                        get_flows_handler,multinet_base_dir):
 
     logging.info('creating result queues for ...')
     result_queue = multiprocessing.Queue()
@@ -105,8 +145,7 @@ def monitor_threads_run(expected_flows, t_start, controller_nb_interface):
                                                   controller_nb_interface))
     monitor_thread_sw = multiprocessing.Process(target=poll_flows_switches,
                                              args=(result_queue,expected_flows,
-                                                  t_start,
-                                                  controller_nb_interface))
+                                                  t_start,get_flows_handler,multinet_base_dir))
     monitor_thread_ds.start()
     monitor_thread_sw.start()
 

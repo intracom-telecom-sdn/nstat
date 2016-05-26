@@ -58,4 +58,5 @@ topology_generator_handlers = collections.namedtuple(
      'init_topo_handler',
      'start_topo_handler',
      'rest_server_stop',
-     'topology_traffic_gen_handler'])
+     'topology_traffic_gen_handler',
+     'get_flows_handler'])

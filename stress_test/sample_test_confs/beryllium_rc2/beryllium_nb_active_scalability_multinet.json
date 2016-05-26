@@ -59,6 +59,7 @@
 "topology_start_switches_handler":"./bin/handlers/start_topos",
 "topology_stop_switches_handler":"./bin/handlers/stop_topos",
 "topology_get_switches_handler":"./bin/handlers/get_switches",
+"topology_get_flows_handler":"./bin/handlers/get_flows",
 
 "topology_size":[5, 10],
 "topology_type":["linear"],
