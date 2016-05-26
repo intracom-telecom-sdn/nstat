@@ -8,6 +8,7 @@
 
 import emulators.nb_generator.flow_utils
 import logging
+import multiprocessing
 import time
 import util.netutil
 
