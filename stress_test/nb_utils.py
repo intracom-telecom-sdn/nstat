@@ -69,7 +69,7 @@ def poll_flows_dastastore(result_queue, expected_flows, t_start, controller_nb_i
             logging.info('[flow_master_thread] Deadline of {0} seconds '
                          'passed'.format(deadline))
             result_queue.put({'end_to_end_flows_operation_time': -1.0}, block=True)
-
+            return
         else:
             odl_inventory.get_inventory_flows_stats()
             logging.debug('Found {0} flows at inventory'.
@@ -85,9 +85,11 @@ def poll_flows_dastastore(result_queue, expected_flows, t_start, controller_nb_i
 
                 result_queue.put({'end_to_end_flows_operation_time': time_interval}, block=True)
 
+                return
+
         time.sleep(1)
 
-    return
+
 
 def poll_flows_switches(result_queue, expected_flows, t_start, controller_nb_interface):
     return
