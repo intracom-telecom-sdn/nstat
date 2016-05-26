@@ -13,7 +13,7 @@ echo $SCRIPT_DIR
 MULTINET_LOCATION="https://github.com/intracom-telecom-sdn/multinet.git"
 
 if [ ! -d $SCRIPT_DIR"/multinet" ]; then
-    git clone $MULTINET_LOCATION $SCRIPT_DIR"/multinet"
+    git clone -b develop_get_flows $MULTINET_LOCATION $SCRIPT_DIR"/multinet"
     if [ $? -ne 0 ]; then
         echo "[build.sh] Cloning multinet failed. Exiting ..."
         exit 1
