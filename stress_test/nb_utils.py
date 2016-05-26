@@ -7,6 +7,7 @@
 """ NSTAT NorthBound  """
 
 import emulators.nb_generator.flow_utils
+import json
 import logging
 import multinet_utils
 import multiprocessing
