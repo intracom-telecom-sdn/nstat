@@ -51,10 +51,12 @@ def northbound_generator():
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     cmd_output = p.stdout.read().decode(sys.stdout.encoding)
     cmd_output = cmd_output.strip()
-    regex_result = re.search(r' = [0-9].*', cmd_output)
+    regex_result = re.search(r"Total_failed_flows = [0-9].*", cmd_output)
     if regex_result == None:
         sys.exit(1)
-    result = [float(x) for x in regex_result.group()[2:].strip().split('/')]
+    #21: is the string offset from expression "Total_failed_flows = " to extract
+    # the results
+    result = [float(x) for x in regex_result.group()[21:].strip().split('/')]
     print(json.dumps(result))
 
 if __name__ == '__main__':
