@@ -248,54 +248,52 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             # start northbound generator flow_delete_flag SET
             add_failed_flows_operations = 0
             delete_failed_flows_operations = 0
+            result_metrics_add = {}
+            result_metrics_del = {}
 
+            time_of_first_REST_request = time.time()
 
-            nb_generator_start_json_output = nb_utils.nb_generator_start(nb_generator_ssh_client,
-                                                                         nb_generator_base_dir,nb_generator_cpus,
-                           nb_generator_handlers_set,controller_node,
-                           controller_nb_interface,total_flows,flow_workers,
-                           flow_operations_delay_ms,False,log_level)
+            nb_generator_start_json_output = \
+                nb_utils.nb_generator_start(nb_generator_ssh_client,
+                                        nb_generator_base_dir,nb_generator_cpus,
+                                        nb_generator_handlers_set,controller_node,
+                                        controller_nb_interface,total_flows,flow_workers,
+                                        flow_operations_delay_ms,False,log_level)
             nb_generator_start_output = json.loads(nb_generator_start_json_output)
-            time_of_first_REST_request = nb_generator_start_output[1]
+
             add_failed_flows_operations = nb_generator_start_output[0]
             add_controller_time = time.time() - time_of_first_REST_request
-            end_to_end_installation_time = nb_utils.poll_flows(total_flows,
-                                                               time_of_first_REST_request,
-                                                               controller_nb_interface)
+
+            result_metrics_add.update(nb_utils.monitor_threads_run(total_flows,
+                                         time_of_first_REST_request,
+                                         controller_nb_interface))
+            end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
+
 
             # start northbound generator flow_delete_flag SET
             if flow_delete_flag:
-                nb_utils.nb_generator_start(nb_generator_ssh_client,
+                time_of_first_REST_request = time.time()
+                nb_generator_start_json_output = \
+                    nb_utils.nb_generator_start(nb_generator_ssh_client,
                                             nb_generator_base_dir,nb_generator_cpus,
-                           nb_generator_handlers_set,controller_node,
-                           controller_nb_interface,total_flows,flow_workers,
-                           flow_operations_delay_ms,True,log_level)
+                                            nb_generator_handlers_set,controller_node,
+                                            controller_nb_interface,total_flows,flow_workers,
+                                            flow_operations_delay_ms,True,log_level)
                 nb_generator_start_output = json.loads(nb_generator_start_json_output)
-                time_of_first_REST_request = nb_generator_start_output[1]
+
                 delete_failed_flows_operations = nb_generator_start_output[0]
                 delete_controller_time = time.time() - time_of_first_REST_request
-                end_to_end_deletion_time = nb_utils.poll_flows(total_flows,
-                                                               t_start,
-                                                               controller_nb_interface)
+
+                result_metrics_add.update(nb_utils.monitor_threads_run(total_flows,
+                                         time_of_first_REST_request,
+                                         controller_nb_interface))
+                end_to_end_deletion_time = result_metrics_add['end_to_end_flows_operation_time']
+
 
             total_failed_flows_operations = add_failed_flows_operations + \
                                             delete_failed_flows_operations
-            """
-            # start monitor threads
-            nb_utils.
-
-            # start monitor threads
 
 
-            exit_status , output = util.netutil.ssh_run_command(
-                nb_generator_ssh_client, cmd , '[generator_run_handler]')
-
-            if exit_status!=0:
-                raise Exception('{0} northbound generator failed'.
-                                format(test_type))
-
-            results = json.loads(output)
-            """
             # Results collection
             statistics = common.sample_stats(cpid, controller_ssh_client)
             statistics['global_sample_id'] = global_sample_id
@@ -378,10 +376,10 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             """
 
             if flow_delete_flag:
-                statistics['delete_flows_transmission_time'] = delete_controller_time
-                statistics['delete_flows_time'] = end_to_end_deletion_time
+                statistics['delete_controller_time'] = delete_controller_time
+                statistics['end_to_end_deletion_time'] = end_to_end_deletion_time
 
-            statistics['failed_flow_operations'] = total_failed_flows_operations
+            statistics['total_failed_flows_operations'] = total_failed_flows_operations
 
             statistics['flow_delete_flag'] = str(flow_delete_flag)
             total_samples.append(statistics)
@@ -464,6 +462,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                       nb_generator_ssh_client])
 
 
+
+
 def get_report_spec(test_type, config_json, results_json):
     """
     Return the report specification for this test
@@ -516,16 +516,16 @@ def get_report_spec(test_type, config_json, results_json):
              ('timestamp', 'Sample timestamp (seconds)'),
              ('date', 'Sample timestamp (date)'),
              ('total_flows', 'Total flow operations'),
-             ('failed_flow_operations', 'Total failed flow operations'),
+             ('total_failed_flows_operations', 'Total failed flow operations'),
              ('add_controller_time',
               'Time for all requests to be sent and their response to be received [s]'),
              ('add_controller_rate', 'Total flow operations / Add controller time  (Flows/s)'),
              ('end_to_end_installation_time', 'End-to-end installation time (seconds)'),
              ('end_to_end_installation_rate',
               'Total flow operations / end_to_end_installation_time (Flows/s)'),
-             ('delete_flows_transmission_time',
+             ('delete_controller_time',
               'Total time of NB Restconf calls for flows deletion (seconds)'),
-             ('delete_flows_time', 'Delete flows time (seconds)'),
+             ('end_to_end_deletion_time', 'Delete flows time (seconds)'),
              ('nb_generator_cpu_shares', 'NB traffic generator CPU percentage'),
              ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
              ('flow_workers', 'Flow workers'),

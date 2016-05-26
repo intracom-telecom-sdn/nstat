@@ -33,7 +33,7 @@ def nb_generator_start(nb_generator_ssh_client,nb_generator_base_dir,nb_generato
 
     return output
 
-def poll_flows(expected_flows, t_start, controller_nb_interface):
+def poll_flows_dastastore(result_queue, expected_flows, t_start, controller_nb_interface):
     """
     Monitors operational DS until the expected number of flows are found or the
     deadline is reached.
@@ -67,7 +67,7 @@ def poll_flows(expected_flows, t_start, controller_nb_interface):
         if (time.time() - t_discovery_start) > deadline:
             logging.info('[flow_master_thread] Deadline of {0} seconds '
                          'passed'.format(deadline))
-            return -1.0
+            result_queue.put({'end_to_end_flows_operation_time': -1.0}, block=True)
 
         else:
             odl_inventory.get_inventory_flows_stats()
@@ -82,7 +82,40 @@ def poll_flows(expected_flows, t_start, controller_nb_interface):
                              '{0} flows found in {1} seconds'.
                              format(expected_flows, time_interval))
 
-                return time_interval
+                result_queue.put({'end_to_end_flows_operation_time': time_interval}, block=True)
 
         time.sleep(1)
+
+    return
+
+def poll_flows_switches(result_queue, expected_flows, t_start, controller_nb_interface):
+    return
+
+def monitor_threads_run(expected_flows, t_start, controller_nb_interface):
+
+    logging.info('creating result queues for ...')
+    result_queue = multiprocessing.Queue()
+    logging.info('creating thread for end_to_end_installation_time measurement')
+    monitor_thread_ds = multiprocessing.Process(target=poll_flows_dastastore,
+                                             args=(result_queue,expected_flows,
+                                                  t_start,
+                                                  controller_nb_interface))
+    monitor_thread_sw = multiprocessing.Process(target=poll_flows_switches,
+                                             args=(result_queue,expected_flows,
+                                                  t_start,
+                                                  controller_nb_interface))
+    monitor_thread_ds.start()
+    monitor_thread_sw.start()
+
+    monitor_thread_ds.join()
+    monitor_thread_sw.join()
+    results = {}
+    while not result_queue.empty():
+         results.update(result_queue.get())
+
+    return results
+
+
+
+
 

@@ -256,7 +256,6 @@ def flow_transmission_start(opqueues, resqueues, wthr, nflows, ctrl_ip,
     failed_flow_ops = 0
 
     logging.info('[flow_master_thread] starting workers')
-    t_start = time.time()
 
     for worker_thread in wthr:
         worker_thread.start()
@@ -264,7 +263,7 @@ def flow_transmission_start(opqueues, resqueues, wthr, nflows, ctrl_ip,
     logging.info('[flow_operations_calc_time] joining workers')
     failed_flow_ops += join_workers(opqueues, resqueues, wthr)
 
-    return (failed_flow_ops, t_start)
+    return failed_flow_ops
 
 
 def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
@@ -326,10 +325,10 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
     distribute_workload(flow_ops_params.nflows, opqueues,
                         operations_type, node_names)
 
-    failed_flow_ops, t_start =  flow_transmission_start(opqueues, resqueues,
+    failed_flow_ops =  flow_transmission_start(opqueues, resqueues,
                                                         wthr, flow_ops_params.nflows,
                                                         flow_ops_params.ctrl_ip,
                                                         flow_ops_params.ctrl_port,
                                                         auth_token)
 
-    return (failed_flow_ops, t_start)
+    return failed_flow_ops

@@ -99,7 +99,7 @@ def flow_master(args):
                 '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
                 'table/0/flow/%d'
             # Calculate time needed for add flow operations
-            failed_flow_ops_add, t_start= \
+            failed_flow_ops_add = \
             nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
                                                 node_names, url_template, flow_template,
                                                 controller_rest_auth_token)
@@ -110,7 +110,7 @@ def flow_master(args):
 
         # Calculate time needed for delete flow operations
         try:
-            failed_flow_ops_del, t_start= \
+            failed_flow_ops_del = \
             nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
                                                 node_names, url_template, flow_template,
                                                 controller_rest_auth_token,
@@ -122,7 +122,7 @@ def flow_master(args):
     # sum up total failed flow operations
     failed_flow_ops_total = failed_flow_ops_add + failed_flow_ops_del
 
-    output_msg = 'Total_failed_flows/Transmission start = {0}/{1}'.format(failed_flow_ops_total,t_start)
+    output_msg = 'Total_failed_flows = {0}'.format(failed_flow_ops_total)
 
     return output_msg
 
