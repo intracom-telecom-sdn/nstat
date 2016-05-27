@@ -271,7 +271,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                          controller_nb_interface,
                                          multinet_handlers_set.get_flows_handler,multinet_base_dir))
             end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
-            add_switch_time = result_metrics_add['add_switch_time']
+            add_switch_time = result_metrics_add['switch_operation_time']
 
             # start northbound generator flow_delete_flag SET
             if flow_delete_flag:
