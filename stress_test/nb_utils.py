@@ -7,11 +7,9 @@
 """ NSTAT NorthBound  """
 
 import emulators.nb_generator.flow_utils
-import json
 import logging
 import multinet_utils
 import multiprocessing
-import re
 import time
 import util.netutil
 
@@ -165,13 +163,8 @@ def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,
             result_get_flows = multinet_utils.multinet_command_runner(get_flows_handler,
                 '[get_flows_handler]', multinet_base_dir,
                 is_privileged=False)
-
-            regex_result = re.search(r'INFO:root:\[get_flows_topology_handler\]\[response data\].*', result_get_flows)
-            if regex_result == None:
-                raise Exception('Failed to get number of flows from network switches')
-            else:
-                result_get_flows = regex_result.group(0).replace('INFO:root:[get_flows_topology_handler][response data] ', '')
-            discovered_flows = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_flows)])
+            # Get total flows from multinet topology switches
+            discovered_flows = multinet_utils.parse_multinet_output('get_flows_topology_handler', result_get_flows)
 
             logging.debug('Found {0} flows at topology switches'.
                           format(discovered_flows))
