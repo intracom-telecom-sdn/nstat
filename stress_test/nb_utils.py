@@ -93,7 +93,7 @@ def poll_flows_dastastore(result_queue, expected_flows, t_start, controller_nb_i
 
         time.sleep(1)
 
-def poll_flows_dastastore_confirmation(result_queue, expected_flows, controller_nb_interface):
+def poll_flows_dastastore_confirm(result_queue, expected_flows, controller_nb_interface):
     """
     Monitors operational DS until the expected number of flows are found or the
     deadline is reached.
@@ -128,7 +128,7 @@ def poll_flows_dastastore_confirmation(result_queue, expected_flows, controller_
         if (time.time() - t_discovery_start) > deadline:
             logging.info('[flow_master_thread] Deadline of {0} seconds '
                          'passed'.format(deadline))
-            result_queue.put({'confirmation_time': -1.0}, block=True)
+            result_queue.put({'confirm_time': -1.0}, block=True)
             return
         else:
             odl_inventory.get_inventory_flows_stats()
@@ -143,7 +143,7 @@ def poll_flows_dastastore_confirmation(result_queue, expected_flows, controller_
                              '{0} flows found in {1} seconds'.
                              format(expected_flows, time_interval))
 
-                result_queue.put({'confirmation_time': time_interval}, block=True)
+                result_queue.put({'confirm_time': time_interval}, block=True)
 
                 return
 
@@ -168,7 +168,7 @@ def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,
 
             regex_result = re.search(r'INFO:root:\[get_flows_topology_handler\]\[response data\].*', result_get_flows)
             if regex_result == None:
-                raise Exception('Failed to get number of flows from networ switches')
+                raise Exception('Failed to get number of flows from network switches')
             else:
                 result_get_flows = regex_result.group(0).replace('INFO:root:[get_flows_topology_handler][response data] ', '')
             discovered_flows = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_flows)])
@@ -204,7 +204,7 @@ def monitor_threads_run(expected_flows, t_start, controller_nb_interface,
     monitor_thread_sw = multiprocessing.Process(target=poll_flows_switches,
                                              args=(result_queue,expected_flows,
                                                   t_start,get_flows_handler,multinet_base_dir))
-    monitor_thread_ds_confirm = multiprocessing.Process(target=poll_flows_dastastore_confirmation,
+    monitor_thread_ds_confirm = multiprocessing.Process(target=poll_flows_dastastore_confirm,
                                              args=(result_queue,expected_flows,
                                                    controller_nb_interface))
     monitor_thread_ds.start()

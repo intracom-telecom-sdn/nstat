@@ -272,7 +272,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                          multinet_handlers_set.get_flows_handler,multinet_base_dir))
             end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
             add_switch_time = result_metrics_add['switch_operation_time']
-            add_confirmation_time = result_metrics_add['confirmation_time']
+            add_confirm_time = result_metrics_add['confirm_time']
 
             # start northbound generator flow_delete_flag SET
             if flow_delete_flag:
@@ -294,7 +294,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                          multinet_handlers_set.get_flows_handler,multinet_base_dir))
                 end_to_end_remove_time = result_metrics_del['end_to_end_flows_operation_time']
                 remove_switch_time = result_metrics_del['switch_operation_time']
-                remove_confirmation_time = result_metrics_del['confirmation_time']
+                remove_confirm_time = result_metrics_del['confirm_time']
 
 
             total_failed_flows_operations = add_failed_flows_operations + \
@@ -366,11 +366,11 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             """
             # 07. add_confirm_time =
             # 08. add_confirm_rate =
-            statistics['add_confirmation_time'] = add_confirmation_time
-            if add_confirmation_time != -1:
-                statistics['add_confirmation_rate'] = float(total_flows) / add_confirmation_time
+            statistics['add_confirm_time'] = add_confirm_time
+            if add_confirm_time != -1:
+                statistics['add_confirm_rate'] = float(total_flows) / add_confirm_time
             else:
-                statistics['add_confirmation_rate'] = -1
+                statistics['add_confirm_rate'] = -1
             """
             # Remove controller time: Time for all delete REST
                                       requests to be sent and their response to
@@ -394,9 +394,16 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
             if flow_delete_flag:
                 statistics['remove_controller_time'] = remove_controller_time
+                statistics['remove_controller_rate'] =  float(total_flows) / remove_controller_time
+
                 statistics['end_to_end_remove_time'] = end_to_end_remove_time
+                statistics['end_to_end_remove_rate'] = float(total_flows) / end_to_end_remove_time
+
                 statistics['remove_switch_time'] = remove_switch_time
-                statistics['remove_confirmation_time'] = remove_confirmation_time
+                statistics['remove_switch_rate'] = float(total_flows) / remove_switch_time
+
+                statistics['remove_confirm_time'] = remove_confirm_time
+                statistics['remove_confirm_rate'] = float(total_flows) / remove_confirm_time
 
             statistics['total_failed_flows_operations'] = total_failed_flows_operations
 
@@ -538,25 +545,27 @@ def get_report_spec(test_type, config_json, results_json):
              ('total_failed_flows_operations', 'Total failed flow operations'),
              ('add_controller_time',
               'Add controller time [s]'),
-             ('add_controller_rate', 'Add controller rate  (Flows/s)'),
+             ('add_controller_rate', 'Add controller rate [Flows/s]'),
              ('add_switch_time',
               'Add switch time [s]'),
-             ('add_switch_rate', 'Add switch rate  (Flows/s)'),
-             ('end_to_end_installation_time', 'End-to-end installation time (seconds)'),
+             ('add_switch_rate', 'Add switch rate [Flows/s]'),
+             ('add_confirm_time',
+              'Add confirm time [s]'),
+             ('add_confirm_rate', 'Add confirm rate [Flows/s]'),
+             ('end_to_end_installation_time', 'End-to-end installation time [s]'),
              ('end_to_end_installation_rate',
-              'End-to-end installation rate (Flows/s)'),
-             ('add_confirmation_time',
-              'Add confirmation time [s]'),
-             ('add_confirmation_rate', 'Add confirmation rate  (Flows/s)'),
+              'End-to-end installation rate [Flows/s]'),
              ('remove_controller_time',
-              'Total time of NB Restconf calls for flows deletion (seconds)'),
-             ('end_to_end_remove_time', 'Delete flows time (seconds)'),
+              'Total time of NB Restconf calls for flows deletion [s]'),
+             ('remove_controller_rate', 'Remove controller rate [Flows/s]'),
              ('remove_switch_time', 'Remove switch time (seconds)'),
              ('remove_switch_rate', 'Remove switch rate (Flows/seconds)'),
-             ('remove_confirmation_time',
-              'Confirmation time for flows deletion (seconds)'),
+             ('remove_confirm_time','Confirm time [s]'),
+             ('remove_confirm_rate', 'Confirm rate [Flows/s]'),
+             ('end_to_end_remove_time', 'Delete flows time [s]'),
+             ('end_to_end_remove_rate', 'End-to-end remove rate [Flows/s]'),
              ('nb_generator_cpu_shares', 'NB traffic generator CPU percentage'),
-             ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
+             ('flow_operation_delay_ms', 'Flow operation delay [ms]'),
              ('flow_workers', 'Flow workers'),
              ('flow_delete_flag', 'Deletion flag'),
              ('multinet_size', 'Multinet Size'),
@@ -566,14 +575,14 @@ def get_report_spec(test_type, config_json, results_json):
              ('multinet_topology_type', 'Multinet topology Type'),
              ('multinet_hosts_per_switch', 'Multinet hosts per Switch'),
              ('multinet_group_size', 'Multinet group size'),
-             ('multinet_group_delay_ms', 'Multinet group delay (ms)'),
+             ('multinet_group_delay_ms', 'Multinet group delay [ms]'),
              ('controller_node_ip', 'Controller IP node address'),
              ('controller_port', 'Controller port'),
              ('controller_vm_size', 'Controller VM size'),
              ('controller_java_xopts', 'Java options'),
-             ('free_memory_bytes', 'System free memory in bytes'),
-             ('used_memory_bytes', 'System used memory in bytes'),
-             ('total_memory_bytes', 'System total memory in bytes'),
+             ('free_memory_bytes', 'System free memory [bytes]'),
+             ('used_memory_bytes', 'System used memory [bytes]'),
+             ('total_memory_bytes', 'System total memory [bytes]'),
              ('one_minute_load', 'One minute load'),
              ('five_minute_load', 'Five minutes load'),
              ('fifteen_minute_load', 'Fifteen minutes load'),
