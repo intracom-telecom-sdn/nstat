@@ -75,7 +75,7 @@
 "multinet_switch_type":"ovsk",
 
 "flow_workers":[5],
-"total_flows":[10000, 10000],
+"total_flows":[100000],
 "flow_operations_delay_ms":[0],
 "flow_delete_flag":false,
 
