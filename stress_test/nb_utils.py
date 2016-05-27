@@ -93,6 +93,62 @@ def poll_flows_dastastore(result_queue, expected_flows, t_start, controller_nb_i
 
         time.sleep(1)
 
+def poll_flows_dastastore_confirmation(result_queue, expected_flows, controller_nb_interface):
+    """
+    Monitors operational DS until the expected number of flows are found or the
+    deadline is reached.
+
+    :param expected_flows: expected number of flows
+    :param ctrl_ip: controller IP
+    :param ctrl_port: controller RESTconf port
+    :param t_start: timestamp for begin of discovery
+    :param auth_token: RESTconf authorization token (username/password tuple)
+
+    :returns: Returns a float number containing the time in which
+    expected_flows were discovered otherwise containing -1.0 on failure.
+    flow_transmission_start
+    :rtype: float
+    :type expected_flows: int
+    :type ctrl_ip: str
+    :type ctrl_port: int
+    :type t_start: float
+    :type auth_token: tuple<str>
+    """
+
+    deadline = 240
+    odl_inventory = emulators.nb_generator.flow_utils.FlowExplorer(controller_nb_interface.ip,
+                                                         controller_nb_interface.port,
+                                                         'operational',
+                                                         (controller_nb_interface.username, controller_nb_interface.password))
+    t_discovery_start = time.time()
+    t_start = time.time()
+    previous_discovered_flows = 0
+
+    while True:
+        if (time.time() - t_discovery_start) > deadline:
+            logging.info('[flow_master_thread] Deadline of {0} seconds '
+                         'passed'.format(deadline))
+            result_queue.put({'confirmation_time': -1.0}, block=True)
+            return
+        else:
+            odl_inventory.get_inventory_flows_stats()
+            logging.debug('Found {0} flows at inventory'.
+                          format(odl_inventory.found_flows))
+            if (odl_inventory.found_flows - previous_discovered_flows) != 0:
+                t_discovery_start = time.time()
+                previous_discovered_flows = odl_inventory.found_flows
+            if odl_inventory.found_flows == expected_flows:
+                time_interval = time.time() - t_start
+                logging.debug('[flow_master_thread] Flow-Master '
+                             '{0} flows found in {1} seconds'.
+                             format(expected_flows, time_interval))
+
+                result_queue.put({'confirmation_time': time_interval}, block=True)
+
+                return
+
+        time.sleep(1)
+
 
 def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,multinet_base_dir):
     deadline = 240
@@ -148,14 +204,19 @@ def monitor_threads_run(expected_flows, t_start, controller_nb_interface,
     monitor_thread_sw = multiprocessing.Process(target=poll_flows_switches,
                                              args=(result_queue,expected_flows,
                                                   t_start,get_flows_handler,multinet_base_dir))
+    monitor_thread_ds_confirm = multiprocessing.Process(target=poll_flows_dastastore_confirmation,
+                                             args=(result_queue,expected_flows,
+                                                   controller_nb_interface))
     monitor_thread_ds.start()
     monitor_thread_sw.start()
+    monitor_thread_ds_confirm.start()
 
     monitor_thread_ds.join()
     monitor_thread_sw.join()
+    monitor_thread_ds_confirm.join()
     results = {}
     while not result_queue.empty():
-         results.update(result_queue.get())
+        results.update(result_queue.get())
 
     return results
 

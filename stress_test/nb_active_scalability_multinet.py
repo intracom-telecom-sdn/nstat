@@ -272,6 +272,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                          multinet_handlers_set.get_flows_handler,multinet_base_dir))
             end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
             add_switch_time = result_metrics_add['switch_operation_time']
+            add_confirmation_time = result_metrics_add['confirmation_time']
 
             # start northbound generator flow_delete_flag SET
             if flow_delete_flag:
@@ -287,12 +288,13 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 delete_failed_flows_operations = nb_generator_start_output[0]
                 remove_controller_time = time.time() - time_of_first_REST_request
 
-                result_metrics_add.update(nb_utils.monitor_threads_run(0,
+                result_metrics_del.update(nb_utils.monitor_threads_run(0,
                                          time_of_first_REST_request,
                                          controller_nb_interface,
                                          multinet_handlers_set.get_flows_handler,multinet_base_dir))
-                end_to_end_remove_time = result_metrics_add['end_to_end_flows_operation_time']
-                remove_switch_time = result_metrics_add['switch_operation_time']
+                end_to_end_remove_time = result_metrics_del['end_to_end_flows_operation_time']
+                remove_switch_time = result_metrics_del['switch_operation_time']
+                remove_confirmation_time = result_metrics_del['confirmation_time']
 
 
             total_failed_flows_operations = add_failed_flows_operations + \
@@ -361,9 +363,15 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             # Add confirm time: Time period started after the last flow was
                                 configured until we receive “confirmation” all
                                 flows are added.
+            """
             # 07. add_confirm_time =
             # 08. add_confirm_rate =
-
+            statistics['add_confirmation_time'] = add_confirmation_time
+            if add_confirmation_time != -1:
+                statistics['add_confirmation_rate'] = float(total_flows) / add_confirmation_time
+            else:
+                statistics['add_confirmation_rate'] = -1
+            """
             # Remove controller time: Time for all delete REST
                                       requests to be sent and their response to
                                       be received
@@ -388,6 +396,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 statistics['remove_controller_time'] = remove_controller_time
                 statistics['end_to_end_remove_time'] = end_to_end_remove_time
                 statistics['remove_switch_time'] = remove_switch_time
+                statistics['remove_confirmation_time'] = remove_confirmation_time
 
             statistics['total_failed_flows_operations'] = total_failed_flows_operations
 
@@ -533,11 +542,16 @@ def get_report_spec(test_type, config_json, results_json):
              ('end_to_end_installation_time', 'End-to-end installation time (seconds)'),
              ('end_to_end_installation_rate',
               'End-to-end installation rate (Flows/s)'),
+             ('add_confirmation_time',
+              'Add confirmation time [s]'),
+             ('add_confirmation_rate', 'Add confirmation rate  (Flows/s)'),
              ('remove_controller_time',
               'Total time of NB Restconf calls for flows deletion (seconds)'),
              ('end_to_end_remove_time', 'Delete flows time (seconds)'),
              ('remove_switch_time', 'Remove switch time (seconds)'),
              ('remove_switch_rate', 'Remove switch rate (Flows/seconds)'),
+             ('remove_confirmation_time',
+              'Confirmation time for flows deletion (seconds)'),
              ('nb_generator_cpu_shares', 'NB traffic generator CPU percentage'),
              ('flow_operation_delay_ms', 'Flow operation delay (milliseconds)'),
              ('flow_workers', 'Flow workers'),
