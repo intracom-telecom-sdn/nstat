@@ -357,7 +357,10 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             # 06. add_switch_rate =
             """
             statistics['add_switch_time'] = add_switch_time
-            statistics['add_switch_rate'] = float(total_flows) / add_switch_time
+            if add_switch_time != -1:
+                statistics['add_switch_rate'] = float(total_flows) / add_switch_time
+            else:
+                statistics['add_switch_rate'] = -1
 
             """
             # Add confirm time: Time period started after the last flow was
