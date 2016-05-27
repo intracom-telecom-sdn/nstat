@@ -30,6 +30,27 @@ def multinet_pre_post_actions(action_handler):
     util.customsubprocess.check_output_streaming(action_handler,
                                                  '[multinet_pre_post_actions]')
 
+def parse_multinet_output(multinet_handler_name, multinet_output):
+    """Gets the console output of a multinet handler and extracts the
+    aggregated result from all workers, as a numeric value. (Helper function)
+    :param multinet_handler_name: The name of multinet handler from which
+    we get the results.
+    :param multinet_output: The console output of multinet handler
+    :returns: The aggregated result from all workers
+    (aggregation function is sum)
+    :rtype: int
+    :type multinet_handler_name: string
+    :type multinet_output: string
+    :raises exception: If the result of the parsed multinet output is None
+    """
+    regex_result = re.search(r'INFO:root:\[{0}\]\[response data\].*'.format(multinet_handler_name), multinet_output)
+    if regex_result == None:
+        raise Exception('Failed to get results from {0} multinet handler.'.format(multinet_handler_name))
+    else:
+        result_get_flows = regex_result.group(0).replace('INFO:root:[{0}][response data] '.format(multinet_handler_name), '')
+    multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_flows)])
+    return multinet_result
+
 
 def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
                             is_privileged=False):
@@ -114,12 +135,9 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
                 '[get_switches_handler]', multinet_base_dir,
                 is_privileged=False)
             # get Multinet switches number
-            regex_result = re.search(r'INFO:root:\[get_switches_topology_handler\]\[response data\].*', result_get_sw)
-            if regex_result == None:
-                result_get_sw = ''
-            else:
-                result_get_sw = regex_result.group(0).replace('INFO:root:[get_switches_topology_handler][response data] ', '')
-            discovered_switches = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_sw)])
+            discovered_switches = \
+                parse_multinet_output('get_switches_topology_handler',
+                                      result_get_sw)
             logging.info('[check_topo_booted] Discovered {0} switches'
                           ' at the Multinet side'.format(discovered_switches))
             # get controller switches number from DS
