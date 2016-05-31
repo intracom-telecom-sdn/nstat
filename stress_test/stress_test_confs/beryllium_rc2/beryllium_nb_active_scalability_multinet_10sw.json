@@ -151,7 +151,7 @@
         "y_axis_key":"controller_num_threads",
         "z_axis_key":null,
         "x_axis_label":"number of network switches [N]",
-        "y_axis_label":"Controller threads",
+        "y_axis_label":"controller threads [N]",
         "plot_type":"errorbar",
         "plot_title":"Controller threads for varying switches (Beryllium RC2)",
         "plot_subtitle_keys":["controller_java_xopts", "topology_group_size"],

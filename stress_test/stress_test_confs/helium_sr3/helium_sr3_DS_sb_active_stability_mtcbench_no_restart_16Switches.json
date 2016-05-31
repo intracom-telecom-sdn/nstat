@@ -89,7 +89,7 @@
         "y_axis_key":"controller_num_threads",
         "z_axis_key":null,
         "x_axis_label":"Repeat",
-        "y_axis_label":"Controller threads",
+        "y_axis_label":"controller threads [N]",
         "plot_type":"errorbar_connected",
         "plot_title":"Controller threads in time",
         "plot_subtitle_keys":["controller_java_xopts", "controller_restart", "generator_ms_per_test"],
