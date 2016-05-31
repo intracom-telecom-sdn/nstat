@@ -66,7 +66,7 @@
         "x_axis_key":"cbench_switches",
         "y_axis_key":"bootup_time_secs",
         "z_axis_key":"cbench_thread_creation_delay_ms",
-        "x_axis_label":"# Total switches",
+        "x_axis_label":"number of network switches [N]",
         "y_axis_label":"Bootup time (secs)",
         "plot_type":"multi_scatter",
         "plot_title":"Controller bootup time for various switch numbers",
