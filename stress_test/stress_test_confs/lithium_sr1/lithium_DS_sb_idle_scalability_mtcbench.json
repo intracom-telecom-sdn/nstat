@@ -67,7 +67,7 @@
         "y_axis_key":"bootup_time_secs",
         "z_axis_key":"cbench_thread_creation_delay_ms",
         "x_axis_label":"number of network switches [N]",
-        "y_axis_label":"Bootup time (secs)",
+        "y_axis_label":"bootup time [s]",
         "plot_type":"multi_scatter",
         "plot_title":"Controller bootup time for various switch numbers",
         "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
