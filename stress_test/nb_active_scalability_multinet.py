@@ -132,7 +132,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
     try:
         # Before proceeding with the experiments check validity
-        # of all local handlers
+        # of all handlers
         logging.info('{0} checking controller/local multinet handler files.'.format(test_type))
         util.file_ops.check_filelist([
             controller_handlers_set.ctrl_build_handler,
@@ -145,8 +145,12 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             multinet_local_handlers_set.build_handler,
             multinet_local_handlers_set.clean_handler])
 
+        logging.info('{0} Cloning Multinet repository.'.format(test_type))
+        multinet_utils.multinet_pre_post_actions(
+                        multinet_local_handlers_set.build_handler)
+
         # Before proceeding with the experiments check validity
-        # of all multinet remote handlers
+        # of all multinet handlers
         logging.info('{0} checking multinet handler files.'.format(test_type))
         util.file_ops.check_filelist([
             multinet_handlers_set.rest_server_boot,
@@ -209,10 +213,6 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_hosts_per_switch, multinet_topology_type,
                 multinet_switch_type, multinet_worker_ip_list,
                 multinet_worker_port_list, multinet_base_dir, 0, 0)
-
-            logging.info('{0} Cloning Multinet repository.'.format(test_type))
-            multinet_utils.multinet_pre_post_actions(
-                multinet_local_handlers_set.build_handler)
 
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
@@ -426,12 +426,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 format(test_type))
 
             multinet_utils.multinet_command_runner(
-                multinet_handlers_set.rest_server_stop,
-                'rest_server_stop_multinet', multinet_base_dir)
-
-            logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
-            multinet_utils.multinet_pre_post_actions(
-                multinet_local_handlers_set.clean_handler)
+                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
+                multinet_base_dir)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
