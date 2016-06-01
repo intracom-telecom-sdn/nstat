@@ -249,7 +249,18 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
 
             # Check initial flows of booted switches
-
+            logging.info('{0} Check initial operational DataStore flows and '
+                         'topology switches flows.'.format(test_type))
+            initial_operational_ds_flows = nb_utils.get_operational_ds_flows(
+                controller_nb_interface)
+            logging.info('{0} Initial operational DataStore flows: {1}'.
+                         format(test_type, initial_operational_ds_flows))
+            initial_topology_flows = nb_utils.get_topology_flows(
+                multinet_base_dir, multinet_handlers_set.get_flows_handler)
+            logging.info('{0} Initial topology flows: {1}'.
+                         format(test_type, initial_topology_flows))
+            if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
+                raise ValueError('Initial installed flows were not equal to 0.')
 
             # start northbound generator flow_delete_flag SET
             add_failed_flows_operations = 0
