@@ -135,7 +135,7 @@
         "x_axis_label":"number of network switches [N]",
         "y_axis_label":"Number of threads",
         "plot_type":"multi_scatter",
-        "plot_title":"Controller threads (Lithium SR2)",
+        "plot_title":"controller number of threads (Lithium SR2)",
         "plot_subtitle_keys":["controller_java_xopts"],
         "plot_filename":"num_threads",
         "x_min":null, "x_max":null, "y_min":0, "y_max":null,
