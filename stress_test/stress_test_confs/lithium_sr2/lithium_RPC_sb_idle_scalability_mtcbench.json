@@ -100,7 +100,7 @@
         "y_axis_key":"controller_vm_size",
         "z_axis_key":"cbench_thread_creation_delay_ms",
         "x_axis_label":"number of network switches [N]",
-        "y_axis_label":"controller VM size [MBytes]",
+        "y_axis_label":"controller virtual memory size [MBytes]",
         "plot_type":"multi_scatter",
         "plot_title":"Controller virtual memory size (Lithium SR2)",
         "plot_subtitle_keys":["controller_java_xopts"],
