@@ -253,11 +253,11 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                          'topology switches flows.'.format(test_type))
             initial_operational_ds_flows = nb_utils.get_operational_ds_flows(
                 controller_nb_interface)
-            logging.info('{0} Initial operational DataStore flows: {1}'.
+            logging.info('{0} Checking for flows presence on controller operational datastore: {1}'.
                          format(test_type, initial_operational_ds_flows))
-            initial_topology_flows = nb_utils.get_topology_flows(
+            initial_topology_flows = multinet_utils.get_topology_flows(
                 multinet_base_dir, multinet_handlers_set.get_flows_handler)
-            logging.info('{0} Initial topology flows: {1}'.
+            logging.info('{0} Checking for flows presence on topology switches: {1}'.
                          format(test_type, initial_topology_flows))
             if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
                 raise ValueError('Initial installed flows were not equal to 0.')

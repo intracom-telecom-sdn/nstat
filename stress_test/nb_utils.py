@@ -25,13 +25,7 @@ def get_operational_ds_flows(controller_nb_interface):
     return odl_inventory.found_flows
 
 
-def get_topology_flows(multinet_base_dir, get_flows_handler):
-    result_get_flows = multinet_utils.multinet_command_runner(get_flows_handler,
-        '[get_flows_handler]', multinet_base_dir,
-        is_privileged=False)
-    # Get total flows from multinet topology switches
-    discovered_flows = multinet_utils.parse_multinet_output('get_flows_topology_handler', result_get_flows)
-    return discovered_flows
+
 
 def nb_generator_start(nb_generator_ssh_client,nb_generator_base_dir,nb_generator_cpus,
                        nb_generator_handlers_set,controller_node,
@@ -173,7 +167,7 @@ def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,
             result_queue.put({'switch_operation_time': -1.0}, block=True)
             return
         else:
-            discovered_flows = get_topology_flows(multinet_base_dir,
+            discovered_flows = multinet_utils.get_topology_flows(multinet_base_dir,
                                                   get_flows_handler)
             logging.debug('Found {0} flows at topology switches'.
                           format(discovered_flows))

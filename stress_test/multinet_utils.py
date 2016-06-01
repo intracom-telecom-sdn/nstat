@@ -236,3 +236,11 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
     with open(multinet_config_path, 'w') as config_json_file:
         json.dump(config_json, config_json_file)
 
+
+def get_topology_flows(multinet_base_dir, get_flows_handler):
+    result_get_flows = multinet_utils.multinet_command_runner(get_flows_handler,
+        '[get_flows_handler]', multinet_base_dir,
+        is_privileged=False)
+    # Get total flows from multinet topology switches
+    discovered_flows = parse_multinet_output('get_flows_topology_handler', result_get_flows)
+    return discovered_flows
