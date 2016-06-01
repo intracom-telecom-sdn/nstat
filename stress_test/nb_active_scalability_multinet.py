@@ -247,6 +247,10 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_rest_server, controller_nb_interface,
                 multinet_base_dir)
 
+
+            # Check initial flows of booted switches
+
+
             # start northbound generator flow_delete_flag SET
             add_failed_flows_operations = 0
             delete_failed_flows_operations = 0
