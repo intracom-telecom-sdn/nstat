@@ -155,7 +155,8 @@ def poll_flows_dastastore_confirm(result_queue, expected_flows, controller_nb_in
         time.sleep(1)
 
 
-def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,multinet_base_dir):
+def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,
+                        multinet_base_dir):
     deadline = 240
     t_discovery_start = time.time()
     previous_discovered_flows = 0
