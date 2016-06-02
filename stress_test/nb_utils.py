@@ -168,10 +168,11 @@ def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,
             result_queue.put({'switch_operation_time': -1.0}, block=True)
             return
         else:
-            discovered_flows = multinet_utils.get_topology_flows((multinet_base_dir,
-                                                  get_flows_handler)
-            logging.debug('Found {0} flows at topology switches'.
-                          format(discovered_flows))
+            discovered_flows = \
+                multinet_utils.get_topology_flows((multinet_base_dir,
+                                                   get_flows_handler))
+            logging.debug('Found {0} flows at topology switches'.format(discovered_flows))
+
             if (discovered_flows - previous_discovered_flows) != 0:
                 t_discovery_start = time.time()
                 previous_discovered_flows = discovered_flows
