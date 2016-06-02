@@ -168,7 +168,7 @@ def poll_flows_switches(result_queue, expected_flows, t_start,get_flows_handler,
             result_queue.put({'switch_operation_time': -1.0}, block=True)
             return
         else:
-            discovered_flows = multinet_utils.get_topology_flows(multinet_base_dir,
+            discovered_flows = multinet_utils.get_topology_flows((multinet_base_dir,
                                                   get_flows_handler)
             logging.debug('Found {0} flows at topology switches'.
                           format(discovered_flows))
