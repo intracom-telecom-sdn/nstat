@@ -64,8 +64,8 @@
 "topology_size":[10, 20, 200],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[1],
-"topology_group_size":[1],
-"topology_group_delay_ms":[3000],
+"topology_group_size":[5],
+"topology_group_delay_ms":[2000],
 
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
