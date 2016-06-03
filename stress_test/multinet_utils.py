@@ -84,7 +84,7 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
 
 def check_topo_booted(expected_switches, group_size, group_delay_ms,
                      get_switches_handler, rest_server,
-                     controller_nb_interface, multinet_base_dir, num_tries=3):
+                     controller_nb_interface, multinet_base_dir, num_tries=10):
     """
     Check if a topology has been booted. Check both from the Mininet
     side and from the controller operational DS.
@@ -128,8 +128,7 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
 
         # Here we sleep in order to give time to the controller to discover
         # topology through the LLDP protocol.
-        time.sleep(int(expected_switches/group_size) * \
-                   mininet_group_delay)
+        time.sleep(int(expected_switches/group_size) * mininet_group_delay)
         try:
             result_get_sw = multinet_command_runner(get_switches_handler,
                 '[get_switches_handler]', multinet_base_dir,
