@@ -129,7 +129,7 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
         # Here we sleep in order to give time to the controller to discover
         # topology through the LLDP protocol.
         time.sleep(int(expected_switches/group_size) * \
-                   mininet_group_delay + 15)
+                   mininet_group_delay)
         try:
             result_get_sw = multinet_command_runner(get_switches_handler,
                 '[get_switches_handler]', multinet_base_dir,
