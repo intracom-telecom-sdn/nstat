@@ -61,7 +61,7 @@
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 "topology_get_flows_handler":"./bin/handlers/get_flows",
 
-"topology_size":[10, 20],
+"topology_size":[10, 20, 200],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[1],
 "topology_group_size":[1],
