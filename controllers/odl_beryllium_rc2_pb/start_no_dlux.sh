@@ -80,10 +80,10 @@ else
 fi
 
 
-exec_client_command "feature:install odl-restconf-all"
-echo "odl-restconf-all feature was installed successfully"
+#exec_client_command "feature:install odl-restconf-all"
+#echo "odl-restconf-all feature was installed successfully"
 
-exec_client_command "feature:install odl-openflowplugin-flow-services"
+exec_client_command "feature:install odl-openflowplugin-flow-services-ui"
 echo "odl-openflowplugin-flow-services feature was installed successfully"
 
 
