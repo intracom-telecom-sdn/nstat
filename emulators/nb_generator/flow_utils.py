@@ -44,8 +44,14 @@ class FlowProcessor(object):
         self.session = requests.Session()
         self.session.trust_env = False
         self.auth_token = auth_token
+        self.flow_template = """
+           {
+            "flow-node-inventory:flow": [
+                %s
+            ]
+           }"""
 
-    def add_flow(self, flow_id, node_id, ip_dest):
+    def add_flow(self, flow_data_body, node_id, flow_id):
         """
         Adds a flow to the specified node
 
@@ -62,8 +68,7 @@ class FlowProcessor(object):
 
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
-        flow_data = self.flow_template % (flow_id, 'TestFlow-%d' % flow_id,
-                                          65000, str(flow_id), 65000, ip_dest)
+        flow_data = self.flow_template % (flow_data_body)
         flow_url = self.url_template % (node_id, flow_id)
         try:
             request = self.session.put(flow_url, data=flow_data,

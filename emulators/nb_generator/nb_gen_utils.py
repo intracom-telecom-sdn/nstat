@@ -14,7 +14,7 @@ import multiprocessing
 import requests
 import time
 
-def create_workers(nworkers, flow_template, url_template, op_delay_ms,
+def create_workers(nworkers, flow_template, url_template, op_delay_ms, fpr,
                    auth_token):
     """
     Creates flow workers as separate processes along with their queues.
@@ -46,14 +46,14 @@ def create_workers(nworkers, flow_template, url_template, op_delay_ms,
         worker = multiprocessing.Process(target=flow_worker_thread,
                                          args=(wid, opqueue, resqueue,
                                                flow_template, url_template,
-                                               op_delay_ms, auth_token))
+                                               op_delay_ms, fpr, auth_token))
         wthr.append(worker)
 
     return (opqueues, wthr, resqueues)
 
 
 def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
-                       op_delay_ms, auth_token):
+                       op_delay_ms, fpr, auth_token):
     """
     Function executed by flow worker thread
 
@@ -78,6 +78,7 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
     flow_processor = flow_utils.FlowProcessor(flow_template, url_template,
                                               auth_token)
     failed_flow_ops = 0
+    flow_list_add = []
 
     # Read request from queue
     # Op type could be A/D/T, for add/deletion and termination respectively.
@@ -90,21 +91,36 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
                 ' = ( OP = {1}, Node = {2}, Flow-id = {3})'.format(wid, op_type,
                                                                    of_node,
                                                                    flow_id))
+            flow_data = flow_template % (flow_id, 'TestFlow-%d' % flow_id,
+                                          65000, str(flow_id), 65000, current_ip)
 
             if op_type == 'T':
+                if len(flow_list_add) != 0:
+                    logging.debug('[flow_worker_thread] Sending remaining '
+                                  'flows for addition before terminating '
+                                  'worker threat {0}'.format(wid))
+                    status = flow_processor.add_flow(','.join(flow_list_add),
+                                                     of_node, flow_id)
+                    if status != 200:
+                        logging.debug('[flow_worker_thread] failed to add flow.')
+                        failed_flow_ops += 1
                 logging.debug('[flow_worker_thread] '
                               'Worker {0} will terminate.'.format(wid))
                 resqueue.put(failed_flow_ops)
                 return 0
 
             elif op_type == 'A':
-                status = flow_processor.add_flow(flow_id, of_node, current_ip)
-                logging.debug('[flow_worker_thread] [op_type]: op_type = A '
-                              '(Adding flow)| Status code of the response: '
-                              '{0}.'.format(status))
-                if status != 200:
-                    logging.debug('[flow_worker_thread] failed to add flow.')
-                    failed_flow_ops += 1
+                flow_list_add.append(flow_data)
+                if len(flow_list_add) == fpr:
+                    status = flow_processor.add_flow(','.join(flow_list_add),
+                                                     of_node, flow_id)
+                    flow_list_add[:] = []
+                    logging.debug('[flow_worker_thread] [op_type]: op_type = A '
+                                  '(Adding flow)| Status code of the response: '
+                                  '{0}.'.format(status))
+                    if status != 200:
+                        logging.debug('[flow_worker_thread] failed to add flow.')
+                        failed_flow_ops += 1
 
             elif op_type == 'D':
                 status = flow_processor.remove_flow(flow_id, of_node)
@@ -267,7 +283,7 @@ def flow_transmission_start(opqueues, resqueues, wthr, nflows, ctrl_ip,
 
 
 def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
-                           url_template, flow_template, auth_token,
+                           url_template, flow_template, auth_token, fpr,
                            delete_flows_flag=False):
 
     """Function executed by flow_master method
@@ -319,7 +335,7 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
 
     opqueues, wthr, resqueues = create_workers(flow_ops_params.nworkers,
                                                flow_template, url_template,
-                                               op_delay_ms, auth_token)
+                                               op_delay_ms, fpr, auth_token)
 
     logging.info('[flow_ops_calc_time_run] distributing workload')
     distribute_workload(flow_ops_params.nflows, opqueues,

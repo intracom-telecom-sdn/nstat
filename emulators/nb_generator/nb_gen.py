@@ -13,8 +13,7 @@ import os
 import sys
 import collections
 
-F_TEMP = """{
-        "flow-node-inventory:flow": [
+FLOW_BODY_TEMPLATE = """
             {
                 "flow-node-inventory:cookie": %d,
                 "flow-node-inventory:cookie_mask": 4294967295,
@@ -50,8 +49,9 @@ F_TEMP = """{
                 "flow-node-inventory:strict": false,
                 "flow-node-inventory:table_id": 0
             }
-        ]
-       }"""
+            """
+
+
 
 
 def flow_master(args):
@@ -81,6 +81,7 @@ def flow_master(args):
     flow_ops_params_set = flow_ops_params(args.ctrl_ip, args.ctrl_port,
                                           int(args.nflows), int(args.nworkers))
     delete_flows_flag = args.delete_flows_flag
+    fpr = args.fpr
 
     failed_flow_ops_del=0
     failed_flow_ops_add=0
@@ -93,7 +94,7 @@ def flow_master(args):
                                                      controller_rest_auth_token)
 
             op_delay_ms = int(args.op_delay_ms)
-            flow_template = F_TEMP
+            flow_template = FLOW_BODY_TEMPLATE
             url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
                 flow_ops_params_set.ctrl_port + \
                 '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
@@ -102,7 +103,7 @@ def flow_master(args):
             failed_flow_ops_add = \
             nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
                                                 node_names, url_template, flow_template,
-                                                controller_rest_auth_token)
+                                                controller_rest_auth_token, fpr)
         except:
 
             failed_flow_ops_add = flow_ops_params_set.nflows
@@ -113,7 +114,7 @@ def flow_master(args):
             failed_flow_ops_del = \
             nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
                                                 node_names, url_template, flow_template,
-                                                controller_rest_auth_token,
+                                                controller_rest_auth_token, fpr,
                                                 delete_flows_flag=True)
         except:
 
@@ -200,6 +201,14 @@ if __name__ == '__main__':
                         help=("The controller's RESTCONF password. \n"
                               "The default value is 'admin'.\n"
                               "Example: --restconf-password='admin'"))
+    parser.add_argument('--fpr',
+                        required=False,
+                        type=int,
+                        dest='fpr',
+                        action='store',
+                        default=1,
+                        help=("Flows-per-Request - number of flows \n"
+                        "(batch size) sent in each HTTP request"))
     parser.add_argument('--logging-level',
                         type=str,
                         dest='logging_level',
