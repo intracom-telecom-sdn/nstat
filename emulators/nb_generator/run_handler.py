@@ -40,12 +40,13 @@ def northbound_generator():
                             '--operation-delay=\'{4}\' '
                             '--restconf-user=\'{5}\' '
                             '--restconf-password=\'{6}\' '
-                            '--logging-level=\'{7}\'')
+                            '--logging-level=\'{7}\' '
+                            '--fpr={8}')
     if sys.argv[6] == 'True':
         cmd += ' --delete-flows'
     cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
                      sys.argv[5], sys.argv[7], sys.argv[8],
-                     sys.argv[9])
+                     sys.argv[9], sys.argv[10])
 
     p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
