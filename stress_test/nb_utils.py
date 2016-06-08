@@ -30,14 +30,15 @@ def get_operational_ds_flows(controller_nb_interface):
 def nb_generator_start(nb_generator_ssh_client,nb_generator_base_dir,nb_generator_cpus,
                        nb_generator_handlers_set,controller_node,
                        controller_nb_interface,total_flows,flow_workers,
-                       flow_operations_delay_ms,flow_delete_flag,log_level):
-    cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}'.
+                       flow_operations_delay_ms,flow_delete_flag, flows_per_request,
+                       log_level):
+    cmd = ('cd {0}; taskset -c {1} python3.4 {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}'.
            format(nb_generator_base_dir, nb_generator_cpus,
                   nb_generator_handlers_set.run_handler,
                   controller_node.ip, controller_nb_interface.port,
                   total_flows, flow_workers, flow_operations_delay_ms,
                   flow_delete_flag, controller_nb_interface.username,
-                  controller_nb_interface.password, log_level))
+                  controller_nb_interface.password, flows_per_request, log_level))
     logging.debug('Generator handler command:{0}.'.format(cmd))
 
     exit_status , output = util.netutil.ssh_run_command(nb_generator_ssh_client,

@@ -17,7 +17,7 @@ nstat_vm_basebox = 'nstat_vm_base'
 #nstat_node_vm_ram_arr = [4192]
 #nstat_node_vm_cpu_arr = [1]
 
-#nstat_node_names = ['ndcntrl']
+#nstat_node_names = ['nddocker']
 #nstat_node_vm_ram_arr = [16384]
 #nstat_node_vm_cpu_arr = [4]
 
