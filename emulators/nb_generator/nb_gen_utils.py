@@ -78,7 +78,7 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
     flow_processor = flow_utils.FlowProcessor(flow_template, url_template,
                                               auth_token)
     failed_flow_ops = 0
-    flow_list_add = []
+    flow_add_lists = {}
 
     # Read request from queue
     # Op type could be A/D/T, for add/deletion and termination respectively.
@@ -91,43 +91,50 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
                 ' = ( OP = {1}, Node = {2}, Flow-id = {3})'.format(wid, op_type,
                                                                    of_node,
                                                                    flow_id))
-            flow_data = flow_template % (flow_id, 'TestFlow-%d' % flow_id,
-                                          65000, str(flow_id), 65000, current_ip)
 
             if op_type == 'T':
-                if len(flow_list_add) != 0:
-                    logging.debug('[flow_worker_thread] Sending remaining '
-                                  'flows for addition before terminating '
-                                  'worker threat {0}'.format(wid))
-                    status = flow_processor.add_flow(','.join(flow_list_add),
-                                                     of_node, flow_id)
-                    if status != 200:
-                        logging.debug('[flow_worker_thread] failed to add flow.')
-                        failed_flow_ops += 1
+                print('============adding remaining flows====================')
+                logging.debug('[flow_worker_thread] Sending remaining '
+                              'flows for addition before terminating '
+                              'worker thread {0}'.format(wid))
+                for of_node, flow_list in flow_add_lists.items():
+                    if len(flow_list) > 0:
+                        status = flow_processor.add_flow(','.join(flow_list),
+                                                         of_node)
+                        if status != 200 and status != 204:
+                            logging.debug('[flow_worker_thread] failed to add flow.')
+                            failed_flow_ops += 1
                 logging.debug('[flow_worker_thread] '
-                              'Worker {0} will terminate.'.format(wid))
+                          'Worker {0} will terminate.'.format(wid))
                 resqueue.put(failed_flow_ops)
                 return 0
 
             elif op_type == 'A':
-                flow_list_add.append(flow_data)
-                if len(flow_list_add) == fpr:
-                    status = flow_processor.add_flow(','.join(flow_list_add),
-                                                     of_node, flow_id)
-                    flow_list_add[:] = []
+                flow_data = flow_template % (flow_id, 'TestFlow-%d' % flow_id,
+                                          65000, str(flow_id), 65000, current_ip)
+                if of_node in flow_add_lists:
+                    flow_add_lists[of_node].append(flow_data)
+                else:
+                    flow_add_lists[of_node] = []
+                    flow_add_lists[of_node].append(flow_data)
+                if len(flow_add_lists[of_node]) == fpr:
+                    status = flow_processor.add_flow(','.join(flow_add_lists[of_node]),
+                                                     of_node)
+                    flow_add_lists[of_node][:] = []
                     logging.debug('[flow_worker_thread] [op_type]: op_type = A '
                                   '(Adding flow)| Status code of the response: '
                                   '{0}.'.format(status))
-                    if status != 200:
+                    if status != 200 and status != 204:
                         logging.debug('[flow_worker_thread] failed to add flow.')
                         failed_flow_ops += 1
 
             elif op_type == 'D':
+                print('enter delete function in worker thread')
                 status = flow_processor.remove_flow(flow_id, of_node)
                 logging.debug('[flow_worker_thread] [op_type]: op_type = D '
                               '(Remove flow)| Status code of the response: '
                               '{0}.'.format(status))
-                if status != 200:
+                if status != 200 and status != 204:
                     logging.debug('[flow_worker_thread] failed to delete flow.')
                     failed_flow_ops += 1
 
@@ -190,7 +197,7 @@ def join_workers(opqueues, resqueues, wthr):
     """
 
     for curr_queue in opqueues:
-        curr_queue.put(('T', 0, 0, '0'))
+        curr_queue.put(('T', 0, 0, 0))
 
     for worker in wthr:
         worker.join()
@@ -317,13 +324,12 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
     :type auth_token: tuple<str>
     :type delete_flows_flag: bool
     """
-
     operations_log_message = 'ADD'
     operations_type = 'A'
 
-    if delete_flows_flag:
+    if delete_flows_flag == True:
         operations_log_message = 'DEL'
-        operation_type = 'D'
+        operations_type = 'D'
 
     logging.info('[flow_ops_calc_time_run] initializing: will perform {0} flow '
                  'operations at {1} openflow nodes with {2} workers'.format(
@@ -332,7 +338,7 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
 
     logging.info('[flow_ops_calc_time_run] creating workers for {0} ops'.
                  format(operations_log_message))
-
+    print('preparing worker threads')
     opqueues, wthr, resqueues = create_workers(flow_ops_params.nworkers,
                                                flow_template, url_template,
                                                op_delay_ms, fpr, auth_token)
@@ -340,7 +346,7 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
     logging.info('[flow_ops_calc_time_run] distributing workload')
     distribute_workload(flow_ops_params.nflows, opqueues,
                         operations_type, node_names)
-
+    print('Starting transmission')
     failed_flow_ops =  flow_transmission_start(opqueues, resqueues,
                                                         wthr, flow_ops_params.nflows,
                                                         flow_ops_params.ctrl_ip,

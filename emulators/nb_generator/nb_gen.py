@@ -13,43 +13,42 @@ import os
 import sys
 import collections
 
-FLOW_BODY_TEMPLATE = """
-            {
-                "flow-node-inventory:cookie": %d,
-                "flow-node-inventory:cookie_mask": 4294967295,
-                "flow-node-inventory:flow-name": "%s",
-                "flow-node-inventory:hard-timeout": %d,
-                "flow-node-inventory:id": "%s",
-                "flow-node-inventory:idle-timeout": %d,
-                "flow-node-inventory:installHw": true,
-                "flow-node-inventory:instructions": {
-                    "flow-node-inventory:instruction": [
-                        {
-                            "flow-node-inventory:apply-actions": {
-                                "flow-node-inventory:action": [
-                                    {
-                                        "flow-node-inventory:drop-action": {},
-                                        "flow-node-inventory:order": 0
-                                    }
-                                ]
-                            },
-                            "flow-node-inventory:order": 0
-                        }
-                    ]
-                },
-                "flow-node-inventory:match": {
-                    "flow-node-inventory:ipv4-destination": "%s/32",
-                    "flow-node-inventory:ethernet-match": {
-                        "flow-node-inventory:ethernet-type": {
-                            "flow-node-inventory:type": 2048
+FLOW_BODY_TEMPLATE = \
+         """{
+                "cookie": %d,
+                "cookie_mask": 4294967295,
+                "flow-name": "%s",
+                "hard-timeout": %d,
+                "id": "%s",
+                "idle-timeout": %d,
+                "installHw": true,
+                "priority": 2,
+                "strict": false,
+                "table_id": 0,
+                "match": {
+                    "ipv4-destination": "%s/32",
+                    "ethernet-match": {
+                        "ethernet-type": {
+                            "type": 2048
                         }
                     }
                 },
-                "flow-node-inventory:priority": 1,
-                "flow-node-inventory:strict": false,
-                "flow-node-inventory:table_id": 0
-            }
-            """
+                "instructions": {
+                    "instruction": [
+                        {
+                            "apply-actions": {
+                                "action": [
+                                    {
+                                        "drop-action": {},
+                                        "order": 0
+                                    }
+                                ]
+                            },
+                            "order": 0
+                        }
+                    ]
+                }               
+            }"""
 
 
 
@@ -68,7 +67,7 @@ def flow_master(args):
     :type args: object of argparse.ArgumentParser()
 
     """
-
+    print('entering main function...')
     flow_ops_params = collections.namedtuple('flow_ops_params', ['ctrl_ip',
         'ctrl_port', 'nflows', 'nworkers'])
     auth_token = collections.namedtuple('auth_token',
@@ -82,27 +81,30 @@ def flow_master(args):
                                           int(args.nflows), int(args.nworkers))
     delete_flows_flag = args.delete_flows_flag
     fpr = args.fpr
-
+    op_delay_ms = int(args.op_delay_ms)
+    flow_template = FLOW_BODY_TEMPLATE
+    delete_url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
+        flow_ops_params_set.ctrl_port + \
+        '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
+        'table/0/flow/%d'
+    add_url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
+        flow_ops_params_set.ctrl_port + \
+        '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
+        'table/0'
+    node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
+                                             flow_ops_params_set.ctrl_port,
+                                             controller_rest_auth_token)
     failed_flow_ops_del=0
     failed_flow_ops_add=0
     failed_flow_ops_total=0
 
     if delete_flows_flag == False:
         try:
-            node_names = nb_gen_utils.get_node_names(flow_ops_params_set.ctrl_ip,
-                                                     flow_ops_params_set.ctrl_port,
-                                                     controller_rest_auth_token)
-
-            op_delay_ms = int(args.op_delay_ms)
-            flow_template = FLOW_BODY_TEMPLATE
-            url_template = 'http://' + flow_ops_params_set.ctrl_ip + ':' + \
-                flow_ops_params_set.ctrl_port + \
-                '/' + 'restconf/config/opendaylight-inventory:nodes/node/%s/' + \
-                'table/0/flow/%d'
+            print('Main running add flows')
             # Calculate time needed for add flow operations
             failed_flow_ops_add = \
-            nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
-                                                node_names, url_template, flow_template,
+                nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
+                                                node_names, add_url_template, flow_template,
                                                 controller_rest_auth_token, fpr)
         except:
 
@@ -111,13 +113,16 @@ def flow_master(args):
 
         # Calculate time needed for delete flow operations
         try:
+            print('Main running delete flows')
             failed_flow_ops_del = \
-            nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
-                                                node_names, url_template, flow_template,
+                nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
+                                                node_names, delete_url_template, 
+                                                flow_template,
                                                 controller_rest_auth_token, fpr,
                                                 delete_flows_flag=True)
+            
         except:
-
+            print('exception in deletion occured')
             failed_flow_ops_del = flow_ops_params_set.nflows
 
     # sum up total failed flow operations

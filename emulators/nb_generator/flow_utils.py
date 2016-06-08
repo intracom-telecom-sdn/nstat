@@ -44,24 +44,18 @@ class FlowProcessor(object):
         self.session = requests.Session()
         self.session.trust_env = False
         self.auth_token = auth_token
-        self.flow_template = """
-           {
-            "flow-node-inventory:flow": [
-                %s
-            ]
-           }"""
+        self.request_timeout = 10
+        self.flow_template = """{"flow": [%s]}"""
 
-    def add_flow(self, flow_data_body, node_id, flow_id):
+    def add_flow(self, flow_data_body, node_id):
         """
         Adds a flow to the specified node
 
-        :param flow_id: ID of the flow to add
         :param node_id: ID of the node to which we will add the flow
         :param ip_dest: IP address to populate the destination IP field of the
         flow template
         :returns: status code for the http call issued
         :rtype: int
-        :type flow_id: int
         :type node_id: int
         :type ip_dest: str
         """
@@ -69,16 +63,19 @@ class FlowProcessor(object):
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
         flow_data = self.flow_template % (flow_data_body)
-        flow_url = self.url_template % (node_id, flow_id)
+        print('=========Flow data===========\n'+flow_data)
+        flow_url = self.url_template % (node_id)
+        print('=========Flow URL===========\n'+flow_url)
         try:
-            request = self.session.put(flow_url, data=flow_data,
+            request = self.session.post(flow_url, data=flow_data,
                                        headers=self.putheaders, stream=False,
-                                       auth=self.auth_token)
+                                       auth=self.auth_token, timeout=self.request_timeout)
+            print('====request data:===='+request.text)
             return request.status_code
         except:
             return -1
         finally:
-            # Enable logging after performing requests
+            #Enable logging after performing requests
             logging.disable(logging.NOTSET)
 
     def remove_flow(self, flow_id, node_id):
@@ -96,6 +93,7 @@ class FlowProcessor(object):
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
         flow_url = self.url_template % (node_id, flow_id)
+        #print('====DELETE FLOW URL===='+flow_url)
         try:
             request = self.session.delete(flow_url, headers=self.getheaders,
                                           auth=self.auth_token)
