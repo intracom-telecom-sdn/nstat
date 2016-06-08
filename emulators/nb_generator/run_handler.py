@@ -40,8 +40,8 @@ def northbound_generator():
                             '--operation-delay=\'{4}\' '
                             '--restconf-user=\'{5}\' '
                             '--restconf-password=\'{6}\' '
-                            '--logging-level=\'{7}\' '
-                            '--fpr={8}')
+                            '--fpr={8} '
+                            '--logging-level=\'{7}\'')
     if sys.argv[6] == 'True':
         cmd += ' --delete-flows'
     cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
