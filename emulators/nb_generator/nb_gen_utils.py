@@ -93,7 +93,6 @@ def flow_worker_thread(wid, opqueue, resqueue, flow_template, url_template,
                                                                    flow_id))
 
             if op_type == 'T':
-                print('============adding remaining flows====================')
                 logging.debug('[flow_worker_thread] Sending remaining '
                               'flows for addition before terminating '
                               'worker thread {0}'.format(wid))
@@ -197,7 +196,7 @@ def join_workers(opqueues, resqueues, wthr):
     """
 
     for curr_queue in opqueues:
-        curr_queue.put(('T', 0, 0, 0))
+        curr_queue.put(('T', 0, 0, '0'))
 
     for worker in wthr:
         worker.join()
@@ -324,10 +323,11 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
     :type auth_token: tuple<str>
     :type delete_flows_flag: bool
     """
+
     operations_log_message = 'ADD'
     operations_type = 'A'
 
-    if delete_flows_flag == True:
+    if delete_flows_flag:
         operations_log_message = 'DEL'
         operations_type = 'D'
 
@@ -338,7 +338,7 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
 
     logging.info('[flow_ops_calc_time_run] creating workers for {0} ops'.
                  format(operations_log_message))
-    print('preparing worker threads')
+
     opqueues, wthr, resqueues = create_workers(flow_ops_params.nworkers,
                                                flow_template, url_template,
                                                op_delay_ms, fpr, auth_token)
@@ -346,7 +346,7 @@ def flows_transmission_run(flow_ops_params, op_delay_ms, node_names,
     logging.info('[flow_ops_calc_time_run] distributing workload')
     distribute_workload(flow_ops_params.nflows, opqueues,
                         operations_type, node_names)
-    print('Starting transmission')
+
     failed_flow_ops =  flow_transmission_start(opqueues, resqueues,
                                                         wthr, flow_ops_params.nflows,
                                                         flow_ops_params.ctrl_ip,

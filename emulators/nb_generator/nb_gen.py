@@ -67,7 +67,7 @@ def flow_master(args):
     :type args: object of argparse.ArgumentParser()
 
     """
-    print('entering main function...')
+
     flow_ops_params = collections.namedtuple('flow_ops_params', ['ctrl_ip',
         'ctrl_port', 'nflows', 'nworkers'])
     auth_token = collections.namedtuple('auth_token',
@@ -100,7 +100,6 @@ def flow_master(args):
 
     if delete_flows_flag == False:
         try:
-            print('Main running add flows')
             # Calculate time needed for add flow operations
             failed_flow_ops_add = \
                 nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
@@ -113,7 +112,6 @@ def flow_master(args):
 
         # Calculate time needed for delete flow operations
         try:
-            print('Main running delete flows')
             failed_flow_ops_del = \
                 nb_gen_utils.flows_transmission_run(flow_ops_params_set, op_delay_ms,
                                                 node_names, delete_url_template, 
@@ -122,7 +120,6 @@ def flow_master(args):
                                                 delete_flows_flag=True)
             
         except:
-            print('exception in deletion occured')
             failed_flow_ops_del = flow_ops_params_set.nflows
 
     # sum up total failed flow operations
