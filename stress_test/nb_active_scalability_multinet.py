@@ -556,6 +556,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('total_flows', 'Total flows to be added'),
              ('flow_operations_delay_ms', 'Delay between flow operations'),
              ('flow_delete_flag', 'Flow delete flag'),
+             ('flows_per_request', 'Flows per REST request'),
              ('java_opts', 'JVM options')], config_json)],
         [report_spec.TableSpec('2d', 'Test results',
             [('global_sample_id', 'Sample ID'),
