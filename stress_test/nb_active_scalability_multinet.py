@@ -277,8 +277,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                         nb_generator_base_dir,nb_generator_cpus,
                                         nb_generator_handlers_set,controller_node,
                                         controller_nb_interface,total_flows,flow_workers,
-                                        flow_operations_delay_ms,False,flows_per_request,
-                                        log_level)
+                                        flow_operations_delay_ms,False,flows_per_request,log_level)
             nb_generator_start_output = json.loads(nb_generator_start_json_output)
 
             add_failed_flows_operations = nb_generator_start_output[0]
@@ -300,8 +299,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                                             nb_generator_base_dir,nb_generator_cpus,
                                             nb_generator_handlers_set,controller_node,
                                             controller_nb_interface,total_flows,flow_workers,
-                                            flow_operations_delay_ms,True,flows_per_request,
-                                            log_level)
+                                            flow_operations_delay_ms,True,flows_per_request,log_level)
                 nb_generator_start_output = json.loads(nb_generator_start_json_output)
 
                 delete_failed_flows_operations = nb_generator_start_output[0]
@@ -558,6 +556,7 @@ def get_report_spec(test_type, config_json, results_json):
              ('total_flows', 'Total flows to be added'),
              ('flow_operations_delay_ms', 'Delay between flow operations'),
              ('flow_delete_flag', 'Flow delete flag'),
+             ('flows_per_request', 'Flows per REST request'),
              ('java_opts', 'JVM options')], config_json)],
         [report_spec.TableSpec('2d', 'Test results',
             [('global_sample_id', 'Sample ID'),

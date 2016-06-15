@@ -44,7 +44,6 @@ class FlowProcessor(object):
         self.session = requests.Session()
         self.session.trust_env = False
         self.auth_token = auth_token
-        self.request_timeout = 10
         self.flow_template = """{"flow": [%s]}"""
 
     def add_flow(self, flow_data_body, node_id):
@@ -63,19 +62,16 @@ class FlowProcessor(object):
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
         flow_data = self.flow_template % (flow_data_body)
-        print('=========Flow data===========\n'+flow_data)
         flow_url = self.url_template % (node_id)
-        print('=========Flow URL===========\n'+flow_url)
         try:
             request = self.session.post(flow_url, data=flow_data,
                                        headers=self.putheaders, stream=False,
-                                       auth=self.auth_token, timeout=self.request_timeout)
-            print('====request data:===='+request.text)
+                                       auth=self.auth_token)
             return request.status_code
         except:
             return -1
         finally:
-            #Enable logging after performing requests
+            # Enable logging after performing requests
             logging.disable(logging.NOTSET)
 
     def remove_flow(self, flow_id, node_id):
@@ -93,7 +89,6 @@ class FlowProcessor(object):
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
         flow_url = self.url_template % (node_id, flow_id)
-        #print('====DELETE FLOW URL===='+flow_url)
         try:
             request = self.session.delete(flow_url, headers=self.getheaders,
                                           auth=self.auth_token)
