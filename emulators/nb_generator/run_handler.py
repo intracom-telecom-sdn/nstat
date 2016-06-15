@@ -20,15 +20,15 @@ def northbound_generator():
 
     1.  ctrl_ip: controller IP
     2.  ctrl_port: controller RESTconf port
-    3.  nnodes: number of nodes (switches) to generate operations for.
-    Flows will be added to nodes [0, n-1]
-    4.  nflows: total number of flows to distribute
-    5.  nworkers: number of worker threads to create
-    6.  op_delay_ms: delay between thread operations (in milliseconds)
-    7.  delete_flows_flag: whether to delete or not the added flows as part of
+    3.  nflows: total number of flows to distribute
+    4.  nworkers: number of worker threads to create
+    5.  op_delay_ms: delay between thread operations (in milliseconds)
+    6.  delete_flows_flag: whether to delete or not the added flows as part of
     the test
-    8. controller_restconf_user: controller NorthBound RESTconf username
-    9. controller_restconf_password: controller NorthBound RESTconf password
+    7. controller_restconf_user: controller NorthBound RESTconf username
+    8. controller_restconf_password: controller NorthBound RESTconf password
+    9. flows-per-request, the number of flows that will be sent in a single
+    request
     10. logging_level: nb generator logging level (is passed from
     nstat orchestrator)
     """
