@@ -20,7 +20,7 @@ ftp_proxy='172.28.40.9:3128'
 export http_proxy
 export https_proxy
 export ftp_proxy
-printf -v no_proxy '%s,' 192.168.100.{1..255};export no_proxy="${no_proxy%,}"",127.0.0.1,localhost";
+printf -v no_proxy '%s,' 192.168.121.{1..255};export no_proxy="${no_proxy%,}"",127.0.0.1,localhost";
 
 echo "http_proxy="$http_proxy | sudo tee -a /etc/environment
 echo "https_proxy="$https_proxy | sudo tee -a /etc/environment

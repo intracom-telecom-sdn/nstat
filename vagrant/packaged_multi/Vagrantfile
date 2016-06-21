@@ -10,21 +10,21 @@
 # ------------------------------------------------------------------------------
 # VM configuration.
 # ------------------------------------------------------------------------------
-nstat_vm_basebox = 'nstat_vm_base'
-
+#nstat_vm_basebox = 'nstat_vm_base'
+nstat_vm_basebox = 'nstat_vm_base_test_srv'
 # VMs setup for sample MT-Cbench tests------------------------------------------
 #nstat_node_names = ['ndmn']
 #nstat_node_vm_ram_arr = [4192]
 #nstat_node_vm_cpu_arr = [1]
 
-nstat_node_names = ['nddocker']
-nstat_node_vm_ram_arr = [16384]
-nstat_node_vm_cpu_arr = [4]
+#nstat_node_names = ['nddocker']
+#nstat_node_vm_ram_arr = [16384]
+#nstat_node_vm_cpu_arr = [4]
 
 # VMs setup for sample Mininet tests--------------------------------------------
-#nstat_node_names = ['ndmn', 'ndcntrlr', 'ndnstat']
-#nstat_node_vm_ram_arr = [2048, 16384, 2048]
-#nstat_node_vm_cpu_arr = [1, 12, 1]
+nstat_node_names = ['ndmn', 'ndcntrlr', 'ndnstat']
+nstat_node_vm_ram_arr = [2048, 16384, 2048]
+nstat_node_vm_cpu_arr = [1, 12, 1]
 
 # VMs setup for sample Multinet tests-------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03']
@@ -44,7 +44,7 @@ nstat_node_vm_cpu_arr = [4]
 
 ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
-nstat_nodes_private_network_ip = '192.168.121.209' # the first IP address in the NSTAT VMs IP Address range
+nstat_nodes_private_network_ip = '192.168.160.50' # the first IP address in the NSTAT VMs IP Address range
 #nstat_nodes_private_network_ip = '192.168.100.24' # the first IP address in the NSTAT VMs IP Address range
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
@@ -85,11 +85,8 @@ Vagrant.configure(2) do |config|
         config.vm.define nstat_node_name_inst do |machine|
             machine.vm.box = nstat_vm_basebox
             machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
-            machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst
-            #machine.vm.network :public_network,
-            #    :dev => "virbr7",
-            #    :mode => "bridge",
-            #    :type => "bridge"
+            machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst,
+                :libvirt__network_name => 'nstat'
 
             machine.vm.provider :virtualbox do |vb|
                 # Customize the amount of memory on the VM:
