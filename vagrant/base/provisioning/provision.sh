@@ -14,28 +14,28 @@ cd $BASE_DIR
 
 # Remove comments from the following lines to make proxy settings persistent
 # ------------------------------------------------------------------------------
-http_proxy='172.28.40.9:3128'
-https_proxy='172.28.40.9:3128'
-ftp_proxy='172.28.40.9:3128'
-export http_proxy
-export https_proxy
-export ftp_proxy
-printf -v no_proxy '%s,' 192.168.121.{1..255};export no_proxy="${no_proxy%,}"",127.0.0.1,localhost";
+#http_proxy='172.28.40.9:3128'
+#https_proxy='172.28.40.9:3128'
+#ftp_proxy='172.28.40.9:3128'
+#export http_proxy
+#export https_proxy
+#export ftp_proxy
+#printf -v no_proxy '%s,' 192.168.121.{1..255};export no_proxy="${no_proxy%,}"",127.0.0.1,localhost";
 
-echo "http_proxy="$http_proxy | sudo tee -a /etc/environment
-echo "https_proxy="$https_proxy | sudo tee -a /etc/environment
-echo "ftp_proxy="$ftp_proxy | sudo tee -a /etc/environment
-echo "no_proxy="$no_proxy | sudo tee -a /etc/environment
-echo "HTTP_PROXY="$http_proxy | sudo tee -a /etc/environment
-echo "HTTPS_PROXY="$https_proxy | sudo tee -a /etc/environment
-echo "FTP_PROXY="$ftp_proxy | sudo tee -a /etc/environment
-echo "NO_PROXY="$no_proxy | sudo tee -a /etc/environment
-if [ ! -f /etc/apt/apt.conf ]; then
-    sudo touch /etc/apt/apt.conf
-fi
-echo 'Acquire::http::Proxy "http://'$http_proxy'/";' | sudo tee -a /etc/apt/apt.conf
-echo 'Acquire::ftp::Proxy "ftp://'$ftp_proxy'/";' | sudo tee -a /etc/apt/apt.conf
-echo 'Acquire::https::Proxy "https://'$https_proxy'/";' | sudo tee -a /etc/apt/apt.conf
+#echo "http_proxy="$http_proxy | sudo tee -a /etc/environment
+#echo "https_proxy="$https_proxy | sudo tee -a /etc/environment
+#echo "ftp_proxy="$ftp_proxy | sudo tee -a /etc/environment
+#echo "no_proxy="$no_proxy | sudo tee -a /etc/environment
+#echo "HTTP_PROXY="$http_proxy | sudo tee -a /etc/environment
+#echo "HTTPS_PROXY="$https_proxy | sudo tee -a /etc/environment
+#echo "FTP_PROXY="$ftp_proxy | sudo tee -a /etc/environment
+#echo "NO_PROXY="$no_proxy | sudo tee -a /etc/environment
+#if [ ! -f /etc/apt/apt.conf ]; then
+#    sudo touch /etc/apt/apt.conf
+#fi
+#echo 'Acquire::http::Proxy "http://'$http_proxy'/";' | sudo tee -a /etc/apt/apt.conf
+#echo 'Acquire::ftp::Proxy "ftp://'$ftp_proxy'/";' | sudo tee -a /etc/apt/apt.conf
+#echo 'Acquire::https::Proxy "https://'$https_proxy'/";' | sudo tee -a /etc/apt/apt.conf
 
 # ------------------------------------------------------------------------------
 
@@ -43,6 +43,9 @@ echo 'Acquire::https::Proxy "https://'$https_proxy'/";' | sudo tee -a /etc/apt/a
 # ------------------------------------------------------------------------------
 sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins
 echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+
+# Prevent headers and kernels updates. Mininet will not work with Linux kernel newer than 3.12.x
+sudo apt-mark hold linux-image-generic linux-headers-generic
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
@@ -115,6 +118,7 @@ sudo pip3 install collections-extended
 
 # Install Mininet
 #-------------------------------------------------------------------------------
+sudo apt-get update && sudo apt-get install --force-yes -y uuid-runtime
 git clone https://github.com/mininet/mininet.git /home/vagrant/mininet
 cd /home/vagrant/mininet
 git checkout -b 2.2.1 2.2.1
