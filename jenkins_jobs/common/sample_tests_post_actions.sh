@@ -6,9 +6,9 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-# copy results back to test-server
+# copy results back to NSTAT_FTs Virtual Machine
 # ------------------------------------------------------------------------------
-cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/ODLP_Results/sample_tests/
+cp -r $WORKSPACE/$RESULTS_DIR /home/jenkins/NSTAT_Results/sample_tests/
 
 # copy results under 'publisher' folder so that HTML publisher can
 # archive the results
