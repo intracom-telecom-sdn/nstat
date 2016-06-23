@@ -21,13 +21,13 @@
 "cbench_node_username":"jenkins",
 "cbench_node_password":"jenkins",
 
-"controller_build_handler":"./build.sh",
-"controller_start_handler":"./start_droptestRPC.sh",
-"controller_stop_handler":"./stop.sh",
-"controller_status_handler":"./status.sh",
-"controller_clean_handler":"./clean.sh",
-"controller_statistics_handler":"/change_stats_period.py",
-"controller_persistent_handler":"/change_persistence.py",
+"controller_build_handler":"build.sh",
+"controller_start_handler":"start_droptestRPC.sh",
+"controller_stop_handler":"stop.sh",
+"controller_status_handler":"status.sh",
+"controller_clean_handler":"clean.sh",
+"controller_statistics_handler":"change_stats_period.py",
+"controller_persistent_handler":"change_persistence.py",
 
 "controller_logs_dir":"./distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
 
