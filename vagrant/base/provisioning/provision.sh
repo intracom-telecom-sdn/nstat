@@ -14,9 +14,9 @@ cd $BASE_DIR
 
 # Remove comments from the following lines to make proxy settings persistent
 # ------------------------------------------------------------------------------
-#http_proxy='172.28.40.9:3128'
-#https_proxy='172.28.40.9:3128'
-#ftp_proxy='172.28.40.9:3128'
+#http_proxy="http://172.28.40.9:3128/"
+#https_proxy="http://172.28.40.9:3128/"
+#ftp_proxy="http://172.28.40.9:3128/"
 #export http_proxy
 #export https_proxy
 #export ftp_proxy
