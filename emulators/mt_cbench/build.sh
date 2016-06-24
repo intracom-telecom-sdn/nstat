@@ -21,4 +21,4 @@ fi
 
 echo "Building Cbench generator."
 echo "Building oflops/configure file"
-./build_mtcbench.sh
+$SCRIPT_DIR/build_mtcbench.sh
