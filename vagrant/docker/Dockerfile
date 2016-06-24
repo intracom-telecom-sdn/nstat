@@ -1,5 +1,7 @@
 FROM ubuntu:14.04
 
+# Setup proxy settings
+#-------------------------------------------------------------------------------
 ENV http_proxy="http://172.28.40.9:3128/"
 ENV https_proxy="http://172.28.40.9:3128/"
 ENV ftp_proxy="http://172.28.40.9:3128/"
@@ -13,6 +15,10 @@ RUN echo 'export no_proxy="127.0.0.1,localhost"' | tee -a /root/.bashrc
 RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
 RUN echo 'Acquire::ftp::Proxy "ftp://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
 RUN echo 'Acquire::https::Proxy "https://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
+
+# Setup OpenVSwitch service start
+#-------------------------------------------------------------------------------
+RUN echo 'service openvswitch-switch start' | tee -a /root/.bashrc
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
@@ -28,6 +34,7 @@ RUN apt-get install --force-yes -y net-tools
 # build tools
 #-------------------------------------------------------------------------------
 RUN apt-get update
+RUN apt-get install --force-yes -y build-essential
 RUN apt-get install --force-yes -y snmp
 RUN apt-get install --force-yes -y libsnmp-dev
 RUN apt-get install --force-yes -y snmpd
@@ -37,6 +44,13 @@ RUN apt-get install --force-yes -y make
 RUN apt-get install --force-yes -y automake
 RUN apt-get install --force-yes -y libtool
 RUN apt-get install --force-yes -y libconfig-dev
+RUN apt-get install --force-yes -y fakeroot
+RUN apt-get install --force-yes -y debhelper
+RUN apt-get install --force-yes -y libssl-dev
+RUN apt-get install --force-yes -y pkg-config
+RUN apt-get install --force-yes -y bzip2
+RUN apt-get install --force-yes -y openssl
+RUN apt-get install --force-yes -y procps
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
@@ -49,7 +63,6 @@ RUN apt-get install --force-yes -y openjdk-7-jre
 # Python installation
 #-------------------------------------------------------------------------------
 RUN apt-get update
-RUN apt-get install --force-yes -y build-essential
 RUN apt-get install --force-yes -y python-dev
 RUN apt-get install --force-yes -y python-setuptools
 RUN apt-get install --force-yes -y python3.4-dev

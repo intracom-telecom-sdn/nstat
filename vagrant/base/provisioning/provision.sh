@@ -61,11 +61,11 @@ sudo apt-get update && sudo apt-get install --force-yes -y \
 # build tools
 #-------------------------------------------------------------------------------
 sudo apt-get install --force-yes -y \
+    build-essential \
     snmp \
     libsnmp-dev \
     snmpd \
     libpcap-dev \
-    build-essential \
     autoconf \
     make \
     automake \
@@ -160,9 +160,3 @@ cd $BASE_DIR
 cd /
 sudo chmod 777 -R /opt
 cd $BASE_DIR
-
-
-
-Acquire::http::Proxy "http://172.28.40.9:3128/";
-Acquire::ftp::Proxy "ftp://172.28.40.9:3128/";
-Acquire::https::Proxy "https://172.28.40.9:3128/";
