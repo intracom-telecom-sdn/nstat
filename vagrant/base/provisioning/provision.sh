@@ -65,11 +65,19 @@ sudo apt-get install --force-yes -y \
     libsnmp-dev \
     snmpd \
     libpcap-dev \
+    build-essential \
     autoconf \
     make \
     automake \
     libtool \
-    libconfig-dev
+    libconfig-dev \
+    fakeroot \
+    debhelper \
+    libssl-dev \
+    pkg-config \
+    bzip2 \
+    openssl \
+    procps
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
@@ -82,7 +90,6 @@ sudo apt-get install --force-yes -y \
 # Python installation
 #-------------------------------------------------------------------------------
 sudo apt-get install --force-yes -y \
-    build-essential \
     python-dev \
     python-setuptools \
     python3.4-dev \
@@ -122,7 +129,7 @@ sudo apt-get update && sudo apt-get install --force-yes -y uuid-runtime
 git clone https://github.com/mininet/mininet.git /home/vagrant/mininet
 cd /home/vagrant/mininet
 git checkout -b 2.2.1 2.2.1
-./util/install.sh -vwnf3
+./util/install.sh -vwn3f
 cd $BASE_DIR
 
 # Install NTSTAT for vagrant user
