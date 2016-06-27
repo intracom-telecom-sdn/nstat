@@ -16,11 +16,12 @@ CONTAINER_SUBNET='192.168.100.0/24'
 CONTAINER_HOSTNAME='worker01'
 CONTAINER_NETWORK_NAME='docker-nstat'
 
+cd node_nstat
+
 sudo docker network create --subnet=$CONTAINER_SUBNET -o --icc,--ip-masq,--mtu=1500 $CONTAINER_NETWORK_NAME
 sudo docker pull ubuntu:14.04
-sudo docker run -it --privileged -h=$CONTAINER_HOSTNAME --name=$CONTAINER_NAME --net=$CONTAINER_NETWORK_NAME ubuntu:14.04 /bin/bash
+sudo docker run -it --privileged -h=$CONTAINER_HOSTNAME --name=$CONTAINER_NAME --net=$CONTAINER_NETWORK_NAME ubuntu:14.04 /bin/bash &
 
-cd node_nstat
 sudo docker build --privileged .
 sudo docker ps -a
 sudo docker commit $CONTAINER_NAME $CONTAINER_IMAGE

@@ -11,8 +11,8 @@ RUN echo 'Acquire::https::Proxy "https://172.28.40.9:3128/";' | tee -a /etc/apt/
 
 # Create a docker user with docker password and passwordless sudo privileges
 # ------------------------------------------------------------------------------
-RUN sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt docker) -U docker
-RUN echo "docker ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+RUN sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt docker) -U docker 
+RUN echo "docker ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers 
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
