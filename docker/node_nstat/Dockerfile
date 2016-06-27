@@ -88,6 +88,14 @@ RUN cd mininet
 RUN git checkout -b 2.2.1 2.2.1
 RUN ./util/install.sh -n3f
 
+# Install NSTAT
+#-------------------------------------------------------------------------------
+RUN git clone https://github.com/intracom-telecom-sdn/nstat.git /home/docker/nstat
+RUN cd /home/docker/nstat
+RUN git branch -a # list NSTAT branches
+RUN git checkout master # checkout to master branch
+RUN git tag -l # list NSTAT tags
+
 RUN ./util/install.sh -V 2.3.0
 RUN service openvswitch-switch start
 RUN /bin/bash
