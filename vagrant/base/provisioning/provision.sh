@@ -14,9 +14,9 @@ cd $BASE_DIR
 
 # Remove comments from the following lines to make proxy settings persistent
 # ------------------------------------------------------------------------------
-#http_proxy='172.28.40.9:3128'
-#https_proxy='172.28.40.9:3128'
-#ftp_proxy='172.28.40.9:3128'
+#http_proxy="http://172.28.40.9:3128/"
+#https_proxy="http://172.28.40.9:3128/"
+#ftp_proxy="http://172.28.40.9:3128/"
 #export http_proxy
 #export https_proxy
 #export ftp_proxy
@@ -61,6 +61,7 @@ sudo apt-get update && sudo apt-get install --force-yes -y \
 # build tools
 #-------------------------------------------------------------------------------
 sudo apt-get install --force-yes -y \
+    build-essential \
     snmp \
     libsnmp-dev \
     snmpd \
@@ -69,7 +70,14 @@ sudo apt-get install --force-yes -y \
     make \
     automake \
     libtool \
-    libconfig-dev
+    libconfig-dev \
+    fakeroot \
+    debhelper \
+    libssl-dev \
+    pkg-config \
+    bzip2 \
+    openssl \
+    procps
 
 # ssh service & java installation
 #-------------------------------------------------------------------------------
@@ -82,7 +90,6 @@ sudo apt-get install --force-yes -y \
 # Python installation
 #-------------------------------------------------------------------------------
 sudo apt-get install --force-yes -y \
-    build-essential \
     python-dev \
     python-setuptools \
     python3.4-dev \
@@ -122,7 +129,7 @@ sudo apt-get update && sudo apt-get install --force-yes -y uuid-runtime
 git clone https://github.com/mininet/mininet.git /home/vagrant/mininet
 cd /home/vagrant/mininet
 git checkout -b 2.2.1 2.2.1
-./util/install.sh -vwnf3
+./util/install.sh -vwn3f
 cd $BASE_DIR
 
 # Install NTSTAT for vagrant user
@@ -153,9 +160,3 @@ cd $BASE_DIR
 cd /
 sudo chmod 777 -R /opt
 cd $BASE_DIR
-
-
-
-Acquire::http::Proxy "http://172.28.40.9:3128/";
-Acquire::ftp::Proxy "ftp://172.28.40.9:3128/";
-Acquire::https::Proxy "https://172.28.40.9:3128/";
