@@ -11,8 +11,8 @@ RUN echo 'Acquire::https::Proxy "https://172.28.40.9:3128/";' | tee -a /etc/apt/
 
 # Create a docker user with docker password and passwordless sudo privileges
 # ------------------------------------------------------------------------------
-RUN sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt docker) -U docker 
-RUN echo "docker ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers 
+RUN sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt docker) -U docker
+RUN echo "docker ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
 
 # Install NSTAT necessary tools
 #-------------------------------------------------------------------------------
@@ -28,6 +28,7 @@ RUN apt-get install --force-yes -y net-tools
 # build tools
 #-------------------------------------------------------------------------------
 RUN apt-get update
+RUN apt-get install --force-yes -y build-essential
 RUN apt-get install --force-yes -y snmp
 RUN apt-get install --force-yes -y libsnmp-dev
 RUN apt-get install --force-yes -y snmpd
@@ -41,15 +42,12 @@ RUN apt-get install --force-yes -y libconfig-dev
 # ssh service & java installation
 #-------------------------------------------------------------------------------
 RUN apt-get update
-RUN apt-get install --force-yes -y openssh-client
-RUN apt-get install --force-yes -y openssh-server
 RUN apt-get install --force-yes -y openjdk-7-jdk
 RUN apt-get install --force-yes -y openjdk-7-jre
 
 # Python installation
 #-------------------------------------------------------------------------------
 RUN apt-get update
-RUN apt-get install --force-yes -y build-essential
 RUN apt-get install --force-yes -y python-dev
 RUN apt-get install --force-yes -y python-setuptools
 RUN apt-get install --force-yes -y python3.4-dev
@@ -101,6 +99,14 @@ RUN git branch -a # list NSTAT branches
 RUN git checkout master # checkout to master branch
 RUN git tag -l # list NSTAT tags
 
+# ssh service
+#------------------------------------------------------------------------------
+RUN apt-get update
+RUN apt-get install --force-yes -y openssh-client
+RUN apt-get install --force-yes -y openssh-server
+RUN service ssh start
+
 RUN ./util/install.sh -V 2.3.0
+RUN service openvswitch-switch start
 RUN service openvswitch-switch start
 RUN /bin/bash

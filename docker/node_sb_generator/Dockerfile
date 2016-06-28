@@ -27,6 +27,7 @@ RUN apt-get install --force-yes -y net-tools
 # build tools
 #-------------------------------------------------------------------------------
 RUN apt-get update
+RUN apt-get install --force-yes -y build-essential
 RUN apt-get install --force-yes -y snmp
 RUN apt-get install --force-yes -y libsnmp-dev
 RUN apt-get install --force-yes -y snmpd
@@ -41,7 +42,6 @@ RUN apt-get install --force-yes -y libconfig-dev
 # Python installation
 #-------------------------------------------------------------------------------
 RUN apt-get update
-RUN apt-get install --force-yes -y build-essential
 RUN apt-get install --force-yes -y python-dev
 RUN apt-get install --force-yes -y python-setuptools
 RUN apt-get install --force-yes -y python3.4-dev
@@ -76,6 +76,13 @@ RUN apt-get install --force-yes -y python-bottle
 RUN easy_install3 pip
 RUN pip3 install paramiko
 RUN pip3 install collections-extended
+
+# ssh service
+#------------------------------------------------------------------------------
+RUN apt-get update
+RUN apt-get install --force-yes -y openssh-client
+RUN apt-get install --force-yes -y openssh-server
+RUN service ssh start
 
 # Install Mininet
 #-------------------------------------------------------------------------------

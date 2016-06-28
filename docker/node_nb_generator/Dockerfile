@@ -25,7 +25,6 @@ RUN apt-get install --force-yes -y net-tools
 # Python installation
 #-------------------------------------------------------------------------------
 RUN apt-get update
-RUN apt-get install --force-yes -y build-essential
 RUN apt-get install --force-yes -y python-dev
 RUN apt-get install --force-yes -y python-setuptools
 RUN apt-get install --force-yes -y python3.4-dev
@@ -68,5 +67,12 @@ RUN cd /home/docker/nstat
 RUN git branch -a # list NSTAT branches
 RUN git checkout master # checkout to master branch
 RUN git tag -l # list NSTAT tags
+
+# ssh service
+#------------------------------------------------------------------------------
+RUN apt-get update
+RUN apt-get install --force-yes -y openssh-client
+RUN apt-get install --force-yes -y openssh-server
+RUN service ssh start
 
 RUN /bin/bash

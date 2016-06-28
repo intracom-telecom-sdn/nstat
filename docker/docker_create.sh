@@ -20,7 +20,7 @@ cd node_nstat
 
 sudo docker network create --subnet=$CONTAINER_SUBNET -o --icc,--ip-masq,--mtu=1500 $CONTAINER_NETWORK_NAME
 sudo docker pull ubuntu:14.04
-sudo docker run --privileged -h=$CONTAINER_HOSTNAME --name=$CONTAINER_NAME --net=$CONTAINER_NETWORK_NAME ubuntu:14.04 /bin/bash
+sudo docker run --privileged --ulimit nofile=150000:150000 -h=$CONTAINER_HOSTNAME --name=$CONTAINER_NAME --net=$CONTAINER_NETWORK_NAME ubuntu:14.04 /bin/bash
 sudo docker build .
 sudo docker ps -a
 sudo docker commit $CONTAINER_NAME $CONTAINER_IMAGE
