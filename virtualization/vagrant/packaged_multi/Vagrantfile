@@ -86,8 +86,8 @@ Vagrant.configure(2) do |config|
         config.vm.define nstat_node_name_inst do |machine|
             machine.vm.box = nstat_vm_basebox
             machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
-            puts "kostas"+nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
-            exit
+            #puts "kostas"+nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
+            #exit
             machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst,
                 :libvirt__network_name => 'nstat'
 
