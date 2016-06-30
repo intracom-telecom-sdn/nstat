@@ -1,19 +1,22 @@
 FROM ubuntu:14.04
 
-ENV export http_proxy='http://172.28.40.9:3128/'
-ENV export https_proxy='http://172.28.40.9:3128/'
-ENV export ftp_proxy='http://172.28.40.9:3128/'
+ENV http_proxy='http://172.28.40.9:3128/'
+ENV https_proxy='http://172.28.40.9:3128/'
+ENV ftp_proxy='http://172.28.40.9:3128/'
 ENV no_proxy 127.0.0.1,localhost
-
-
-RUN cd ~
-RUN echo "export http_proxy='http://172.28.40.9:3128/'" | tee -a ./bashrc
-RUN echo "export https_proxy='http://172.28.40.9:3128/'" | tee -a ./bashrc
-RUN echo "export ftp_proxy='http://172.28.40.9:3128/'" | tee -a ./bashrc
-RUN echo "no_proxy 127.0.0.1,localhost" | tee -a ./bashrc
 
 RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
 RUN echo 'Acquire::ftp::Proxy "ftp://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
-RUN echo 'Acquire::https::Proxy "https://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
+RUN echo 'Acquire::https::Proxy "https://172.28.40.9:3128/";'| tee -a /etc/apt/apt.conf
 
+RUN apt-get update
+RUN apt-get install --force-yes -y wget
+RUN chmod 777 -R /opt
+RUN apt-get update
+RUN cd /opt
+RUN wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_nb_metrics/virtualization/vagrant/base/provision.sh
+RUN chmod +x provision.sh
+RUN /bin/bash -c "./provision.sh"
+RUN cd /proc/sys/kernel/pty
+RUN echo "50000" > max
 RUN /bin/bash
