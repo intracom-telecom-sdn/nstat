@@ -5,9 +5,6 @@
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
-# ------------------------------------------------------------------------------
-# Display distribution release version
-#-------------------------------------------------------------------------------
 
 INSTALL_DIR=$HOME
 
@@ -21,6 +18,8 @@ apt-get update && apt-get install -y \
     wireshark \
     openssh-client \
     openssh-server \
+    bzip2 \
+    openssl \
     net-tools
 
 # CONTROLLER_node provisioning actions
@@ -44,8 +43,6 @@ apt-get install -y \
     libconfig-dev \
     libssl-dev \
     pkg-config \
-    bzip2 \
-    openssl
 
 # PYTHON installation
 #-------------------------------------------------------------------------------
@@ -77,7 +74,6 @@ apt-get install -y \
 easy_install3 pip
 pip3 install paramiko
 pip3 install collections-extended
-
 
 # MININET and OpenVSwitch 2.3.0 installation
 #-------------------------------------------------------------------------------
