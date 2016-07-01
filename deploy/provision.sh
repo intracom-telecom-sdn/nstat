@@ -9,23 +9,11 @@
 # Display distribution release version
 #-------------------------------------------------------------------------------
 
-BASE_DIR="/opt"
-cd $BASE_DIR
+INSTALL_DIR=$HOME
 
-# Giving full access to /opt. Required for cloning and execution of scripts
+# Generic provisioning actions
 #-------------------------------------------------------------------------------
-cd /
-chmod 777 -R opt
-cd $BASE_DIR
-
-# Prevent headers and kernels updates. Mininet will not work with Linux kernel
-# newer than 3.12.x
-#-------------------------------------------------------------------------------
-apt-mark hold linux-image-generic linux-headers-generic
-
-# Generic tools
-#-------------------------------------------------------------------------------
-apt-get update && apt-get install --force-yes -y \
+apt-get update && apt-get install -y \
     git \
     unzip \
     wget \
@@ -35,15 +23,15 @@ apt-get update && apt-get install --force-yes -y \
     openssh-server \
     net-tools
 
-# CONTROLLER_node necessary tools
+# CONTROLLER_node provisioning actions
 #-------------------------------------------------------------------------------
-apt-get install --force-yes -y \
+apt-get install -y \
     openjdk-7-jdk \
     openjdk-7-jre
 
-# SOUTHBOUND_GEN_node necessary tools (build tools)
+# MT-Cbench_node provisioning actions
 #-------------------------------------------------------------------------------
-apt-get install --force-yes -y \
+apt-get install -y \
     build-essential \
     snmp \
     libsnmp-dev \
@@ -54,17 +42,14 @@ apt-get install --force-yes -y \
     automake \
     libtool \
     libconfig-dev \
-    fakeroot \
-    debhelper \
     libssl-dev \
     pkg-config \
     bzip2 \
-    openssl \
-    procps
+    openssl
 
 # PYTHON installation
 #-------------------------------------------------------------------------------
-apt-get install --force-yes -y \
+apt-get install -y \
     python-dev \
     python-setuptools \
     python3.4-dev \
@@ -76,7 +61,7 @@ apt-get install --force-yes -y \
 
 # PYTHON extra libraries
 #-------------------------------------------------------------------------------
-apt-get install --force-yes -y \
+apt-get install -y \
     python3-bottle \
     python3-requests \
     python3-matplotlib \
@@ -94,27 +79,19 @@ pip3 install paramiko
 pip3 install collections-extended
 
 
-# MININET installation
+# MININET and OpenVSwitch 2.3.0 installation
 #-------------------------------------------------------------------------------
-sudo apt-get update && sudo apt-get install --force-yes -y uuid-runtime
-git clone https://github.com/mininet/mininet.git mininet
-cd /opt/mininet/util
+apt-get install -y uuid-runtime
+git clone https://github.com/mininet/mininet.git $INSTALL_DIR/mininet
+cd $INSTALL_DIR/mininet
 git checkout -b 2.2.1 2.2.1
-./install.sh -n3f
-cd $BASE_DIR
-
-# OPENVSWITCH installation
-#-------------------------------------------------------------------------------
-cd /opt/mininet/util
-./install.sh -V 2.3.0
-service openvswitch-switch start
-cd $BASE_DIR
+./util/install.sh -n3f
+./util/install.sh -V 2.3.0
+cd $INSTALL_DIR
 
 # NSTAT installation
 #-------------------------------------------------------------------------------
-git clone https://github.com/intracom-telecom-sdn/nstat.git /opt/nstat
-cd /opt/nstat
-git branch -a       # list NSTAT branches
+git clone https://github.com/intracom-telecom-sdn/nstat.git $INSTALL_DIR/nstat
+cd $INSTALL_DIR/nstat
 git checkout master # checkout to master branch
-git tag -l          # list NSTAT tags
-cd $BASE_DIR
+cd $INSTALL_DIR
