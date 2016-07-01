@@ -9,7 +9,13 @@
 # Display distribution release version
 #-------------------------------------------------------------------------------
 
-BASE_DIR=$(pwd)
+BASE_DIR="/opt"
+cd $BASE_DIR
+
+# Giving full access to /opt. Required for cloning and execution of scripts
+#-------------------------------------------------------------------------------
+cd /
+chmod 777 -R opt
 cd $BASE_DIR
 
 # Prevent headers and kernels updates. Mininet will not work with Linux kernel
@@ -17,22 +23,21 @@ cd $BASE_DIR
 #-------------------------------------------------------------------------------
 apt-mark hold linux-image-generic linux-headers-generic
 
-# NSTAT node necessary tools
+# Generic tools
 #-------------------------------------------------------------------------------
 apt-get update && apt-get install --force-yes -y \
     git \
     unzip \
     wget \
-    iperf \
     mz \
     wireshark \
+    openssh-client \
+    openssh-server \
     net-tools
 
 # CONTROLLER_node necessary tools
 #-------------------------------------------------------------------------------
 apt-get install --force-yes -y \
-    openssh-client \
-    openssh-server \
     openjdk-7-jdk \
     openjdk-7-jre
 
@@ -88,26 +93,21 @@ easy_install3 pip
 pip3 install paramiko
 pip3 install collections-extended
 
-# Giving write access to ./opt (default directory where controller build
-# handler downloads OpenDaylight from official repository)
-#-------------------------------------------------------------------------------
-cd /
-sudo chmod 777 -R /opt
-cd $BASE_DIR
 
 # MININET installation
 #-------------------------------------------------------------------------------
 sudo apt-get update && sudo apt-get install --force-yes -y uuid-runtime
-git clone https://github.com/mininet/mininet.git /opt/mininet
-cd /opt/mininet
+git clone https://github.com/mininet/mininet.git mininet
+cd /opt/mininet/util
 git checkout -b 2.2.1 2.2.1
-./util/install.sh -n3f
+./install.sh -n3f
+cd $BASE_DIR
 
 # OPENVSWITCH installation
 #-------------------------------------------------------------------------------
-./util/install.sh -V 2.3.0
+cd /opt/mininet/util
+./install.sh -V 2.3.0
 service openvswitch-switch start
-/bin/bash
 cd $BASE_DIR
 
 # NSTAT installation
