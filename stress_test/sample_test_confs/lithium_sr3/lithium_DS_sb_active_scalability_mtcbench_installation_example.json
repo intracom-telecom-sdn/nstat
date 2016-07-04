@@ -2,7 +2,7 @@
 
 "nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
 "nstat_host_ip":"127.0.0.1",
-"nstat_node_ip":"192.168.100.20",
+"nstat_node_ip":"192.168.160.200",
 "nstat_node_ssh_port":"22",
 "nstat_node_username":"vagrant",
 "nstat_node_password":"vagrant",
@@ -16,7 +16,7 @@
 
 "cbench_node_spec":"/nstat/vagrant/node_cbench/Vagrantfile",
 "cbench_host_ip":"127.0.0.1",
-"cbench_node_ip":"192.168.100.22",
+"cbench_node_ip":"192.168.160.203",
 "cbench_node_ssh_port":"22",
 "cbench_node_username":"vagrant",
 "cbench_node_password":"vagrant",
