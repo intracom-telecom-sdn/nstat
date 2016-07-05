@@ -48,31 +48,31 @@ apt-get install -y \
 #-------------------------------------------------------------------------------
 apt-get install -y \
     python-dev \
-    python-setuptools \
+    python-setuptools \   # (20.7.0)
     python3.4-dev \
-    python3-setuptools \
+    python3-setuptools \  # (20.7.0)
     python \
     python3.4 \
-    python-pip \
-    python3-pip
+    python-pip \          # (8.0.2)
+    python3-pip           # (8.0.2)
 
 # PYTHON extra libraries
 #-------------------------------------------------------------------------------
 apt-get install -y \
-    python3-bottle \
-    python3-requests \
-    python3-matplotlib \
-    python3-lxml \
-    python-lxml \
-    python-paramiko \
+    python3-bottle \     # (0.12.8)
+    python3-requests \   # (2.7.0)
+    python3-matplotlib \ # (1.4.3)
+    python3-lxml \       # (3.4.4)
+    python-lxml \        # (3.4.4)
+    python-paramiko \    # (1.15.2)
     python-pypcap \
-    python-dpkt \
-    python-bottle
+    python-dpkt \        # (1.8.6.2)
+    python-bottle        # (0.12.8)
 
 # PYTHON3.4 NSTAT necessary libraries
 #-------------------------------------------------------------------------------
-easy_install3 pip
-pip3 install paramiko
+easy_install3 pip        # (8.0.2)
+pip3 install paramiko    # (1.15.2)
 pip3 install collections-extended
 
 # MININET and OpenVSwitch 2.3.0 installation
