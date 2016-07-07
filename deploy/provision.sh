@@ -7,9 +7,19 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 INSTALL_DIR=$HOME
+TEST_USER="jenkins"
+
+# This user is required to run jenkins jobs and must be the same with the ssh
+# user defined in json files of tests
+#------------------------------------------------------------------------------
+useradd -m -s /bin/bash -p $(openssl passwd -crypt $TEST_USER) -U $TEST_USER
+echo "$TEST_USER ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+
+
+chmod 777 -R /opt
 
 # Generic provisioning actions
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
     git \
     unzip \
@@ -23,13 +33,13 @@ apt-get update && apt-get install -y \
     net-tools
 
 # CONTROLLER_node provisioning actions
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 apt-get install -y \
     openjdk-7-jdk \
     openjdk-7-jre
 
 # MT-Cbench_node provisioning actions
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 apt-get install -y \
     build-essential \
     snmp \
@@ -45,7 +55,7 @@ apt-get install -y \
     pkg-config \
 
 # PYTHON installation
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 apt-get install -y \
     python-dev \
     python-setuptools \   # (20.7.0)
@@ -57,7 +67,7 @@ apt-get install -y \
     python3-pip           # (8.0.2)
 
 # PYTHON extra libraries
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 apt-get install -y \
     python3-bottle \     # (0.12.8)
     python3-requests \   # (2.7.0)
@@ -70,13 +80,13 @@ apt-get install -y \
     python-bottle        # (0.12.8)
 
 # PYTHON3.4 NSTAT necessary libraries
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 easy_install3 pip        # (8.0.2)
 pip3 install paramiko    # (1.15.2)
 pip3 install collections-extended
 
 # MININET and OpenVSwitch 2.3.0 installation
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 apt-get install -y uuid-runtime
 git clone https://github.com/mininet/mininet.git $INSTALL_DIR/mininet
 cd $INSTALL_DIR/mininet
@@ -86,7 +96,7 @@ git checkout -b 2.2.1 2.2.1
 cd $INSTALL_DIR
 
 # NSTAT installation
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 git clone https://github.com/intracom-telecom-sdn/nstat.git $INSTALL_DIR/nstat
 cd $INSTALL_DIR/nstat
 git checkout master # checkout to master branch
