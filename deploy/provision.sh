@@ -9,16 +9,6 @@
 INSTALL_DIR=$HOME
 TEST_USER="jenkins"
 
-# This user is required to run jenkins jobs and must be the same with the ssh
-# user defined in json files of tests
-#------------------------------------------------------------------------------
-useradd -m -s /bin/bash -p $(openssl passwd -crypt $TEST_USER) -U $TEST_USER
-echo "$TEST_USER ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
-
-TEST_USER_HOME=$(eval echo "~$TEST_USER")
-
-chmod 777 -R /opt
-
 # Generic provisioning actions
 #------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
@@ -32,6 +22,16 @@ apt-get update && apt-get install -y \
     bzip2 \
     openssl \
     net-tools
+
+# This user is required to run jenkins jobs and must be the same with the ssh
+# user defined in json files of tests
+#------------------------------------------------------------------------------
+useradd -m -s /bin/bash -p $(openssl passwd -crypt $TEST_USER) -U $TEST_USER
+echo "$TEST_USER ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+
+TEST_USER_HOME=$(eval echo "~$TEST_USER")
+
+chmod 777 -R /opt
 
 # CONTROLLER_node provisioning actions
 #------------------------------------------------------------------------------
