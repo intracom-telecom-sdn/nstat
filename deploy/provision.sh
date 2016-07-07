@@ -15,6 +15,7 @@ TEST_USER="jenkins"
 useradd -m -s /bin/bash -p $(openssl passwd -crypt $TEST_USER) -U $TEST_USER
 echo "$TEST_USER ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
 
+TEST_USER_HOME=$(eval echo "~$TEST_USER")
 
 chmod 777 -R /opt
 
@@ -54,21 +55,17 @@ apt-get install -y \
     libssl-dev \
     pkg-config \
 
-# PYTHON installation
+# NSTAT_NODE, oftraf monitoring tool and MULTINET_NODE provisioning actions
 #------------------------------------------------------------------------------
 apt-get install -y \
-    python-dev \
-    python-setuptools \   # (20.7.0)
-    python3.4-dev \
-    python3-setuptools \  # (20.7.0)
     python \
     python3.4 \
+    python-setuptools \   # (20.7.0)
+    python3-setuptools \  # (20.7.0)
+    python-dev \
+    python3.4-dev \
     python-pip \          # (8.0.2)
-    python3-pip           # (8.0.2)
-
-# PYTHON extra libraries
-#------------------------------------------------------------------------------
-apt-get install -y \
+    python3-pip \         # (8.0.2)
     python3-bottle \     # (0.12.8)
     python3-requests \   # (2.7.0)
     python3-matplotlib \ # (1.4.3)
@@ -95,9 +92,10 @@ git checkout -b 2.2.1 2.2.1
 ./util/install.sh -V 2.3.0
 cd $INSTALL_DIR
 
-# NSTAT installation
+# NSTAT installation in TEST_USER home dir
 #------------------------------------------------------------------------------
-git clone https://github.com/intracom-telecom-sdn/nstat.git $INSTALL_DIR/nstat
-cd $INSTALL_DIR/nstat
+git clone https://github.com/intracom-telecom-sdn/nstat.git $TEST_USER_HOME/nstat
+cd $TEST_USER_HOME/nstat
 git checkout master # checkout to master branch
+chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/nstat
 cd $INSTALL_DIR
