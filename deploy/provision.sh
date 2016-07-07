@@ -66,15 +66,16 @@ apt-get install -y \
     python3.4-dev \
     python-pip \          # (8.0.2)
     python3-pip \         # (8.0.2)
-    python3-bottle \     # (0.12.8)
-    python3-requests \   # (2.7.0)
-    python3-matplotlib \ # (1.4.3)
-    python3-lxml \       # (3.4.4)
-    python-lxml \        # (3.4.4)
-    python-paramiko \    # (1.15.2)
+    python-bottle \       # (0.12.8)
+    python3-bottle \      # (0.12.8)
+    python3-requests \    # (2.7.0)
+    python3-matplotlib \  # (1.4.3)
+    python-lxml \         # (3.4.4)
+    python3-lxml \        # (3.4.4)
+    python-paramiko \     # (1.15.2)
     python-pypcap \
-    python-dpkt \        # (1.8.6.2)
-    python-bottle        # (0.12.8)
+    python-dpkt           # (1.8.6.2)
+
 
 # PYTHON3.4 NSTAT necessary libraries
 #------------------------------------------------------------------------------
