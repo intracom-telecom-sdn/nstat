@@ -6,8 +6,9 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-INSTALL_DIR=$HOME
 TEST_USER="jenkins"
+PROXY="http://172.28.40.9:3128"
+VENV_DIR="venv"
 
 # Generic provisioning actions
 #------------------------------------------------------------------------------
@@ -53,50 +54,86 @@ apt-get install -y \
     libtool \
     libconfig-dev \
     libssl-dev \
-    pkg-config \
+    pkg-config
 
-# NSTAT_NODE, oftraf monitoring tool and MULTINET_NODE provisioning actions
+# Python installation and other necessary libraries for pip
 #------------------------------------------------------------------------------
 apt-get install -y \
     python \
     python3.4 \
-    python-setuptools \   # (20.7.0)
-    python3-setuptools \  # (20.7.0)
+    python-setuptools \
+    python3-setuptools \
     python-dev \
     python3.4-dev \
-    python-pip \          # (8.0.2)
-    python3-pip \         # (8.0.2)
-    python-bottle \       # (0.12.8)
-    python3-bottle \      # (0.12.8)
-    python3-requests \    # (2.7.0)
-    python3-matplotlib \  # (1.4.3)
-    python-lxml \         # (3.4.4)
-    python3-lxml \        # (3.4.4)
-    python-paramiko \     # (1.15.2)
     python-pypcap \
-    python-dpkt           # (1.8.6.2)
+    libpng-dev \
+    freetype6-dev \
+    libxml2-dev \
+    libxslt1-dev
+
+easy_install3 pip
+easy_install pip
 
 
-# PYTHON3.4 NSTAT necessary libraries
+# Configure pip options
 #------------------------------------------------------------------------------
-easy_install3 pip        # (8.0.2)
-pip3 install paramiko    # (1.15.2)
-pip3 install collections-extended
+pip_options="--ignore-installed"
+if [ ! -z "$PROXY" ]; then
+    pip_options=" --proxy==$PROXY $pip_options"
+fi
+
+# Install virtualenv
+#------------------------------------------------------------------------------
+cd $TEST_USER_HOME
+mkdir $VENV_DIR
+pip $pip_options install virtualenv
+virtualenv --system-site-packages $VENV_DIR
+
+
+# NSTAT_NODE, oftraf monitoring tool and MULTINET_NODE provisioning actions
+#------------------------------------------------------------------------------
+# Activate virtualenv
+$VENV_DIR/bin/activate
+pip $pip_options install bottle==0.12.8
+pip3 $pip_options install bottle==0.12.8
+pip3 $pip_options install requests==2.7.0
+
+pip3 $pip_options install pyparsing==2.1.5 \
+    tornado==4.3 \
+    pytz==2016.4 \
+    six==1.10.0 \
+    numpy==1.11.1 \
+    matplotlib==1.4.3
+
+pip $pip_options install lxml==3.4.4
+pip3 $pip_options install lxml==3.4.4
+pip $pip_options install cryptography==1.2.1
+pip3 $pip_options install cryptography==1.2.1
+pip $pip_options install paramiko==1.15.2
+pip3 $pip_options install paramiko==1.15.2
+pip $pip_options install stdeb==0.8.5
+pip $pip_options install dpkt==1.8.6.2
+pip3 $pip_options install dpkt==1.8.6.2
+pip3 $pip_options install collections-extended=0.7.0
 
 # MININET and OpenVSwitch 2.3.0 installation
 #------------------------------------------------------------------------------
 apt-get install -y uuid-runtime
-git clone https://github.com/mininet/mininet.git $INSTALL_DIR/mininet
-cd $INSTALL_DIR/mininet
+cd $TEST_USER_HOME
+git clone https://github.com/mininet/mininet.git mininet
+cd mininet
 git checkout -b 2.2.1 2.2.1
 ./util/install.sh -n3f
 ./util/install.sh -V 2.3.0
-cd $INSTALL_DIR
+cd $TEST_USER_HOME
 
 # NSTAT installation in TEST_USER home dir
 #------------------------------------------------------------------------------
-git clone https://github.com/intracom-telecom-sdn/nstat.git $TEST_USER_HOME/nstat
-cd $TEST_USER_HOME/nstat
+cd $TEST_USER_HOME
+git clone https://github.com/intracom-telecom-sdn/nstat.git nstat
+cd nstat
 git checkout master # checkout to master branch
 chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/nstat
-cd $INSTALL_DIR
+cd $TEST_USER_HOME
+# Deactivate virtualenv
+deactivate
