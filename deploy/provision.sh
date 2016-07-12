@@ -115,6 +115,9 @@ pip $pip_options install stdeb==0.8.5
 pip $pip_options install dpkt==1.8.6.2
 pip3 $pip_options install dpkt==1.8.6.2
 pip3 $pip_options install collections-extended=0.7.0
+# Deactivate virtualenv
+deactivate
+
 
 # MININET and OpenVSwitch 2.3.0 installation
 #------------------------------------------------------------------------------
@@ -135,5 +138,3 @@ cd nstat
 git checkout master # checkout to master branch
 chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/nstat
 cd $TEST_USER_HOME
-# Deactivate virtualenv
-deactivate
