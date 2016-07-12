@@ -23,7 +23,7 @@
 "nb_generator_node_spec":"/nstat/vagrant/node_nb_generator/Vagrantfile",
 "nb_generator_run_handler":"./run_handler.py",
 "nb_generator_host_ip":"127.0.0.1",
-"nb_generator_node_ip":"127.0.0.1",
+"nb_generator_node_ip":"192.168.160.202",
 "nb_generator_node_ssh_port":"22",
 "nb_generator_node_username":"jenkins",
 "nb_generator_node_password":"jenkins",
