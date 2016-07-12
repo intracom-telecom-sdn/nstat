@@ -77,6 +77,7 @@
 "total_flows":[5000],
 "flow_operations_delay_ms":[2],
 "flow_delete_flag":false,
+"flows_per_request":10,
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
 
