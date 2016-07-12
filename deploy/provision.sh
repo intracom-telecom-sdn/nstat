@@ -93,7 +93,7 @@ virtualenv --system-site-packages $VENV_DIR
 # NSTAT_NODE, oftraf monitoring tool and MULTINET_NODE provisioning actions
 #------------------------------------------------------------------------------
 # Activate virtualenv
-$VENV_DIR/bin/activate
+source $VENV_DIR/bin/activate
 pip $pip_options install bottle==0.12.8
 pip3 $pip_options install bottle==0.12.8
 pip3 $pip_options install requests==2.7.0
