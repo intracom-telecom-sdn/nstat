@@ -36,13 +36,13 @@ chmod 777 -R /opt
 
 # CONTROLLER_node provisioning actions
 #------------------------------------------------------------------------------
-apt-get install -y \
+apt-get update && apt-get install -y \
     openjdk-7-jdk \
     openjdk-7-jre
 
 # MT-Cbench_node provisioning actions
 #------------------------------------------------------------------------------
-apt-get install -y \
+apt-get update && apt-get install -y \
     build-essential \
     snmp \
     libsnmp-dev \
@@ -58,7 +58,7 @@ apt-get install -y \
 
 # Python installation and other necessary libraries for pip
 #------------------------------------------------------------------------------
-apt-get install -y \
+apt-get update && apt-get install -y \
     python \
     python3.4 \
     python-setuptools \
@@ -121,11 +121,12 @@ deactivate
 
 # MININET and OpenVSwitch 2.3.0 installation
 #------------------------------------------------------------------------------
-apt-get install -y uuid-runtime
+apt-get update && apt-get install -y uuid-runtime
 cd $TEST_USER_HOME
 git clone https://github.com/mininet/mininet.git mininet
 cd mininet
 git checkout -b 2.2.1 2.2.1
+chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/mininet
 ./util/install.sh -n3f
 ./util/install.sh -V 2.3.0
 cd $TEST_USER_HOME
