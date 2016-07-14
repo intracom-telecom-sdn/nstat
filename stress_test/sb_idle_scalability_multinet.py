@@ -78,7 +78,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         multinet_base_dir + conf['topology_get_switches_handler'],
         multinet_base_dir + conf['topology_init_handler'],
         multinet_base_dir + conf['topology_start_switches_handler'],
-        multinet_base_dir + conf['topology_rest_server_stop'], ''
+        multinet_base_dir + conf['topology_rest_server_stop'], '',''
         )
 
     multinet_local_handlers_set = \

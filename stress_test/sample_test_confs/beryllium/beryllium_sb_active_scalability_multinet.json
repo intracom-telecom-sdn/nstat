@@ -47,6 +47,7 @@
 "topology_stop_switches_handler":"bin/handlers/stop_topos",
 "topology_get_switches_handler":"bin/handlers/get_switches",
 "topology_traffic_gen_handler":"bin/handlers/traffic_gen",
+"topology_get_flows_handler":"./bin/handlers/get_flows",
 
 "topology_size":[5, 10, 30],
 "topology_type":["linear"],
