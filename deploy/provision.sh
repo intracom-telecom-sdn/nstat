@@ -7,7 +7,7 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 TEST_USER="jenkins"
-PROXY="http://172.28.40.9:3128"
+#PROXY="http://172.28.40.9:3128"
 VENV_DIR="venv"
 
 # Generic provisioning actions
@@ -77,7 +77,8 @@ easy_install pip
 
 # Configure pip options
 #------------------------------------------------------------------------------
-pip_options="--ignore-installed"
+pip_options=""
+# pip_options="--ignore-installed"
 if [ ! -z "$PROXY" ]; then
     pip_options=" --proxy==$PROXY $pip_options"
 fi
@@ -115,6 +116,7 @@ pip $pip_options install stdeb==0.8.5
 pip $pip_options install dpkt==1.8.6.2
 pip3 $pip_options install dpkt==1.8.6.2
 pip3 $pip_options install collections-extended=0.7.0
+pip3 $pip_options install coveralls==1.1
 # Deactivate virtualenv
 deactivate
 
