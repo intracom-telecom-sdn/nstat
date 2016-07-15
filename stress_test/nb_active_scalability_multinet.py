@@ -380,9 +380,9 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 statistics['add_switch_rate'] = -1
 
             """
-            # Add confirm time: Time period started after the last flow was
-                                configured until we receive “confirmation” all
-                                flows are added.
+             Add confirm time: The time period started after the last flow was
+                              configured, until we receive confirmation
+                              all flows are added.
             """
             # 07. add_confirm_time =
             # 08. add_confirm_rate =
@@ -393,8 +393,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 statistics['add_confirm_rate'] = -1
             """
             # Remove controller time: Time for all delete REST
-                                      requests to be sent and their response to
-                                      be received
+            #                          requests to be sent and their response to
+            #                          be received
             # 09. remove_controller_time =
             # 10. remove_controller_rate
 
@@ -406,8 +406,8 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
 
             # Remove confirm time:
             # 13. remove_confirm_time = Time period started after the last
-                                        flow was unconfigured until we receive
-                                        “confirmation” all flows are removed.
+            #                            flow was unconfigured until we receive
+            #                            confirmation all flows are removed.
             # 13. remove_confirm_rate =
 
             """
