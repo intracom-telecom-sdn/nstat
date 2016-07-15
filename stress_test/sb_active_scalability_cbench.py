@@ -14,7 +14,7 @@ import itertools
 import logging
 import multiprocessing
 import os
-import queue
+import Queue
 import re
 import report_spec
 import sys
@@ -172,7 +172,7 @@ def monitor(data_queue, result_queue, cpid, global_sample_id, repeat_id,
                         samples.append(statistics)
                     internal_repeat_id += 1
 
-        except queue.Empty as exept:
+        except Queue.Empty as exept:
             logging.error('[monitor_thread] {0}'.format(str(exept)))
 
 
