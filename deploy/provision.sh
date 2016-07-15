@@ -77,7 +77,8 @@ easy_install pip
 
 # Configure pip options
 #------------------------------------------------------------------------------
-pip_options="--ignore-installed"
+pip_options=""
+# pip_options="--ignore-installed"
 if [ ! -z "$PROXY" ]; then
     pip_options=" --proxy==$PROXY $pip_options"
 fi
