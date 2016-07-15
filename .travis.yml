@@ -12,10 +12,8 @@ before_script:
   - sudo apt-get update -qq
 #  - sudo apt-get -y install openjdk-7-jdk openjdk-7-jre
   - sudo bash ./deploy/provision.sh
-  - cd /home/jenkins
-  - source ./venv/bin/activate
-  - chmod -R 777 nstat
-  - cd nstat/util/unittests
+  - source /home/jenkins/venv/bin/activate
+  - cd util/unittests
 #  - sudo apt-get -y install ssh
 #  - sudo pip3 install paramiko
 #  - sudo pip2 install paramiko
