@@ -16,8 +16,6 @@ apt-get update && apt-get install -y \
     git \
     unzip \
     wget \
-    mz \
-    wireshark \
     openssh-client \
     openssh-server \
     bzip2 \
@@ -37,8 +35,7 @@ chmod 777 -R /opt
 # CONTROLLER_node provisioning actions
 #------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
-    openjdk-7-jdk \
-    openjdk-7-jre
+    openjdk-7-jdk
 
 # MT-Cbench_node provisioning actions
 #------------------------------------------------------------------------------
@@ -55,6 +52,7 @@ apt-get update && apt-get install -y \
     libconfig-dev \
     libssl-dev \
     pkg-config
+
 
 # Python installation and other necessary libraries for pip
 #------------------------------------------------------------------------------
@@ -121,23 +119,21 @@ pip3 $pip_options install coveralls==1.1
 deactivate
 
 
-# MININET and OpenVSwitch 2.3.0 installation
+# Multinet node
 #------------------------------------------------------------------------------
-apt-get update && apt-get install -y uuid-runtime
-cd $TEST_USER_HOME
-git clone https://github.com/mininet/mininet.git mininet
-cd mininet
+apt-get update && apt-get install -y \
+    uuid-runtime \
+    mz
+git clone https://github.com/mininet/mininet.git $TEST_USER_HOME/mininet
+cd $TEST_USER_HOME/mininet
 git checkout -b 2.2.1 2.2.1
 chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/mininet
 ./util/install.sh -n3f
 ./util/install.sh -V 2.3.0
-cd $TEST_USER_HOME
 
 # NSTAT installation in TEST_USER home dir
 #------------------------------------------------------------------------------
-cd $TEST_USER_HOME
-git clone https://github.com/intracom-telecom-sdn/nstat.git nstat
-cd nstat
+git clone https://github.com/intracom-telecom-sdn/nstat.git $TEST_USER_HOME/nstat
+cd $TEST_USER_HOME/nstat
 git checkout master # checkout to master branch
 chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/nstat
-cd $TEST_USER_HOME
