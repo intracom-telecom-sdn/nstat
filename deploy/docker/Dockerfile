@@ -20,3 +20,4 @@ RUN /bin/bash -c "./provision.sh"
 RUN cd /proc/sys/kernel/pty
 RUN echo "50000" > max
 RUN /bin/bash
+RUN echo "THOMAS"
