@@ -119,15 +119,20 @@ apt-get update && apt-get install -y \
     uuid-runtime \
     mz
 git clone https://github.com/mininet/mininet.git $BASE_DIR/mininet
-cd $BASE_DIR/mininet
-git checkout -b 2.2.1 2.2.1
+git --git-dir=$BASE_DIR/mininet/.git --work-tree=$BASE_DIR/mininet branch -a
+git --git-dir=$BASE_DIR/mininet/.git --work-tree=$BASE_DIR/mininet checkout -b 2.2.1 2.2.1
+#cd $BASE_DIR/mininet
+#git checkout -b 2.2.1 2.2.1
 chown -R $TEST_USER:$TEST_USER $BASE_DIR/mininet
-./util/install.sh -n3f
-./util/install.sh -V 2.3.0
+./mininet/util/install.sh -n3f
+./mininet/util/install.sh -V 2.3.0
 
 # NSTAT installation in TEST_USER home dir
 #------------------------------------------------------------------------------
 git clone https://github.com/intracom-telecom-sdn/nstat.git $BASE_DIR/nstat
-cd $BASE_DIR/nstat
-git checkout master # checkout to master branch
+git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat branch -a
+git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat checkout master
+#cd $BASE_DIR/nstat
+#git checkout master # checkout to master branch
+
 chown -R $TEST_USER:$TEST_USER $BASE_DIR/nstat
