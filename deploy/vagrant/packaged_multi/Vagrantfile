@@ -17,14 +17,14 @@ nstat_vm_basebox = 'nstat_vm_base'
 #nstat_node_vm_ram_arr = [4192]
 #nstat_node_vm_cpu_arr = [1]
 
-nstat_node_names = ['NSTAT_node']
-nstat_node_vm_ram_arr = [2048]
+nstat_node_names = ['NSTAT_DOCKER_node']
+nstat_node_vm_ram_arr = [8192]
 nstat_node_vm_cpu_arr = [1]
 
 # VMs setup for sample Mininet tests--------------------------------------------
-nstat_node_names = ['nstatnode', 'nstatcntrlr', 'nstatnbgen','nstatmtcbench','nstatMN01','nstatMN02']
-nstat_node_vm_ram_arr = [2048, 16384, 1024, 1024, 1024, 1024]
-nstat_node_vm_cpu_arr = [1, 12, 1, 1, 1, 1]
+#nstat_node_names = ['nstatnode', 'nstatcntrlr', 'nstatnbgen','nstatmtcbench','nstatMN01','nstatMN02']
+#nstat_node_vm_ram_arr = [2048, 16384, 1024, 1024, 1024, 1024]
+#nstat_node_vm_cpu_arr = [1, 12, 1, 1, 1, 1]
 
 # VMs setup for sample Multinet tests-------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03']
@@ -44,7 +44,7 @@ nstat_node_vm_cpu_arr = [1, 12, 1, 1, 1, 1]
 
 ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
-nstat_nodes_private_network_ip = '192.168.160.200' # the first IP address in the NSTAT VMs IP Address range
+nstat_nodes_private_network_ip = '192.168.160.210' # the first IP address in the NSTAT VMs IP Address range
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
 
