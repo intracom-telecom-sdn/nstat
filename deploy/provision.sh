@@ -7,8 +7,11 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 TEST_USER="jenkins"
-#PROXY="http://172.28.40.9:3128"
+BASE_DIR=/opt
 VENV_DIR="venv"
+
+# Add here the proxy settings (http://<proxy>:<port>) or else leave it empty
+PROXY=""
 
 # Generic provisioning actions
 #------------------------------------------------------------------------------
@@ -27,10 +30,7 @@ apt-get update && apt-get install -y \
 #------------------------------------------------------------------------------
 useradd -m -s /bin/bash -p $(openssl passwd -crypt $TEST_USER) -U $TEST_USER
 echo "$TEST_USER ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
-
-TEST_USER_HOME=$(eval echo "~$TEST_USER")
-
-chmod 777 -R /opt
+chmod 777 -R $BASE_DIR
 
 # CONTROLLER_node provisioning actions
 #------------------------------------------------------------------------------
@@ -53,7 +53,6 @@ apt-get update && apt-get install -y \
     libssl-dev \
     pkg-config
 
-
 # Python installation and other necessary libraries for pip
 #------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
@@ -68,10 +67,8 @@ apt-get update && apt-get install -y \
     freetype6-dev \
     libxml2-dev \
     libxslt1-dev
-
 easy_install3 pip
 easy_install pip
-
 
 # Configure pip options
 #------------------------------------------------------------------------------
@@ -83,13 +80,11 @@ fi
 
 # Install virtualenv
 #------------------------------------------------------------------------------
-cd $TEST_USER_HOME
-mkdir $VENV_DIR
+mkdir $BASE_DIR/$VENV_DIR
 pip $pip_options install virtualenv
-virtualenv --system-site-packages $VENV_DIR
+virtualenv --system-site-packages $BASE_DIR/$VENV_DIR
 
-
-# NSTAT_NODE, oftraf monitoring tool and MULTINET_NODE provisioning actions
+# NSTAT_node, oftraf monitoring tool and Multinet_node provisioning actions
 #------------------------------------------------------------------------------
 # Activate virtualenv
 source $VENV_DIR/bin/activate
@@ -118,22 +113,21 @@ pip3 $pip_options install coveralls==1.1
 # Deactivate virtualenv
 deactivate
 
-
-# Multinet node
+# Multinet_node
 #------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
     uuid-runtime \
     mz
-git clone https://github.com/mininet/mininet.git $TEST_USER_HOME/mininet
-cd $TEST_USER_HOME/mininet
+git clone https://github.com/mininet/mininet.git $BASE_DIR/mininet
+cd $BASE_DIR/mininet
 git checkout -b 2.2.1 2.2.1
-chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/mininet
+chown -R $TEST_USER:$TEST_USER $BASE_DIR/mininet
 ./util/install.sh -n3f
 ./util/install.sh -V 2.3.0
 
 # NSTAT installation in TEST_USER home dir
 #------------------------------------------------------------------------------
-git clone https://github.com/intracom-telecom-sdn/nstat.git $TEST_USER_HOME/nstat
-cd $TEST_USER_HOME/nstat
+git clone https://github.com/intracom-telecom-sdn/nstat.git $BASE_DIR/nstat
+cd $BASE_DIR/nstat
 git checkout master # checkout to master branch
-chown -R $TEST_USER:$TEST_USER $TEST_USER_HOME/nstat
+chown -R $TEST_USER:$TEST_USER $BASE_DIR/nstat
