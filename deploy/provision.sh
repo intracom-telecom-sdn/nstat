@@ -11,7 +11,7 @@ BASE_DIR=/opt
 VENV_DIR="venv"
 
 # Add here the proxy settings (http://<proxy>:<port>) or else leave it empty
-PROXY=""
+PROXY="http://172.28.40.9:3128"
 
 # Generic provisioning actions
 #------------------------------------------------------------------------------
@@ -64,9 +64,10 @@ apt-get update && apt-get install -y \
     python3.4-dev \
     python-pypcap \
     libpng-dev \
-    freetype6-dev \
+    #freetype6-dev \
     libxml2-dev \
-    libxslt1-dev
+    libxslt1-dev \
+    virtualenv
 easy_install3 pip
 easy_install pip
 
@@ -81,35 +82,16 @@ fi
 # Install virtualenv
 #------------------------------------------------------------------------------
 mkdir $BASE_DIR/$VENV_DIR
-pip $pip_options install virtualenv
+#pip $pip_options install virtualenv
+
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR
 
 # NSTAT_node, oftraf monitoring tool and Multinet_node provisioning actions
 #------------------------------------------------------------------------------
 # Activate virtualenv
-source $VENV_DIR/bin/activate
-pip $pip_options install bottle==0.12.8
-pip3 $pip_options install bottle==0.12.8
-pip3 $pip_options install requests==2.7.0
-
-pip3 $pip_options install pyparsing==2.1.5 \
-    tornado==4.3 \
-    pytz==2016.4 \
-    six==1.10.0 \
-    numpy==1.11.1 \
-    matplotlib==1.4.3
-
-pip $pip_options install lxml==3.4.4
-pip3 $pip_options install lxml==3.4.4
-pip $pip_options install cryptography==1.2.1
-pip3 $pip_options install cryptography==1.2.1
-pip $pip_options install paramiko==1.15.2
-pip3 $pip_options install paramiko==1.15.2
-pip $pip_options install stdeb==0.8.5
-pip $pip_options install dpkt==1.8.6.2
-pip3 $pip_options install dpkt==1.8.6.2
-pip3 $pip_options install collections-extended=0.7.0
-pip3 $pip_options install coveralls==1.1
+source $BASE_DIR/$VENV_DIR/bin/activate
+pip install -r requirements.txt
+pip3 install -r requirements.txt
 # Deactivate virtualenv
 deactivate
 
