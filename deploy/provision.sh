@@ -51,26 +51,34 @@ apt-get update && apt-get install -y \
     libtool \
     libconfig-dev \
     libssl-dev \
-    pkg-config
+    pkg-config \
+    libfreetype6-dev
+
+
+sudo apt-get install python3-pip
+sudo apt-get install python-virtualenv
+pip3 install --upgrade pip
+
+
 
 # Python installation and other necessary libraries for pip
 #------------------------------------------------------------------------------
-sudo apt-get update && sudo apt-get install -y \
-    python \
-    python3.4 \
-    python-setuptools \
-    python3-setuptools \
-    python-dev \
-    python3.4-dev \
-    python-pypcap \
-    libpng-dev \
-    libfreetype6-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    python-virtualenv
-easy_install3 pip
-easy_install pip
-easy_install setuptools
+#apt-get update && apt-get install -y \
+    #    python \
+    #python3.4 \
+    #python-setuptools \
+    #python3-setuptools \
+    #python-dev \
+    #python3.4-dev \
+    #python-pypcap \
+    #libpng-dev \
+    #libfreetype6-dev \
+    #libxml2-dev \
+    #libxslt1-dev \
+    #python-virtualenv
+#easy_install3 pip
+#easy_install pip
+#easy_install setuptools
 
 
 # Configure pip options
@@ -84,7 +92,6 @@ fi
 # Install virtualenv
 #------------------------------------------------------------------------------
 mkdir $BASE_DIR/$VENV_DIR
-#pip $pip_options install virtualenv
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR
 virtualenv $BASE_DIR/$VENV_DIR
 
@@ -92,8 +99,8 @@ virtualenv $BASE_DIR/$VENV_DIR
 #------------------------------------------------------------------------------
 # Activate virtualenv
 source $BASE_DIR/$VENV_DIR/bin/activate
-pip install -r requirements.txt
-pip3 install -r requirements.txt
+pip install -r requirements_p2.txt
+pip3 install -r requirements_p3.txt
 # Deactivate virtualenv
 deactivate
 
