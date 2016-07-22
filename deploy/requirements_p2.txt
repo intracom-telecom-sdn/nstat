@@ -11,6 +11,4 @@ cryptography==1.2.1
 paramiko==1.15.2
 stdeb==0.8.5
 dpkt==1.8.6.2
-dpkt==1.8.6.2
-collections-extended=0.7.0
 coveralls==1.1

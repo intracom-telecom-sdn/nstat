@@ -55,7 +55,7 @@ apt-get update && apt-get install -y \
 
 # Python installation and other necessary libraries for pip
 #------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
+sudo apt-get update && sudo apt-get install -y \
     python \
     python3.4 \
     python-setuptools \
@@ -64,12 +64,14 @@ apt-get update && apt-get install -y \
     python3.4-dev \
     python-pypcap \
     libpng-dev \
-    #freetype6-dev \
+    libfreetype6-dev \
     libxml2-dev \
     libxslt1-dev \
-    virtualenv
+    python-virtualenv
 easy_install3 pip
 easy_install pip
+easy_install setuptools
+
 
 # Configure pip options
 #------------------------------------------------------------------------------
@@ -83,8 +85,8 @@ fi
 #------------------------------------------------------------------------------
 mkdir $BASE_DIR/$VENV_DIR
 #pip $pip_options install virtualenv
-
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR
+virtualenv $BASE_DIR/$VENV_DIR
 
 # NSTAT_node, oftraf monitoring tool and Multinet_node provisioning actions
 #------------------------------------------------------------------------------
