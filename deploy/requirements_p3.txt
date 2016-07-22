@@ -9,7 +9,5 @@ dpkt==1.8.6.2
 collections-extended
 coveralls==1.1
 numpy==1.11.1
-matplotlib==1.4.3
 paramiko==1.15.2
 cryptography==1.2.1
-lxml==3.6.0

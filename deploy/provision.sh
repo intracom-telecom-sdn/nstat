@@ -51,12 +51,17 @@ apt-get update && apt-get install -y \
     libtool \
     libconfig-dev \
     libssl-dev \
+    libffi-dev \
+    libssl-doc \
     pkg-config \
-    libfreetype6-dev
+    libfreetype6-dev \
+    python3-matplotlib \
+    python3-lxml \
+    python-dev
 
 
-sudo apt-get install python3-pip
-sudo apt-get install python-virtualenv
+apt-get install python3-pip
+apt-get install python-virtualenv
 pip3 install --upgrade pip
 
 
