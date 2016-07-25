@@ -10,7 +10,6 @@ TEST_USER="jenkins"
 BASE_DIR=/opt
 VENV_DIR_NSTAT="venv_nstat"
 VENV_DIR_MULTINET="venv_multinet"
-MULTINET_LOCATION="https://github.com/intracom-telecom-sdn/multinet.git"
 
 # Add here the proxy settings (http://<proxy>:<port>) or else leave it empty
 PROXY="http://172.28.40.9:3128"
@@ -73,27 +72,25 @@ if [ ! -z "$PROXY" ]; then
     pip_options=" --proxy==$PROXY $pip_options"
 fi
 
-# Install virtualenv
+# NSTAT_node, oftraf monitoring tool and Multinet_node provisioning actions
 #------------------------------------------------------------------------------
 mkdir $BASE_DIR/$VENV_DIR_NSTAT
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_NSTAT
 
-mkdir $BASE_DIR/$VENV_DIR_MULTINET
-virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_MULTINET
-
-# NSTAT_node, oftraf monitoring tool and Multinet_node provisioning actions
-#------------------------------------------------------------------------------
 source $BASE_DIR/$VENV_DIR_NSTAT/bin/activate
 pip3 install -r requirements.txt
 deactivate
+
+# Multinet_node
+#------------------------------------------------------------------------------
+mkdir $BASE_DIR/$VENV_DIR_MULTINET
+virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_MULTINET
 
 git clone -b master https://github.com/intracom-telecom-sdn/multinet.git $BASE_DIR"/multinet"
 source $BASE_DIR/$VENV_DIR_MULTINET/bin/activate
 pip3 install -r $BASE_DIR"/multinet/requirements.txt"
 deactivate
 
-# Multinet_node
-#------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
     uuid-runtime \
     mz
