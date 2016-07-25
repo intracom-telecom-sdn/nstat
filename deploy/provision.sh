@@ -57,34 +57,11 @@ apt-get update && apt-get install -y \
     libfreetype6-dev \
     python3-matplotlib \
     python3-lxml \
-    python-dev
+    python-dev \
+	python3-pip \
+	python-virtualenv \
 
-
-apt-get install python3-pip
-apt-get install python-virtualenv
 pip3 install --upgrade pip
-
-
-
-# Python installation and other necessary libraries for pip
-#------------------------------------------------------------------------------
-#apt-get update && apt-get install -y \
-    #    python \
-    #python3.4 \
-    #python-setuptools \
-    #python3-setuptools \
-    #python-dev \
-    #python3.4-dev \
-    #python-pypcap \
-    #libpng-dev \
-    #libfreetype6-dev \
-    #libxml2-dev \
-    #libxslt1-dev \
-    #python-virtualenv
-#easy_install3 pip
-#easy_install pip
-#easy_install setuptools
-
 
 # Configure pip options
 #------------------------------------------------------------------------------
@@ -98,15 +75,12 @@ fi
 #------------------------------------------------------------------------------
 mkdir $BASE_DIR/$VENV_DIR
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR
-virtualenv $BASE_DIR/$VENV_DIR
 
 # NSTAT_node, oftraf monitoring tool and Multinet_node provisioning actions
 #------------------------------------------------------------------------------
-# Activate virtualenv
 source $BASE_DIR/$VENV_DIR/bin/activate
 pip install -r requirements_p2.txt
 pip3 install -r requirements_p3.txt
-# Deactivate virtualenv
 deactivate
 
 # Multinet_node
@@ -117,18 +91,13 @@ apt-get update && apt-get install -y \
 git clone https://github.com/mininet/mininet.git $BASE_DIR/mininet
 git --git-dir=$BASE_DIR/mininet/.git --work-tree=$BASE_DIR/mininet branch -a
 git --git-dir=$BASE_DIR/mininet/.git --work-tree=$BASE_DIR/mininet checkout -b 2.2.1 2.2.1
-#cd $BASE_DIR/mininet
-#git checkout -b 2.2.1 2.2.1
 chown -R $TEST_USER:$TEST_USER $BASE_DIR/mininet
-./mininet/util/install.sh -n3f
-./mininet/util/install.sh -V 2.3.0
+/$BASE_DIR/mininet/util/install.sh -n3f
+/$BASE_DIR/mininet/util/install.sh -V 2.3.0
 
 # NSTAT installation in TEST_USER home dir
 #------------------------------------------------------------------------------
 git clone https://github.com/intracom-telecom-sdn/nstat.git $BASE_DIR/nstat
 git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat branch -a
-git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat checkout master
-#cd $BASE_DIR/nstat
-#git checkout master # checkout to master branch
-
+git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat checkout v1.3
 chown -R $TEST_USER:$TEST_USER $BASE_DIR/nstat
