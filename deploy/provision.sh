@@ -80,6 +80,7 @@ virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_NSTAT
 wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_provision_review/deploy/requirements.txt -P $BASE_DIR
 source $BASE_DIR/$VENV_DIR_NSTAT/bin/activate
 pip3 install -r $BASE_DIR/requirements.txt
+rm -rf $BASE_DIR/requirements.txt
 deactivate
 
 # Multinet_node
@@ -89,7 +90,7 @@ virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_MULTINET
 
 git clone -b master https://github.com/intracom-telecom-sdn/multinet.git $BASE_DIR"/multinet"
 source $BASE_DIR/$VENV_DIR_MULTINET/bin/activate
-pip3 install -r $BASE_DIR"/multinet/requirements.txt"
+pip install -r $BASE_DIR"/multinet/requirements.txt"
 deactivate
 
 apt-get update && apt-get install -y \
