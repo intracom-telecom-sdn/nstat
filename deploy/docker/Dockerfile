@@ -17,7 +17,7 @@ RUN cd /opt
 RUN wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/provision.sh
 RUN chmod +x provision.sh
 RUN /bin/bash -c "./provision.sh"
-RUN service openvswitch-switch start
+CMD ["service", "openvswitch-switch" "start"]
 
 # Configure ssh-server
 RUN mkdir /var/run/sshd
@@ -27,8 +27,4 @@ RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/ss
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
-EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
-RUN service ssh start
-
-RUN /bin/bash
