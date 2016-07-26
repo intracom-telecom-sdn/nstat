@@ -17,8 +17,7 @@ RUN cd /opt
 RUN wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/provision.sh
 RUN chmod +x provision.sh
 RUN /bin/bash -c "./provision.sh"
-RUN cd /proc/sys/kernel/pty
-RUN echo "50000" > max
+RUN service openvswitch-switch start
 
 # Configure ssh-server
 RUN mkdir /var/run/sshd
@@ -30,6 +29,6 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
+RUN service ssh start
 
 RUN /bin/bash
-RUN echo "THOMAS"
