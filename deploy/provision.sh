@@ -77,8 +77,9 @@ fi
 mkdir $BASE_DIR/$VENV_DIR_NSTAT
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_NSTAT
 
+wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_provision_review/deploy/requirements.txt -P $BASE_DIR
 source $BASE_DIR/$VENV_DIR_NSTAT/bin/activate
-pip3 install -r requirements.txt
+pip3 install -r $BASE_DIR/requirements.txt
 deactivate
 
 # Multinet_node
