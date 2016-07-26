@@ -11,7 +11,7 @@ BASE_DIR=/opt
 VENV_DIR_NSTAT="venv_nstat"
 VENV_DIR_MULTINET="venv_multinet"
 
-# Add here the proxy settings (http://<proxy>:<port>) or else leave it empty
+# Add here the proxy settings (http://proxy:port) or else leave it empty
 PROXY="http://172.28.40.9:3128"
 
 # Generic provisioning actions
