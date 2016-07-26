@@ -14,7 +14,7 @@ RUN apt-get install --force-yes -y wget
 RUN chmod 777 -R /opt
 RUN apt-get update
 RUN cd /opt
-RUN wget https://github.com/intracom-telecom-sdn/nstat/blob/develop_provision_review/deploy/provision.sh
+RUN wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_provision_review/deploy/provision.sh
 RUN chmod +x provision.sh
 RUN /bin/bash -c "./provision.sh"
 RUN cd /proc/sys/kernel/pty
