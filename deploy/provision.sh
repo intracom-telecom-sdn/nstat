@@ -59,8 +59,8 @@ apt-get update && apt-get install -y \
     python3-matplotlib \
     python3-lxml \
     python-dev \
-	python3-pip \
-	python-virtualenv
+    python3-pip \
+    python-virtualenv
 
 pip3 install --upgrade pip
 
