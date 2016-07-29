@@ -54,14 +54,24 @@ apt-get update && apt-get install -y \
     libssl-dev \
     libffi-dev \
     libssl-doc \
-    pkg-config \
-    libfreetype6-dev \
+    pkg-config
+
+
+# Python installation and other necessary libraries for pip
+#------------------------------------------------------------------------------
+apt-get update && apt-get install -y \
+    python \
+    python3.4 \
+    python-setuptools \
+    python3-setuptools \
+    python-dev \
+    python3.4-dev \
     python3-matplotlib \
     python3-lxml \
-    python-dev \
-	python3-pip \
-	python-virtualenv
-
+    python-pypcap \
+    python-pip \
+    python3-pip \
+    python-virtualenv
 pip3 install --upgrade pip
 
 # Configure pip options
@@ -79,7 +89,7 @@ virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_NSTAT
 
 wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_provision_review/deploy/requirements.txt -P $BASE_DIR
 source $BASE_DIR/$VENV_DIR_NSTAT/bin/activate
-pip3 install -r $BASE_DIR/requirements.txt
+pip3 $pip_options install -r $BASE_DIR/requirements.txt
 rm -rf $BASE_DIR/requirements.txt
 deactivate
 
@@ -90,7 +100,7 @@ virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_MULTINET
 
 git clone -b master https://github.com/intracom-telecom-sdn/multinet.git $BASE_DIR"/multinet"
 source $BASE_DIR/$VENV_DIR_MULTINET/bin/activate
-pip install -r $BASE_DIR"/multinet/requirements.txt"
+pip $pip_options install -r $BASE_DIR"/multinet/requirements.txt"
 deactivate
 
 apt-get update && apt-get install -y \
