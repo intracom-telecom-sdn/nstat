@@ -56,14 +56,11 @@ apt-get update && apt-get install -y \
     libssl-doc \
     pkg-config
 
-
 # Python installation and other necessary libraries for pip
 #------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
     python \
     python3.4 \
-    python-setuptools \
-    python3-setuptools \
     python-dev \
     python3.4-dev \
     python3-matplotlib \
@@ -72,7 +69,6 @@ apt-get update && apt-get install -y \
     python-pip \
     python3-pip \
     python-virtualenv
-pip3 install --upgrade pip
 
 # Configure pip options
 #------------------------------------------------------------------------------
@@ -81,6 +77,8 @@ pip_options=""
 if [ ! -z "$PROXY" ]; then
     pip_options=" --proxy==$PROXY $pip_options"
 fi
+
+pip3 $pip_options install --upgrade pip
 
 # NSTAT_node, oftraf monitoring tool and Multinet_node provisioning actions
 #------------------------------------------------------------------------------
