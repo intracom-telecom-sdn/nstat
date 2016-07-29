@@ -117,3 +117,5 @@ git clone https://github.com/intracom-telecom-sdn/nstat.git $BASE_DIR/nstat
 git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat branch -a
 git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat checkout v1.3
 chown -R $TEST_USER:$TEST_USER $BASE_DIR/nstat
+
+apt-get clean
