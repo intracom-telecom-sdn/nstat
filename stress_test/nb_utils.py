@@ -219,7 +219,7 @@ def monitor_threads_run(expected_flows, t_start, controller_nb_interface,
     discovered_flows = \
         multinet_utils.get_topology_flows(multinet_base_dir, get_flows_handler)
     flows_measurement_latency_interval = time.time() - t_start
-    logging.info('flows measurement latency interval:{0} [sec]'.format(flows_measurement_latency_interval))
+    logging.info('flows measurement latency interval:{0} [sec] | Discovered flows:{1}'.format(flows_measurement_latency_interval, discovered_flows))
 
     results = {}
     while not result_queue.empty():
