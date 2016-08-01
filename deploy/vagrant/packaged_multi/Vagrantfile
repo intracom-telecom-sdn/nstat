@@ -80,15 +80,15 @@ Vagrant.configure(2) do |config|
         nstat_node_hostname_inst = nstat_vm_hostname + "-" + nstat_vm.to_s
 
         config.vm.define nstat_node_name_inst do |machine|
-            machine.vm.box = nstat_vm_basebox
-            machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
-            machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst
-            machine.vm.provider :libvirt do |libvirt|
-                nstat_node_vm_ram =nstat_node_vm_ram_arr[name_counter]
-                nstat_node_vm_cpus=nstat_node_vm_cpu_arr[name_counter]
-                libvirt.memory = nstat_node_vm_ram
-                libvirt.cpus = nstat_node_vm_cpus
-            end
+          machine.vm.box = nstat_vm_basebox
+          machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
+          machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst
+          machine.vm.provider :libvirt do |libvirt|
+            nstat_node_vm_ram =nstat_node_vm_ram_arr[name_counter]
+            nstat_node_vm_cpus=nstat_node_vm_cpu_arr[name_counter]
+            libvirt.memory = nstat_node_vm_ram
+            libvirt.cpus = nstat_node_vm_cpus
+          end
         end
 # ------------------------------------------------------------------------------
 # Provisioning actions
