@@ -83,7 +83,7 @@ pip3 $pip_options install --upgrade pip
 mkdir $BASE_DIR/$VENV_DIR_NSTAT
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_NSTAT
 
-wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_provision_review/deploy/requirements.txt -P $BASE_DIR
+wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/requirements.txt -P $BASE_DIR
 source $BASE_DIR/$VENV_DIR_NSTAT/bin/activate
 pip3 $pip_options install -r $BASE_DIR/requirements.txt
 rm -rf $BASE_DIR/requirements.txt
