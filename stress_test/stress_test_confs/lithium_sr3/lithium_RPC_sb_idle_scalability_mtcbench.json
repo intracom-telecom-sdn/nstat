@@ -40,7 +40,7 @@
 "controller_restconf_user":"admin",
 "controller_restconf_password":"admin",
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":75,
+"controller_cpu_shares":100,
 
 "cbench_build_handler":"./build.sh",
 "cbench_run_handler":"./run.sh",
