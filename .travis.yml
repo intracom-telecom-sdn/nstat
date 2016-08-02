@@ -1,6 +1,6 @@
 branches:
   only:
-    - develop_Dockerfile_review
+    - develop_provision
 sudo: required
 dist: trusty
 language: python
