@@ -1,6 +1,6 @@
 branches:
   only:
-    - master
+    - develop_Dockerfile_review
 sudo: required
 dist: trusty
 language: python
@@ -11,7 +11,7 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
-  - source /home/jenkins/venv/bin/activate
+  - source /opt/venv/bin/activate
   - cd util/unittests
 script:
   - echo "Running Unittests"
