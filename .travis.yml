@@ -1,6 +1,6 @@
 branches:
   only:
-    - master
+    - develop_Dockerfile_review
 sudo: required
 dist: trusty
 language: python
@@ -10,8 +10,9 @@ jdk:
   - openjdk7
 before_script:
   - sudo apt-get update -qq
+  - sudo apt-get install docker-engine
+  - sudo bash ./deploy/docker_create.sh
   - sudo bash ./deploy/provision.sh
-  - source /home/jenkins/venv/bin/activate
   - cd util/unittests
 script:
   - echo "Running Unittests"
