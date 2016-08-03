@@ -3,7 +3,7 @@ FROM ubuntu:14.04
 #ENV http_proxy='http://172.28.40.9:3128/'
 #ENV https_proxy='http://172.28.40.9:3128/'
 #ENV no_proxy='127.0.0.1,localhost'
-
+http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=87
 #RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
 #RUN echo 'Acquire::https::Proxy "https://172.28.40.9:3128/";'| tee -a /etc/apt/apt.conf
 
