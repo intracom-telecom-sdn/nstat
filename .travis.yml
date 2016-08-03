@@ -11,8 +11,11 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine
-  - sudo bash ./deploy/docker/docker_create.sh
-  - sudo bash ./deploy/provision.sh
+  - sudo cd deploy/docker/
+  - sudo bash ./docker_create.sh
+  - sudo cd ..
+  - sudo bash ./provision.sh
+  - sudo cd ..
   - cd util/unittests
 script:
   - echo "Running Unittests"
