@@ -89,6 +89,8 @@ pip3 $pip_options install -r $BASE_DIR/requirements.txt
 rm -rf $BASE_DIR/requirements.txt
 deactivate
 
+# Multinet node
+#------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
     uuid-runtime \
     mz
@@ -98,8 +100,6 @@ git --git-dir=$BASE_DIR/mininet/.git --work-tree=$BASE_DIR/mininet checkout -b 2
 /$BASE_DIR/mininet/util/install.sh -n3f
 /$BASE_DIR/mininet/util/install.sh -V 2.3.0
 
-# Multinet node
-#------------------------------------------------------------------------------
 mkdir $BASE_DIR/$VENV_DIR_MULTINET
 virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_MULTINET
 
