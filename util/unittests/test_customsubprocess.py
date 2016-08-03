@@ -8,7 +8,7 @@
 
 import unittest
 import util.customsubprocess
-import Queue
+import queue
 
 
 class CustomSubprocessCheckOutputStream(unittest.TestCase):
@@ -28,7 +28,7 @@ class CustomSubprocessCheckOutputStream(unittest.TestCase):
         module.
         """
 
-        self.testing_queue = Queue.Queue()
+        self.testing_queue = queue.Queue()
 
     def test01_check_output_streaming(self):
         """Tests the check_output_streaming() method of
