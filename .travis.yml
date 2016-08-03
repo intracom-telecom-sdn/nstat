@@ -11,7 +11,7 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
-  - source /opt/venv/bin/activate
+  #- source /opt/venv/bin/activate
   - cd util/unittests
 script:
   - echo "Running Unittests"
