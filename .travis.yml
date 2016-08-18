@@ -10,8 +10,12 @@ jdk:
   - openjdk7
 before_script:
   - sudo apt-get update -qq
-  - sudo bash ./deploy/provision.sh
-  - source /home/jenkins/venv/bin/activate
+  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine
+  - cd deploy/docker/
+  - sudo bash ./docker_create.sh
+  - cd ..
+  - sudo bash ./provision.sh
+  - cd ..
   - cd util/unittests
 script:
   - echo "Running Unittests"
@@ -23,7 +27,7 @@ script:
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_file.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_sysstats.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_html.py
-# - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_process.py
+  #- coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_process.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_netutil.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode ../../stress_test/nstat_orchestrator.py --help
   - coverage combine

@@ -2,12 +2,10 @@ FROM ubuntu:14.04
 
 ENV http_proxy='http://172.28.40.9:3128/'
 ENV https_proxy=$http_proxy
-
 ENV no_proxy='127.0.0.1,localhost'
 
-RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
-
-RUN echo 'Acquire::https::Proxy "https://172.28.40.9:3128/";'| tee -a /etc/apt/apt.conf
+RUN echo 'Acquire::http::Proxy "$http_proxy";' | tee -a /etc/apt/apt.conf
+RUN echo 'Acquire::https::Proxy "$http_proxy";'| tee -a /etc/apt/apt.conf
 
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
