@@ -1,7 +1,7 @@
 FROM ubuntu:14.04
 
 ENV http_proxy='http://172.28.40.9:3128/'
-ENV https_proxy='http://172.28.40.9:3128/'
+ENV https_proxy=$http_proxy
 
 ENV no_proxy='127.0.0.1,localhost'
 
@@ -16,7 +16,7 @@ RUN apt-get update
 RUN cd /opt
 RUN wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_provision_review/deploy/provision.sh
 RUN chmod +x provision.sh
-RUN /bin/bash -c "./provision.sh"
+RUN /bin/bash -c "./provision.sh $http_proxy"
 CMD ["service", "openvswitch-switch" "start"]
 
 # Configure ssh-server
