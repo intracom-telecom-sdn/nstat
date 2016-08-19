@@ -13,8 +13,10 @@ VENV_DIR_MULTINET="venv_multinet"
 # PROXY value is passed either from Vagrantfile/Dockerfile
 #------------------------------------------------------------------------------
 if [ ! -z "$1" ]; then
+    echo "Creating PROXY variable: $1"
     PROXY=$1
 else
+    echo "Empty PROXY variable"
     PROXY=""
 fi
 
@@ -29,11 +31,6 @@ apt-get update && apt-get install -y \
     bzip2 \
     openssl \
     net-tools
-
-# This user is required to run jenkins jobs and must be the same with the ssh
-# user defined in json files of tests
-#------------------------------------------------------------------------------
-chmod 777 -R $BASE_DIR
 
 # Controller node provisioning actions
 #------------------------------------------------------------------------------
@@ -117,3 +114,7 @@ deactivate
 git clone https://github.com/intracom-telecom-sdn/nstat.git $BASE_DIR/nstat
 git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat checkout v1.3
 apt-get clean
+
+# This step is required to run jobs with any user
+#------------------------------------------------------------------------------
+chmod 777 -R $BASE_DIR
