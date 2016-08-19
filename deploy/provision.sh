@@ -13,8 +13,10 @@ VENV_DIR_MULTINET="venv_multinet"
 # PROXY value is passed either from Vagrantfile/Dockerfile
 #------------------------------------------------------------------------------
 if [ ! -z "$1" ]; then
+    echo "Creating PROXY variable: $1"
     PROXY=$1
 else
+    echo "Empty PROXY variable"
     PROXY=""
 fi
 

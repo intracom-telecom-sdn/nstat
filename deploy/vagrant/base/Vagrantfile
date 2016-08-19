@@ -21,8 +21,8 @@ nstat_vm_cpus = 1
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
 RUNNING_ENV = 'with-proxy'
-PROXY_HTTP = 'http://172.28.40.9:3128'
-PROXY_HTTPS = 'https://172.28.40.9:3128'
+PROXY_HTTP = 'http://172.28.40.9:3128/'
+PROXY_HTTPS = 'https://172.28.40.9:3128/'
 
 # configure proxy settings
 # ------------------------------------------------------------------------------
@@ -46,7 +46,6 @@ else
     puts 'RUNNING_ENV not set'
 end
 
-provision_action = '../../provision.sh' + ' ' + http_proxy
 Vagrant.configure(2) do |config|
 
     config.ssh.username = 'vagrant'
@@ -72,5 +71,10 @@ Vagrant.configure(2) do |config|
 # ------------------------------------------------------------------------------
 # Provisioning actions
 # ------------------------------------------------------------------------------
-    config.vm.provision :shell, privileged: true, :path => provision_action
+    config.vm.provision "shell", privileged: true, path: "../../provision.sh" do |s|
+        if RUNNING_ENV == 'with-proxy'
+            s.args = "#{http_proxy}"
+        end
+    end
+
 end
