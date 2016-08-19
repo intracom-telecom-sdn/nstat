@@ -32,11 +32,6 @@ apt-get update && apt-get install -y \
     openssl \
     net-tools
 
-# This user is required to run jenkins jobs and must be the same with the ssh
-# user defined in json files of tests
-#------------------------------------------------------------------------------
-chmod 777 -R $BASE_DIR
-
 # Controller node provisioning actions
 #------------------------------------------------------------------------------
 apt-get update && apt-get install -y \
@@ -119,3 +114,7 @@ deactivate
 git clone https://github.com/intracom-telecom-sdn/nstat.git $BASE_DIR/nstat
 git --git-dir=$BASE_DIR/nstat/.git --work-tree=$BASE_DIR/nstat checkout v1.3
 apt-get clean
+
+# This step is required to run jobs with any user
+#------------------------------------------------------------------------------
+chmod 777 -R $BASE_DIR
