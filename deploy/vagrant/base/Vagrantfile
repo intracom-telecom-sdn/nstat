@@ -76,5 +76,6 @@ Vagrant.configure(2) do |config|
             s.args = "#{http_proxy}"
         end
     end
+    config.vm.provision :shell, privileged: true, inline: 'apt-get clean'
 
 end
