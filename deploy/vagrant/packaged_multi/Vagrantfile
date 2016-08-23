@@ -12,31 +12,17 @@
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
 
-# VMs setup for sample MT-Cbench tests------------------------------------------
-#nstat_node_names = ['ndmn']
-#nstat_node_vm_ram_arr = [4192]
-#nstat_node_vm_cpu_arr = [1]
-
-nstat_node_names = ['NSTAT_node']
-nstat_node_vm_ram_arr = [2048]
-nstat_node_vm_cpu_arr = [1]
-
-# VMs setup for sample Mininet tests--------------------------------------------
+# VMs setup for all sample tests------------------------------------------------
 nstat_node_names = ['nstatnode', 'nstatcntrlr', 'nstatnbgen','nstatmtcbench','nstatMN01','nstatMN02']
 nstat_node_vm_ram_arr = [2048, 16384, 1024, 1024, 1024, 1024]
 nstat_node_vm_cpu_arr = [1, 12, 1, 1, 1, 1]
 
-# VMs setup for sample Multinet tests-------------------------------------------
+# VMs setup for 3 Multinet workers----------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03']
 #nstat_node_vm_ram_arr = [2048, 2048, 2048]
 #nstat_node_vm_cpu_arr = [1, 1, 1]
 
-# VMs setup for non Multinet stress tests---------------------------------------
-#nstat_node_names = ['mn01']
-#nstat_node_vm_ram_arr = [4096] # in MB
-#nstat_node_vm_cpu_arr = [2] # number of CPUs
-
-# VMs setup for Multinet stress tests--------------------------------------------------
+# VMs setup for 16 Multinet workers---------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03', 'mn04', 'mn05', 'mn06', 'mn07', 'mn08', 'mn09', 'mn10', 'mn11', 'mn12', 'mn13', 'mn14', 'mn15', 'mn16']
 #nstat_node_vm_ram_arr = [4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096]
 #nstat_node_vm_cpu_arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -44,7 +30,7 @@ nstat_node_vm_cpu_arr = [1, 12, 1, 1, 1, 1]
 
 ENV['VAGRANT_DEFAULT_PROVIDER']='libvirt'
 
-nstat_nodes_private_network_ip = '192.168.160.200' # the first IP address in the NSTAT VMs IP Address range
+nstat_nodes_private_network_ip = '192.168.160.210' # the first IP address in the NSTAT VMs IP Address range
 nstat_nodes_number = nstat_node_names.length
 printf "%d NSTAT nodes: to be deployed \n", nstat_nodes_number
 
@@ -52,7 +38,6 @@ Vagrant.configure(2) do |config|
 
     config.ssh.username = 'vagrant'
     config.ssh.password = 'vagrant'
-
 
     #If tty is not available
     config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
@@ -76,38 +61,20 @@ Vagrant.configure(2) do |config|
         temp_name = nstat_node_names[name_counter]
         uid_nstat = ENV.has_key?('VM_UID') ? '_' + ENV['VM_UID'].split('-')[0] : '_' + nstat_nodes_private_network_ip_inst.to_s
 
-
-        #nstat_node_name_inst = 'nstat_ubuntu_box_'  + ENV['USER'] + uid_nstat  + "_" + temp_name
         nstat_node_name_inst = 'NSTAT'  + uid_nstat  + "_" + temp_name
 
         nstat_node_hostname_inst = nstat_vm_hostname + "-" + nstat_vm.to_s
-        #nstat_node_hostname_inst = nstat_node_names[nstat_vm]
 
         config.vm.define nstat_node_name_inst do |machine|
-            machine.vm.box = nstat_vm_basebox
-            machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
-            machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst,
-                :libvirt__network_name => 'nstat',
-                :dev => 'eth0',
-                :mode => 'bridge'
-
-            machine.vm.provider :virtualbox do |vb|
-                # Customize the amount of memory on the VM:
-                nstat_node_vm_ram =nstat_node_vm_ram_arr[name_counter]
-                nstat_node_vm_cpus=nstat_node_vm_cpu_arr[name_counter]
-                vb.memory = nstat_node_vm_ram
-                vb.cpus = nstat_node_vm_cpus
-
-                # change the network card hardware for better performance
-                vb.customize ["modifyvm", :id, "--nictype1", "virtio" ]
-                vb.customize ["modifyvm", :id, "--nictype2", "virtio" ]
-            end
-            machine.vm.provider :libvirt do |libvirt|
-                nstat_node_vm_ram =nstat_node_vm_ram_arr[name_counter]
-                nstat_node_vm_cpus=nstat_node_vm_cpu_arr[name_counter]
-                libvirt.memory = nstat_node_vm_ram
-                libvirt.cpus = nstat_node_vm_cpus
-            end
+          machine.vm.box = nstat_vm_basebox
+          machine.vm.host_name = nstat_node_hostname_inst + '.' + nstat_node_hostname_inst
+          machine.vm.network :private_network, ip: nstat_nodes_private_network_ip_inst
+          machine.vm.provider :libvirt do |libvirt|
+            nstat_node_vm_ram =nstat_node_vm_ram_arr[name_counter]
+            nstat_node_vm_cpus=nstat_node_vm_cpu_arr[name_counter]
+            libvirt.memory = nstat_node_vm_ram
+            libvirt.cpus = nstat_node_vm_cpus
+          end
         end
 # ------------------------------------------------------------------------------
 # Provisioning actions
