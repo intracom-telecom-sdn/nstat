@@ -16,6 +16,10 @@ before_script:
   - cd ..
   - sudo bash ./provision.sh
   - cd ..
+  - sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
+  - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+  - source /opt/venv_nstat/bin/activate
+  - export PYTHONPATH=$(pwd)
   - cd util/unittests
 script:
   - echo "Running Unittests"
@@ -33,5 +37,6 @@ script:
   - coverage combine
 after_success:
   coveralls
+  deactivate
 notifications:
   email: false
