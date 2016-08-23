@@ -12,7 +12,7 @@ RUN apt-get update
 RUN apt-get install --force-yes -y wget
 RUN chmod 777 -R /opt
 RUN apt-get update
-RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_provision_review/deploy/provision.sh
+RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/provision.sh
 RUN chmod +x /opt/provision.sh
 RUN /bin/bash -c "/opt/provision.sh $http_proxy"
 #CMD ["service", "openvswitch-switch" "start"]
