@@ -15,7 +15,6 @@ before_script:
   - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
   - source /opt/venv_nstat/bin/activate
   - export PYTHONPATH=$(pwd)
-  - cd util/unittests
 script:
   - echo "Running Unittests"
   - coverage erase
