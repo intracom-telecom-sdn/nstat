@@ -28,7 +28,7 @@
 "nb_generator_node_username":"jenkins",
 "nb_generator_node_password":"jenkins",
 
-"nb_generator_cpu_shares":25,
+"nb_generator_cpu_shares":100,
 
 "controller_build_handler":"./build.sh",
 "controller_start_handler":"./start_no_dlux.sh",
@@ -49,7 +49,7 @@
 "controller_restconf_user":"admin",
 "controller_restconf_password":"admin",
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":75,
+"controller_cpu_shares":100,
 
 "topology_rest_server_boot":"./bin/deploy",
 "topology_rest_server_stop":"./bin/cleanup",
@@ -59,6 +59,7 @@
 "topology_start_switches_handler":"./bin/handlers/start_topos",
 "topology_stop_switches_handler":"./bin/handlers/stop_topos",
 "topology_get_switches_handler":"./bin/handlers/get_switches",
+"topology_get_flows_handler":"./bin/handlers/get_flows",
 
 "topology_size":[1, 2, 4, 35, 70, 330],
 "topology_type":["linear"],
