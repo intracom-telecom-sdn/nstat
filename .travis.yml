@@ -11,6 +11,9 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
+  - useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
+  - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+  - source /opt/venv_nstat/bin/activate
   - cd util/unittests
 script:
   - echo "Running Unittests"
@@ -28,5 +31,6 @@ script:
   - coverage combine
 after_success:
   coveralls
+  deactivate
 notifications:
   email: false
