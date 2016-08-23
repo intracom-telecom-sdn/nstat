@@ -56,12 +56,21 @@ class Controller:
         self.stop_handler = ctrl_base_dir + test_config['controller_stop_handler']
         self.status_handler = ctrl_base_dir + test_config['controller_status_handler']
         self.clean_handler = ctrl_base_dir + test_config['controller_clean_handler']
-        self.statistics_handler = ctrl_base_dir + test_config['controller_statistics_handler']
-        self.persistent_handler = ctrl_base_dir + test_config['controller_persistent_handler']
 
 
         self.java_opts = ' '.join(test_config['java_opts'])
         self.cpid = -1
+
+        if 'controller_restconf_port' in test_config:
+           self.restconf_port = test_config['controller_restconf_port']
+           self.restconf_user = test_config['controller_restconf_user']
+           self.restconf_password = test_config['controller_restconf_password']
+
+        if 'controller_statistics_handler' in test_config:
+            self.statistics_handler = ctrl_base_dir + test_config['controller_statistics_handler']
+
+        if 'controller_persistent_handler' in test_config:
+            self.persistent_handler = ctrl_base_dir + test_config['controller_persistent_handler']
 
     def cleanup(self,ssh_client=None):
         """Wrapper to the controller cleanup handler
