@@ -12,31 +12,17 @@
 # ------------------------------------------------------------------------------
 nstat_vm_basebox = 'nstat_vm_base'
 
-# VMs setup for sample MT-Cbench tests------------------------------------------
-#nstat_node_names = ['ndmn']
-#nstat_node_vm_ram_arr = [4192]
-#nstat_node_vm_cpu_arr = [1]
+# VMs setup for all sample tests------------------------------------------------
+nstat_node_names = ['nstatnode', 'nstatcntrlr', 'nstatnbgen','nstatmtcbench','nstatMN01','nstatMN02']
+nstat_node_vm_ram_arr = [2048, 16384, 1024, 1024, 1024, 1024]
+nstat_node_vm_cpu_arr = [1, 12, 1, 1, 1, 1]
 
-nstat_node_names = ['NSTAT_DOCKER_node']
-nstat_node_vm_ram_arr = [8192]
-nstat_node_vm_cpu_arr = [1]
-
-# VMs setup for sample Mininet tests--------------------------------------------
-#nstat_node_names = ['nstatnode', 'nstatcntrlr', 'nstatnbgen','nstatmtcbench','nstatMN01','nstatMN02']
-#nstat_node_vm_ram_arr = [2048, 16384, 1024, 1024, 1024, 1024]
-#nstat_node_vm_cpu_arr = [1, 12, 1, 1, 1, 1]
-
-# VMs setup for sample Multinet tests-------------------------------------------
+# VMs setup for 3 Multinet workers----------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03']
 #nstat_node_vm_ram_arr = [2048, 2048, 2048]
 #nstat_node_vm_cpu_arr = [1, 1, 1]
 
-# VMs setup for non Multinet stress tests---------------------------------------
-#nstat_node_names = ['mn01']
-#nstat_node_vm_ram_arr = [4096] # in MB
-#nstat_node_vm_cpu_arr = [2] # number of CPUs
-
-# VMs setup for Multinet stress tests--------------------------------------------------
+# VMs setup for 16 Multinet workers---------------------------------------------
 #nstat_node_names = ['mn01', 'mn02', 'mn03', 'mn04', 'mn05', 'mn06', 'mn07', 'mn08', 'mn09', 'mn10', 'mn11', 'mn12', 'mn13', 'mn14', 'mn15', 'mn16']
 #nstat_node_vm_ram_arr = [4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096, 4096]
 #nstat_node_vm_cpu_arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]

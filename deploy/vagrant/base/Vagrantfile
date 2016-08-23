@@ -20,7 +20,7 @@ nstat_vm_cpus = 1
 # ------------------------------------------------------------------------------
 # RUNNING_ENV options: 'with-proxy', 'no-proxy'
 # ------------------------------------------------------------------------------
-RUNNING_ENV = 'with-proxy'
+RUNNING_ENV = 'no-proxy'
 PROXY_HTTP = 'http://172.28.40.9:3128/'
 PROXY_HTTPS = 'https://172.28.40.9:3128/'
 
