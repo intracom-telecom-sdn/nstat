@@ -21,8 +21,6 @@ import util.process
 class Controller:
 
 
-
-
     def __init__(self,ctrl_base_dir,test_config):
 
 #        logging.info('[Controller Class] Parsing test configuration')
@@ -47,7 +45,6 @@ class Controller:
         self.rebuild = ctrl_base_dir + test_config['controller_rebuild']
         self.cleanup = ctrl_base_dir + test_config['controller_cleanup']
         self.port = test_config['controller_port']
-        self.statistics_period_ms = test_config['controller_statistics_period_ms']
         self.cpu_shares = test_config['controller_cpu_shares']
         self.logs_dir = ctrl_base_dir + test_config['controller_logs_dir']
 
@@ -66,12 +63,6 @@ class Controller:
            self.restconf_user = test_config['controller_restconf_user']
            self.restconf_password = test_config['controller_restconf_password']
 
-        if 'controller_statistics_handler' in test_config:
-            self.statistics_handler = ctrl_base_dir + test_config['controller_statistics_handler']
-
-        if 'controller_persistent_handler' in test_config:
-            self.persistent_handler = ctrl_base_dir + test_config['controller_persistent_handler']
-
     def cleanup(self,ssh_client=None):
         """Wrapper to the controller cleanup handler
 
@@ -82,19 +73,6 @@ class Controller:
         """
         common.command_exec_wrapper([self.clean_handler],
                                     '[self.clean_handler]', ssh_client)
-
-    def change_persistent_controller(controller_change_persistent_handler,
-                                     ssh_client=None):
-        """configure controller persistent to false in order not to backup
-        datastore on the disk.
-
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type ssh_client: paramiko.SSHClient
-        """
-
-        common.command_exec_wrapper([self.persistent_handler],
-                                    '[controller_change_persistent_handler]',
-                                    ssh_client)
 
     def check_controller_status(self,ssh_client=None):
         """Wrapper to the controller status handler
@@ -137,63 +115,6 @@ class Controller:
             raise Exception('[check_for_active_controller] Another process is '
                             'active on port {0}'.
                             format(self.port))
-
-    def controller_pre_actions(self, controller_ssh_client, controller_cpus):
-        """ Performs all necessary actions before starting a test. Pre actions
-        are 1) rebuild_controller 2) check_for_active_controller
-        3) generate_controller_xml_files
-
-        :param controller_ssh_client: paramiko.SSHClient object
-        :param controller_cpus: number of cpus returned by create_cpu_shares() and
-        allocated for controller
-        :type controller_ssh_client: paramiko.SSHClient
-        :type controller_cpus: str
-        """
-        if self.controller_rebuild:
-            logging.info('[controller_pre_actions] building controller')
-            rebuild_controller(self.build_handler, controller_ssh_client)
-
-        logging.info('[controller_pre_actions] checking for other active '
-                     'controllers')
-        check_for_active_controller(controller_ssh_client)
-        logging.info('[controller_pre_actions] starting and stopping controller'
-                     ' to generate xml files')
-        self.generate_controller_xml_files(controller_ssh_client, controller_cpus)
-        if self.persistent_handler != '':
-            change_persistent_controller(
-                self.persistent_handler,
-                controller_ssh_client)
-
-
-    def generate_controller_xml_files(self, ssh_client, controller_cpus):
-        """ Starts and then stops the controller to trigger the generation of
-        controller's XML files.
-
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :param controller_cpus: number of cpus returned by create_cpu_shares() and
-        allocated for controller
-        :type ssh_client: paramiko.SSHClient
-        :type controller_cpus: str
-        """
-        logging.info('[generate_controller_xml_files] Starting controller')
-        cpid = start_controller(controller_cpus, ssh_client)
-
-        # Controller status check is done within start_controller()
-        logging.info('[generate_controller_xml_files] OK, controller status is 1.')
-        logging.info('[generate_controller_xml_files] Stopping controller')
-        stop_controller(ssh_client)
-
-
-    def rebuild_controller(self, ssh_client=None):
-        """ Wrapper to the controller build handler
-
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type ssh_client: paramiko.SSHClient
-        """
-
-        common.command_exec_wrapper([self.build_handler],
-                             '[controller_build_handler]', ssh_client)
-
 
     def restart_controller(self,ssh_client=None):
         """Restarts the controller
@@ -310,16 +231,92 @@ class Controller:
 class ODL(Controller):
     def __init__(self,ctrl_base_dir,test_config):
         Controller.__init__(self,test_config)
-        stat_period_ms = test_config['controller_statistics_period_ms']
+
+        self.stat_period_ms = test_config['controller_statistics_period_ms']
 
         if 'controller_flowmods_conf_handler' in test_config:
-           flowmods_conf_handler= ctrl_base_dir + test_config['controller_flowmods_conf_handler']
+            self.flowmods_conf_handler= ctrl_base_dir + test_config['controller_flowmods_conf_handler']
+
+        if 'controller_statistics_handler' in test_config:
+            self.statistics_handler = ctrl_base_dir + test_config['controller_statistics_handler']
+
+        if 'controller_persistent_handler' in test_config:
+            self.persistent_handler = ctrl_base_dir + test_config['controller_persistent_handler']
 
 
+    def controller_pre_actions(self, controller_ssh_client, controller_cpus):
+        """ Performs all necessary actions before starting a test. Pre actions
+        are 1) rebuild_controller 2) check_for_active_controller
+        3) generate_controller_xml_files
+
+        :param controller_ssh_client: paramiko.SSHClient object
+        :param controller_cpus: number of cpus returned by create_cpu_shares() and
+        allocated for controller
+        :type controller_ssh_client: paramiko.SSHClient
+        :type controller_cpus: str
+        """
+        if self.controller_rebuild:
+            logging.info('[controller_pre_actions] building controller')
+            rebuild_controller(self.build_handler, controller_ssh_client)
+
+        logging.info('[controller_pre_actions] checking for other active '
+                     'controllers')
+        check_for_active_controller(controller_ssh_client)
+        logging.info('[controller_pre_actions] starting and stopping controller'
+                     ' to generate xml files')
+
+        self.generate_controller_xml_files(controller_ssh_client, controller_cpus)
+        if self.persistent_handler != '':
+            change_persistent_controller(
+                self.persistent_handler,
+                controller_ssh_client)
 
 
-    def controller_changestatsperiod(self,
-                                 ssh_client=None):
+    def generate_controller_xml_files(self, ssh_client, controller_cpus):
+        """ Starts and then stops the controller to trigger the generation of
+        controller's XML files.
+
+        :param ssh_client : SSH client provided by paramiko to run the command
+        :param controller_cpus: number of cpus returned by create_cpu_shares() and
+        allocated for controller
+        :type ssh_client: paramiko.SSHClient
+        :type controller_cpus: str
+        """
+        logging.info('[generate_controller_xml_files] Starting controller')
+        cpid = start_controller(controller_cpus, ssh_client)
+
+        # Controller status check is done within start_controller()
+        logging.info('[generate_controller_xml_files] OK, controller status is 1.')
+        logging.info('[generate_controller_xml_files] Stopping controller')
+        stop_controller(ssh_client)
+
+
+    def rebuild_controller(self, ssh_client=None):
+        """ Wrapper to the controller build handler
+
+        :param ssh_client : SSH client provided by paramiko to run the command
+        :type ssh_client: paramiko.SSHClient
+        """
+
+        common.command_exec_wrapper([self.build_handler],
+                             '[controller_build_handler]', ssh_client)
+
+
+    def change_persistent_controller(controller_change_persistent_handler,
+                                     ssh_client=None):
+        """configure controller persistent to false in order not to backup
+        datastore on the disk.
+
+        :param ssh_client : SSH client provided by paramiko to run the command
+        :type ssh_client: paramiko.SSHClient
+        """
+
+        common.command_exec_wrapper([self.persistent_handler],
+                                    '[controller_change_persistent_handler]',
+                                    ssh_client)
+
+
+    def controller_changestatsperiod(self, ssh_client=None):
         """Wrapper to the controller statistics handler
 
         :param self.statistics_handler: filepath to the controller statistics
