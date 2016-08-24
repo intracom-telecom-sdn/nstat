@@ -6,7 +6,6 @@
 
 """ Controller Class- All controller-related functionality is here"""
 
-#import collections
 import json
 import common
 import logging
@@ -15,186 +14,191 @@ import subprocess
 import time
 import util.netutil
 import util.process
+import conf_collections_util
+import requests
+import emulators.nb_generator.flow_utils
 
 
 
 class Controller:
 
 
-    def __init__(self,ctrl_base_dir,test_config):
-
-#        logging.info('[Controller Class] Parsing test configuration')
-#        with open(json_file) as json_conf_file:
-#        self.test_config = json.load(json_conf_file)
+    def __init__(self, ctrl_base_dir, test_config):
 
         """Create a Controller object. Options from JSON input file
         :param test_config: JSON input configuration
         :type test_config: JSON configuration dictionary
         """
-        self.__dict__ = test_config
         self.name = test_config['controller_name']
         logging.info('Initializing parameters for the {0} Controller '.format(self.name))
 
-        #self.host_ip = test_config['controller_host_ip']
-        self.node_ip = test_config['controller_node_ip']
-        self.node_ssh_port = test_config['controller_node_ssh_port']
-        self.node_username = test_config['controller_node_username']
-        self.node_password = test_config['controller_password']
+        self.base_dir = ctrl_base_dir
+        self.ip = test_config['controller_node_ip']
+        self.ssh_port = test_config['controller_node_ssh_port']
+        self.username = test_config['controller_node_username']
+        self.password = test_config['controller_password']
 
-        self.logs_dir = ctrl_base_dir + test_config['controller_logs_dir']
-        self.rebuild = ctrl_base_dir + test_config['controller_rebuild']
-        self.cleanup = ctrl_base_dir + test_config['controller_cleanup']
-        self.port = test_config['controller_port']
+        self.need_rebuild = self.base_dir + test_config['controller_rebuild']
+        self.need_cleanup = self.base_dir + test_config['controller_cleanup']
+        self.of_port = test_config['controller_port']
         self.cpu_shares = test_config['controller_cpu_shares']
-        self.logs_dir = ctrl_base_dir + test_config['controller_logs_dir']
+        self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
-        self.build_handler = ctrl_base_dir + test_config['controller_build_handler']
-        self.start_handler = ctrl_base_dir + test_config['controller_start_handler']
-        self.stop_handler = ctrl_base_dir + test_config['controller_stop_handler']
-        self.status_handler = ctrl_base_dir + test_config['controller_status_handler']
-        self.clean_handler = ctrl_base_dir + test_config['controller_clean_handler']
+        self.build_hnd = self.base_dir + test_config['controller_build_handler']
+        self.start_hnd = self.base_dir + test_config['controller_start_handler']
+        self.stop_hnd = self.base_dir + test_config['controller_stop_handler']
+        self.status_hnd = self.base_dir + test_config['controller_status_handler']
+        self.clean_hnd = self.base_dir + test_config['controller_clean_handler']
 
+        self.status = 'UNKNOWN'
 
         self.java_opts = ' '.join(test_config['java_opts'])
-        self.cpid = -1
+        self.pid = -1
 
-        if 'controller_restconf_port' in test_config:
-           self.restconf_port = test_config['controller_restconf_port']
-           self.restconf_user = test_config['controller_restconf_user']
-           self.restconf_password = test_config['controller_restconf_password']
+        self._init_ssh = None
 
-    def cleanup(self,ssh_client=None):
+        self_node = conf_collections_util.node_parameters(self.name,
+                                      self.ip,
+                                      int(self.ssh_port),
+                                      self.username,
+                                      self.password)
+
+    def init_ssh(self)
+        logging.info(
+            '[open_ssh_connection] Initiating SSH session with {0} node.'.
+            format(self.name))
+        self._init_ssh = util.netutil.ssh_connect_or_return(connection, 10)
+
+
+
+    def cleanup(self):
         """Wrapper to the controller cleanup handler
-
-        :param self.clean_handler: filepath to the controller cleanup handler
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type self.clean_handler: str
-        :type ssh_client: paramiko.SSHClient
         """
-        common.command_exec_wrapper([self.clean_handler],
-                                    '[self.clean_handler]', ssh_client)
+        logging.info('[Controller] Cleaning up')
 
-    def check_controller_status(self,ssh_client=None):
+        self.status = 'CLEANING'
+        common.command_exec_wrapper([self.clean_hnd],
+                                    '[controller.clean_handler]', self._init_ssh)
+        self.status = 'CLEANED'
+
+    def check_status(self):
         """Wrapper to the controller status handler
-
-        :param self.status_handler: filepath to the controller status handler
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :returns: '1' if controller is active, '0' otherwise
-        :rtype: str
-        :type self.status_handler: str
-        :type ssh_client: paramiko.SSHClient
         """
+        logging.info('[Controller] Checking the status')
 
-        if ssh_client == None:
-            return subprocess.check_output([self.status_handler],
-                                        universal_newlines=True).strip()
-        else:
-            cmd_output = util.netutil.ssh_run_command(ssh_client,
-                self.status_handler)[1]
-            return cmd_output.strip()
+        common.command_exec_wrapper([self.status_hnd],
 
-    def check_for_active_controller(self,ssh_client=None):
+
+    def check_other_controller(self):
         """Checks for processes listening on the specified port
 
-        :param self.port: controller port to check
-        :param ssh_client : paramiko SSH client object when opening a connection
         :raises Exception: when another process listens on controller's port.
-        :type self.port: int
-        :type ssh_client: paramiko.SSHClient
         """
 
         logging.info(
-            '[check_for_active_controller] Checking if another process is '
+            '[Controller] Checking if another process is '
             'listening on specified port. Port number: {0}.'.
-            format(self.port))
+            format(self.of_port))
 
         # check if any process listens on controller port
-        gpid = util.process.getpid_listeningonport(self.port, ssh_client)
+        gpid = util.process.getpid_listeningonport(self.of_port, self._init_ssh)
 
         if gpid != -1:
-            raise Exception('[check_for_active_controller] Another process is '
+            raise Exception('[check_other_controller] Another process is '
                             'active on port {0}'.
-                            format(self.port))
+                            format(self.of_port))
 
-    def restart_controller(self,ssh_client=None):
+    def restart(self):
         """Restarts the controller
-
-        :param ssh_client : SSH client provided by paramiko to run the command
         :rtype: int
-        :type ssh_client: paramiko.SSHClient
         """
+        logging.info('[Controller] Restarting')
 
-        stop_controller(ssh_client)
-        self.cpid = start_controller(controller_cpus,ssh_client)
+        self.status = 'RESTARTING'
+        self.stop()
+        self.status = 'STOPPED'
+        self.pid = self.start(controller_cpus)
+        self.status = 'STARTED'
 
-    def start_controller(self, controller_cpus, ssh_client=None):
+    def start(self, controller_cpus):
         """Wrapper to the controller start handler
 
         :param controller_cpus: number of cpus returned by create_cpu_shares() and
         allocated for controller
-        :param ssh_client : SSH client provided by paramiko to run the command
         :raises Exception: When controller fails to start.
         :rtype: int
         :type controller_cpus: str
-        :type ssh_client: paramiko.SSHClient
         """
+        logging.info('[Controller] Starting')
 
-        if ssh_client==None:
+        self.status = 'STARTING'
+        if self._init_ssh==None:
             os.environ['JAVA_OPTS'] = self.java_opts
-            cmd = [self.start_handler]
+            cmd = [self.start_hnd]
         else:
             cmd = ['export JAVA_OPTS="{0}";'.format(self.java_opts),
                    'taskset', '-c', '{0}'.format(controller_cpus),
-                   self.start_handler]
+                   self.start_hnd]
         logging.info('[set_java_opts] JAVA_OPTS set to {0}'.format(self.java_opts))
 
-        if check_controller_status(ssh_client) == '0':
-            common.command_exec_wrapper(cmd, '[controller_start_handler]', ssh_client)
+        if check_status() == '0':
+            common.command_exec_wrapper(cmd, '[controller_start_handler]', self._init_ssh)
             logging.info(
                 '[start_controller] Waiting until controller starts listening')
-            self.cpid = wait_until_controller_listens(420000, ssh_client)
-            logging.info('[start_controller] Controller pid: {0}'.format(self.cpid))
+            self.pid = self.wait_until_listens(420000)
+            logging.info('[start_controller] Controller pid: {0}'.format(self.pid))
             logging.info(
                 '[start_controller] Checking controller status after it starts '
-                'listening on port {0}.'.format(self.controller_port))
-            wait_until_controller_up_and_running(420000, ssh_client)
+                'listening on port {0}.'.format(self.of_port))
+            self.wait_until_up(420000)
         else:
             logging.info('[start_controller] Controller already started.')
 
+        self.status = 'STARTED'
 
-    def stop_controller(ssh_client=None):
+    def stop():
         """Wrapper to the controller stop handler
-
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type ssh_client: paramiko.SSHClient
         """
 
-        if check_controller_status(ssh_client) == '1':
+        self.status = 'STOPPING'
+        if check_status() == '1':
             logging.info('[stop_controller] Stopping controller.')
             common.command_exec_wrapper(
-                [self.stop_handler],
-                '[controller_stop_handler]', ssh_client)
-            util.process.wait_until_process_finishes(self.cpid, ssh_client)
+                [self.stop_hnd],
+                '[controller_stop_handler]', self._init_ssh)
+            util.process.wait_until_process_finishes(self.pid, self._init_ssh)
         else:
             logging.info('[stop_controller] Controller already stopped.')
 
+        self.status = 'STOPPED'
 
-    def wait_until_controller_listens(interval_ms, ssh_client=None):
+    def build(self):
+        """ Wrapper to the controller build handler
+        """
+        logging.info('[Controller] Building')
+        self.status = 'BUILDING'
+
+        common.command_exec_wrapper([self.build_hnd],
+                             '[controller_build_handler]', self._init_ssh)
+
+        self.status = 'BUILT'
+
+    def wait_until_listens(interval_ms):
         """ Waits for controller to start listening on specified port.
 
         :param interval_ms: milliseconds to wait (in milliseconds).
-        :param ssh_client : SSH client provided by paramiko to run the command
         :raises Exception: If controller fails to start or if another process
         listens on controllers port.
         :rtype int
         :type interval_ms: int
-        :type ssh_client: paramiko.SSHClient
         """
+
+        logging.info('[Controller] Waiting to start listening on a port')
 
         timeout = time.time() + (float(interval_ms) / 1000)
         while time.time() < timeout:
             time.sleep(1)
-            gpid = util.process.getpid_listeningonport(self.port, ssh_client)
+            gpid = util.process.getpid_listeningonport(self.port, self._init_ssh)
             logging.info('Returned pid listening on port {0}: {1}'.
                           format(self.port, gpid))
             if gpid == 0:
@@ -205,21 +209,21 @@ class Controller:
                         'minutes'.format(timeout))
 
 
-    def wait_until_controller_up_and_running(interval_ms, ssh_client=None):
+    def wait_until_up(interval_ms):
         """ Waits for controller status to become 1 (started).
 
         :param interval_ms: milliseconds to wait (in milliseconds).
-        :param controller_status_handler: filepath to the controller status handler
         :raises Exception: If controller fails to start or if another process
         listens on controllers port.
         :type interval_ms: int
-        :type ssh_client: paramiko.SSHClient
         """
+
+        logging.info('[Controller] Waiting to be started')
 
         timeout = time.time() + (float(interval_ms) / 1000)
         while time.time() < timeout:
             time.sleep(1)
-            if check_controller_status(ssh_client) == '1':
+            if check_status() == '1':
                 return
 
         raise Exception('Controller failed to start. '
@@ -229,121 +233,170 @@ class Controller:
 
 
 class ODL(Controller):
-    def __init__(self,ctrl_base_dir,test_config):
-        Controller.__init__(self,test_config)
+
+    def __init__(self, ctrl_base_dir, test_config):
+
+        super(self.__class__, self).__init__(ctrl_base_dir, test_config)
 
         self.stat_period_ms = test_config['controller_statistics_period_ms']
 
         if 'controller_flowmods_conf_handler' in test_config:
-            self.flowmods_conf_handler= ctrl_base_dir + test_config['controller_flowmods_conf_handler']
+            self.flowmods_conf_hnd= ctrl_base_dir + test_config['controller_flowmods_conf_handler']
 
         if 'controller_statistics_handler' in test_config:
-            self.statistics_handler = ctrl_base_dir + test_config['controller_statistics_handler']
+            self.statistics_hnd = ctrl_base_dir + test_config['controller_statistics_handler']
 
         if 'controller_persistent_handler' in test_config:
-            self.persistent_handler = ctrl_base_dir + test_config['controller_persistent_handler']
+            self.persistent_hnd = ctrl_base_dir + test_config['controller_persistent_handler']
+
+        if 'controller_restconf_port' in test_config:
+            self.restconf_port = test_config['controller_restconf_port']
+            self.restconf_user = test_config['controller_restconf_user']
+            self.restconf_password = test_config['controller_restconf_password']
+
+        self.hosts = -1
+        self.switches = -1
+        self.links = -1
+        self.flows = -1
 
 
-    def controller_pre_actions(self, controller_ssh_client, controller_cpus):
-        """ Performs all necessary actions before starting a test. Pre actions
-        are 1) rebuild_controller 2) check_for_active_controller
-        3) generate_controller_xml_files
-
-        :param controller_ssh_client: paramiko.SSHClient object
-        :param controller_cpus: number of cpus returned by create_cpu_shares() and
-        allocated for controller
-        :type controller_ssh_client: paramiko.SSHClient
-        :type controller_cpus: str
-        """
-        if self.controller_rebuild:
-            logging.info('[controller_pre_actions] building controller')
-            rebuild_controller(self.build_handler, controller_ssh_client)
-
-        logging.info('[controller_pre_actions] checking for other active '
-                     'controllers')
-        check_for_active_controller(controller_ssh_client)
-        logging.info('[controller_pre_actions] starting and stopping controller'
-                     ' to generate xml files')
-
-        self.generate_controller_xml_files(controller_ssh_client, controller_cpus)
-        if self.persistent_handler != '':
-            change_persistent_controller(
-                self.persistent_handler,
-                controller_ssh_client)
-
-
-    def generate_controller_xml_files(self, ssh_client, controller_cpus):
+    def generate_xmls(self, controller_cpus):
         """ Starts and then stops the controller to trigger the generation of
         controller's XML files.
 
-        :param ssh_client : SSH client provided by paramiko to run the command
         :param controller_cpus: number of cpus returned by create_cpu_shares() and
         allocated for controller
-        :type ssh_client: paramiko.SSHClient
         :type controller_cpus: str
         """
-        logging.info('[generate_controller_xml_files] Starting controller')
-        cpid = start_controller(controller_cpus, ssh_client)
+        logging.info('[Controller] Generating XMLs')
+        pid = self.start(controller_cpus)
 
-        # Controller status check is done within start_controller()
-        logging.info('[generate_controller_xml_files] OK, controller status is 1.')
-        logging.info('[generate_controller_xml_files] Stopping controller')
-        stop_controller(ssh_client)
-
-
-    def rebuild_controller(self, ssh_client=None):
-        """ Wrapper to the controller build handler
-
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type ssh_client: paramiko.SSHClient
-        """
-
-        common.command_exec_wrapper([self.build_handler],
-                             '[controller_build_handler]', ssh_client)
+        # Controller status check is done within start()
+        logging.info('Controller status is 1.')
+        logging.info('[generate_xmls] Stopping controller')
+        self.stop()
 
 
-    def change_persistent_controller(controller_change_persistent_handler,
-                                     ssh_client=None):
+
+    def disable_persistence(self):
         """configure controller persistent to false in order not to backup
         datastore on the disk.
-
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type ssh_client: paramiko.SSHClient
         """
+        logging.info('[controller] Disabling persistent')
 
-        common.command_exec_wrapper([self.persistent_handler],
+        common.command_exec_wrapper([self.persistent_hnd],
                                     '[controller_change_persistent_handler]',
-                                    ssh_client)
+                                    self._init_ssh)
 
 
-    def controller_changestatsperiod(self, ssh_client=None):
+    def change_stats(self):
         """Wrapper to the controller statistics handler
-
-        :param self.statistics_handler: filepath to the controller statistics
-        handler
-        :param stat_period_ms: statistics period value to set (in milliseconds)
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type self.statistics_handler: str
-        :type curr_stat_period: int
-        :type ssh_client: paramiko.SSHClient
         """
+
+        logging.info('[controller] Changing statistics period')
         common.command_exec_wrapper(
-            [self.statistics_handler, str(stat_period_ms)],
-            '[self.statistics_handler] Changing statistics interval',
-            ssh_client)
+            [self.statistics_hnd, str(stat_period_ms)],
+            '[controller.statistics_handler] Changing statistics interval',
+            self._init_ssh)
         logging.info(
-            '[controller_changestatsperiod] Changed statistics period to {0} ms'.
-            format(stat_period_ms))
+            '[change_stats] Changed statistics period to {0} ms'.
+            format(self.stat_period_ms))
 
 
-    def flowmod_configure_controller(ssh_client=None):
+    def flowmods_config(self):
         """configure controller to send flow modifications as a responce to ARP
         Packet_INs.
+        """
+        logging.info('[controller] Configure flow modifications')
+        common.command_exec_wrapper([self.flowmods_conf_hnd],
+                                    '[controller_flowmod_configure_handler]',
+                                    self._init_ssh)
 
-        :param ssh_client : SSH client provided by paramiko to run the command
-        :type ssh_client: paramiko.SSHClient
+
+    def get_oper_hosts(self):
+        """Query number of hosts registered in ODL operational DS
         """
 
-        common.command_exec_wrapper([self.flowmods_conf_handler],
-                                    '[controller_flowmod_configure_handler]',
-                                    ssh_client)
+        logging.info('[Controller] Getting the number of operational hosts')
+
+        url = ('http://{0}:{1}/restconf/operational/network-topology:'
+               'network-topology/network-topology:topology/flow:1/'.
+               format(self.ip, self.restconf_port))
+
+        auth_token = (self.restconf_username,
+                      self.restconf_password)
+        try:
+            datastore = requests.get(url=url,
+                auth=auth_token).json()['topology'][0]
+        except:
+            self.hosts = -1
+
+        get_hosts = l[node for node in datastore.get('node', []) if node['node-id'].startswith('host:')]
+        self.hosts = len(get_hosts)
+
+    def get_oper_switches(self):
+        """Query number of switches registered in ODL operational DS
+        """
+
+        logging.info('[Controller] Getting the number of operational switches')
+        url = ('http://{0}:{1}/restconf/operational/network-topology:'
+               'network-topology/network-topology:topology/flow:1/'.
+               format(self.ip, self.restconf_port))
+
+        auth_token = (self.restconf_username,
+                      self.restconf_password)
+
+        logging.debug('[check_ds_switches] Making RestCall: {0}'.format(url))
+
+        try:
+            datastore = requests.get(url=url,
+                auth=auth_token).json()['topology'][0]
+
+        except:
+            logging.error('[check_ds_switches] Fail getting response from '
+                          'operational datastore')
+
+            self.switches = -1
+
+        get_switches = [node for node in datastore.get('node', []) if not node['node-id'].startswith('host:')]
+
+        self.switches = len(get_switches)
+
+        logging.debug('[check_ds_switches] Discovered switches: {0}'.
+                      format(self.switches))
+
+    def get_oper_links(self):
+        """Query number of links registered in ODL operational DS
+        """
+
+        logging.info('[Controller] Getting the number of operational switches')
+
+        url = ('http://{0}:{1}/restconf/operational/network-topology:'
+               'network-topology/network-topology:topology/flow:1/'.
+               format(self.ip, self.restconf_port))
+        auth_token = (self.restconf_username,
+                      self.restconf_password)
+        try:
+            datastore = requests.get(url=url,
+                auth=auth_token).json()['topology'][0]
+        except:
+            self.links = -1
+
+        get_links = [link for link in datastore.get('link', [])]
+        self.links = len(get_links)
+
+
+    def get_oper_flows(self):
+        """Query number of flows in ODL operational DS
+        """
+        logging.info('[Controller] Getting the number of operational flows')
+
+        odl_inventory = emulators.nb_generator.flow_utils.FlowExplorer(self.ip,
+                                                             self.restconf_port,
+                                                             'operational',
+                                                             (self.restconf_username, self.restconf_.password))
+        odl_inventory.get_inventory_flows_stats()
+        logging.debug('Found {0} flows at inventory'.
+                      format(odl_inventory.found_flows))
+
+        self.flows = odl_inventory.found_flows
