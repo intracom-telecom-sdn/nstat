@@ -191,6 +191,53 @@ def ssh_connect_or_return(connection, maxretries):
     raise Exception('[netutil] could not connect to {0}. Returning'
                  .format(connection.ip))
 
+
+
+def __ssh_connect_or_return(ip, ssh_port, username, password, maxretries):
+    """Opens a connection and returns a connection object. If it fails to open
+    a connection after a specified number of tries, it returns -1.
+
+    :param ip: controller IP address
+    :param ssh_port: controller port
+    :param username: username of the remote user
+    :param password: password of the remote user
+    :param maxretries: maximum number of times to connect
+    :returns: an ssh connection handle or -1 on failure
+    :rtype: paramiko.SSHClient (or -1 when failure)
+    :type ip: str
+    :type ssh_port: int
+    :type username: str
+    :type password: str
+    :type maxretries: int
+    """
+
+    retries = 1
+
+    while retries <= maxretries:
+        logging.info(
+            '[ssh_connect_or_return] Trying to connect to {0}:{1} ({2}/{3})'.
+            format(ip, ssh_port, retries, maxretries))
+
+        try:
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(hostname=ip, port=ssh_port,
+                        username=username,
+                        password=password)
+            logging.info('[ssh_connect_or_return] connected to {0} '.
+                         format(ip))
+            return ssh
+        except paramiko.AuthenticationException:
+            logging.error(
+                '[ssh_connect_or_return] authentication failed when connecting to {0}'.
+                format(ip))
+
+        retries += 1
+        time.sleep(2)
+    # If we exit while without ssh object been returned, then return -1
+    raise Exception('[netutil] could not connect to {0}. Returning'
+                 .format(ip))
+
 def ssh_connection_close(sftp, transport_layer):
     """ Closes an ssh connection with a remote node
 
