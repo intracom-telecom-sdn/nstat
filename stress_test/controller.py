@@ -15,7 +15,9 @@ import time
 import util.netutil
 import util.process
 
+
 class Controller:
+
 
     def __init__(self, ctrl_base_dir, test_config):
 
@@ -31,7 +33,7 @@ class Controller:
         self.ip = test_config['controller_node_ip']
         self.ssh_port = test_config['controller_node_ssh_port']
         self.ssh_user = test_config['controller_node_username']
-        self.ssh_pass = test_config['controller_password']
+        self._ssh_conn = test_config['controller_password']
 
         self.need_rebuild = self.base_dir + test_config['controller_rebuild']
         self.need_cleanup = self.base_dir + test_config['controller_cleanup']
@@ -49,17 +51,37 @@ class Controller:
         self.java_opts = ' '.join(test_config['java_opts'])
         self.pid = -1
 
-        self.ssh_pass = None
+        self._ssh_conn = None
+
+
+        @staticmethod
+    def new(self)
+        """ Factory method. Creates a subclass class depending on the controller name
+        :returns: a subclass or None
+        :rtype: failed_flow_ops int
+        """
+
+        if (self.name == 'ODL'):
+           return ODL(ctrl_base_dir, test_config)
+
+        elif (self.name == 'ONOS'):
+
+           raise NotImplementedError('ONOS is not supported yet')
+        #  return ONOS(ctrl_base_dir, test_config)
+
+        else:
+            raise NotImplementedError('Not supported yet')
+        #   return None
 
 
     def init_ssh(self)
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-        self.ssh_pass = util.netutil.__ssh_connect_or_return(self.ip,
+        self._ssh_conn = util.netutil.__ssh_connect_or_return(self.ip,
                                       int(self.ssh_port),
                                       self.ssh_user,
-                                      self.ssh_pass,
+                                      self._ssh_conn,
                                       10)
 
 
@@ -70,7 +92,7 @@ class Controller:
 
         self.status = 'CLEANING'
         common.command_exec_wrapper([self.clean_hnd],
-                                    '[controller.clean_handler]', self.ssh_pass)
+                                    '[controller.clean_handler]', self._ssh_conn)
         self.status = 'CLEANED'
 
     def check_status(self):
@@ -95,7 +117,7 @@ class Controller:
             format(self.of_port))
 
         # check if any process listens on controller port
-        gpid = util.process.getpid_listeningonport(self.of_port, self.ssh_pass)
+        gpid = util.process.getpid_listeningonport(self.of_port, self._ssh_conn)
 
         if gpid != -1:
             raise Exception('[check_other_controller] Another process is '
@@ -121,7 +143,7 @@ class Controller:
         logging.info('[Controller] Starting')
 
         self.status = 'STARTING'
-        if self.ssh_pass==None:
+        if self._ssh_conn==None:
             os.environ['JAVA_OPTS'] = self.java_opts
             cmd = [self.start_hnd]
         else:
@@ -129,7 +151,7 @@ class Controller:
                    self.start_hnd]
 
         if check_status() == '0':
-            common.command_exec_wrapper(cmd, '[controller_start_handler]', self.ssh_pass)
+            common.command_exec_wrapper(cmd, '[controller_start_handler]', self._ssh_conn)
             logging.info(
                 '[start_controller] Waiting until controller starts listening')
             self.pid = self.wait_until_listens(420000)
@@ -152,8 +174,8 @@ class Controller:
             logging.info('[stop_controller] Stopping controller.')
             common.command_exec_wrapper(
                 [self.stop_hnd],
-                '[controller_stop_handler]', self.ssh_pass)
-            util.process.wait_until_process_finishes(self.pid, self.ssh_pass)
+                '[controller_stop_handler]', self._ssh_conn)
+            util.process.wait_until_process_finishes(self.pid, self._ssh_conn)
             self.status = 'STOPPED'
 
             else:
@@ -166,7 +188,7 @@ class Controller:
         self.status = 'BUILDING'
 
         common.command_exec_wrapper([self.build_hnd],
-                             '[controller_build_handler]', self.ssh_pass)
+                             '[controller_build_handler]', self._ssh_conn)
 
         self.status = 'BUILT'
 
@@ -185,7 +207,7 @@ class Controller:
         timeout = time.time() + (float(timeout_ms) / 1000)
         while time.time() < timeout:
             time.sleep(1)
-            gpid = util.process.getpid_listeningonport(self.port, self.ssh_pass)
+            gpid = util.process.getpid_listeningonport(self.port, self._ssh_conn)
             logging.info('Returned pid listening on port {0}: {1}'.
                           format(self.port, gpid))
             if gpid == 0:
@@ -216,21 +238,6 @@ class Controller:
         raise Exception('Controller failed to start. '
                         'Status check returned 0 after trying for {0} seconds.'.
                         format(float(timeout_ms) / 1000))
-
-
-    @staticmethod
-    def new_controller(self)
-        """ Factory method. Creates a subclass class depending on the controller name
-        :returns: a subclass or None
-        :rtype: failed_flow_ops int
-        """
-
-        if (self.name == 'OLD'):
-           return ODL()
-        elif (self.name == 'ONOS'):
-           return ONOS()
-        else:
-            return None
 
 
 class ODL(Controller):
@@ -278,7 +285,7 @@ class ODL(Controller):
 
         common.command_exec_wrapper([self.persistent_hnd],
                                     '[controller_change_persistent_handler]',
-                                    self.ssh_pass)
+                                    self._ssh_conn)
 
 
     def change_stats(self):
@@ -289,7 +296,7 @@ class ODL(Controller):
         common.command_exec_wrapper(
             [self.statistics_hnd, str(self.stat_period_ms)],
             '[controller.statistics_handler] Changing statistics interval',
-            self.ssh_pass)
+            self._ssh_conn)
         logging.info(
             '[change_stats] Changed statistics period to {0} ms'.
             format(self.stat_period_ms))
@@ -302,7 +309,7 @@ class ODL(Controller):
         logging.info('[controller] Configure flow modifications')
         common.command_exec_wrapper([self.flowmods_conf_hnd],
                                     '[controller_flowmod_configure_handler]',
-                                    self.ssh_pass)
+                                    self._ssh_conn)
 
 
     def get_oper_hosts(self):
