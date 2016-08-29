@@ -33,10 +33,10 @@ class Controller:
         self.ip = test_config['controller_node_ip']
         self.ssh_port = test_config['controller_node_ssh_port']
         self.ssh_user = test_config['controller_node_username']
-        self._ssh_conn = test_config['controller_password']
+        self.ssh_pass = test_config['controller_node_password']
 
-        self.need_rebuild = self.base_dir + test_config['controller_rebuild']
-        self.need_cleanup = self.base_dir + test_config['controller_cleanup']
+        self.need_rebuild = test_config['controller_rebuild']
+        self.need_cleanup = test_config['controller_cleanup']
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
@@ -54,17 +54,17 @@ class Controller:
         self._ssh_conn = None
 
 
-        @staticmethod
-    def new(self)
+    @staticmethod
+    def new (ctrl_base_dir, test_config):
         """ Factory method. Creates a subclass class depending on the controller name
         :returns: a subclass or None
         :rtype: failed_flow_ops int
         """
-
-        if (self.name == 'ODL'):
+        name = test_config['controller_name']
+        if (name == 'ODL'):
            return ODL(ctrl_base_dir, test_config)
 
-        elif (self.name == 'ONOS'):
+        elif name == 'ONOS':
 
            raise NotImplementedError('ONOS is not supported yet')
         #  return ONOS(ctrl_base_dir, test_config)
@@ -74,14 +74,14 @@ class Controller:
         #   return None
 
 
-    def init_ssh(self)
+    def init_ssh(self):
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-        self._ssh_conn = util.netutil.__ssh_connect_or_return(self.ip,
+        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
                                       int(self.ssh_port),
                                       self.ssh_user,
-                                      self._ssh_conn,
+                                      self.ssh_pass,
                                       10)
 
 
@@ -178,7 +178,7 @@ class Controller:
             util.process.wait_until_process_finishes(self.pid, self._ssh_conn)
             self.status = 'STOPPED'
 
-            else:
+        else:
             logging.info('[stop_controller] Controller already stopped.')
 
     def build(self):
@@ -247,7 +247,6 @@ class ODL(Controller):
         super(self.__class__, self).__init__(ctrl_base_dir, test_config)
 
         self.stat_period_ms = test_config['controller_statistics_period_ms']
-
         if 'controller_flowmods_conf_handler' in test_config:
             self.flowmods_conf_hnd= ctrl_base_dir + test_config['controller_flowmods_conf_handler']
 

@@ -193,7 +193,7 @@ def ssh_connect_or_return(connection, maxretries):
 
 
 
-def __ssh_connect_or_return(ip, ssh_port, username, password, maxretries):
+def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
 
