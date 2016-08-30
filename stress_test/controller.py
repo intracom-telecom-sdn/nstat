@@ -12,9 +12,10 @@ import logging
 import os
 import subprocess
 import time
+import util.file_ops
 import util.netutil
 import util.process
-
+import queue
 
 class Controller:
 
@@ -53,6 +54,14 @@ class Controller:
 
         self._ssh_conn = None
 
+        #check handlers' validity
+        util.file_ops.check_filelist([self.build_hnd,
+                                      self.start_hnd,
+                                      self.stop_hnd,
+                                      self.status_hnd,
+                                      self.clean_hnd])
+
+
 
     @staticmethod
     def new (ctrl_base_dir, test_config):
@@ -78,11 +87,15 @@ class Controller:
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                      int(self.ssh_port),
-                                      self.ssh_user,
-                                      self.ssh_pass,
-                                      10)
+#        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
+#                                      int(self.ssh_port),
+#                                      self.ssh_user,
+#                                      self.ssh_pass,
+#                                      10)
+
+        self._ssh_conn = util.netutil.ssh_connect_or_return(self,10)
+   
+
 
 
     def cleanup(self):
@@ -100,9 +113,17 @@ class Controller:
         """
         logging.info('[Controller] Checking the status')
 
+        q = queue.Queue()
         common.command_exec_wrapper([self.status_hnd],
                                     '[controller_status_handler]',
-                                    self.status_hnd)
+                                    self._ssh_conn,q)
+        cmd_output = ''
+   
+        while not q.empty():
+            cmd_output += str(q.get()) + ' '
+  
+        logging.info ('[Controller] status output: {0}'.format(cmd_output))
+        return cmd_output.strip()
 
 
     def check_other_controller(self):
@@ -150,7 +171,7 @@ class Controller:
             cmd = ['export JAVA_OPTS="{0}";'.format(self.java_opts),
                    self.start_hnd]
 
-        if check_status() == '0':
+        if self.check_status() == '0':
             common.command_exec_wrapper(cmd, '[controller_start_handler]', self._ssh_conn)
             logging.info(
                 '[start_controller] Waiting until controller starts listening')
@@ -170,8 +191,9 @@ class Controller:
         """
 
         self.status = 'STOPPING'
-        if check_status() == '1':
+        if self.check_status()=='1':    
             logging.info('[stop_controller] Stopping controller.')
+            print (self.pid)
             common.command_exec_wrapper(
                 [self.stop_hnd],
                 '[controller_stop_handler]', self._ssh_conn)
@@ -207,10 +229,13 @@ class Controller:
         timeout = time.time() + (float(timeout_ms) / 1000)
         while time.time() < timeout:
             time.sleep(1)
-            gpid = util.process.getpid_listeningonport(self.port, self._ssh_conn)
+            gpid = util.process.getpid_listeningonport(self.of_port, self._ssh_conn)
             logging.info('Returned pid listening on port {0}: {1}'.
-                          format(self.port, gpid))
-            if gpid == 0:
+                          format(self.of_port, gpid))
+            
+            if gpid>0:
+                return gpid
+            elif gpid == 0:
                 raise Exception('Another controller seems to have started in the '
                                 'meantime. Exiting...')
 
@@ -232,7 +257,7 @@ class Controller:
         timeout = time.time() + (float(timeout_ms) / 1000)
         while time.time() < timeout:
             time.sleep(1)
-            if check_status() == '1':
+            if self.check_status() == '1':
                 return
 
         raise Exception('Controller failed to start. '
@@ -249,12 +274,22 @@ class ODL(Controller):
         self.stat_period_ms = test_config['controller_statistics_period_ms']
         if 'controller_flowmods_conf_handler' in test_config:
             self.flowmods_conf_hnd= ctrl_base_dir + test_config['controller_flowmods_conf_handler']
+            
+            #check handler's validity
+            util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
         if 'controller_statistics_handler' in test_config:
             self.statistics_hnd = ctrl_base_dir + test_config['controller_statistics_handler']
 
+            #check handler's validity
+            util.file_ops.check_filelist([self.statistics_hnd])
+
+
         if 'controller_persistent_handler' in test_config:
             self.persistent_hnd = ctrl_base_dir + test_config['controller_persistent_handler']
+
+            #check handler's validity
+            util.file_ops.check_filelist([self.persistent_hnd])
 
         if 'controller_restconf_port' in test_config:
             self.restconf_port = test_config['controller_restconf_port']
@@ -265,7 +300,6 @@ class ODL(Controller):
         self.oper_switches = -1
         self.oper_links = -1
         self.oper_flows = -1
-
 
     def generate_xmls(self):
         """ Starts and then stops the controller to trigger the generation of

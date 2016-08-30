@@ -9,27 +9,73 @@
 import logging
 import json
 import os
-import pprint
 import controller
 import util.netutil
 import util.process
+import sys
+
+
+#define a root logger
+LOGGER=logging.getLogger()
+LOGGER.level = logging.INFO
+
+# logging output to stdout
+STREAM_HANDLER = logging.StreamHandler(sys.stdout)
+LOGGER.addHandler(STREAM_HANDLER)
 
 
 logging.info('Parsing test configuration')
+
+#define Class inputs:json_conf_file and ctrl_base_dir 
+
 json_conf_file = open("controller_test.json")
 config_file = json.load(json_conf_file)
-# pprint.pprint(config_file)
 
-ctrl_base_dir = os.path.join('F:\\SDN\\NSTAT\\USs\Refactoring_Controller_class',
-                             'nstat-master\controllers\odl_beryllium_pb\\')
-#print(ctrl_base_dir)
+
+ctrl_base_dir = os.path.join('/home','jenkins','nstat_soth',
+                             'controllers','odl_beryllium_pb/')
+
+
+#create a new Controller class instance, ctrl
 
 ctrl = controller.Controller.new(ctrl_base_dir, config_file)
 
-#print(ctrl.ip, int(ctrl.ssh_port),ctrl.ssh_user,ctrl.ssh_pass)
+#initialize a connection
 
-print ("Run init_ssh!")
 ctrl.init_ssh()
-print ("DONE!")
 
-#test = util.netutil.__ssh_connect_or_return(ctrl.ip, int(ctrl.ssh_port),ctrl.ssh_user,ctrl.ssh_pass,10)
+#check other connections on the OF port of the config file
+ctrl.check_other_controller()
+
+if ctrl.need_rebuild:
+    #build a controller
+    ctrl.build()
+
+if ctrl.persistent_hnd:
+    #disable persistence
+    ctrl.disable_persistence()
+
+    #build a controller
+    ctrl.build()
+
+ctrl.generate_xmls()
+
+try:
+    #start a controller
+    ctrl.check_status()
+    ctrl.start()
+    ctrl.check_status()
+    
+    #change stat period
+    ctrl.change_stats()
+    
+except:
+    logging.info('Error, check the logs')
+
+finally:
+    ctrl.stop()
+    ctrl.check_status()
+    if ctrl.need_cleanup:
+       ctrl.clean_hnd()
+
+
