@@ -70,7 +70,7 @@
 "multinet_clean_handler":"clean.sh",
 "multinet_build_handler":"build.sh",
 
-"multinet_worker_ip_list":["192.168.160.204", "192.168.160.204", "192.168.160.205", "192.168.160.206"],
+"multinet_worker_ip_list":["192.168.160.203", "192.168.160.204", "192.168.160.205", "192.168.160.206"],
 "multinet_worker_port_list":[3333, 3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
