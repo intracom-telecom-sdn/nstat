@@ -253,6 +253,12 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_rest_server, controller_nb_interface,
                 multinet_base_dir)
 
+            t_start = time.time()
+            result_get_sw = multinet_command_runner(get_switches_handler,
+                '[get_switches_handler]', multinet_base_dir,
+                is_privileged=False)
+            switches_measurement_latency_interval = time.time() - t_start
+            logging.info('switches_measurement_latency_interval :{0} [sec]'.format(switches_measurement_latency_interval))
 
             # Check initial flows of booted switches
             logging.info('{0} Check initial operational DataStore flows and '
