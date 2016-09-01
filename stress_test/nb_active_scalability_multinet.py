@@ -254,7 +254,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_base_dir)
 
             t_start = time.time()
-            result_get_sw = multinet_command_runner(get_switches_handler,
+            result_get_sw = multinet_utils.multinet_command_runner(get_switches_handler,
                 '[get_switches_handler]', multinet_base_dir,
                 is_privileged=False)
             switches_measurement_latency_interval = time.time() - t_start
