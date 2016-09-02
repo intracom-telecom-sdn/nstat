@@ -450,13 +450,6 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_handlers_set.stop_switches_handler,
                 'stop_switches_handler_multinet', multinet_base_dir)
 
-            logging.info('{0} stopping REST daemon in Multinet node'.
-                format(test_type))
-
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
-                multinet_base_dir)
-
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
         exc_type, exc_obj, exc_tb = sys.exc_info()
