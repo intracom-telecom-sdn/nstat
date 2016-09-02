@@ -1,6 +1,7 @@
 branches:
   only:
-    - develop_Dockerfile_review
+    - master
+    - develop_measure_latency
 sudo: required
 dist: trusty
 language: python
