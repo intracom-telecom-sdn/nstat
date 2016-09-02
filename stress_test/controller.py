@@ -87,16 +87,12 @@ class Controller:
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-#        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-#                                      int(self.ssh_port),
-#                                      self.ssh_user,
-#                                      self.ssh_pass,
-#                                      10)
 
-        self._ssh_conn = util.netutil.ssh_connect_or_return(self,10)
-   
-
-
+        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
+                                      int(self.ssh_port),
+                                      self.ssh_user,
+                                      self.ssh_pass,
+                                      10)
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
@@ -104,8 +100,9 @@ class Controller:
         logging.info('[Controller] Cleaning up')
 
         self.status = 'CLEANING'
-        common.command_exec_wrapper([self.clean_hnd],
-                                    '[controller.clean_handler]', self._ssh_conn)
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.clean_hnd]),
+                                    '[controller.clean_handler]')[0]
         self.status = 'CLEANED'
 
     def check_status(self):
@@ -114,9 +111,11 @@ class Controller:
         logging.info('[Controller] Checking the status')
 
         q = queue.Queue()
-        common.command_exec_wrapper([self.status_hnd],
-                                    '[controller_status_handler]',
-                                    self._ssh_conn,q)
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.status_hnd]),
+                                    '[controller.status_handler]',
+                                    q)[0]
+
         cmd_output = ''
    
         while not q.empty():
@@ -172,7 +171,9 @@ class Controller:
                    self.start_hnd]
 
         if self.check_status() == '0':
-            common.command_exec_wrapper(cmd, '[controller_start_handler]', self._ssh_conn)
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join(cmd),
+                                    '[controller.start_handler]')[0]            
             logging.info(
                 '[start_controller] Waiting until controller starts listening')
             self.pid = self.wait_until_listens(420000)
@@ -194,9 +195,9 @@ class Controller:
         if self.check_status()=='1':    
             logging.info('[stop_controller] Stopping controller.')
             print (self.pid)
-            common.command_exec_wrapper(
-                [self.stop_hnd],
-                '[controller_stop_handler]', self._ssh_conn)
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.stop_hnd]),
+                                    '[controller.stop_handler]')[0]
             util.process.wait_until_process_finishes(self.pid, self._ssh_conn)
             self.status = 'STOPPED'
 
@@ -208,10 +209,9 @@ class Controller:
         """
         logging.info('[Controller] Building')
         self.status = 'BUILDING'
-
-        common.command_exec_wrapper([self.build_hnd],
-                             '[controller_build_handler]', self._ssh_conn)
-
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.build_hnd]),
+                                    '[controller.build_handler]')[0]
         self.status = 'BUILT'
 
     def wait_until_listens(self,timeout_ms):
@@ -286,10 +286,10 @@ class ODL(Controller):
 
 
         if 'controller_persistent_handler' in test_config:
-            self.persistent_hnd = ctrl_base_dir + test_config['controller_persistent_handler']
+            self.persistence_hnd = ctrl_base_dir + test_config['controller_persistent_handler']
 
             #check handler's validity
-            util.file_ops.check_filelist([self.persistent_hnd])
+            util.file_ops.check_filelist([self.persistence_hnd])
 
         if 'controller_restconf_port' in test_config:
             self.restconf_port = test_config['controller_restconf_port']
@@ -316,20 +316,20 @@ class ODL(Controller):
         """
         logging.info('[controller] Disabling persistence')
 
-        common.command_exec_wrapper([self.persistent_hnd],
-                                    '[controller_change_persistent_handler]',
-                                    self._ssh_conn)
-
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.persistence_hnd]),
+                                    '[controller.change_persistent_handler]')[0]
 
     def change_stats(self):
         """Wrapper to the controller statistics handler
         """
 
         logging.info('[controller] Changing statistics period')
-        common.command_exec_wrapper(
-            [self.statistics_hnd, str(self.stat_period_ms)],
-            '[controller.statistics_handler] Changing statistics interval',
-            self._ssh_conn)
+
+
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.statistics_hnd, str(self.stat_period_ms[0])]),
+                                    '[controller.statistics_handler] Changing statistics interval')[0]
         logging.info(
             '[change_stats] Changed statistics period to {0} ms'.
             format(self.stat_period_ms))
@@ -340,10 +340,9 @@ class ODL(Controller):
         Packet_INs.
         """
         logging.info('[controller] Configure flow modifications')
-        common.command_exec_wrapper([self.flowmods_conf_hnd],
-                                    '[controller_flowmod_configure_handler]',
-                                    self._ssh_conn)
-
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.flowmods_conf_hnd]),
+                                    '[controller.flowmod_configure_handler]')[0]
 
     def get_oper_hosts(self):
         """Wrapper to the controller oper_hosts handler
