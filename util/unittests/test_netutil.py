@@ -144,6 +144,14 @@ class NetUtilTest(unittest.TestCase):
         util.netutil.create_dir_remote(self.remote_node,
             remote_dir_create)
 
+    def test07_ssh_connect_or_return2(self):
+        """ssh_connect_or_return2() check returned ssh object
+        """
+        logging.info('[netutil-test] remote address: {0} '.
+                     format(self.remote_node.ip))
+        self.assertIsNotNone(util.netutil.ssh_connect_or_return2(
+             self.remote_node.ip, self.remote_node.ssh_port, self.remote_node.username, self.remote_node.password, self.constants_set.maxretries))
+
         pass
     @classmethod
     def tearDownClass(cls):

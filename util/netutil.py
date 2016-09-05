@@ -175,8 +175,8 @@ def ssh_connect_or_return(connection, maxretries):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(hostname=connection.ip, port=connection.ssh_port,
-                        username=connection.ssh_user,
-                        password=connection.ssh_pass)
+                        username=connection.username,
+                        password=connection.password)
             logging.info('[ssh_connect_or_return] connected to {0} '.
                          format(connection.ip))
             return ssh
