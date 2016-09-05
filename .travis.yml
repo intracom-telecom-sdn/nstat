@@ -12,7 +12,7 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
-#  - export PYTHONPATH=$(pwd)
+  - export PYTHONPATH=$(pwd)
   - python3.4 ./stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
   - cd ..
   - cd util/unittests
