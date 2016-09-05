@@ -1,6 +1,7 @@
 branches:
   only:
-    - develop_provision
+    - master
+    - develop_controller_refactor
 sudo: required
 dist: trusty
 language: python
