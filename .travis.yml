@@ -11,6 +11,8 @@ jdk:
   - openjdk7
 before_script:
   - sudo apt-get update -qq
+  - export PYTHONPATH=$(pwd)
+  - python3.4 ./stress_test/controller_test_basic.py controller_test.json ./controllers/odl_beryllium_pb
   - sudo bash ./deploy/provision.sh
   - cd util/unittests
 script:
