@@ -146,7 +146,6 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
             # check if the controller has discovered Multinet topology
             if discovered_switches == expected_switches and \
                 ds_switches == expected_switches and expected_switches != 0:
-            
                 return
         except:
             pass

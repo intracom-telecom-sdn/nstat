@@ -48,29 +48,29 @@
 "topology_get_switches_handler":"./bin/handlers/get_switches",
 "topology_traffic_gen_handler":"./bin/handlers/traffic_gen",
 
-"topology_size":[200],
+"topology_size":[12, 25, 50, 100, 200, 300],
 "topology_type":["linear"],
 "topology_hosts_per_switch":[2],
-"topology_group_size":[5],
+"topology_group_size":[1],
 "topology_group_delay_ms":[5000],
 
 
 "multinet_clean_handler":"./clean.sh",
 "multinet_build_handler":"./build.sh",
 
-"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22", "192.168.100.23", "192.168.100.24"],
-"multinet_worker_port_list":[3333, 3333, 3333, 3333, 3333],
+"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22", "192.168.100.23", "192.168.100.24", "192.168.100.25", "192.168.100.26", "192.168.100.27", "192.168.100.28", "192.168.100.29", "192.168.100.30", "192.168.100.31", "192.168.100.32", "192.168.100.33", "192.168.100.34", "192.168.100.35"],
+"multinet_worker_port_list":[3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333, 3333],
 "multinet_switch_type":"ovsk",
 
-"traffic_generation_duration_ms":300000,
-"interpacket_delay_ms":3000,
+"traffic_generation_duration_ms":60000,
+"interpacket_delay_ms":500,
 
 "oftraf_rest_server_port":5555,
 
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 
-"test_repeats":1,
+"test_repeats":2,
 
 "plots":[
     {

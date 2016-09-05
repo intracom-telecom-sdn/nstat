@@ -15,18 +15,18 @@
 
 "topology_node_spec":"/nstat/vagrant/node_multinet/Vagrantfile",
 "topology_host_ip":"127.0.0.1",
-"topology_node_ip":"192.168.100.20",
+"topology_node_ip":"192.168.160.204",
 "topology_node_ssh_port":"22",
 "topology_node_username":"vagrant",
 "topology_node_password":"vagrant",
 
-"controller_build_handler":"./build.sh",
-"controller_start_handler":"./start.sh",
-"controller_stop_handler":"./stop.sh",
-"controller_status_handler":"./status.sh",
-"controller_clean_handler":"./clean.sh",
-"controller_statistics_handler":"/change_stats_period.py",
-"controller_persistent_handler":"/change_persistence.py",
+"controller_build_handler":"build.sh",
+"controller_start_handler":"start.sh",
+"controller_stop_handler":"stop.sh",
+"controller_status_handler":"status.sh",
+"controller_clean_handler":"clean.sh",
+"controller_statistics_handler":"change_stats_period.py",
+"controller_persistent_handler":"change_persistence.py",
 
 "controller_logs_dir":"./distribution-karaf-0.3.3-Lithium-SR3/data/log/",
 
@@ -40,14 +40,14 @@
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":100,
 
-"topology_rest_server_boot":"./bin/deploy",
-"topology_rest_server_stop":"./bin/cleanup",
+"topology_rest_server_boot":"bin/deploy",
+"topology_rest_server_stop":"bin/cleanup",
 "topology_rest_server_port":3300,
 
-"topology_init_handler":"./bin/handlers/init_topos",
-"topology_start_switches_handler":"./bin/handlers/start_topos",
-"topology_stop_switches_handler":"./bin/handlers/stop_topos",
-"topology_get_switches_handler":"./bin/handlers/get_switches",
+"topology_init_handler":"bin/handlers/init_topos",
+"topology_start_switches_handler":"bin/handlers/start_topos",
+"topology_stop_switches_handler":"bin/handlers/stop_topos",
+"topology_get_switches_handler":"bin/handlers/get_switches",
 
 "topology_size":[10],
 "topology_type":["linear"],
@@ -56,11 +56,11 @@
 "topology_group_delay_ms":[2000],
 
 
-"multinet_clean_handler":"./clean.sh",
-"multinet_build_handler":"./build.sh",
+"multinet_clean_handler":"clean.sh",
+"multinet_build_handler":"build.sh",
 
-"multinet_worker_ip_list":["192.168.100.20", "192.168.100.21", "192.168.100.22"],
-"multinet_worker_port_list":[3333, 3333, 3333],
+"multinet_worker_ip_list":["192.168.160.204", "192.168.160.205"],
+"multinet_worker_port_list":[3333, 3333],
 "multinet_switch_type":"ovsk",
 
 
@@ -69,7 +69,7 @@
 "plots":[
   {
       "x_axis_key":"multinet_size",
-      "y_axis_key":"bootup_time_secs",
+      "y_axis_key":"successful_bootup_time",
       "z_axis_key":"multinet_group_delay_ms",
       "x_axis_label":"number of network switches [N]",
       "y_axis_label":"bootup time [s]",
