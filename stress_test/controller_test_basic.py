@@ -33,7 +33,6 @@ if str(sys.argv[1])=='-h':
 
 test_file = str(sys.argv[1])
 
-#with open("controller_test.json","r") as json_conf_file:
 
 with open(test_file,"r") as json_conf_file:
 
@@ -41,7 +40,6 @@ with open(test_file,"r") as json_conf_file:
 
 ctrl_base_dir = str(sys.argv[2])
 
-#"/home/jenkins/nstat_soth/controllers/odl_beryllium_pb/"
 
 #create a new Controller class instance, ctrl
 ctrl = controller.Controller.new(ctrl_base_dir, test_config)
@@ -60,28 +58,34 @@ if ctrl.need_rebuild:
     #build a controller
     ctrl.build()
     #check the effect of build()
-    if os.path.isfile(os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/bin/karaf')):
+    host = ctrl.ssh_user + '@' + ctrl.ip
+
+    print (host)
+    build_check_file = os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/bin/')
+
+    if util.netutil.remote_file_exists(build_check_file,'karaf',ctrl._ssh_conn):
         logging.info('Controller is built')
 
 #path to check the affect of called methods
 datastore_conf_path= os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/etc')
 
+print (datastore_conf_path)
 if ctrl.persistence_hnd:
     #disable persistence
     ctrl.disable_persistence()
-    
+
     #check the effect of disable_ persistence()
-    datastore_path = os.path.join(datastore_conf_path,'org.opendaylight.controller.cluster.datastore.cfg')
+    path_file = os.path.join(datastore_conf_path,'org.opendaylight.controller.cluster.datastore.cfg')
+    pattern = 'persistent=false'
 
-    with open(datastore_path,"r") as f:
-        read_cfg = f.read()
+    print (path_file)
+    print (pattern)
 
-    for line in read_cfg:
-        if 'persistent=false' in read_cfg:
-            print ("Persistence is disabled successfully")
-            break
-        else:
-            print ("Persistence is still enabled")
+    if util.netutil.check_remote_file(path_file,ctrl._ssh_conn,pattern):
+        print ("Persistence is disabled successfully")
+    else:
+        print ("Persistence is still enabled")
+
 
 ctrl.generate_xmls()
 
@@ -93,22 +97,14 @@ try:
     #change stat period
     ctrl.change_stats()
 
- #check the effect of change_stats()
-    xml_file_path = os.path.join(datastore_conf_path,'opendaylight','karaf','30-statistics-manager.xml')
+    #check the effect of change_stats()
+    path_file = os.path.join(datastore_conf_path,'opendaylight','karaf','30-statistics-manager.xml')
+    pattern = '<min-request-net-monitor-interval>'+str(ctrl.stat_period_ms[0])+'</min-request-net-monitor-interval>'
 
-    if os.path.isfile(xml_file_path):
-        with open(xml_file_path,"r") as f:
-            read_cfg = f.read()
-
-        for line in read_cfg:
-              if ('<min-request-net-monitor-interval>'+str(ctrl.stat_period_ms[0])+'</min-request-net-monitor-interval>') in read_cfg:
-                  inter_up = 1
-                  break
-        
-        if inter_up == 1:           
-            print ("Interval statistics has been updated successfully") 
-        else:
-            print ("Interval statistics not updated")
+    if util.netutil.check_remote_file(path_file,ctrl._ssh_conn,pattern):
+        print ("Interval statistics has been updated successfully") 
+    else:
+        print ("Interval statistics not updated")
 
 except:
     logging.info('Error, check the logs')

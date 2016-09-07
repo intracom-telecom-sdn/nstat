@@ -213,6 +213,7 @@ class Controller:
                                     ' '.join([self.build_hnd]),
                                     '[controller.build_handler]')[0]
         self.status = 'BUILT'
+        logging.info("[Controller] Succesfully built")
 
     def wait_until_listens(self,timeout_ms):
         """ Waits for controller to start listening on specified port.

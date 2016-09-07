@@ -12,7 +12,6 @@ import paramiko
 import stat
 import time
 
-
 def copy_dir_local_to_remote(connection, local_path, remote_path):
     """Copy a local directory on a remote machine.
 
@@ -111,6 +110,56 @@ def isdir(path, sftp):
     try:
         return stat.S_ISDIR(sftp.stat(path).st_mode)
     except IOError:
+        return False
+
+def remote_file_exists(path, filename, ssh):
+    """Checks if a given remote file exists
+    :param path: A string with the full path where the file to be checked has be placed
+    :param filename: A file under the param path we want to check
+    :param ssh: An sftp connection object (paramiko)
+    :returns: True if the given path is a directory false otherwise.
+    :rtype: bool
+    :type path: str
+    :type filename: str 
+    :type ssh: paramiko.SFTPClient
+    """
+
+    try:
+        sftp = ssh.open_sftp()
+        sftp.chdir(path)
+        sftp.stat(filename)
+
+    except IOError:
+        return False
+
+def check_remote_file(path_file, ssh, pattern):
+    """Checks if a given pattern exist within a remote file
+    :param path_file: A string with the full path and the file anme to be opened
+    :param ssh: An sftp connection object (paramiko)
+    :param pattern: the tezt to be checked if exists in the file 
+    :returns: True if the given path is a directory false otherwise.
+    :rtype: bool
+    :type path_file: str
+    :type ssh: paramiko.SFTPClient
+    :type pattern: str 
+    """
+    try:  
+        sftp_client = ssh.open_sftp()
+        remote_file = sftp_client.open(path_file)
+        
+    except IOError:
+        print ('ERROR open')
+        return False
+
+    try:        
+        for line in remote_file:
+            if pattern in line:
+                return True
+            else:
+                continue
+            return False
+    except IOError:
+        print ('ERROR fileeee')
         return False
 
 
