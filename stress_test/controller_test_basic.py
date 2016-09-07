@@ -25,19 +25,16 @@ LOGGER.addHandler(STREAM_HANDLER)
 
 logging.info('Parsing test configuration')
 
-#define Class inputs:json_conf_file and ctrl_base_dir 
+#define Class inputs:json_conf_file and ctrl_base_dir
 
 if str(sys.argv[1])=='-h':
     print ("controller_test_basic.py <input json file> <controller base directory>")
     sys.exit()
-
 test_file = str(sys.argv[1])
 
 
 with open(test_file,"r") as json_conf_file:
-
     test_config = json.load(json_conf_file)
-
 ctrl_base_dir = str(sys.argv[2])
 
 
@@ -59,10 +56,8 @@ if ctrl.need_rebuild:
     ctrl.build()
     #check the effect of build()
     host = ctrl.ssh_user + '@' + ctrl.ip
-
     logging.info ('[Testing] Build a controller on {} host.'.format(host))
     build_check_file = os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/bin/')
-
     if util.netutil.remote_file_exists(build_check_file,'karaf',ctrl._ssh_conn):
         logging.info('[Testing] Controller is built')
 
@@ -84,15 +79,15 @@ if ctrl.persistence_hnd:
         logging.info ("[Testing] Persistence is disabled successfully")
     else:
         logging.info ("[Testing] Persistence is still enabled")
-
-
+    """
 ctrl.generate_xmls()
 
 try:
+
     #start a controller
     ctrl.check_status()
     ctrl.start()
-   
+
     #change stat period
     ctrl.change_stats()
 
@@ -104,17 +99,19 @@ try:
     exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_statistics_period')
 
     if (output!= None):
-        logging.info ("[Testing] Interval statistics has been updated successfully") 
+        logging.info ("[Testing] Interval statistics has been updated successfully")
     else:
         logging.info ("[Testing] Interval statistics not updated")
+
 
 except:
     logging.info('[Testing] Error, check the logs')
 
 finally:
-   
+
     ctrl.stop()
     ctrl.check_status()
-   
+
     if ctrl.need_cleanup:
         ctrl.clean_hnd()
+    """
