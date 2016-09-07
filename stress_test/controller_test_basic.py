@@ -77,7 +77,10 @@ if ctrl.persistence_hnd:
     path_file = os.path.join(datastore_conf_path,'org.opendaylight.controller.cluster.datastore.cfg')
     pattern = 'persistent=false'
 
-    if util.netutil.check_remote_file(path_file,ctrl._ssh_conn,pattern):
+    cmd = ('grep {0} {1}'.format(pattern, path_file))
+    exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_persistence')
+
+    if ((exit_status == 0) and (output!= None)):
         logging.info ("[Testing] Persistence is disabled successfully")
     else:
         logging.info ("[Testing] Persistence is still enabled")
@@ -97,7 +100,10 @@ try:
     path_file = os.path.join(datastore_conf_path,'opendaylight','karaf','30-statistics-manager.xml')
     pattern = '<min-request-net-monitor-interval>'+str(ctrl.stat_period_ms[0])+'</min-request-net-monitor-interval>'
 
-    if util.netutil.check_remote_file(path_file,ctrl._ssh_conn,pattern):
+    cmd = ('grep {0} {1}'.format(pattern, path_file))
+    exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_ststistics_period')
+
+    if ((exit_status == 0) and (output!= None)):
         logging.info ("[Testing] Interval statistics has been updated successfully") 
     else:
         logging.info ("[Testing] Interval statistics not updated")

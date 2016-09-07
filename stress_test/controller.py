@@ -101,7 +101,7 @@ class Controller:
 
         self.status = 'CLEANING'
         util.netutil.ssh_run_command(self._ssh_conn,
-                                    ' '.join([self.clean_hnd]),
+                                    self.clean_hnd,
                                     '[controller.clean_handler]')[0]
         self.status = 'CLEANED'
 
@@ -112,7 +112,7 @@ class Controller:
 
         q = queue.Queue()
         util.netutil.ssh_run_command(self._ssh_conn,
-                                    ' '.join([self.status_hnd]),
+                                    self.status_hnd,
                                     '[controller.status_handler]',
                                     q)[0]
 
