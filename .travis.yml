@@ -13,6 +13,8 @@ before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
   - export PYTHONPATH=$(pwd)
+  - OUTPUT = "$(ls -1 opt)"
+  - echo "${OUTPUT}"
   - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
   - deactivate
   - cd ..
