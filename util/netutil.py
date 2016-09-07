@@ -259,7 +259,7 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
 
     while retries <= maxretries:
         logging.info(
-            '[ssh_connect_or_return] Trying to connect to {0}:{1} ({2}/{3})'.
+            '[ssh_connect_or_return2] Trying to connect to {0}:{1} ({2}/{3})'.
             format(ip, ssh_port, retries, maxretries))
 
         try:
@@ -269,12 +269,12 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
             ssh.connect(hostname=ip, port=ssh_port,
                         username=username,
                         password=password)
-            logging.info('[ssh_connect_or_return] connected to {0} '.
+            logging.info('[ssh_connect_or_return2] connected to {0} '.
                          format(ip))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[ssh_connect_or_return] authentication failed when connecting to {0}'.
+                '[ssh_connect_or_return2] authentication failed when connecting to {0}'.
                 format(ip))
 
         retries += 1
