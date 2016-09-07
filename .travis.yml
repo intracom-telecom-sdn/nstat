@@ -1,7 +1,6 @@
 branches:
   only:
     - master
-    - develop_measure_latency
 sudo: required
 dist: trusty
 language: python
