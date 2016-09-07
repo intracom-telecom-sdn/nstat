@@ -13,7 +13,9 @@ before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
   - export PYTHONPATH=$(pwd)
+  - source $BASE_DIR/$VENV_DIR_NSTAT/bin/activate
   - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
+  - deactivate
   - cd ..
   - cd util/unittests
 script:
