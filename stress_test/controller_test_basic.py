@@ -52,7 +52,7 @@ try:
     ctrl.check_other_controller()
 
 except:
-    logging.info('port is occupied by another process')
+    logging.info('[Testing] Port is occupied by another process')
 
 if ctrl.need_rebuild:
     #build a controller
@@ -60,16 +60,15 @@ if ctrl.need_rebuild:
     #check the effect of build()
     host = ctrl.ssh_user + '@' + ctrl.ip
 
-    print (host)
+    logging.info ('[Testing] Build a controller on {} host.'.format(host))
     build_check_file = os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/bin/')
 
     if util.netutil.remote_file_exists(build_check_file,'karaf',ctrl._ssh_conn):
-        logging.info('Controller is built')
+        logging.info('[Testing] Controller is built')
 
 #path to check the affect of called methods
 datastore_conf_path= os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/etc')
 
-print (datastore_conf_path)
 if ctrl.persistence_hnd:
     #disable persistence
     ctrl.disable_persistence()
@@ -78,13 +77,10 @@ if ctrl.persistence_hnd:
     path_file = os.path.join(datastore_conf_path,'org.opendaylight.controller.cluster.datastore.cfg')
     pattern = 'persistent=false'
 
-    print (path_file)
-    print (pattern)
-
     if util.netutil.check_remote_file(path_file,ctrl._ssh_conn,pattern):
-        print ("Persistence is disabled successfully")
+        logging.info ("[Testing] Persistence is disabled successfully")
     else:
-        print ("Persistence is still enabled")
+        logging.info ("[Testing] Persistence is still enabled")
 
 
 ctrl.generate_xmls()
@@ -102,12 +98,12 @@ try:
     pattern = '<min-request-net-monitor-interval>'+str(ctrl.stat_period_ms[0])+'</min-request-net-monitor-interval>'
 
     if util.netutil.check_remote_file(path_file,ctrl._ssh_conn,pattern):
-        print ("Interval statistics has been updated successfully") 
+        logging.info ("[Testing] Interval statistics has been updated successfully") 
     else:
-        print ("Interval statistics not updated")
+        logging.info ("[Testing] Interval statistics not updated")
 
 except:
-    logging.info('Error, check the logs')
+    logging.info('[Testing] Error, check the logs')
 
 finally:
    

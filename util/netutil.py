@@ -146,12 +146,7 @@ def check_remote_file(path_file, ssh, pattern):
     try:  
         sftp_client = ssh.open_sftp()
         remote_file = sftp_client.open(path_file)
-        
-    except IOError:
-        print ('ERROR open')
-        return False
 
-    try:        
         for line in remote_file:
             if pattern in line:
                 return True
@@ -159,7 +154,7 @@ def check_remote_file(path_file, ssh, pattern):
                 continue
             return False
     except IOError:
-        print ('ERROR fileeee')
+        print ('ERROR')
         return False
 
 
