@@ -265,6 +265,7 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.load_host_keys(os.path.expanduser(os.path.join("~",".ssh","known_hosts")))
             ssh.connect(hostname=ip, port=ssh_port,
                         username=username,
                         password=password)
