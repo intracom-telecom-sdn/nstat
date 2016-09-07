@@ -80,7 +80,7 @@ if ctrl.persistence_hnd:
     cmd = ('grep {0} {1}'.format(pattern, path_file))
     exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_persistence')
 
-    if ((exit_status == 0) and (output!= None)):
+    if (output!= None):
         logging.info ("[Testing] Persistence is disabled successfully")
     else:
         logging.info ("[Testing] Persistence is still enabled")
@@ -101,9 +101,9 @@ try:
     pattern = '<min-request-net-monitor-interval>'+str(ctrl.stat_period_ms[0])+'</min-request-net-monitor-interval>'
 
     cmd = ('grep {0} {1}'.format(pattern, path_file))
-    exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_ststistics_period')
+    exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_statistics_period')
 
-    if ((exit_status == 0) and (output!= None)):
+    if (output!= None):
         logging.info ("[Testing] Interval statistics has been updated successfully") 
     else:
         logging.info ("[Testing] Interval statistics not updated")
