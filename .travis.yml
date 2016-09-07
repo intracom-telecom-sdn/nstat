@@ -13,8 +13,19 @@ before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
   - export PYTHONPATH=$(pwd)
-  - OUTPUT = "$(ls -1 opt)"
-  - echo "${OUTPUT}"
+  - pip3 install bottle==0.12.8
+  - pip3 install requests==2.7.0
+  - pip3 install pyparsing==2.1.5
+  - pip3 install tornado==4.3
+  - pip3 install pytz==2016.4
+  - pip3 install six==1.10.0
+  - pip3 install stdeb==0.8.5
+  - pip3 install dpkt==1.8.6.2
+  - pip3 install collections-extended
+  - pip3 install coveralls==1.1
+  - pip3 install numpy==1.11.1
+  - pip3 install paramiko==1.15.2
+  - pip3 install cryptography==1.2.1
   - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
   - deactivate
   - cd ..
