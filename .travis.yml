@@ -30,7 +30,7 @@ before_script:
   - pip3 install cryptography==1.2.1
   - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
   - deactivate
-  - cd ..
+#  - cd ..
   - cd util/unittests
 script:
   - echo "Running Unittests"
