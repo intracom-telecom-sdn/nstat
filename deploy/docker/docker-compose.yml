@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  node1:
+    image: sshd
+    networks:
+      sample_net:
+        ipv4_address: 172.18.0.10
+
+  node2:
+    image: sshd
+    depends_on:
+      - node1
+    networks:
+      sample_net:
+        ipv4_address: 172.18.0.11
+
+  node3:
+    image: sshd
+    depends_on:
+      - node2
+    networks:
+      sample_net:
+        ipv4_address: 172.18.0.12
+
+networks:
+  sample_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.18.0.0/24
+        gateway: 172.18.0.1
