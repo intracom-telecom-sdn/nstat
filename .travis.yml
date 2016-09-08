@@ -12,7 +12,7 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - echo $USER
-  - sudo chmod --recursive go+rw/opt
+  - sudo chmod --recursive go+rw ./
   - sudo bash ./deploy/provision.sh
   - sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
   - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
