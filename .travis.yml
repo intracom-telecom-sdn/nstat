@@ -17,15 +17,12 @@ before_script:
 
   - source /opt/venv_nstat/bin/activate
   - export PYTHONPATH=$(pwd)
-  - ls -la /opt
-  - sudo chmod 777 -R /opt
+
 
 script:
   - echo "Running Unittests"
   - coverage erase
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./stress_test/controller_test_basic.py ./stress_test/controller_test.json ./controllers/odl_beryllium_pb/
-
-
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_stats.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_cpu.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_customsubprocess.py
