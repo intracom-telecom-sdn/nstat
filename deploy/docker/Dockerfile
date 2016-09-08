@@ -4,13 +4,9 @@ ENV http_proxy=
 #ENV http_proxy='http://172.28.40.9:3128/'
 #ENV https_proxy='http://172.28.40.9:3128/'
 #ENV no_proxy='127.0.0.1,localhost'
-# ------------------------------------------------------------------------------
-# Example: if proxy: 'http://xx.xx.xx.xx:xx/'
-# RUN echo 'Acquire::http::Proxy "http://xx.xx.xx.xx:xx/";' | tee -a /etc/apt/apt.conf
-# RUN echo 'Acquire::https::Proxy "http://xx.xx.xx.xx:xx/";' | tee -a /etc/apt/apt.conf
-# ------------------------------------------------------------------------------
-#RUN echo 'Acquire::http::Proxy "http://xx.xx.xx.xx:xx/";' | tee -a /etc/apt/apt.conf
-#RUN echo 'Acquire::https::Proxy "http://xx.xx.xx.xx:xx/";'| tee -a /etc/apt/apt.conf
+
+#RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
+#RUN echo 'Acquire::https::Proxy "http://172.28.40.9:3128/";'| tee -a /etc/apt/apt.conf
 
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
