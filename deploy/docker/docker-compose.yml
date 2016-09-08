@@ -10,7 +10,7 @@ services:
   controller:
     image: intracom/nstat:proxy
     depends_on:
-      - node1
+      - nstat
     networks:
       sample_net:
         ipv4_address: 172.18.0.11
@@ -18,7 +18,7 @@ services:
   nbgen:
     image: intracom/nstat:proxy
     depends_on:
-      - node2
+      - nstat
     networks:
       sample_net:
         ipv4_address: 172.18.0.12
@@ -26,7 +26,7 @@ services:
   mtcbench:
     image: intracom/nstat:proxy
     depends_on:
-      - node2
+      - nstat
     networks:
       sample_net:
         ipv4_address: 172.18.0.13
@@ -34,6 +34,7 @@ services:
   mn01:
     image: intracom/nstat:proxy
     depends_on:
+      - nstat
     networks:
       sample_net:
         ipv4_address: 172.18.0.14
@@ -41,7 +42,7 @@ services:
   mn02:
     image: intracom/nstat:proxy
     depends_on:
-      - node2
+      - nstat
     networks:
       sample_net:
         ipv4_address: 172.18.0.15
