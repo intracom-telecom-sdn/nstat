@@ -60,6 +60,9 @@ if ctrl.need_rebuild:
     build_check_file = os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/bin/')
     if util.netutil.remote_file_exists(build_check_file,'karaf',ctrl._ssh_conn):
         logging.info('[Testing] Controller is built')
+    else:
+        logging.info('[Testing] Controller is NOT built')
+        raise Exception('[build_controller] Fail to build')
 
 #path to check the affect of called methods
 datastore_conf_path= os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/etc')
