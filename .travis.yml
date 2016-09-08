@@ -13,40 +13,41 @@ before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
   - sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
-  - echo "jenkins ALL=(ALL) NOPASSWD:ALL" |sudo tee =a /etc/sudoers
+  - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+  - source /opt/venv_nstat/bin/activate
   - export PYTHONPATH=$(pwd)
-  - pip3 install bottle==0.12.8
-  - pip3 install requests==2.7.0
-  - pip3 install pyparsing==2.1.5
-  - pip3 install tornado==4.3
-  - pip3 install pytz==2016.4
-  - pip3 install six==1.10.0
-  - pip3 install stdeb==0.8.5
-  - pip3 install dpkt==1.8.6.2
-  - pip3 install collections-extended
-  - pip3 install coveralls==1.1
-  - pip3 install numpy==1.11.1
-  - pip3 install paramiko==1.15.2
-  - pip3 install cryptography==1.2.1
+#  - pip3 install bottle==0.12.8
+#  - pip3 install requests==2.7.0
+#  - pip3 install pyparsing==2.1.5
+#  - pip3 install tornado==4.3
+#  - pip3 install pytz==2016.4
+#  - pip3 install six==1.10.0
+#  - pip3 install stdeb==0.8.5
+#  - pip3 install dpkt==1.8.6.2
+#  - pip3 install collections-extended
+#  - pip3 install coveralls==1.1
+#  - pip3 install numpy==1.11.1
+#  - pip3 install paramiko==1.15.2
+#  - pip3 install cryptography==1.2.1
   - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
-  - deactivate
-#  - cd ..
-  - cd util/unittests
+
 script:
   - echo "Running Unittests"
   - coverage erase
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_stats.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_cpu.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_customsubprocess.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_numeric.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_file.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_sysstats.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_html.py
-  #- coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_process.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode test_netutil.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='../*.py' --parallel-mode ../../stress_test/nstat_orchestrator.py --help
+
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_stats.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_cpu.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_customsubprocess.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_numeric.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_file.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_sysstats.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_html.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_process.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_netutil.py
+  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./stress_test/nstat_orchestrator.py --help
   - coverage combine
 after_success:
   coveralls
+  deactivate
 notifications:
   email: false
