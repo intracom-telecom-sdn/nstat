@@ -5,7 +5,7 @@ services:
     image: sshd
     networks:
       sample_net:
-        ipv4_address: 172.18.0.10
+        ipv4_address: 172.17.0.10
 
   node2:
     image: sshd
@@ -13,7 +13,7 @@ services:
       - node1
     networks:
       sample_net:
-        ipv4_address: 172.18.0.11
+        ipv4_address: 172.17.0.11
 
   node3:
     image: sshd
@@ -21,7 +21,7 @@ services:
       - node2
     networks:
       sample_net:
-        ipv4_address: 172.18.0.12
+        ipv4_address: 172.17.0.12
 
 networks:
   sample_net:
@@ -29,5 +29,5 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.18.0.0/24
-        gateway: 172.18.0.1
+      - subnet: 172.17.0.0/24
+        gateway: 172.17.0.1
