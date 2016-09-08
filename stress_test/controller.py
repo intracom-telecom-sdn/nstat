@@ -117,10 +117,10 @@ class Controller:
                                     q)[0]
 
         cmd_output = ''
-   
+
         while not q.empty():
             cmd_output += str(q.get()) + ' '
-  
+
         logging.info ('[Controller] status output: {0}'.format(cmd_output))
         return cmd_output.strip()
 
@@ -173,7 +173,7 @@ class Controller:
         if self.check_status() == '0':
             util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join(cmd),
-                                    '[controller.start_handler]')[0]            
+                                    '[controller.start_handler]')[0]
             logging.info(
                 '[start_controller] Waiting until controller starts listening')
             self.pid = self.wait_until_listens(420000)
@@ -182,9 +182,11 @@ class Controller:
                 '[start_controller] Checking controller status after it starts '
                 'listening on port {0}.'.format(self.of_port))
             self.wait_until_up(420000)
-        else:
+        elif self.check_status() == '1':
             logging.info('[start_controller] Controller already started.')
-
+        else:
+            logging.error('[start_controller] Controller not started.')
+            raise Exception('[start_controller] Fail to start')
         self.status = 'STARTED'
 
     def stop(self):
@@ -192,7 +194,7 @@ class Controller:
         """
 
         self.status = 'STOPPING'
-        if self.check_status()=='1':    
+        if self.check_status()=='1':
             logging.info('[stop_controller] Stopping controller.')
             print (self.pid)
             util.netutil.ssh_run_command(self._ssh_conn,
@@ -233,7 +235,7 @@ class Controller:
             gpid = util.process.getpid_listeningonport(self.of_port, self._ssh_conn)
             logging.info('Returned pid listening on port {0}: {1}'.
                           format(self.of_port, gpid))
-            
+
             if gpid>0:
                 return gpid
             elif gpid == 0:
@@ -275,7 +277,7 @@ class ODL(Controller):
         self.stat_period_ms = test_config['controller_statistics_period_ms']
         if 'controller_flowmods_conf_handler' in test_config:
             self.flowmods_conf_hnd= ctrl_base_dir + test_config['controller_flowmods_conf_handler']
-            
+
             #check handler's validity
             util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
