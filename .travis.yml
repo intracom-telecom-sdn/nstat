@@ -14,6 +14,7 @@ before_script:
   - sudo bash ./deploy/provision.sh
   - sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
   - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+  - apt-get install python3-requests
   - source /opt/venv_nstat/bin/activate
   - export PYTHONPATH=$(pwd)
 #  - pip3 install bottle==0.12.8
@@ -29,7 +30,7 @@ before_script:
 #  - pip3 install numpy==1.11.1
 #  - pip3 install paramiko==1.15.2
 #  - pip3 install cryptography==1.2.1
-  - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
+  - python3.4 ./stress_test/controller_test_basic.py ./stress_test/controller_test.json ./controllers/odl_beryllium_pb/
 
 script:
   - echo "Running Unittests"
