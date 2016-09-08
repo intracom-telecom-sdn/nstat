@@ -2,17 +2,16 @@ FROM ubuntu:14.04
 
 ENV http_proxy="http://172.28.40.9:3128/"
 ENV https_proxy="http://172.28.40.9:3128/"
-ENV no_proxy="172.18.0.10,172.18.0.11,172.18.0.12,172.18.0.13,172.18.0.14,172.18.0.15,127.0.0.1,localhost"
 
 RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
 RUN echo 'Acquire::https::Proxy "http://172.28.40.9:3128/";'| tee -a /etc/apt/apt.conf
 
-echo "http_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-echo "https_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-echo "no_proxy=172.18.0.10,172.18.0.11,172.18.0.12,172.18.0.13,172.18.0.14,172.18.0.15,127.0.0.1,localhost" | sudo tee -a /etc/environment
-echo "HTTP_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-echo "HTTPS_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-echo "NO_PROXY=172.18.0.10,172.18.0.11,172.18.0.12,172.18.0.13,172.18.0.14,172.18.0.15,127.0.0.1,localhost" | sudo tee -a /etc/environment
+RUN echo "http_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
+RUN echo "https_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
+RUN printf -v no_proxy '%s,' 172.18.0.{1..255} | echo "no_proxy=$no_proxy" | sudo tee -a /etc/environment
+RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
+RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
+RUN printf -v no_proxy '%s,' 172.18.0.{1..255} | echo "NO_PROXY=$no_proxy" | sudo tee -a /etc/environment
 
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
