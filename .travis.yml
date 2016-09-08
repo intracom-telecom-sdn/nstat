@@ -29,7 +29,7 @@ before_script:
 #  - pip3 install numpy==1.11.1
 #  - pip3 install paramiko==1.15.2
 #  - pip3 install cryptography==1.2.1
-#  - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
+  - python3.4 $WORKSPACE/stress_test/controller_test_basic.py $WORKSPACE/stress_test/controller_test.json $WORKSPACE/controllers/odl_beryllium_pb/
 
 script:
   - echo "Running Unittests"
