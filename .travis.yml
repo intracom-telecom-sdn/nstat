@@ -18,7 +18,7 @@ before_script:
   - source /opt/venv_nstat/bin/activate
   - export PYTHONPATH=$(pwd)
   - ls -la /opt
-  - sudo chmod 777 -R $BASE_DIR
+  - sudo chmod 777 -R /opt
 
 script:
   - echo "Running Unittests"
