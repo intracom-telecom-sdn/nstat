@@ -34,7 +34,6 @@ services:
   mn01:
     image: intracom/nstat:proxy
     depends_on:
-      - node2
     networks:
       sample_net:
         ipv4_address: 172.18.0.14
