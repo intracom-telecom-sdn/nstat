@@ -211,11 +211,19 @@ class Controller:
         """
         logging.info('[Controller] Building')
         self.status = 'BUILDING'
-        util.netutil.ssh_run_command(self._ssh_conn,
+
+        ret = util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join([self.build_hnd]),
                                     '[controller.build_handler]')[0]
-        self.status = 'BUILT'
-        logging.info("[Controller] Successfully built")
+        if ret == 0:
+            self.status = 'BUILT'
+            logging.info("[Controller] Successfully built")
+        else:
+            self.status = 'NOT BUILT'
+            logging.error("[Controller] Failure to build")
+            raise Exception('[Controller] Failure to build')
+
+
 
     def wait_until_listens(self,timeout_ms):
         """ Waits for controller to start listening on specified port.
