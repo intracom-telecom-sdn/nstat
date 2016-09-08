@@ -248,7 +248,6 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 multinet_rest_server, controller_nb_interface,
                 multinet_base_dir)
 
-
             # Check initial flows of booted switches
             logging.info('{0} Check initial operational DataStore flows and '
                          'topology switches flows.'.format(test_type))
