@@ -14,7 +14,7 @@ before_script:
   - sudo bash ./deploy/provision.sh
   - sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
   - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
-  - apt-get install python3-requests
+  - sudo apt-get install python3-requests
   - source /opt/venv_nstat/bin/activate
   - export PYTHONPATH=$(pwd)
 #  - pip3 install bottle==0.12.8
