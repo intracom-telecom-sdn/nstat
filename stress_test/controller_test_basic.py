@@ -79,7 +79,7 @@ if ctrl.persistence_hnd:
         logging.info ("[Testing] Persistence is disabled successfully")
     else:
         logging.info ("[Testing] Persistence is still enabled")
-    """
+
 ctrl.generate_xmls()
 
 try:
@@ -114,4 +114,3 @@ finally:
 
     if ctrl.need_cleanup:
         ctrl.clean_hnd()
-    """

@@ -25,6 +25,6 @@
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":100,
 
-"java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"]
+"java_opts":["-Xmx1G","-Xms512M","-XX:+UseG1GC","-XX:MaxPermSize=512M"]
 
 }
