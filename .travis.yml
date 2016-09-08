@@ -12,6 +12,8 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - sudo bash ./deploy/provision.sh
+  - sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
+  - echo "jenkins ALL=(ALL) NOPASSWD:ALL" |sudo tee =a /etc/sudoers
   - export PYTHONPATH=$(pwd)
   - pip3 install bottle==0.12.8
   - pip3 install requests==2.7.0
