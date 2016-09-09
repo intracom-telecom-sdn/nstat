@@ -22,7 +22,7 @@ before_script:
   - source /opt/venv_nstat/bin/activate
   - export PYTHONPATH=$(pwd)
 
-  - wget -nc "$https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium/distribution-karaf-0.4.0-Beryllium.zip" -P /opt/
+  - wget -A.zip -nc '$https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium/distribution-karaf-0.4.0-Beryllium.zip' -P /opt/
 
 
 script:
