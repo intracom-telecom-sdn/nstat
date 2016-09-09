@@ -19,7 +19,6 @@ before_script:
 #  - source /opt/venv_nstat/bin/activate
 
   - sudo apt-get install python3-requests
-  - sudo apt-get install coveralls
   - sudo apt-get install paramiko
 
   - export PYTHONPATH=$(pwd)
