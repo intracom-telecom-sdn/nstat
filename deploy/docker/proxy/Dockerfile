@@ -6,11 +6,11 @@ ENV https_proxy="http://172.28.40.9:3128/"
 RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
 RUN echo 'Acquire::https::Proxy "http://172.28.40.9:3128/";'| tee -a /etc/apt/apt.conf
 
-RUN echo "http_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-RUN echo "https_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
+RUN echo "http_proxy=http://172.28.40.9:3128/" | tee -a /etc/environment
+RUN echo "https_proxy=http://172.28.40.9:3128/" | tee -a /etc/environment
 RUN echo "no_proxy=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment
-RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
+RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
+RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
 RUN echo "NO_PROXY=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment
 RUN ln -s /usr/lib/x86_64-linux-gnu/libnetsnmp.so.30 /usr/lib/libnetsnmp.so.31
 
