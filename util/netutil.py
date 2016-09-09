@@ -112,26 +112,6 @@ def isdir(path, sftp):
     except IOError:
         return False
 
-def remote_file_exists(path, filename, ssh):
-    """Checks if a given remote file exists
-    :param path: A string with the full path where the file to be checked has be placed
-    :param filename: A file under the param path we want to check
-    :param ssh: A ssh connection object (paramiko)
-    :returns: True if the given path is a directory false otherwise.
-    :rtype: bool
-    :type path: str
-    :type filename: str 
-    :type ssh: paramiko.SFTPClient
-    """
-
-    try:
-        sftp = ssh.open_sftp()
-        sftp.chdir(path)
-        sftp.stat(filename)
-
-    except IOError:
-        return False
-
 def make_remote_file_executable(connection, remote_file):
     """Makes the remote file executable.
 

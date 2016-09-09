@@ -21,35 +21,30 @@ LOGGER.level = logging.INFO
 # logging output to stdout
 STREAM_HANDLER = logging.StreamHandler(sys.stdout)
 LOGGER.addHandler(STREAM_HANDLER)
-
-
-logging.info('Parsing test configuration')
+logging.info('[Testing] Parsing test configuration')
 
 #define Class inputs:json_conf_file and ctrl_base_dir
-
 if str(sys.argv[1])=='-h':
-    print ("controller_test_basic.py <input json file> <controller base directory>")
+    print ("[Testing] controller_test_basic.py <input json file> <controller base directory>")
     sys.exit()
 test_file = str(sys.argv[1])
-
 
 with open(test_file,"r") as json_conf_file:
     test_config = json.load(json_conf_file)
 ctrl_base_dir = str(sys.argv[2])
-
 
 #create a new Controller class instance, ctrl
 ctrl = controller.Controller.new(ctrl_base_dir, test_config)
 
 #initialize a connection
 ctrl.init_ssh()
-
 try:
     #check other connections on the OF port of the config file
     ctrl.check_other_controller()
+    logging.info('[Testing] Port {0} is free'.format(ctrl.of_port))
 
 except:
-    logging.info('[Testing] Port is occupied by another process')
+    logging.error('[Testing] Port {0} is occupied by another process'.format(ctrl.of_port))
 
 if ctrl.need_rebuild:
     #build a controller
@@ -57,13 +52,16 @@ if ctrl.need_rebuild:
     #check the effect of build()
     host = ctrl.ssh_user + '@' + ctrl.ip
     logging.info ('[Testing] Build a controller on {} host.'.format(host))
-    build_check_file = os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/bin/')
-    if util.netutil.remote_file_exists(build_check_file,'karaf',ctrl._ssh_conn):
-        logging.info('[Testing] Controller is built')
-    else:
-        logging.error('[Testing] Controller is NOT built')
-        raise Exception('[build_controller] Fail to build')
+    build_check_file = os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/bin/karaf')
 
+    cmd = ('test {0} && echo "exists"'.format(build_check_file))
+    exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_persistence')
+
+    if (output!= None):
+        logging.info('[Testing] Controller files have been created')
+    else:
+        raise Exception('[Testing] Fail to build') 
+ 
 #path to check the affect of called methods
 datastore_conf_path= os.path.join(ctrl_base_dir,'distribution-karaf-0.4.0-Beryllium/etc')
 
@@ -84,7 +82,6 @@ if ctrl.persistence_hnd:
         logging.info ("[Testing] Persistence is still enabled")
 
 ctrl.generate_xmls()
-
 try:
 
     #start a controller
@@ -100,20 +97,16 @@ try:
 
     cmd = ('grep {0} {1}'.format(pattern, path_file))
     exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn, cmd,'Check_statistics_period')
-
     if (output!= None):
         logging.info ("[Testing] Interval statistics has been updated successfully")
     else:
         logging.info ("[Testing] Interval statistics not updated")
 
-
 except:
     logging.info('[Testing] Error, check the logs')
 
 finally:
-
     ctrl.stop()
     ctrl.check_status()
-
     if ctrl.need_cleanup:
         ctrl.clean_hnd()

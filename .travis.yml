@@ -12,17 +12,13 @@ jdk:
 before_script:
   - sudo apt-get update -qq
   - echo $USER
-#  - sudo bash ./deploy/provision.sh
+  - sudo bash ./deploy/provision.sh
   - sudo useradd -m -s /bin/bash -p $(openssl passwd -crypt "jenkins") -U "jenkins"
   - echo "jenkins ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
 
-#  - source /opt/venv_nstat/bin/activate
-
-  - sudo apt-get install python3-requests
-  - sudo apt-get install paramiko
+  - source /opt/venv_nstat/bin/activate
 
   - export PYTHONPATH=$(pwd)
-
 
 script:
   - echo "Running Unittests"

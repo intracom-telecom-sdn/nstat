@@ -121,7 +121,12 @@ class Controller:
         while not q.empty():
             cmd_output += str(q.get()) + ' '
 
-        logging.info ('[Controller] status output: {0}'.format(cmd_output))
+        if cmd_output.strip() == '1':
+            logging.info ('[Controller] status: Running- {0}'.format(cmd_output))
+
+        elif cmd_output.strip() == '0':
+            logging.info ('[Controller] status: Not Running- {0}'.format(cmd_output))
+
         return cmd_output.strip()
 
 
@@ -174,13 +179,8 @@ class Controller:
             util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join(cmd),
                                     '[controller.start_handler]')[0]
-            logging.info(
-                '[start_controller] Waiting until controller starts listening')
             self.pid = self.wait_until_listens(420000)
             logging.info('[start_controller] Controller pid: {0}'.format(self.pid))
-            logging.info(
-                '[start_controller] Checking controller status after it starts '
-                'listening on port {0}.'.format(self.of_port))
             self.wait_until_up(420000)
         elif self.check_status() == '1':
             logging.info('[start_controller] Controller already started.')
@@ -195,7 +195,7 @@ class Controller:
 
         self.status = 'STOPPING'
         if self.check_status()=='1':
-            logging.info('[stop_controller] Stopping controller.')
+            logging.info('[Controller] Stopping')
             print (self.pid)
             util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join([self.stop_hnd]),
@@ -217,7 +217,7 @@ class Controller:
                                     '[controller.build_handler]')[0]
         if ret == 0:
             self.status = 'BUILT'
-            logging.info("[Controller] Successfully built")
+            logging.info("[Controller] Successfull building")
         else:
             self.status = 'NOT BUILT'
             logging.error("[Controller] Failure to build")
@@ -241,7 +241,7 @@ class Controller:
         while time.time() < timeout:
             time.sleep(1)
             gpid = util.process.getpid_listeningonport(self.of_port, self._ssh_conn)
-            logging.info('Returned pid listening on port {0}: {1}'.
+            logging.info('[Controller] Returned pid listening on port {0}: {1}'.
                           format(self.of_port, gpid))
 
             if gpid>0:
@@ -269,6 +269,7 @@ class Controller:
         while time.time() < timeout:
             time.sleep(1)
             if self.check_status() == '1':
+                logging.info('[Controller] Started' )
                 return
 
         raise Exception('Controller failed to start. '
@@ -316,7 +317,7 @@ class ODL(Controller):
         """ Starts and then stops the controller to trigger the generation of
         controller's XML files.
         """
-        logging.info('[Controller] Generating XMLs')
+        logging.info('[Controller] Generating XML files (start and stop the Controller)')
         pid = self.start()
         self.stop()
 
@@ -325,7 +326,7 @@ class ODL(Controller):
         """configure controller persistent to false in order not to backup
         datastore on the disk.
         """
-        logging.info('[controller] Disabling persistence')
+        logging.info('[Controller] Disabling persistence')
 
         util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join([self.persistence_hnd]),
@@ -335,14 +336,14 @@ class ODL(Controller):
         """Wrapper to the controller statistics handler
         """
 
-        logging.info('[controller] Changing statistics period')
+        logging.info('[Controller] Changing statistics period')
 
 
         util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join([self.statistics_hnd, str(self.stat_period_ms[0])]),
                                     '[controller.statistics_handler] Changing statistics interval')[0]
         logging.info(
-            '[change_stats] Changed statistics period to {0} ms'.
+            '[Controller] Changed statistics period to {0} ms'.
             format(self.stat_period_ms))
 
 
@@ -350,7 +351,7 @@ class ODL(Controller):
         """configure controller to send flow modifications as a responce to ARP
         Packet_INs.
         """
-        logging.info('[controller] Configure flow modifications')
+        logging.info('[Controller] Configure flow modifications')
         util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join([self.flowmods_conf_hnd]),
                                     '[controller.flowmod_configure_handler]')[0]
