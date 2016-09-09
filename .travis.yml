@@ -18,8 +18,7 @@ before_script:
 
 #  - source /opt/venv_nstat/bin/activate
 
-  - pip3 install -r requests
-  - pip3 install -r pyparsing
+  - pip3 install python3-requests
   - pip3 install -r collections-extended
   - pip3 install -r coveralls
   - pip3 install -r paramiko
