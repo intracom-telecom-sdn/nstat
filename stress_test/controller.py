@@ -212,10 +212,12 @@ class Controller:
         logging.info('[Controller] Building')
         self.status = 'BUILDING'
 
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join([self.build_hnd]),
                                     '[controller.build_handler]')[0]
-        if ret == 0:
+        print (exit_status)
+        print (output)
+        if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[Controller] Successful building")
         else:
