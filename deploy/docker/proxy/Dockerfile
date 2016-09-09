@@ -12,6 +12,7 @@ RUN echo "no_proxy=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environ
 RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
 RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
 RUN echo "NO_PROXY=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment
+RUN ln -s /usr/lib/x86_64-linux-gnu/libnetsnmp.so.30 /usr/lib/libnetsnmp.so.31
 
 RUN apt-get update
 RUN apt-get install --force-yes -y wget

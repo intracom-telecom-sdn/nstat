@@ -11,6 +11,8 @@ RUN chmod +x /opt/provision.sh
 RUN /bin/bash -c "/opt/provision.sh $http_proxy"
 #CMD ["service", "openvswitch-switch" "start"]
 
+RUN ln -s /usr/lib/x86_64-linux-gnu/libnetsnmp.so.30 /usr/lib/libnetsnmp.so.31
+
 # Configure ssh-server
 RUN mkdir /var/run/sshd
 RUN echo 'root:root123' | chpasswd
