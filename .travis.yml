@@ -18,19 +18,11 @@ before_script:
 
 #  - source /opt/venv_nstat/bin/activate
 
-  - pip3 $pip_options install -r  bottle==0.12.8
-  - pip3 $pip_options install -r requests==2.7.0
-  - pip3 $pip_options install -r pyparsing==2.1.5
-  - pip3 $pip_options install -r tornado==4.3
-  - pip3 $pip_options install -r pytz==2016.4
-  - pip3 $pip_options install -r six==1.10.0
-  - pip3 $pip_options install -r stdeb==0.8.5
-  - pip3 $pip_options install -r dpkt==1.8.6.2
-  - pip3 $pip_options install -r collections-extended
-  - pip3 $pip_options install -r coveralls==1.1
-  - pip3 $pip_options install -r numpy==1.11.1
-  - pip3 $pip_options install -r paramiko==1.15.2
-  - pip3 $pip_options install -r cryptography==1.2.1
+  - pip3 install -r requests==2.7.0
+  - pip3 install -r pyparsing==2.1.5
+  - pip3 install -r collections-extended
+  - pip3 install -r coveralls==1.1
+  - pip3 install -r paramiko==1.15.2
   - export PYTHONPATH=$(pwd)
 
 
