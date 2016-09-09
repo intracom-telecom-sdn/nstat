@@ -8,10 +8,10 @@ RUN echo 'Acquire::https::Proxy "http://172.28.40.9:3128/";'| tee -a /etc/apt/ap
 
 RUN echo "http_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
 RUN echo "https_proxy=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-RUN echo "no_proxy=$(echo 172.10.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment"
+RUN echo "no_proxy=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment
 RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
 RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | sudo tee -a /etc/environment
-RUN echo "NO_PROXY=$(echo 172.10.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment"
+RUN echo "NO_PROXY=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment
 
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
