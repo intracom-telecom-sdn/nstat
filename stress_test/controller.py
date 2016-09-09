@@ -214,7 +214,7 @@ class Controller:
 
         exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
                                     ' '.join([self.build_hnd]),
-                                    '[controller.build_handler]')[0]
+                                    '[controller.build_handler]')
         print(exit_status)
         print(output)
         if exit_status == 0:
