@@ -217,11 +217,11 @@ class Controller:
                                     '[controller.build_handler]')[0]
         if ret == 0:
             self.status = 'BUILT'
-            logging.info("[Controller] Successfull building")
+            logging.info("[Controller] Successful building")
         else:
             self.status = 'NOT BUILT'
-            logging.error("[Controller] Failure to build")
-            raise Exception('[Controller] Failure to build')
+            logging.error("[Controller] Failure during building")
+            raise Exception('[Controller] Failure during building')
 
 
 
