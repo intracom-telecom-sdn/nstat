@@ -12,11 +12,11 @@ echo "Job name:" $JOB_NAME
 
 # storing the parent directory
 # ------------------------------------------------------------------------------
-if [ -d "/home/jenkins/nstat" ]; then
-    rm -rf /home/jenkins/nstat
+if [ -d "/opt/nstat" ]; then
+    rm -rf /opt/nstat
 fi
-mv $WORKSPACE /home/jenkins/nstat
-export WORKSPACE='/home/jenkins/nstat'
+mv $WORKSPACE /opt/nstat
+export WORKSPACE='/opt/nstat'
 
 PARENT_DIRECTORY=$(dirname $WORKSPACE)
 export PYTHONPATH=$WORKSPACE
@@ -26,3 +26,4 @@ echo "Starting new test with Build Number= "$BUILD_NUMBER
 export RESULTS_DIR=$JOB_NAME"_"$BUILD_NUMBER
 export OUTPUT_FILENAME=$CONFIG_FILENAME
 export COMMIT_MESSAGE="adding result file:"$OUTPUT_FILENAME" JOB: "$JOB_NAME_$BUILD_NUMBER
+
