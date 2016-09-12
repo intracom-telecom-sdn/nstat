@@ -46,7 +46,7 @@ class NetUtilTest(unittest.TestCase):
         node_parameters = collections.namedtuple('ssh_connection',
         ['name', 'ip', 'ssh_port', 'username', 'password'])
         cls.remote_node = node_parameters('remote_node', '127.0.0.1', 22,
-                                          'konpap', 'konpap')
+                                          'jenkins', 'jenkins')
         constants = collections.namedtuple('constants',
             ['maxretries','sleeptime'])
         cls.constants_set = constants(5,2)
