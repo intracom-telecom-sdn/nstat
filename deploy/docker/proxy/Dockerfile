@@ -8,10 +8,10 @@ RUN echo 'Acquire::https::Proxy "http://172.28.40.9:3128/";'| tee -a /etc/apt/ap
 
 RUN echo "http_proxy=http://172.28.40.9:3128/" | tee -a /etc/environment
 RUN echo "https_proxy=http://172.28.40.9:3128/" | tee -a /etc/environment
-RUN echo "no_proxy=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment
+RUN echo "no_proxy=10.0.1.10,10.0.1.11,10.0.1.12,10.0.1.13,10.0.1.14,10.0.1.15,10.0.1.16,10.0.1.17,10.0.1.18,10.0.1.19,10.0.1.20,10.0.1.21,10.0.1.22,10.0.1.23,10.0.1.24,10.0.1.25,10.0.1.26,10.0.1.27,10.0.1.28,10.0.1.29,10.0.1.30,127.0.0.1,localhost" | tee -a /etc/environment
 RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
 RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
-RUN echo "NO_PROXY=$(echo 172.18.0.{1..255} | tr ' ' ',')" | tee -a /etc/environment
+RUN echo "NO_PROXY=10.0.1.10,10.0.1.11,10.0.1.12,10.0.1.13,10.0.1.14,10.0.1.15,10.0.1.16,10.0.1.17,10.0.1.18,10.0.1.19,10.0.1.20,10.0.1.21,10.0.1.22,10.0.1.23,10.0.1.24,10.0.1.25,10.0.1.26,10.0.1.27,10.0.1.28,10.0.1.29,10.0.1.30,127.0.0.1,localhost" | tee -a /etc/environment
 RUN ln -s /usr/lib/x86_64-linux-gnu/libnetsnmp.so.30 /usr/lib/libnetsnmp.so.31
 
 RUN apt-get update
