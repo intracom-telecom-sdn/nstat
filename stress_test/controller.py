@@ -376,7 +376,14 @@ class ODL(Controller):
     def get_oper_links(self):
         """Wrapper to the controller oper_links handler
         """
-
+        logging.info('[Controller] Query number of links registered in ODL operational DS')
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.oper_links],
+                                            str(self.ip[0]),
+                                            int(self.ssh_port[0]),
+                                            str(self.ssh_user[0]),
+                                            str(self.ssh_pass[0])),
+                                    '[controller.operational_links_handler]')[0]
 
     def get_oper_flows(self):
         """Wrapper to the controller oper_flows handler

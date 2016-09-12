@@ -1,10 +1,10 @@
 #! /usr/bin/env python3.4
 import sys
 
-def get_oper_hosts():
-    """Query number of hosts registered in ODL operational DS
+def get_oper_links():
+    """Query number of links registered in ODL operational DS
 
-    :returns: number of hosts found, 0 if none exists and -1 in case of
+    :returns: number of links found, 0 if none exists and -1 in case of
     error.
     :rtype: int
     """
@@ -24,9 +24,8 @@ def get_oper_hosts():
     except:
         return -1
 
-    hosts = [node for node in datastore.get('node', []) if node['node-id'].startswith('host:')]
+    links = [link for link in datastore.get('link', [])]
     return len(hosts)
 
 if __name__ == '__main__':
-    get_oper_hosts()
-
+    get_oper_links()
