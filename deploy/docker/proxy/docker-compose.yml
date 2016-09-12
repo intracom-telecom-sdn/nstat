@@ -5,7 +5,7 @@ services:
     image: intracom/nstat:proxy
     networks:
       sample_net:
-        ipv4_address: 172.18.0.10
+        ipv4_address: 10.0.1.10
 
   controller:
     image: intracom/nstat:proxy
@@ -13,7 +13,7 @@ services:
       - nstat
     networks:
       sample_net:
-        ipv4_address: 172.18.0.11
+        ipv4_address: 10.0.1.11
 
   nbgen:
     image: intracom/nstat:proxy
@@ -21,7 +21,7 @@ services:
       - nstat
     networks:
       sample_net:
-        ipv4_address: 172.18.0.12
+        ipv4_address: 10.0.1.12
 
   mtcbench:
     image: intracom/nstat:proxy
@@ -29,7 +29,7 @@ services:
       - nstat
     networks:
       sample_net:
-        ipv4_address: 172.18.0.13
+        ipv4_address: 10.0.1.13
 
   mn01:
     image: intracom/nstat:proxy
@@ -37,7 +37,7 @@ services:
       - nstat
     networks:
       sample_net:
-        ipv4_address: 172.18.0.14
+        ipv4_address: 10.0.1.14
 
   mn02:
     image: intracom/nstat:proxy
@@ -45,7 +45,7 @@ services:
       - nstat
     networks:
       sample_net:
-        ipv4_address: 172.18.0.15
+        ipv4_address: 10.0.1.15
 
 networks:
   sample_net:
@@ -53,5 +53,5 @@ networks:
     ipam:
       driver: default
       config:
-      - subnet: 172.18.0.0/24
-        gateway: 172.18.0.1
+      - subnet: 10.0.1.0/24
+        gateway: 10.0.1.1
