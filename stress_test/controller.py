@@ -371,7 +371,14 @@ class ODL(Controller):
     def get_oper_switches(self):
         """Wrapper to the controller oper_switches handler
         """
-
+        logging.info('[Controller] Query number of switches registered in ODL operational DS')
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.oper_switches],
+                                            str(self.ip[0]),
+                                            int(self.ssh_port[0]),
+                                            str(self.ssh_user[0]),
+                                            str(self.ssh_pass[0])),
+                                    '[controller.operational_switches_handler]')[0]
 
     def get_oper_links(self):
         """Wrapper to the controller oper_links handler

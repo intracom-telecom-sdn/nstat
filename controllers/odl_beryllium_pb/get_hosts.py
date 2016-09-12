@@ -22,9 +22,11 @@ def get_oper_hosts():
     try:
         datastore = requests.get(url=url, auth=auth_token).json()['topology'][0]
     except:
+        logging.error('[get_oper_hosts] Fail getting response from operational datastore')
         return -1
 
     hosts = [node for node in datastore.get('node', []) if node['node-id'].startswith('host:')]
+    logging.debug('[get_oper_hosts] Discovered hosts: {0}'.format(len(hosts)))
     return len(hosts)
 
 if __name__ == '__main__':
