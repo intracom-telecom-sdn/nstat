@@ -308,10 +308,10 @@ class ODL(Controller):
             self.restconf_user = test_config['controller_restconf_user']
             self.restconf_password = test_config['controller_restconf_password']
 
-        self.oper_hosts = -1
-        self.oper_switches = -1
-        self.oper_links = -1
-        self.oper_flows = -1
+        self.oper_hosts = ctrl_base_dir + test_config['controller_oper_hosts_handler']
+        self.oper_switches = ctrl_base_dir + test_config['controller_oper_switches_handler']
+        self.oper_links = ctrl_base_dir + test_config['controller_oper_links_handler']
+        self.oper_flows = ctrl_base_dir + test_config['controller_oper_flows_handler']
 
     def generate_xmls(self):
         """ Starts and then stops the controller to trigger the generation of
@@ -359,6 +359,14 @@ class ODL(Controller):
     def get_oper_hosts(self):
         """Wrapper to the controller oper_hosts handler
         """
+        logging.info('[Controller] Query number of hosts registered in ODL operational DS')
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.oper_hosts],
+                                            str(self.ip[0]),
+                                            int(self.ssh_port[0]),
+                                            str(self.ssh_user[0]),
+                                            str(self.ssh_pass[0])),
+                                    '[controller.operational_hosts_handler]')[0]
 
     def get_oper_switches(self):
         """Wrapper to the controller oper_switches handler
