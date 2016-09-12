@@ -2,13 +2,13 @@ version: '2'
 
 services:
   nstat:
-    image: intracom/nstat:proxy
+    image: intracom/nstat
     networks:
       sample_net:
         ipv4_address: 10.0.1.10
 
   controller:
-    image: intracom/nstat:proxy
+    image: intracom/nstat
     depends_on:
       - nstat
     networks:
@@ -16,7 +16,7 @@ services:
         ipv4_address: 10.0.1.11
 
   nbgen:
-    image: intracom/nstat:proxy
+    image: intracom/nstat
     depends_on:
       - nstat
     networks:
@@ -24,7 +24,7 @@ services:
         ipv4_address: 10.0.1.12
 
   mtcbench:
-    image: intracom/nstat:proxy
+    image: intracom/nstat
     depends_on:
       - nstat
     networks:
@@ -32,7 +32,7 @@ services:
         ipv4_address: 10.0.1.13
 
   mn01:
-    image: intracom/nstat:proxy
+    image: intracom/nstat
     depends_on:
       - nstat
     networks:
@@ -40,7 +40,7 @@ services:
         ipv4_address: 10.0.1.14
 
   mn02:
-    image: intracom/nstat:proxy
+    image: intracom/nstat
     depends_on:
       - nstat
     networks:
