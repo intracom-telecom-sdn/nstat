@@ -1,5 +1,6 @@
 #! /usr/bin/env python3.4
 import sys
+import logging
 
 def get_oper_hosts():
     """Query number of hosts registered in ODL operational DS

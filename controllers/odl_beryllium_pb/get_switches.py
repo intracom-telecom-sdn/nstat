@@ -1,5 +1,6 @@
 #! /usr/bin/env python3.4
 import sys
+import logging
 
 def get_oper_switches():
     """Query number of switches registered in ODL operational DS

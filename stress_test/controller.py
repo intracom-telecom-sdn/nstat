@@ -395,7 +395,14 @@ class ODL(Controller):
     def get_oper_flows(self):
         """Wrapper to the controller oper_flows handler
         """
-
+        logging.info('[Controller] Query number of flows installed for all installed nodes of the topology')
+        util.netutil.ssh_run_command(self._ssh_conn,
+                                    ' '.join([self.oper_flows],
+                                            str(self.ip[0]),
+                                            int(self.ssh_port[0]),
+                                            str(self.ssh_user[0]),
+                                            str(self.ssh_pass[0])),
+                                    '[controller.operational_flows_handler]')[0]
 
 class ONOS(Controller):
 
