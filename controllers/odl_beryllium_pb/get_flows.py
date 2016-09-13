@@ -18,7 +18,7 @@ def get_oper_flows():
     password = sys.argv[4]
 
     odl_inventory = emulators.nb_generator.flow_utils.FlowExplorer(ip,
-        port, 'operational', username, password)
+        port, 'operational', (username, password))
     odl_inventory.get_inventory_flows_stats()
     logging.debug('[get_oper_flows] Discovered {0} flows at inventory'.
                   format(odl_inventory.found_flows))
