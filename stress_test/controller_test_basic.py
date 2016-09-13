@@ -86,7 +86,7 @@ if ctrl.persistence_hnd:
                                                        'Check_persistence')
 
     if (output is not None):
-        logging.info('[Testing] Persistence is'
+        logging.info('[Testing] Persistence is '
                      'disabled successfully')
     else:
         logging.info('[Testing] Persistence is still enabled')

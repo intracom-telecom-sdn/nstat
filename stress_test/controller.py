@@ -110,9 +110,8 @@ class Controller:
         logging.info('[Controller] Checking the status')
 
         q = queue.Queue()
-        util.netutil.ssh_run_command(self._ssh_conn,
-                                     self.status_hnd, '[controller.status_'
-                                     'handler]', q)[0]
+        util.netutil.ssh_run_command(self._ssh_conn, self.status_hnd,
+                                     '[controller.status_handler]', q)[0]
 
         cmd_output = ''
 
@@ -120,7 +119,8 @@ class Controller:
             cmd_output += str(q.get()) + ' '
 
         if cmd_output.strip() == '1':
-            logging.info('[Controller] status: Running-{0}'.format(cmd_output))
+            logging.info('[Controller] status: Running-'
+                         ' {0}'.format(cmd_output))
 
         elif cmd_output.strip() == '0':
             logging.info('[Controller] status: Not'
