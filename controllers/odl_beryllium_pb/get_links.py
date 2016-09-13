@@ -1,6 +1,8 @@
 #! /usr/bin/env python3.4
 import sys
 import logging
+import requests
+
 
 def get_oper_links():
     """Query number of links registered in ODL operational DS
@@ -21,9 +23,10 @@ def get_oper_links():
 
     auth_token = (username, password)
     try:
-        datastore = requests.get(url=url, auth=auth_token).json()['topology'][0]
+        datastore = requests.get(url=url,
+                                 auth=auth_token).json()['topology'][0]
     except:
-        logging.error('[get_oper_links] Fail getting response from operational datastore')
+        logging.error('[get_oper_links] Fail response from operational DS')
         return -1
     links = [link for link in datastore.get('link', [])]
     logging.debug('[get_oper_links] Discovered links: {0}'.format(len(links)))
