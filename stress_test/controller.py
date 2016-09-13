@@ -38,16 +38,16 @@ class Controller:
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
-        self.build_hnd = self.base_dir + test_config['controller_\
-        build_handler']
-        self.start_hnd = self.base_dir + test_config['controller_\
-        start_handler']
-        self.stop_hnd = self.base_dir + test_config['controller_\
-        stop_handler']
-        self.status_hnd = self.base_dir + test_config['controller_\
-        status_handler']
-        self.clean_hnd = self.base_dir + test_config['controller_\
-        clean_handler']
+        self.build_hnd = self.base_dir + test_config['controller_'
+                                                     'build_handler']
+        self.start_hnd = self.base_dir + test_config['controller_'
+                                                     'start_handler']
+        self.stop_hnd = self.base_dir + test_config['controller_'
+                                                    'stop_handler']
+        self.status_hnd = self.base_dir + test_config['controller_'
+                                                      'status_handler']
+        self.clean_hnd = self.base_dir + test_config['controller_'
+                                                     'clean_handler']
 
         self.status = 'UNKNOWN'
 
@@ -100,8 +100,8 @@ class Controller:
         self.status = 'CLEANING'
         util.netutil.ssh_run_command(self._ssh_conn,
                                      self.clean_hnd,
-                                     '[controller.clean\
-                                    _handler]')[0]
+                                     '[controller.clean'
+                                     '_handler]')[0]
         self.status = 'CLEANED'
 
     def check_status(self):
@@ -111,8 +111,8 @@ class Controller:
 
         q = queue.Queue()
         util.netutil.ssh_run_command(self._ssh_conn,
-                                     self.status_hnd, '[controller.status_\
-                                     handler]', q)[0]
+                                     self.status_hnd, '[controller.status_'
+                                     'handler]', q)[0]
 
         cmd_output = ''
 
@@ -123,8 +123,8 @@ class Controller:
             logging.info('[Controller] status: Running-{0}'.format(cmd_output))
 
         elif cmd_output.strip() == '0':
-            logging.info('[Controller] status: Not\
-                         Running- {0}'.format(cmd_output))
+            logging.info('[Controller] status: Not'
+                         'Running- {0}'.format(cmd_output))
 
         return cmd_output.strip()
 
@@ -179,8 +179,8 @@ class Controller:
                                          ' '.join(cmd),
                                          '[controller.start_handler]')[0]
             self.pid = self.wait_until_listens(420000)
-            logging.info('[start_controller] Controller\
-                         pid: {0}'.format(self.pid))
+            logging.info('[start_controller] Controller'
+                         'pid: {0}'.format(self.pid))
             self.wait_until_up(420000)
         elif self.check_status() == '1':
             logging.info('[start_controller] Controller already started.')
@@ -214,8 +214,8 @@ class Controller:
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    ' '.join([self.build_hnd]),
-                                                   '[controller.\
-                                                   build_handler]')[0]
+                                                   '[controller.'
+                                                   'build_handler]')[0]
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[Controller] Successful building")
@@ -241,8 +241,8 @@ class Controller:
             time.sleep(1)
             gpid = util.process.getpid_listeningonport(self.of_port,
                                                        self._ssh_conn)
-            logging.info('[Controller] Returned pid listening\
-                          on port {0}: {1}'.format(self.of_port, gpid))
+            logging.info('[Controller] Returned pid listening'
+                         'on port {0}: {1}'.format(self.of_port, gpid))
 
             if gpid > 0:
                 return gpid
@@ -286,23 +286,26 @@ class ODL(Controller):
 
         self.stat_period_ms = test_config['controller_statistics_period_ms']
         if 'controller_flowmods_conf_handler' in test_config:
-            self.flowmods_conf_hnd = ctrl_base_dir + test_config['controller_\
-                                                                 flowmods_\
-                                                                 conf_handler']
+            self.flowmods_conf_hnd = ctrl_base_dir + test_config['controller_'
+                                                                 'flowmods_'
+                                                                 'conf_'
+                                                                 'handler']
 
             '''check handler's validity'''
             util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
         if 'controller_statistics_handler' in test_config:
-            self.statistics_hnd = ctrl_base_dir + test_config['controller_\
-            statistics_handler']
+            self.statistics_hnd = ctrl_base_dir + test_config['controller_'
+                                                              'statistics_'
+                                                              'handler']
 
             '''check handler's validity'''
             util.file_ops.check_filelist([self.statistics_hnd])
 
         if 'controller_persistent_handler' in test_config:
-            self.persistence_hnd = ctrl_base_dir + test_config['controller_\
-            persistent_handler']
+            self.persistence_hnd = ctrl_base_dir + test_config['controller_'
+                                                               'persistent_'
+                                                               'handler']
 
             '''check handler's validity'''
             util.file_ops.check_filelist([self.persistence_hnd])
@@ -310,17 +313,17 @@ class ODL(Controller):
         if 'controller_restconf_port' in test_config:
             self.restconf_port = test_config['controller_restconf_port']
             self.restconf_user = test_config['controller_restconf_user']
-            self.restconf_password = test_config['controller_restconf_\
-            password']
+            self.restconf_password = test_config['controller_restconf_'
+                                                 'password']
 
-        self.oper_hosts = ctrl_base_dir + test_config['controller_oper_\
-        hosts_handler']
-        self.oper_switches = ctrl_base_dir + test_config['controller_oper_\
-        switches_handler']
-        self.oper_links = ctrl_base_dir + test_config['controller_oper_\
-        links_handler']
-        self.oper_flows = ctrl_base_dir + test_config['controller_oper_\
-        flows_handler']
+        self.oper_hosts = ctrl_base_dir + test_config['controller_oper_'
+                                                      'hosts_handler']
+        self.oper_switches = ctrl_base_dir + test_config['controller_oper_'
+                                                         'switches_handler']
+        self.oper_links = ctrl_base_dir + test_config['controller_oper_'
+                                                      'links_handler']
+        self.oper_flows = ctrl_base_dir + test_config['controller_oper_'
+                                                      'flows_handler']
 
     def generate_xmls(self):
         """ Starts and then stops the controller to trigger the generation of
@@ -339,8 +342,8 @@ class ODL(Controller):
 
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.persistence_hnd]),
-                                     '[controller.change_persistent\
-                                     _handler]')[0]
+                                     '[controller.change_persistent'
+                                     '_handler]')[0]
 
     def change_stats(self):
         """Wrapper to the controller statistics handler
@@ -364,8 +367,8 @@ class ODL(Controller):
         logging.info('[Controller] Configure flow modifications')
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.flowmods_conf_hnd]),
-                                     '[controller.flowmod_\
-                                     configure_handler]')[0]
+                                     '[controller.flowmod_'
+                                     'configure_handler]')[0]
 
     def get_oper_hosts(self):
         """Wrapper to the controller oper_hosts handler
@@ -378,8 +381,8 @@ class ODL(Controller):
                                               int(self.ssh_port[0]),
                                               str(self.ssh_user[0]),
                                               str(self.ssh_pass[0])),
-                                     '[controller.operational\
-                                     _hosts_handler]')[0]
+                                     '[controller.operational'
+                                     '_hosts_handler]')[0]
 
     def get_oper_switches(self):
         """Wrapper to the controller oper_switches handler
@@ -392,8 +395,8 @@ class ODL(Controller):
                                               int(self.ssh_port[0]),
                                               str(self.ssh_user[0]),
                                               str(self.ssh_pass[0])),
-                                     '[controller.operational\
-                                     _switches_handler]')[0]
+                                     '[controller.operational_'
+                                     'switches_handler]')[0]
 
     def get_oper_links(self):
         """Wrapper to the controller oper_links handler
@@ -406,8 +409,8 @@ class ODL(Controller):
                                               int(self.ssh_port[0]),
                                               str(self.ssh_user[0]),
                                               str(self.ssh_pass[0])),
-                                     '[controller.operational_links\
-                                     _handler]')[0]
+                                     '[controller.operational_links'
+                                     '_handler]')[0]
 
     def get_oper_flows(self):
         """Wrapper to the controller oper_flows handler
@@ -420,8 +423,8 @@ class ODL(Controller):
                                               int(self.ssh_port[0]),
                                               str(self.ssh_user[0]),
                                               str(self.ssh_pass[0])),
-                                     '[controller.operational_flows\
-                                     _handler]')[0]
+                                     '[controller.operational_flows_'
+                                     'handler]')[0]
 
 
 class ONOS(Controller):

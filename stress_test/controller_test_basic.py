@@ -24,8 +24,8 @@ logging.info('[Testing] Parsing test configuration')
 
 '''define Class inputs:json_conf_file and ctrl_base_dir'''
 if str(sys.argv[1]) == '-h':
-    print ("[Testing] controller_test_basic.py <input json file>\
-    <controller base directory>")
+    print ('[Testing] controller_test_basic.py <input json file>'
+           '<controller base directory>')
     sys.exit()
 test_file = str(sys.argv[1])
 
