@@ -24,7 +24,7 @@ logging.info('[Testing] Parsing test configuration')
 
 '''define Class inputs:json_conf_file and ctrl_base_dir'''
 if str(sys.argv[1]) == '-h':
-    print ('[Testing] controller_test_basic.py <input json file>'
+    print ('[Testing] controller_test_basic.py <input json file> '
            '<controller base directory>')
     sys.exit()
 test_file = str(sys.argv[1])
@@ -44,7 +44,7 @@ try:
     logging.info('[Testing] Port {0} is free'.format(ctrl.of_port))
 
 except:
-    logging.error('[Testing] Port {0} is occupied by another'
+    logging.error('[Testing] Port {0} is occupied by another '
                   'process'.format(ctrl.of_port))
 
 if ctrl.need_rebuild:
@@ -115,7 +115,7 @@ try:
                                                        cmd,
                                                        'Check_stats_period')
     if (output is not None):
-        logging.info('[Testing] Interval statistics has been'
+        logging.info('[Testing] Interval statistics have been '
                      'updated successfully')
     else:
         logging.info("[Testing] Interval statistics not updated")

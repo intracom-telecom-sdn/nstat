@@ -12,10 +12,10 @@ def get_oper_switches():
     :rtype: int
     """
 
-    ip = str(int(sys.argv[1]))
-    port = int(sys.argv[2])
-    username = str(int(sys.argv[3]))
-    password = str(int(sys.argv[4]))
+    ip = sys.argv[1]
+    port = sys.argv[2]
+    username = sys.argv[3]
+    password = sys.argv[4]
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.

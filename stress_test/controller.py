@@ -247,7 +247,7 @@ class Controller:
             if gpid > 0:
                 return gpid
             elif gpid == 0:
-                raise Exception('Another controller seems to'
+                raise Exception('Another controller seems to '
                                 'have started in the '
                                 'meantime. Exiting...')
 

@@ -12,14 +12,14 @@ def get_oper_flows():
     :rtype: int
     """
 
-    ip = str(int(sys.argv[1]))
-    port = int(sys.argv[2])
-    username = str(int(sys.argv[3]))
-    password = str(int(sys.argv[4]))
+    ip = sys.argv[1]
+    port = sys.argv[2]
+    username = sys.argv[3]
+    password = sys.argv[4]
 
     odl_inventory = emulators.nb_generator.flow_utils.FlowExplorer(ip,
         port, 'operational', username, password)
-    odl_inventory.get_inventory_flow()
+    odl_inventory.get_inventory_flows_stats()
     logging.debug('[get_oper_flows] Discovered {0} flows at inventory'.
                   format(odl_inventory.found_flows))
     return odl_inventory.found_flows
