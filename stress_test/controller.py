@@ -311,7 +311,6 @@ class ODL(Controller):
             util.file_ops.check_filelist([self.persistence_hnd])
 
         if 'controller_restconf_port' in test_config:
-            print('YESSSSSS')
             self.restconf_port = test_config['controller_restconf_port']
             self.restconf_user = test_config['controller_restconf_user']
             self.restconf_pass = test_config['controller_restconf_password']
