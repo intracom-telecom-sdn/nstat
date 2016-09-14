@@ -10,7 +10,7 @@ RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/m
 RUN chmod +x /opt/provision.sh
 RUN /bin/bash -c "/opt/provision.sh $http_proxy"
 #CMD ["service", "openvswitch-switch" "start"]
-
+# Adding missing symbolic link for libnetsnmp.so.30 necessary for MTCBENCH
 RUN ln -s /usr/lib/x86_64-linux-gnu/libnetsnmp.so.30 /usr/lib/libnetsnmp.so.31
 
 # Configure ssh-server
