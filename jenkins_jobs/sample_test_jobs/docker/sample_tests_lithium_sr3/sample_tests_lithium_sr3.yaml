@@ -402,13 +402,13 @@
     name: sample_nstat-jenkins-jobs
     branch: develop_Dockerfile_fix
     jobs:
-       01- 'sample_lithium_DS_sb_active_scalability_mtcbench_docker-{branch}'
-       02- 'sample_lithium_DS_sb_active_stability_mtcbench_docker-{branch}'
-       03- 'sample_lithium_DS_sb_idle_scalability_mtcbench_docker-{branch}'
-       04- 'sample_lithium_nb_active_scalability_multinet_docker-{branch}'
-       05- 'sample_lithium_RPC_sb_active_scalability_mtcbench_docker-{branch}'
-       06- 'sample_lithium_RPC_sb_active_stability_mtcbench_docker-{branch}'
-       07- 'sample_lithium_RPC_sb_idle_scalability_mtcbench_docker-{branch}'
-       08- 'sample_lithium_sb_idle_scalability_multinet_docker-{branch}'
-       09- 'sample_lithium_sb_active_scalability_multinet_docker-{branch}'
-       10- 'sample_lithium_sb_idle_stability_multinet_docker-{branch}'
+       - 'sample_lithium_DS_sb_active_scalability_mtcbench_docker-{branch}'
+       - 'sample_lithium_DS_sb_active_stability_mtcbench_docker-{branch}'
+       - 'sample_lithium_DS_sb_idle_scalability_mtcbench_docker-{branch}'
+       - 'sample_lithium_nb_active_scalability_multinet_docker-{branch}'
+       - 'sample_lithium_RPC_sb_active_scalability_mtcbench_docker-{branch}'
+       - 'sample_lithium_RPC_sb_active_stability_mtcbench_docker-{branch}'
+       - 'sample_lithium_RPC_sb_idle_scalability_mtcbench_docker-{branch}'
+       - 'sample_lithium_sb_idle_scalability_multinet_docker-{branch}'
+       - 'sample_lithium_sb_active_scalability_multinet_docker-{branch}'
+       - 'sample_lithium_sb_idle_stability_multinet_docker-{branch}'
