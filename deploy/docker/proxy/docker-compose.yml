@@ -5,6 +5,7 @@ services:
     image: intracom/nstat:proxy
     privileged: true
     hostname: nstat-node
+    volumes: /tmp:/home
     networks:
       sample_net:
         ipv4_address: 10.0.1.10
