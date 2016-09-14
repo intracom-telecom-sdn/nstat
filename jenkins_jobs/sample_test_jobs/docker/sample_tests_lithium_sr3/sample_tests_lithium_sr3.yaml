@@ -12,15 +12,13 @@
 # 05. lithium_RPC_sb_active_scalability_mtcbench.json
 # 06. lithium_RPC_sb_active_stability_mtcbench.json
 # 07. lithium_RPC_sb_idle_scalability_mtcbench.json
-# 08. lithium_sb_idle_scalability_multinet
-# 09. lithium_sb_idle_stability_multinet
-# 10. lithium_sb_active_scalability_multinet
-# 11. lithium_sb_idle_scalability_multinet
-# 12. lithium_sb_idle_stability_multinet
+# 08. lithium_sb_idle_scalability_multinet.json
+# 09. lithium_sb_active_scalability_multinet.json
+# 10. lithium_sb_idle_stability_multinet.json
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-# sample_lithium_DS_sb_active_scalability_mtcbench
+# 01. sample_lithium_DS_sb_active_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -58,7 +56,7 @@
                --test="sb_active_scalability_mtcbench" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -66,7 +64,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_DS_sb_active_stability_mtcbench
+# 02. sample_lithium_DS_sb_active_stability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -98,7 +96,7 @@
                --test="sb_active_stability_mtcbench" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -106,7 +104,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_DS_sb_idle_scalability_mtcbench
+# 03 sample_lithium_DS_sb_idle_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -133,7 +131,7 @@
                --test="sb_idle_scalability_mtcbench" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -141,7 +139,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_nb_active_scalability_multinet
+# 04. sample_lithium_nb_active_scalability_multinet
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -174,7 +172,7 @@
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
                --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -182,7 +180,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_RPC_sb_active_scalability_mtcbench
+# 05. sample_lithium_RPC_sb_active_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -216,7 +214,7 @@
                --test="sb_active_scalability_mtcbench" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -224,7 +222,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_RPC_sb_active_stability_mtcbench
+# 06. sample_lithium_RPC_sb_active_stability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -254,7 +252,7 @@
                --test="sb_active_stability_mtcbench" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -262,7 +260,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_RPC_sb_idle_scalability_mtcbench
+# 07. sample_lithium_RPC_sb_idle_scalability_mtcbench
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -287,7 +285,7 @@
                --test="sb_idle_scalability_mtcbench" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/mt_cbench/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -295,7 +293,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_sb_idle_scalability_multinet
+# 08. sample_lithium_sb_idle_scalability_multinet
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -320,7 +318,7 @@
                --test="sb_idle_scalability_multinet" \
                --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/docker/lithium_sr3/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -328,40 +326,7 @@
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
-# sample_lithium_sb_idle_stability_multinet
-# ------------------------------------------------------------------------------
-
-- job-template:
-    name: sample_lithium_sb_idle_stability_multinet-{branch}
-    description: 'Enter the job description here'
-    block-downstream: false
-    block-upstream: false
-    defaults: github-sample
-    triggers:
-     #- pollscm: '0 19 * * *'
-    wrappers:
-      - timestamps:
-    builders:
-      - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_stability_multinet"
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
-
-          # test execution
-          # --------------------------------------------------------------------
-          python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="sb_idle_scalability_multinet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
-               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
-               --html-report=$WORKSPACE/report.html \
-               --output-dir=$WORKSPACE/$RESULTS_DIR/
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
-
-# ------------------------------------------------------------------------------
-# sample_lithium_sb_active_scalability_multinet
+# 09. sample_lithium_sb_active_scalability_multinet
 # ------------------------------------------------------------------------------
 
 - job-template:
@@ -384,9 +349,9 @@
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
                --test="sb_active_scalability_multinet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
@@ -395,79 +360,11 @@
 
 
 # ------------------------------------------------------------------------------
-# sample_lithium_nb_active_scalability_multinet
+# 10. sample_lithium_sb_idle_stability_multinet
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_lithium_nb_active_scalability_multinet-{branch}
-    description: 'Enter the job description here'
-    block-downstream: false
-    block-upstream: false
-    defaults: github-sample
-    triggers:
-     #- pollscm: '0 19 * * *'
-    wrappers:
-      - timestamps:
-    builders:
-      - shell: |
-          export CONFIG_FILENAME="lithium_nb_active_scalability_multinet"
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
-
-          # test execution
-          # --------------------------------------------------------------------
-          python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="nb_active_scalability_multinet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
-               --nb-generator-base-dir=$WORKSPACE/emulators/nb_generator/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
-               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
-               --html-report=$WORKSPACE/report.html \
-               --output-dir=$WORKSPACE/$RESULTS_DIR/
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
-
-
-# ------------------------------------------------------------------------------
-# sample_lithium_sb_idle_scalability_multinet
-# ------------------------------------------------------------------------------
-
-- job-template:
-    name: sample_lithium_sb_idle_scalability_multinet-{branch}
-    description: 'Enter the job description here'
-    block-downstream: false
-    block-upstream: false
-    defaults: github-sample
-    triggers:
-     #- pollscm: '0 19 * * *'
-    wrappers:
-      - timestamps:
-    builders:
-      - shell: |
-          export CONFIG_FILENAME="lithium_sb_idle_scalability_multinet"
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
-
-          # test execution
-          # --------------------------------------------------------------------
-          python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="sb_idle_scalability_multinet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_sr3_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_sr3/$CONFIG_FILENAME".json" \
-               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
-               --html-report=$WORKSPACE/report.html \
-               --output-dir=$WORKSPACE/$RESULTS_DIR/
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
-
-# ------------------------------------------------------------------------------
-# sample_lithium_sb_idle_stability_multinet
-# ------------------------------------------------------------------------------
-
-- job-template:
-    name: sample_lithium_sb_idle_stability_multinet-{branch}
+    name: sample_lithium_sb_idle_stability_multinet_docker-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -485,48 +382,17 @@
           # test execution
           # --------------------------------------------------------------------
           python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="sb_idle_stability_multinet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_rc2_pb/ \
+               --test="sb_idle_scalability_multinet" \
+               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_pb/ \
                --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_rc2/$CONFIG_FILENAME".json" \
+               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium/$CONFIG_FILENAME".json" \
                --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
                --html-report=$WORKSPACE/report.html \
                --output-dir=$WORKSPACE/$RESULTS_DIR/
 
           source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
-# ------------------------------------------------------------------------------
-# sample_lithium_sb_active_stability_multinet
-# ------------------------------------------------------------------------------
 
-- job-template:
-    name: sample_lithium_sb_active_stability_multinet-{branch}
-    description: 'Enter the job description here'
-    block-downstream: false
-    block-upstream: false
-    defaults: github-sample
-    triggers:
-     #- pollscm: '0 19 * * *'
-    wrappers:
-      - timestamps:
-    builders:
-      - shell: |
-          export CONFIG_FILENAME="lithium_sb_active_stability_multinet"
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_pre_actions.sh
-
-          # test execution
-          # --------------------------------------------------------------------
-          python3.4 ./stress_test/nstat_orchestrator.py \
-               --test="sb_active_stability_multinet" \
-               --ctrl-base-dir=$WORKSPACE/controllers/odl_lithium_rc2_pb/ \
-               --sb-generator-base-dir=$WORKSPACE/emulators/multinet/ \
-               --json-config=$WORKSPACE/stress_test/sample_test_confs/lithium_rc2/$CONFIG_FILENAME".json" \
-               --json-output=$WORKSPACE/$OUTPUT_FILENAME"_results.json" \
-               --html-report=$WORKSPACE/report.html \
-               --output-dir=$WORKSPACE/$RESULTS_DIR/
-
-          source /$WORKSPACE/jenkins_jobs/common/sample_tests_post_actions.sh
 
 # ------------------------------------------------------------------------------
 # job instances
@@ -534,19 +400,15 @@
 
 - project:
     name: sample_nstat-jenkins-jobs
-    branch: master
+    branch: develop_Dockerfile_fix
     jobs:
-
-        - 'sample_lithium_DS_sb_active_scalability_mtcbench-{branch}'
-        - 'sample_lithium_DS_sb_active_stability_mtcbench-{branch}'
-        - 'sample_lithium_DS_sb_idle_scalability_mtcbench-{branch}'
-        - 'sample_lithium_nb_active_scalability_multinet-{branch}'
-        - 'sample_lithium_RPC_sb_active_scalability_mtcbench-{branch}'
-        - 'sample_lithium_RPC_sb_active_stability_mtcbench-{branch}'
-        - 'sample_lithium_RPC_sb_idle_scalability_mtcbench-{branch}'
-        - 'sample_lithium_sb_idle_scalability_multinet-{branch}'
-        - 'sample_lithium_sb_active_scalability_multinet-{branch}'
-        - 'sample_lithium_nb_active_scalability_multinet-{branch}'
-        - 'sample_lithium_sb_idle_scalability_multinet-{branch}'
-        - 'sample_lithium_sb_idle_stability_multinet-{branch}'
-        - 'sample_lithium_sb_active_stability_multinet-{branch}'
+       01- 'sample_lithium_DS_sb_active_scalability_mtcbench_docker-{branch}'
+       02- 'sample_lithium_DS_sb_active_stability_mtcbench_docker-{branch}'
+       03- 'sample_lithium_DS_sb_idle_scalability_mtcbench_docker-{branch}'
+       04- 'sample_lithium_nb_active_scalability_multinet_docker-{branch}'
+       05- 'sample_lithium_RPC_sb_active_scalability_mtcbench_docker-{branch}'
+       06- 'sample_lithium_RPC_sb_active_stability_mtcbench_docker-{branch}'
+       07- 'sample_lithium_RPC_sb_idle_scalability_mtcbench_docker-{branch}'
+       08- 'sample_lithium_sb_idle_scalability_multinet_docker-{branch}'
+       09- 'sample_lithium_sb_active_scalability_multinet_docker-{branch}'
+       10- 'sample_lithium_sb_idle_stability_multinet_docker-{branch}'
