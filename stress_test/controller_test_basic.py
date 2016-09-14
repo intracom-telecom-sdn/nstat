@@ -17,7 +17,7 @@ import sys
 LOGGER = logging.getLogger()
 LOGGER.level = logging.INFO
 
-# logging output to stdout
+'''logging output to stdout'''
 STREAM_HANDLER = logging.StreamHandler(sys.stdout)
 LOGGER.addHandler(STREAM_HANDLER)
 logging.info('[Testing] Parsing test configuration')
@@ -38,6 +38,7 @@ ctrl = controller.Controller.new(ctrl_base_dir, test_config)
 
 '''initialize a connection'''
 ctrl.init_ssh()
+
 try:
     '''check other connections on the OF port of the config file'''
     ctrl.check_other_controller()
@@ -92,8 +93,8 @@ if ctrl.persistence_hnd:
         logging.info('[Testing] Persistence is still enabled')
 
 ctrl.generate_xmls()
-try:
 
+try:
     '''start a controller'''
     ctrl.check_status()
     ctrl.start()
@@ -120,6 +121,26 @@ try:
     else:
         logging.info("[Testing] Interval statistics not updated")
 
+    try:
+        hosts = ctrl.get_oper_hosts()
+        print('The number of hosts on datastore are:{0}'.format(hosts))
+    except AttributeError:
+        print('Error during the query of hosts in DS')
+    try:
+        switches = ctrl.get_oper_switches()
+        print('The number of switches on datastore are:{0}'.format(switches))
+    except AttributeError:
+        print('Error during the query of switches in DS')
+    try:
+        links = ctrl.get_oper_links()
+        print('The number of links on datastore are:{0}'.format(links))
+    except AttributeError:
+        print('Error during the query of links in DS')
+    try:
+        flows = ctrl.get_oper_flows()
+        print('The number of installed flows on datastore are:{0}'.format(flows))
+    except AttributeError:
+        print('Error during the query of flows in DS')
 except:
     logging.info('[Testing] Error, check the logs')
 
@@ -127,4 +148,5 @@ finally:
     ctrl.stop()
     ctrl.check_status()
     if ctrl.need_cleanup:
-        ctrl.clean_hnd()
+       ctrl.clean_hnd()
+

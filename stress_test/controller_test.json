@@ -29,6 +29,12 @@
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":100,
 
+"controller_restconf_port":8181,
+"controller_restconf_user":"admin",
+"controller_restconf_password":"admin",
+
+
+
 "java_opts":["-Xmx1G","-Xms512M","-XX:+UseG1GC","-XX:MaxPermSize=512M"]
 
 }
