@@ -138,7 +138,8 @@ try:
         print('Error during the query of links in DS')
     try:
         flows = ctrl.get_oper_flows()
-        print('The number of installed flows on datastore are:{0}'.format(flows))
+        print('The number of installed flows on datastore are: '
+              '{0}'.format(flows))
     except AttributeError:
         print('Error during the query of flows in DS')
 except:
@@ -148,5 +149,4 @@ finally:
     ctrl.stop()
     ctrl.check_status()
     if ctrl.need_cleanup:
-       ctrl.clean_hnd()
-
+        ctrl.clean_hnd()
