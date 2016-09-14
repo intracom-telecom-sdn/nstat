@@ -350,6 +350,8 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel.settimeout(channel_timeout)
     if getpty_flag:
         channel.get_pty()
+    channel.exec_command(command_to_run)
+
     if not block_flag:
         return 0
 
@@ -365,6 +367,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
                 for line in data.splitlines():
                     lines_queue.put(line)
             data = channel.recv(bufferSize).decode('utf-8')
+
     channel_exit_status = channel.recv_exit_status()
     channel.close()
     return (channel_exit_status, channel_output)
