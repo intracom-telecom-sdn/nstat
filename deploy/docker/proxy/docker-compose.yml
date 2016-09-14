@@ -2,7 +2,7 @@ version: '2'
 
 services:
   nstat:
-    image: intracom/nstat
+    image: intracom/nstat:proxy
     privileged: true
     hostname: nstat-node
     networks:
@@ -10,7 +10,7 @@ services:
         ipv4_address: 10.0.1.10
 
   controller:
-    image: intracom/nstat
+    image: intracom/nstat:proxy
     privileged: true
     hostname: ctrl-node
     depends_on:
@@ -20,7 +20,7 @@ services:
         ipv4_address: 10.0.1.11
 
   nbgen:
-    image: intracom/nstat
+    image: intracom/nstat:proxy
     privileged: true
     hostname: nbgen-node
     depends_on:
@@ -30,7 +30,7 @@ services:
         ipv4_address: 10.0.1.12
 
   mtcbench:
-    image: intracom/nstat
+    image: intracom/nstat:proxy
     privileged: true
     hostname: mtcbench-node
     depends_on:
@@ -40,7 +40,7 @@ services:
         ipv4_address: 10.0.1.13
 
   mn01:
-    image: intracom/nstat
+    image: intracom/nstat:proxy
     privileged: true
     hostname: mn01-node
     depends_on:
@@ -50,7 +50,7 @@ services:
         ipv4_address: 10.0.1.14
 
   mn02:
-    image: intracom/nstat
+    image: intracom/nstat:proxy
     privileged: true
     hostname: mn02-node
     depends_on:
