@@ -3,12 +3,16 @@ version: '2'
 services:
   nstat:
     image: intracom/nstat
+    privileged: true
+    hostname: nstat-node
     networks:
       sample_net:
         ipv4_address: 10.0.1.10
 
   controller:
     image: intracom/nstat
+    privileged: true
+    hostname: ctrl-node
     depends_on:
       - nstat
     networks:
@@ -17,6 +21,8 @@ services:
 
   nbgen:
     image: intracom/nstat
+    privileged: true
+    hostname: nbgen-node
     depends_on:
       - nstat
     networks:
@@ -25,6 +31,8 @@ services:
 
   mtcbench:
     image: intracom/nstat
+    privileged: true
+    hostname: mtcbench-node
     depends_on:
       - nstat
     networks:
@@ -33,6 +41,8 @@ services:
 
   mn01:
     image: intracom/nstat
+    privileged: true
+    hostname: mn01-node
     depends_on:
       - nstat
     networks:
@@ -41,6 +51,8 @@ services:
 
   mn02:
     image: intracom/nstat
+    privileged: true
+    hostname: mn02-node
     depends_on:
       - nstat
     networks:
