@@ -179,7 +179,7 @@ class Controller:
                                          ' '.join(cmd),
                                          '[controller.start_handler]')[0]
             self.pid = self.wait_until_listens(420000)
-            logging.info('[start_controller] Controller'
+            logging.info('[start_controller] Controller '
                          'pid: {0}'.format(self.pid))
             self.wait_until_up(420000)
         elif self.check_status() == '1':
