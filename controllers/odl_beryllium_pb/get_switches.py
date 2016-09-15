@@ -33,7 +33,8 @@ def get_oper_switches():
                 if not node['node-id'].startswith('host:')]
     logging.debug('[get_oper_switches] Discovered switches: {0}'.
                   format(len(switches)))
-    return len(switches)
+
+    print(len(switches))
 
 if __name__ == '__main__':
     get_oper_switches()

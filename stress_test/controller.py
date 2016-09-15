@@ -396,7 +396,7 @@ class ODL(Controller):
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
                                            '[controller.operational_'
-                                           'switches_handler]')[0]
+                                           'switches_handler]')[1]
         return ret
 
     def get_oper_links(self):
@@ -411,7 +411,7 @@ class ODL(Controller):
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
                                            '[controller.operational_links'
-                                           '_handler]')[0]
+                                           '_handler]')[1]
         return ret
 
     def get_oper_flows(self):
@@ -426,7 +426,7 @@ class ODL(Controller):
                                                     str(self.restconf_user),
                                                     str(self.restconf_pass)]),
                                            '[controller.operational_flows_'
-                                           'handler]')[0]
+                                           'handler]')[1]
         return ret
 
 

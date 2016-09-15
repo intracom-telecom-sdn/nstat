@@ -11,17 +11,10 @@ def get_oper_hosts():
     error.
     :rtype: int
     """
-
-    '''DEBUG'''
-    print('ip = {0}, restconf port = {1}, restconf user = {2}, restoconf pass'
-          ' = {3}'.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]))
-
     ip = sys.argv[1]
     port = sys.argv[2]
     username = sys.argv[3]
     password = sys.argv[4]
-    print('ip = {0},restconf port = {1}, restconf user = {2}, restoconf pass'
-          ' = {3}'.format(ip, port, username, password))
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
@@ -38,9 +31,8 @@ def get_oper_hosts():
     hosts = [node for node in datastore.get('node', [])
              if node['node-id'].startswith('host:')]
     logging.debug('[get_oper_hosts] Discovered hosts: {0}'.format(len(hosts)))
-    '''DEBUG'''
+
     print(len(hosts))
-    return len(hosts)
 
 if __name__ == '__main__':
     get_oper_hosts()

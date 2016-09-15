@@ -85,7 +85,6 @@ if ctrl.persistence_hnd:
     exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
                                                        cmd,
                                                        'Check_persistence')
-
     if (output is not None):
         logging.info('[Testing] Persistence is '
                      'disabled successfully')
@@ -98,10 +97,8 @@ try:
     '''start a controller'''
     ctrl.check_status()
     ctrl.start()
-
     '''change stat period'''
     ctrl.change_stats()
-
     '''check the effect of change_stats()'''
     path_file = os.path.join(datastore_conf_path,
                              'opendaylight',
@@ -121,32 +118,38 @@ try:
     else:
         logging.info("[Testing] Interval statistics not updated")
 
+    '''get information about Controller Datastore'''
     try:
         hosts = ctrl.get_oper_hosts()
-        print('The number of hosts on datastore are:{0}'.format(hosts))
+        print('[Testing] The number of hosts on datastore '
+              'are: {0}'.format(hosts))
     except AttributeError:
-        print('Error during the query of hosts in DS')
+        print('[Testing] Error during the query of hosts in DS')
     try:
         switches = ctrl.get_oper_switches()
-        print('The number of switches on datastore are:{0}'.format(switches))
+        print('[Testing] The number of switches on datastore '
+              'are: {0}'.format(switches))
     except AttributeError:
-        print('Error during the query of switches in DS')
+        print('[Testing] Error during the query of switches in DS')
     try:
         links = ctrl.get_oper_links()
-        print('The number of links on datastore are:{0}'.format(links))
+        print('[Testing] The number of links on datastore '
+              ' are: {0}'.format(links))
     except AttributeError:
-        print('Error during the query of links in DS')
+        print('[Testing] Error during the query of links in DS')
     try:
         flows = ctrl.get_oper_flows()
-        print('The number of installed flows on datastore are: '
+        print('[Testing] The number of installed flows on datastore are: '
               '{0}'.format(flows))
     except AttributeError:
-        print('Error during the query of flows in DS')
+        print('[Testing] Error during the query of flows in DS')
 except:
     logging.info('[Testing] Error, check the logs')
+
 
 finally:
     ctrl.stop()
     ctrl.check_status()
     if ctrl.need_cleanup:
         ctrl.clean_hnd()
+

@@ -30,7 +30,7 @@ def get_oper_links():
         return -1
     links = [link for link in datastore.get('link', [])]
     logging.debug('[get_oper_links] Discovered links: {0}'.format(len(links)))
-    return len(links)
+    print(len(links))
 
 if __name__ == '__main__':
     get_oper_links()

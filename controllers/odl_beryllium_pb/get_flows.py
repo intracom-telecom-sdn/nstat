@@ -1,6 +1,9 @@
 #! /usr/bin/env python3.4
-import emulators.nb_generator.flow_utils
+#import emulators.nb_generator.flow_utils
+import json
 import logging
+import re
+import requests
 import sys
 
 
@@ -16,13 +19,69 @@ def get_oper_flows():
     port = sys.argv[2]
     username = sys.argv[3]
     password = sys.argv[4]
+    flows_found = get_flow_stats(ip, port, username, password)
+    print(flows_found)
 
-    odl_inventory = emulators.nb_generator.flow_utils.FlowExplorer(ip,
-        port, 'operational', (username, password))
-    odl_inventory.get_inventory_flows_stats()
-    logging.debug('[get_oper_flows] Discovered {0} flows at inventory'.
-                  format(odl_inventory.found_flows))
-    return odl_inventory.found_flows
+
+def get_flow_stats(ip, port, username, password):
+    """
+    Collects and returns data about installed flows for the topology nodes
+
+    :param ip: controller IP Address
+    :param port: controller restconf port number
+    :param username: username for restconf authorization
+    :param password: password for restconf authorization
+    :returns: the number of installed flows in the topotlogy nodes
+    or a negative number in a negative case
+    :rtype: int
+    :type ip: str
+    :type port: int
+    :type username: str
+    :type password: str
+    """
+    url = 'http://{0}:{1}/restconf/operational/opendaylight'
+          '-inventory:nodes'.format(ip,port))
+    headers = {'Accept': 'application/json'}
+    found_flows = 0
+    s = requests.Session()
+    auth_token= (username,password)
+    try:
+        req = s.get(url,headers=headers,stream=False,auth=auth_token)
+        str_response = req.content.decode('utf-8')
+    except:
+        found_flows = 0
+        return -1
+    if req.status_code == 200:
+        try:
+            nodes = json.loads(str_response)['nodes']['node']
+            switches = []
+            for node in nodes:
+                if re.search('openflow', node['id']) is not None:
+                    switches.append(node)
+            switches = sorted(
+                switches,
+                key=lambda k: int(
+                    re.findall(
+                        '\d+',
+                        k['id'])[0]))
+            for switch in switches:
+                try:
+                    tables = switch['flow-node-inventory:table']
+
+                    for table in tables:
+                        try:
+                            found_flows += len(table['flow'])
+                        except KeyError:
+                            pass
+                except KeyError:
+                    return -2
+        except KeyError:
+            return -3
+    else:
+        return -4
+    s.close()
+    return found_flows
 
 if __name__ == '__main__':
     get_oper_flows()
+
