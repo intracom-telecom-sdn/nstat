@@ -1,7 +1,5 @@
 #! /usr/bin/env python3.4
-#import emulators.nb_generator.flow_utils
 import json
-import logging
 import re
 import requests
 import sys
@@ -40,13 +38,13 @@ def get_flow_stats(ip, port, username, password):
     :type password: str
     """
     url = 'http://{0}:{1}/restconf/operational/opendaylight'
-          '-inventory:nodes'.format(ip,port))
+    '-inventory:nodes'.format(ip, port)
     headers = {'Accept': 'application/json'}
     found_flows = 0
     s = requests.Session()
-    auth_token= (username,password)
+    auth_token = (username, password)
     try:
-        req = s.get(url,headers=headers,stream=False,auth=auth_token)
+        req = s.get(url, headers=headers, stream=False, auth=auth_token)
         str_response = req.content.decode('utf-8')
     except:
         found_flows = 0
@@ -84,4 +82,3 @@ def get_flow_stats(ip, port, username, password):
 
 if __name__ == '__main__':
     get_oper_flows()
-
