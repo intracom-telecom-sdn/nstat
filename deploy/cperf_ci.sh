@@ -9,6 +9,7 @@
 # Usage: ./cperf_ci [BUILD_NUMBER]
 # Necessary tools installed: docker
 #                            docker-compose
+#                            chmod 777 /opt
 
 BUILD_NUMBER=$1
 BASE_DIR="/opt"
@@ -39,7 +40,7 @@ NSTAT_CONTAINER_ID=$(sudo docker ps | grep _nstat_ |awk '{print $1}')
 # ------------------------------------------------------------------------------
 
 for container_id in $(sudo docker ps -q)
-do 
+do
     sudo docker exec -i $container_id /bin/bash -c "rm -rf /opt/nstat"
     sudo docker exec -i $container_id /bin/bash -c "cd /opt; git clone https://github.com/intracom-telecom-sdn/nstat.git -b master"
 done
