@@ -171,17 +171,21 @@ class Multinet(SBEmu):
         self.multinet_worker_ip_list = test_config['multinet_worker_ip_list']
         self.multinet_worker_port_list = test_config['multinet_worker_port_list']
 
-
     def generate_multinet_config(self, cntrl_of_port, cntrl_ip):
         """
         Generates a new json configuration file for multinet, according to the
         configuration values that are passed as parameters.
+        :param cntrl_of_port: this is the southbound port of the controller,
+        where it listens for openflow protocol messages
+        :param cntrl_ip: IP address of controller node
+        :type cntrl_of_port: int
+        :type cntrl_ip: str
+        :raises IOError: if it fails to create the configuration JSON file
         """
 
         config_data = {}
         # Path where configuration of Multinet will be saved
         multinet_config_file_path = '{0}/config.json'.format(self.base_dir)
-
 
         config_data['master_ip'] = self.ip
         config_data['master_port'] = self.rest_server_port
@@ -199,14 +203,14 @@ class Multinet(SBEmu):
         config_data['topo']['group_size'] = self.topo_group_size
         config_data['topo']['group_delay'] = self.topo_group_delay_ms
         config_data['topo']['hosts_per_switch'] = self.topo_hosts_per_switch
-        config_data['topo']['traffic_generation_duration_ms'] = self.traffic_generation_duration_ms
+        config_data['topo']['traffic_generation_duration_ms'] = \
+            self.traffic_generation_duration_ms
         config_data['topo']['interpacket_delay_ms'] = self.interpacket_delay_ms
 
         with open(multinet_config_file_path, 'w') as config_json_file:
             json.dump(config_data, config_json_file)
         if not os.path.isfile(multinet_config_file_path):
             raise IOError("Multinet JSON configuration file could not be created.")
-
 
     def start(self):
         """ Wrapper to the Multinet SB-Emulator start handler
