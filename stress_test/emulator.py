@@ -151,3 +151,6 @@ class Multinet(SBEmu):
                                      self.clean_hnd,
                                      '[SB-Emulator.clean_handler]')[0]
         self.status = 'CLEANED'
+
+
+
