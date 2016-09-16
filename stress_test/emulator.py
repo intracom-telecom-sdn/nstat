@@ -6,6 +6,7 @@
 
 """ SB-Emulator Class- All SB-Emulator-related functionality is here"""
 
+import json
 import logging
 import os
 import util
@@ -84,18 +85,53 @@ class Multinet(SBEmu):
 
         self.topo_size = ['multinet_topo_size']
         self.topo_type = test_config['multinet_topo_type']
-        self.topo_hosts_per_ = test_config['multinet_topo_hosts_per_switch']
+        self.topo_hosts_per_switch = test_config['multinet_topo_hosts_per_switch']
         self.topo_group_size = test_config['multinet_topo_group_size']
         self.topo_group_delay_ms = test_config['multinet_topo_group_delay_ms']
 
         self.traffic_generation_duration_ms = test_config['']
         self.interpacket_delay_ms = test_config['']
-        '''?'''
-        self.oftraf_rest_server_port = test_config['']
 
         self.multinet_switch_type = test_config['multinet_switch_type']
         self.multinet_worker_ip_list = test_config['multinet_worker_ip_list']
         self.multinet_worker_port_list = test_config['multinet_worker_port_list']
+
+
+        def generate_multinet_config(self, cntrl_of_port, cntrl_ip):
+            """
+            Generates a new json configuration file for multinet, according to the
+            configuration values that are passed as parameters.
+            """
+
+            config_data = {}
+            # Path where configuration of Multinet will be saved
+            multinet_config_file_path = '{0}/config.json'.format(self.base_dir)
+
+
+            config_data['master_ip'] = self.ip
+            config_data['master_port'] = self.rest_server_port
+            config_data['worker_ip_list'] = self.multinet_worker_ip_list
+            config_data['worker_port_list'] = self.multinet_worker_port_list
+            config_data['deploy']['multinet_base_dir'] = self.base_dir
+            config_data['deploy']['ssh_port'] = self.ssh_port
+            config_data['deploy']['username'] = self.ssh_user
+            config_data['deploy']['password'] = self.ssh_pass
+            config_data['topo']['controller_ip_address'] = cntrl_ip
+            config_data['topo']['controller_of_port'] = cntrl_of_port
+            config_data['topo']['switch_type'] = self.multinet_switch_type
+            config_data['topo']['topo_type'] = self.topo_type
+            config_data['topo']['topo_size'] = self.topo_size
+            config_data['topo']['group_size'] = self.topo_group_size
+            config_data['topo']['group_delay'] = self.topo_group_delay_ms
+            config_data['topo']['hosts_per_switch'] = self.topo_hosts_per_switch
+            config_data['topo']['traffic_generation_duration_ms'] = self.traffic_generation_duration_ms
+            config_data['topo']['interpacket_delay_ms'] = self.interpacket_delay_ms
+
+            with open(multinet_config_file_path, 'w') as config_json_file:
+                json.dump(config_data, config_json_file)
+            if not os.path.isfile(multinet_config_file_path):
+                raise IOError("Multinet JSON configuration file could not be created.")
+
 
     @staticmethod
     def new(sb_emu_base_dir, test_config):
@@ -104,7 +140,7 @@ class Multinet(SBEmu):
         :returns: a subclass or None
         :rtype: object
         """
-        name = test_config['controller_name']
+        name = test_config['SB-Emulator_name']
         if (name == 'MTCBench'):
             return MTCBench(sb_emu_base_dir, test_config)
         elif (name == 'Multinet'):
