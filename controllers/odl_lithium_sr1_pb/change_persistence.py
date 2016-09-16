@@ -1,5 +1,9 @@
 #! /usr/bin/env python3.4
 
+"""This handler disables the percistence mode in the configuration of the
+controller.
+"""
+
 import sys
 import os
 

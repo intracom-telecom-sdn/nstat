@@ -1,4 +1,10 @@
 #! /usr/bin/env python3.4
+
+"""This handler returns the number of installed flows of a topology, connected
+to the controller. This information is extracted from controller's operational
+datastore, using RestCall.
+"""
+
 import json
 import re
 import requests
