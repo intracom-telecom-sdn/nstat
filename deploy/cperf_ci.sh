@@ -11,20 +11,19 @@
 #                            docker-compose
 #                            chmod 777 /opt
 BASE_DIR="/opt"
-CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench"
 DOCKER_WORKSPACE=$BASE_DIR"/nstat"
 NSTAT_WORKSPACE=$BASE_DIR"/nstat"
+CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench"
 PARENT_DIRECTORY=$(dirname $DOCKER_WORKSPACE)
 PYTHONPATH=$WORKSPACE
 RESULTS_DIR=$CONFIG_FILENAME"_RESULTS_"
 OUTPUT_FILENAME=$CONFIG_FILENAME
 
-# NSTAT cloning on HOST machine
+# GET docker-compose.yml for NSTAT nodes
 # ------------------------------------------------------------------------------
-git clone https://github.com/intracom-telecom-sdn/nstat.git $DOCKER_WORKSPACE -b master
-
-echo "Workspace: $DOCKER_WORKSPACE"
-cd $DOCKER_WORKSPACE/deploy/docker
+mkdir $DOCKER_WORKSPACE
+wget -O $DOCKER_WORKSPACE/docker-compose.yml  https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_Dockerfile_fix/deploy/docker/docker-compose.yml
+cd $DOCKER_WORKSPACE
 
 # Building NSTAT docker image
 # ------------------------------------------------------------------------------
