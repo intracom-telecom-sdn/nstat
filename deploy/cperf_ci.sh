@@ -6,18 +6,16 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-# Usage: ./cperf_ci [BUILD_NUMBER]
+# Usage: ./cperf_ci
 # Necessary tools installed: docker
 #                            docker-compose
 #                            chmod 777 /opt
-
-BUILD_NUMBER=$1
 BASE_DIR="/opt"
 CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench"
 WORKSPACE=$BASE_DIR"/nstat"
 PARENT_DIRECTORY=$(dirname $WORKSPACE)
 PYTHONPATH=$WORKSPACE
-RESULTS_DIR=$CONFIG_FILENAME"_RESULTS_"$BUILD_NUMBER
+RESULTS_DIR=$CONFIG_FILENAME"_RESULTS_"
 OUTPUT_FILENAME=$CONFIG_FILENAME
 
 # NSTAT cloning on HOST machine
@@ -25,7 +23,7 @@ OUTPUT_FILENAME=$CONFIG_FILENAME
 git clone https://github.com/intracom-telecom-sdn/nstat.git $BASE_DIR/nstat -b master
 
 echo "Workspace: $WORKSPACE"
-cd $WORKSPACE/deploy/docker/
+cd $WORKSPACE/deploy/docker
 
 # Building NSTAT docker image
 # ------------------------------------------------------------------------------
