@@ -9,7 +9,8 @@
 import json
 import logging
 import os
-import util
+import re
+import util.netutil
 
 
 class SBEmu:
@@ -25,8 +26,8 @@ class SBEmu:
         self.name = test_config['SB-Emulator_name']
         self.base_dir = sb_emu_base_dir
 
-        self.host_spec = test_config['SB-Emulator_node_spec']
-        self.host_ip = test_config['SB-Emulator_host_ip']
+        # self.host_spec = test_config['SB-Emulator_node_spec']
+        # self.host_ip = test_config['SB-Emulator_host_ip']
 
         self.ip = test_config['SB-Emulator_node_ip']
         self.ssh_port = test_config['SB-Emulator_node_ssh_port']
@@ -35,15 +36,12 @@ class SBEmu:
 
         self.build_hnd = self.base_dir + test_config['SB-Emulator_build_handler']
         self.clean_hnd = self.base_dir + test_config['SB-Emulator_clean_handler']
-
         self.status = 'UNKNOWN'
-        self._ssh_conn = None
+        self.__ssh_conn = None
 
         '''check handlers' validity'''
         util.file_ops.check_filelist([self.build_hnd,
                                       self.clean_hnd])
-
-
 
     @staticmethod
     def new(sb_emu_base_dir, test_config):
@@ -65,7 +63,7 @@ class SBEmu:
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
 
-        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
+        self.__ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
                                                              int(self.ssh_port),
                                                              self.ssh_user,
                                                              self.ssh_pass,
@@ -77,7 +75,7 @@ class SBEmu:
         logging.info('[SB-Emulator] Building')
         self.status = 'BUILDING'
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
                                                    ' '.join([self.build_hnd]),
                                                    '[SB-Emulator.'
                                                    'build_handler]')[0]
@@ -93,13 +91,18 @@ class SBEmu:
         """Wrapper to the SB-Emulator cleanup handler
         """
         logging.info('[SB-Emulator] Cleaning up')
-
         self.status = 'CLEANING'
-        util.netutil.ssh_run_command(self._ssh_conn,
-                                     self.clean_hnd,
-                                     '[SB-Emulator.clean_handler]')[0]
-        self.status = 'CLEANED'
 
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+                                                   self.clean_hnd,
+                                                   '[SB-Emulator.clean_handler]')[0]
+        if exit_status == 0:
+            self.status = 'CLEANED'
+            logging.info("[SB-Emulator] Successful cleanup")
+        else:
+            self.status = 'NOT CLEANED'
+            logging.error("[SB-Emulator] Failure during cleaning")
+            raise Exception('[SB-Emulator] Failure during cleaning')
 
 class MTCBench(SBEmu):
 
@@ -107,8 +110,6 @@ class MTCBench(SBEmu):
 
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
 
-        self.need_rebuild = test_config['mtcbench_rebuild']
-        self.need_cleanup = test_config['mtcbench_cleanup']
 
         self.run_hnd = self.base_dir + test_config['mtcbench_run_handler']
 
@@ -121,15 +122,14 @@ class MTCBench(SBEmu):
         self.warmup = test_config['mtcbench_warmup']
         self.ms_per_test = test_config['mtcbench_ms_per_test']
         self.internal_repeats = test_config['mtcbench_internal_repeats']
-        self.cpu_shares = test_config['mtcbench_cpu_shares']
 
-    def start(self):
-        """ Wrapper to the MTCBench SB-Emulator start/run handler
+    def run(self):
+        """ Wrapper to the MTCBench SB-Emulator run handler
         """
         logging.info('[MTCBench] Starting')
         self.status = 'STARTING'
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
                                                    ' '.join([self.run_hnd]),
                                                    '[MTCBench.'
                                                    'run_handler]')[0]
@@ -148,30 +148,40 @@ class Multinet(SBEmu):
 
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
 
-        self.rest_server_boot = test_config['topology_rest_server_boot']
-        self.rest_server_stop = test_config['topology_rest_server_stop']
-        self.rest_server_port = test_config['topology_rest_server_port']
+        self.deploy_hnd = test_config['topology_rest_server_boot']
+        self.cleanup_hnd = test_config['topology_rest_server_stop']
+        self.master_rest_port = test_config['topology_rest_server_port']
 
-        self.init_handler = test_config['topology_init_handler']
-        self.start_switches_handler = test_config['topology_start_switches_handler']
-        self.stop_switches_handler = test_config['topology_stop_switches_handler']
-        self.get_switches_handler = test_config['topology_get_switches_handler']
-        self.traffic_gen_handler = test_config['topology_traffic_gen_handler']
+        self.init_hnd = test_config['topology_init_handler']
+        self.start_switches_hnd = test_config['topology_start_switches_handler']
+        self.stop_switches_hnd = test_config['topology_stop_switches_handler']
+        self.get_switches_hnd = test_config['topology_get_switches_handler']
 
-        self.topo_size = ['multinet_topo_size']
+        if 'topology_traffic_gen_handler' in test_config:
+            self.traffic_gen_hnd = test_config['topology_traffic_gen_handler']
+        if 'topology_get_flows_handler' in test_config:
+            self.get_flows_hnd = test_config['topology_get_flows_handler']
+
+        self.topo_size = test_config['multinet_topo_size']
         self.topo_type = test_config['multinet_topo_type']
         self.topo_hosts_per_switch = test_config['multinet_topo_hosts_per_switch']
         self.topo_group_size = test_config['multinet_topo_group_size']
         self.topo_group_delay_ms = test_config['multinet_topo_group_delay_ms']
 
-        self.traffic_generation_duration_ms = test_config['']
-        self.interpacket_delay_ms = test_config['']
+        if 'traffic_generation_duration_ms' in test_config:
+            self.traffic_gen_duration_ms = test_config['traffic_generation_duration_ms']
+        else:
+            self.traffic_gen_duration_ms = 0
+        if 'interpacket_delay_ms' in test_config:
+            self.interpacket_delay_ms = test_config['interpacket_delay_ms']
+        else:
+            self.interpacket_delay_ms = 0
 
-        self.multinet_switch_type = test_config['multinet_switch_type']
-        self.multinet_worker_ip_list = test_config['multinet_worker_ip_list']
-        self.multinet_worker_port_list = test_config['multinet_worker_port_list']
+        self.topo_switch_type = test_config['multinet_switch_type']
+        self.workers_ips = test_config['multinet_worker_ip_list']
+        self.workers_ports = test_config['multinet_worker_port_list']
 
-    def generate_multinet_config(self, cntrl_of_port, cntrl_ip):
+    def __generate_multinet_config(self, cntrl_of_port, cntrl_ip):
         """
         Generates a new json configuration file for multinet, according to the
         configuration values that are passed as parameters.
@@ -188,16 +198,16 @@ class Multinet(SBEmu):
         multinet_config_file_path = '{0}/config.json'.format(self.base_dir)
 
         config_data['master_ip'] = self.ip
-        config_data['master_port'] = self.rest_server_port
-        config_data['worker_ip_list'] = self.multinet_worker_ip_list
-        config_data['worker_port_list'] = self.multinet_worker_port_list
+        config_data['master_port'] = self.master_rest_port
+        config_data['worker_ip_list'] = self.workers_ips
+        config_data['worker_port_list'] = self.workers_ports
         config_data['deploy']['multinet_base_dir'] = self.base_dir
         config_data['deploy']['ssh_port'] = self.ssh_port
         config_data['deploy']['username'] = self.ssh_user
         config_data['deploy']['password'] = self.ssh_pass
         config_data['topo']['controller_ip_address'] = cntrl_ip
         config_data['topo']['controller_of_port'] = cntrl_of_port
-        config_data['topo']['switch_type'] = self.multinet_switch_type
+        config_data['topo']['switch_type'] = self.topo_switch_type
         config_data['topo']['topo_type'] = self.topo_type
         config_data['topo']['topo_size'] = self.topo_size
         config_data['topo']['group_size'] = self.topo_group_size
@@ -212,20 +222,47 @@ class Multinet(SBEmu):
         if not os.path.isfile(multinet_config_file_path):
             raise IOError("Multinet JSON configuration file could not be created.")
 
-    def start(self):
-        """ Wrapper to the Multinet SB-Emulator start handler
+    def __parse_multinet_output(self, multinet_handler_name, multinet_output):
+        """Gets the console output of a multinet handler and extracts the
+        aggregated result from all workers, as a numeric value. (Helper function)
+        :param multinet_handler_name: The name of multinet handler from which
+        we get the results.
+        :param multinet_output: The console output of multinet handler
+        :returns: The aggregated result from all workers
+        (aggregation function is sum)
+        :rtype: int
+        :type multinet_handler_name: string
+        :type multinet_output: string
+        :raises exception: If the result of the parsed multinet output is None
         """
-        logging.info('[Multinet] Starting')
-        self.status = 'STARTING'
-
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.run_hnd]),
-                                                   '[Multinet.'
-                                                   'run_handler]')[0]
-        if exit_status == 0:
-            self.status = 'STARTED'
-            logging.info("[Multinet] Successful started")
+        regex_result = re.search(r'INFO:root:\[{0}\]\[response data\].*'.format(multinet_handler_name), multinet_output)
+        if regex_result is None:
+            raise Exception('Failed to get results from {0} multinet handler.'.format(multinet_handler_name))
         else:
-            self.status = 'NOT STARTED'
-            logging.error("[Multinet] Failure during starting")
-            raise Exception('[Multinet] Failure during starting')
+            json_result = regex_result.group(0).replace('INFO:root:[{0}][response data] '.format(multinet_handler_name), '')
+        multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
+        return multinet_result
+
+    def deploy(self, cntrl_of_port, cntrl_ip):
+        """ Wrapper to the Multinet SB-Emulator deploy handler
+        """
+
+        logging.info('[Multinet] Deploy')
+        self.status = 'DEPLOYING'
+        multinet_config_file_path = '{0}/config.json'.format(self.base_dir)
+        self.__generate_multinet_config(cntrl_of_port, cntrl_ip)
+        util.netutil.ssh_copy_file_to_target(self.__ssh_conn,
+                                             multinet_config_file_path,
+                                             multinet_config_file_path)
+
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+                                                   ' '.join([self.deploy_hnd]),
+                                                   '[Multinet.'
+                                                   'deploy_handler]')[0]
+        if exit_status == 0:
+            self.status = 'DEPLOIED'
+            logging.info("[Multinet] Successful deploied")
+        else:
+            self.status = 'NOT DEPLOIED'
+            logging.error("[Multinet] Failure during deploying")
+            raise Exception('[Multinet] Failure during deploing')
