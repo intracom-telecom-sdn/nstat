@@ -180,6 +180,10 @@ class Multinet(SBEmu):
         self.topo_switch_type = test_config['multinet_switch_type']
         self.workers_ips = test_config['multinet_worker_ip_list']
         self.workers_ports = test_config['multinet_worker_port_list']
+        self.__pythonpath_cmd_prefix = ('export PYTHONPATH=\"{0}\";'.
+                                        format(self.base_dir))
+        self.__multinet_config_file_path = ('{0}/config.json'.
+                                            format(self.base_dir))
 
     def __generate_multinet_config(self, cntrl_of_port, cntrl_ip):
         """
@@ -195,7 +199,6 @@ class Multinet(SBEmu):
 
         config_data = {}
         # Path where configuration of Multinet will be saved
-        multinet_config_file_path = '{0}/config.json'.format(self.base_dir)
 
         config_data['master_ip'] = self.ip
         config_data['master_port'] = self.master_rest_port
@@ -217,9 +220,9 @@ class Multinet(SBEmu):
             self.traffic_generation_duration_ms
         config_data['topo']['interpacket_delay_ms'] = self.interpacket_delay_ms
 
-        with open(multinet_config_file_path, 'w') as config_json_file:
+        with open(self.__multinet_config_file_path, 'w') as config_json_file:
             json.dump(config_data, config_json_file)
-        if not os.path.isfile(multinet_config_file_path):
+        if not os.path.isfile(self.__multinet_config_file_path):
             raise IOError("Multinet JSON configuration file could not be created.")
 
     def __parse_multinet_output(self, multinet_handler_name, multinet_output):
@@ -246,17 +249,18 @@ class Multinet(SBEmu):
     def deploy(self, cntrl_of_port, cntrl_ip):
         """ Wrapper to the Multinet SB-Emulator deploy handler
         """
-
         logging.info('[Multinet] Deploy')
         self.status = 'DEPLOYING'
-        multinet_config_file_path = '{0}/config.json'.format(self.base_dir)
+
         self.__generate_multinet_config(cntrl_of_port, cntrl_ip)
         util.netutil.ssh_copy_file_to_target(self.__ssh_conn,
-                                             multinet_config_file_path,
-                                             multinet_config_file_path)
+                                             self.__multinet_config_file_path,
+                                             self.__multinet_config_file_path)
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.deploy_hnd]),
+                                                   ' '.join([self.__pythonpath_cmd_prefix,
+                                                             self.deploy_hnd,
+                                                             self.__multinet_config_file_path]),
                                                    '[Multinet.'
                                                    'deploy_handler]')[0]
         if exit_status == 0:
@@ -266,3 +270,23 @@ class Multinet(SBEmu):
             self.status = 'NOT DEPLOIED'
             logging.error("[Multinet] Failure during deploying")
             raise Exception('[Multinet] Failure during deploing')
+
+    def get_switches(self):
+        """ Wrapper to the Multinet SB-Emulator get switches handler
+        """
+        logging.info('[Multinet] get_switches')
+        self.status = 'GETTING SWITCHES'
+
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+                                                   ' '.join([self.__pythonpath_cmd_prefix,
+                                                             self.get_switches_hnd,
+                                                             self.__multinet_config_file_path]),
+                                                   '[Multinet.'
+                                                   'deploy_handler]')[0]
+        if exit_status == 0:
+            self.status = 'GOT SWITCHES'
+            logging.info("[Multinet] Successful got switches")
+        else:
+            self.status = 'NOT GOT SWITCHES'
+            logging.error("[Multinet] Failure during getting switches")
+            raise Exception('[Multinet] Failure during getting switches')

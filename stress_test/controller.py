@@ -49,7 +49,7 @@ class Controller:
         self.java_opts = ' '.join(test_config['java_opts'])
         self.pid = -1
 
-        self._ssh_conn = None
+        self.__ssh_conn = None
 
         #check handlers' validity
         util.file_ops.check_filelist([self.build_hnd,
@@ -82,7 +82,7 @@ class Controller:
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
 
-        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
+        self.__ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
                                                              int(self.ssh_port),
                                                              self.ssh_user,
                                                              self.ssh_pass,
@@ -94,7 +94,7 @@ class Controller:
         logging.info('[Controller] Cleaning up')
 
         self.status = 'CLEANING'
-        util.netutil.ssh_run_command(self._ssh_conn,
+        util.netutil.ssh_run_command(self.__ssh_conn,
                                      self.clean_hnd,
                                      '[controller.clean_handler]')[0]
         self.status = 'CLEANED'
@@ -105,7 +105,7 @@ class Controller:
         logging.info('[Controller] Checking the status')
 
         q = queue.Queue()
-        util.netutil.ssh_run_command(self._ssh_conn, self.status_hnd,
+        util.netutil.ssh_run_command(self.__ssh_conn, self.status_hnd,
                                      '[controller.status_handler]', q)[0]
 
         cmd_output = ''
@@ -136,7 +136,7 @@ class Controller:
 
         # check if any process listens on controller port
         gpid = util.process.getpid_listeningonport(self.of_port,
-                                                   self._ssh_conn)
+                                                   self.__ssh_conn)
 
         if gpid != -1:
             raise Exception('[check_other_controller] Another process is '
@@ -162,7 +162,7 @@ class Controller:
         logging.info('[Controller] Starting')
 
         self.status = 'STARTING'
-        if self._ssh_conn is None:
+        if self.__ssh_conn is None:
             os.environ['JAVA_OPTS'] = self.java_opts
             cmd = [self.start_hnd]
         else:
@@ -170,7 +170,7 @@ class Controller:
                    self.start_hnd]
 
         if self.check_status() == '0':
-            util.netutil.ssh_run_command(self._ssh_conn,
+            util.netutil.ssh_run_command(self.__ssh_conn,
                                          ' '.join(cmd),
                                          '[controller.start_handler]')[0]
             self.pid = self.wait_until_listens(420000)
@@ -192,10 +192,10 @@ class Controller:
         if self.check_status() == '1':
             logging.info('[Controller] Stopping')
             print (self.pid)
-            util.netutil.ssh_run_command(self._ssh_conn,
+            util.netutil.ssh_run_command(self.__ssh_conn,
                                          ' '.join([self.stop_hnd]),
                                          '[controller.stop_handler]')[0]
-            util.process.wait_until_process_finishes(self.pid, self._ssh_conn)
+            util.process.wait_until_process_finishes(self.pid, self.__ssh_conn)
             self.status = 'STOPPED'
 
         else:
@@ -207,7 +207,7 @@ class Controller:
         logging.info('[Controller] Building')
         self.status = 'BUILDING'
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
                                                    ' '.join([self.build_hnd]),
                                                    '[controller.build_handler]')[0]
         if exit_status == 0:
@@ -234,7 +234,7 @@ class Controller:
         while time.time() < timeout:
             time.sleep(1)
             gpid = util.process.getpid_listeningonport(self.of_port,
-                                                       self._ssh_conn)
+                                                       self.__ssh_conn)
             logging.info('[Controller] Returned pid listening'
                          'on port {0}: {1}'.format(self.of_port, gpid))
 
@@ -322,7 +322,7 @@ class ODL(Controller):
         """
         logging.info('[Controller] Disabling persistence')
 
-        util.netutil.ssh_run_command(self._ssh_conn,
+        util.netutil.ssh_run_command(self.__ssh_conn,
                                      ' '.join([self.persistence_hnd]),
                                      '[controller.change_persistent_handler]')[0]
 
@@ -332,7 +332,7 @@ class ODL(Controller):
 
         logging.info('[Controller] Changing statistics period')
 
-        util.netutil.ssh_run_command(self._ssh_conn,
+        util.netutil.ssh_run_command(self.__ssh_conn,
                                      ' '.join([self.statistics_hnd,
                                                str(self.stat_period_ms[0])]),
                                      '[controller.statistics_handler]'
@@ -346,7 +346,7 @@ class ODL(Controller):
         Packet_INs.
         """
         logging.info('[Controller] Configure flow modifications')
-        util.netutil.ssh_run_command(self._ssh_conn,
+        util.netutil.ssh_run_command(self.__ssh_conn,
                                      ' '.join([self.flowmods_conf_hnd]),
                                      '[controller.flowmod_configure_handler]')[0]
 
@@ -355,7 +355,7 @@ class ODL(Controller):
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        ret = util.netutil.ssh_run_command(self.__ssh_conn,
                                            ' '.join([self.oper_hosts,
                                                      str(self.ip),
                                                      str(self.restconf_port),
@@ -369,7 +369,7 @@ class ODL(Controller):
         """
         logging.info('[Controller] Query number of switches '
                      ' registered in ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        ret = util.netutil.ssh_run_command(self.__ssh_conn,
                                            ' '.join([self.oper_switches,
                                                      str(self.ip),
                                                      str(self.restconf_port),
@@ -383,7 +383,7 @@ class ODL(Controller):
         """
         logging.info('[Controller] Query number of links registered in '
                      ' ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        ret = util.netutil.ssh_run_command(self.__ssh_conn,
                                            ' '.join([self.oper_links,
                                                      str(self.ip),
                                                      str(self.restconf_port),
@@ -397,7 +397,7 @@ class ODL(Controller):
         """
         logging.info('[Controller] Query number of flows installed for '
                      'all installed nodes of the topology')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        ret = util.netutil.ssh_run_command(self.__ssh_conn,
                                            ' '.join([self.oper_flows,
                                                     str(self.ip),
                                                     str(self.restconf_port),
