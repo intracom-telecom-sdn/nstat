@@ -272,7 +272,7 @@ class Multinet(SBEmu):
             raise Exception('[Multinet] Failure during deploing')
 
     def get_switches(self):
-        """ Wrapper to the Multinet SB-Emulator get switches handler
+        """ Wrapper to the Multinet SB-Emulator get_switches handler
         """
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING SWITCHES'
@@ -282,12 +282,33 @@ class Multinet(SBEmu):
                                                              self.get_switches_hnd,
                                                              self.__multinet_config_file_path]),
                                                    '[Multinet.'
-                                                   'deploy_handler]')
+                                                   'get_switches_hnd]')
         if exit_status == 0:
             self.status = 'GOT SWITCHES'
             logging.info("[Multinet] Successful got switches")
-
+            return self.__parse_multinet_output('get_switches_topology_handler', output)
         else:
             self.status = 'NOT GOT SWITCHES'
             logging.error("[Multinet] Failure during getting switches")
             raise Exception('[Multinet] Failure during getting switches')
+
+    def get_flows(self):
+        """ Wrapper to the Multinet SB-Emulator get_flows handler
+        """
+        logging.info('[Multinet] get_flows')
+        self.status = 'GETTING FLOWS'
+
+        exit_status, output = util.netutil.ssh_run_command(self.__ssh_conn,
+                                                   ' '.join([self.__pythonpath_cmd_prefix,
+                                                             self.get_flows_hnd,
+                                                             self.__multinet_config_file_path]),
+                                                   '[Multinet.'
+                                                   'get_flows_hnd]')
+        if exit_status == 0:
+            self.status = 'GOT FLOWS'
+            logging.info("[Multinet] Successful got flows")
+            return self.__parse_multinet_output('get_flows_topology_handler', output)
+        else:
+            self.status = 'NOT GOT FLOWS'
+            logging.error("[Multinet] Failure during getting flows")
+            raise Exception('[Multinet] Failure during getting flows')
