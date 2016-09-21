@@ -168,6 +168,8 @@ class Multinet(SBEmu):
         self.topo_group_size = test_config['multinet_topo_group_size']
         self.topo_group_delay_ms = test_config['multinet_topo_group_delay_ms']
 
+        self.init_topos_hnd = self.base_dir + test_config['topology_init_handler']
+
         if 'traffic_generation_duration_ms' in test_config:
             self.traffic_gen_duration_ms = test_config['traffic_generation_duration_ms']
         else:
@@ -312,3 +314,25 @@ class Multinet(SBEmu):
             self.status = 'NOT GOT FLOWS'
             logging.error("[Multinet] Failure during getting flows")
             raise Exception('[Multinet] Failure during getting flows')
+
+    def init_topos(self):
+        """ Wrapper to the Multinet SB-Emulator init_topos handler
+        """
+        logging.info('[Multinet] init_topos')
+        self.status = 'INIT_MININET_TOPOS'
+
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+                                                   ' '.join([self.__pythonpath_cmd_prefix,
+                                                             self.get_topos_hnd,
+                                                             '--json-config',
+                                                             self.__multinet_config_file_path]),
+                                                   '[Multinet.get_topos_hnd]')[0]
+        if exit_status == 0:
+            self.status = 'TOPOS STARTED'
+            logging.info('[Multinet] Successful initialization'
+                         'of Mininet topos')
+        else:
+            self.status = 'TOPOS NOT STARTED'
+            logging.error('[Multinet] Failure during initialization of topos'
+                          'mininet')
+            raise Exception('[Multinet] Failure during topos initialization')
