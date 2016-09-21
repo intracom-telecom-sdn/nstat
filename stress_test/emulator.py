@@ -198,7 +198,6 @@ class Multinet(SBEmu):
         """
 
         config_data = {}
-        # Path where configuration of Multinet will be saved
 
         config_data['master_ip'] = self.ip
         config_data['master_port'] = self.master_rest_port
@@ -258,8 +257,8 @@ class Multinet(SBEmu):
                                              self.__multinet_config_file_path)
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.__pythonpath_cmd_prefix,
-                                                             self.deploy_hnd,
+                                                   ' '.join([self.deploy_hnd,
+                                                             '--json-config',
                                                              self.__multinet_config_file_path]),
                                                    '[Multinet.'
                                                    'deploy_handler]')[0]
@@ -278,11 +277,10 @@ class Multinet(SBEmu):
         self.status = 'GETTING SWITCHES'
 
         exit_status, output = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.__pythonpath_cmd_prefix,
-                                                             self.get_switches_hnd,
-                                                             self.__multinet_config_file_path]),
-                                                   '[Multinet.'
-                                                   'get_switches_hnd]')
+            ' '.join([self.__pythonpath_cmd_prefix, 'python',
+                      self.get_switches_hnd, '--json-config',
+                      self.__multinet_config_file_path]),
+            '[Multinet. get_switches_hnd]')
         if exit_status == 0:
             self.status = 'GOT SWITCHES'
             logging.info("[Multinet] Successful got switches")
@@ -299,11 +297,10 @@ class Multinet(SBEmu):
         self.status = 'GETTING FLOWS'
 
         exit_status, output = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.__pythonpath_cmd_prefix,
-                                                             self.get_flows_hnd,
-                                                             self.__multinet_config_file_path]),
-                                                   '[Multinet.'
-                                                   'get_flows_hnd]')
+            ' '.join([self.__pythonpath_cmd_prefix, 'python',
+                      self.get_flows_hnd, '--json-config',
+                      self.__multinet_config_file_path]),
+            '[Multinet. get_flows_hnd]')
         if exit_status == 0:
             self.status = 'GOT FLOWS'
             logging.info("[Multinet] Successful got flows")
