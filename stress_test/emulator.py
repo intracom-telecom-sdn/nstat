@@ -169,6 +169,8 @@ class Multinet(SBEmu):
         self.topo_group_delay_ms = test_config['multinet_topo_group_delay_ms']
 
         self.init_topos_hnd = self.base_dir + test_config['topology_init_handler']
+        self.start_topos_hnd = self.base_dir + test_config['topology_start_switches_handler']
+        self.stop_topos_hnd = self.base_dir + test_config['topology_stop_switches_handler']
 
         if 'traffic_generation_duration_ms' in test_config:
             self.traffic_gen_duration_ms = test_config['traffic_generation_duration_ms']
@@ -320,16 +322,60 @@ class Multinet(SBEmu):
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
                                                    ' '.join([self.__pythonpath_cmd_prefix,
-                                                             self.get_topos_hnd,
+                                                             self.init_topos_hnd,
                                                              '--json-config',
                                                              self.__multinet_config_file_path]),
-                                                   '[Multinet.get_topos_hnd]')[0]
+                                                   '[Multinet.init_topos_hnd]')[0]
         if exit_status == 0:
-            self.status = 'TOPOS STARTED'
+            self.status = 'TOPOS INITIALIZED'
             logging.info('[Multinet] Successful initialization'
                          'of Mininet topos')
         else:
-            self.status = 'TOPOS NOT STARTED'
+            self.status = 'TOPOS NOT INITIALIZED'
             logging.error('[Multinet] Failure during initialization of topos'
                           'mininet')
             raise Exception('[Multinet] Failure during topos initialization')
+
+    def start_topos(self):
+        """ Wrapper to the Multinet SB-Emulator start_topos handler
+        """
+        logging.info('[Multinet] start_topos')
+        self.status = 'START_MININET_TOPOS'
+
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+                                                   ' '.join([self.__pythonpath_cmd_prefix,
+                                                             self.start_topos_hnd,
+                                                             '--json-config',
+                                                             self.__multinet_config_file_path]),
+                                                   '[Multinet.start_topos_hnd]')[0]
+        if exit_status == 0:
+            self.status = 'TOPOS STARTED'
+            logging.info('[Multinet] Successful start of Mininet topos')
+        else:
+            self.status = 'TOPOS NOT STARTED'
+            logging.error('[Multinet] Failure during the starting of topos'
+                          'mininet')
+            raise Exception('[Multinet] Failure during the starting of topos')
+
+
+    def stop_topos(self):
+        """ Wrapper to the Multinet SB-Emulator stop_topos handler
+        """
+        logging.info('[Multinet] stop_topos')
+        self.status = 'STOP_MININET_TOPOS'
+
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+                                                   ' '.join([self.__pythonpath_cmd_prefix,
+                                                             self.stop_topos_hnd,
+                                                             '--json-config',
+                                                             self.__multinet_config_file_path]),
+                                                   '[Multinet.stop_topos_hnd]')[0]
+        if exit_status == 0:
+            self.status = 'TOPOS STOPPED'
+            logging.info('[Multinet] Successful stop of Mininet topos')
+        else:
+            self.status = 'TOPOS NOT STOPPED'
+            logging.error('[Multinet] Failure during the stopping of topos'
+                          'mininet')
+            raise Exception('[Multinet] Failure during the stopping of topos')
+
