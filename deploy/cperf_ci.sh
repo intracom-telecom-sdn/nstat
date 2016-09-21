@@ -7,58 +7,41 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 # Usage: ./cperf_ci
-# Necessary tools installed: docker
-#                            docker-compose
-#                            chmod 777 /opt
-BASE_DIR="/opt"
-DOCKER_WORKSPACE=$BASE_DIR"/nstat"
-NSTAT_WORKSPACE=$BASE_DIR"/nstat"
-CONFIG_FILENAME="beryllium_RPC_sb_active_stability_mtcbench"
-PARENT_DIRECTORY=$(dirname $DOCKER_WORKSPACE)
-PYTHONPATH=$WORKSPACE
-RESULTS_DIR=$CONFIG_FILENAME"_RESULTS_"
-OUTPUT_FILENAME=$CONFIG_FILENAME
+# Prerequisites:
+# - docker
+# - docker-compose
 
-# GET docker-compose.yml for NSTAT nodes
-# ------------------------------------------------------------------------------
+NSTAT_WORKSPACE=/opt/nstat
+DOCKER_WORKSPACE=/opt/nstat
+CONFIG_FILENAME="beryllium_RPC_sb_active_scalability_mtcbench"
+RESULTS_DIR=$CONFIG_FILENAME"_results_"
+
 mkdir $DOCKER_WORKSPACE
 wget -O $DOCKER_WORKSPACE/docker-compose.yml  https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_Dockerfile_fix/deploy/docker/docker-compose.yml
 cd $DOCKER_WORKSPACE
 
-# Building NSTAT docker image
-# ------------------------------------------------------------------------------
 sudo docker pull intracom/nstat
 
-# Deploying NSTAT nodes based on NSTAT docker image
-# ------------------------------------------------------------------------------
-sudo docker-compose up -d
-NSTAT_CONTAINER_ID=$(sudo docker ps | grep _nstat_ |awk '{print $1}')
+docker-compose up -d
 
-# Update NSTAT nodes with the latest state of NSTAT repo (master branch)
-# ------------------------------------------------------------------------------
-
-for container_id in $(sudo docker ps -q)
+for container_id in nstat controller mtcbench mn-01 mn-02
 do
-    sudo docker exec -i $container_id /bin/bash -c "rm -rf /opt/nstat; cd /opt; git clone https://github.com/intracom-telecom-sdn/nstat.git -b master"
+    docker exec -i $container_id /bin/bash -c "rm -rf $NSTAT_WORKSPACE && \
+        cd /opt && \
+        git clone https://github.com/intracom-telecom-sdn/nstat.git -b master"
 done
 
-# Test execution
-# ------------------------------------------------------------------------------
-sudo docker exec -i $NSTAT_CONTAINER_ID /bin/bash -c "export PYTHONPATH=$NSTAT_WORKSPACE;source /opt/venv_nstat/bin/activate; \
+docker cp $CONFIG_FILENAME.json nstat:$NSTAT_WORKSPACE
+
+docker exec -i nstat /bin/bash -c "export PYTHONPATH=$NSTAT_WORKSPACE;source /opt/venv_nstat/bin/activate; \
 python3.4 $NSTAT_WORKSPACE/stress_test/nstat_orchestrator.py \
-     --test='sb_active_stability_mtcbench' \
+     --test='sb_active_scalability_mtcbench' \
      --ctrl-base-dir=$NSTAT_WORKSPACE/controllers/odl_beryllium_pb/ \
      --sb-generator-base-dir=$NSTAT_WORKSPACE/emulators/mt_cbench/ \
-     --json-config=$NSTAT_WORKSPACE/stress_test/sample_test_confs/docker/beryllium/$CONFIG_FILENAME'.json' \
-     --json-output=$NSTAT_WORKSPACE/$OUTPUT_FILENAME'_results.json' \
+     --json-config=$NSTAT_WORKSPACE/stress_test/sample_test_confs/beryllium/$CONFIG_FILENAME.json \
+     --json-output=$NSTAT_WORKSPACE/${CONFIG_FILENAME}_results.json \
      --html-report=$NSTAT_WORKSPACE/report.html \
      --output-dir=$NSTAT_WORKSPACE/$RESULTS_DIR/"
 
-# Retrieve results from NSTAT node
-# ------------------------------------------------------------------------------
-sudo docker cp $NSTAT_CONTAINER_ID:$NSTAT_WORKSPACE/$RESULTS_DIR $PARENT_DIRECTORY
-sudo docker-compose down
-
-
-
-
+docker cp nstat:$NSTAT_WORKSPACE/$RESULTS_DIR .
+docker-compose down
