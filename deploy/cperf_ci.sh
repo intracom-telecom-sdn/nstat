@@ -30,12 +30,12 @@ cd $DOCKER_WORKSPACE/deploy/docker
 # ------------------------------------------------------------------------------
 sudo docker pull intracom/nstat
 
-# Deploying NSTAT nodes based on NSTAT image
+# Deploying NSTAT nodes based on NSTAT docker image
 # ------------------------------------------------------------------------------
 sudo docker-compose up -d
 NSTAT_CONTAINER_ID=$(sudo docker ps | grep _nstat_ |awk '{print $1}')
 
-# Update NSTAT nodes with the lastest state of NSTAT repo (master branch)
+# Update NSTAT nodes with the latest state of NSTAT repo (master branch)
 # ------------------------------------------------------------------------------
 
 for container_id in $(sudo docker ps -q)
