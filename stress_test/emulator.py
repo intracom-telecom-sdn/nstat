@@ -277,15 +277,16 @@ class Multinet(SBEmu):
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING SWITCHES'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status, output = util.netutil.ssh_run_command(self.__ssh_conn,
                                                    ' '.join([self.__pythonpath_cmd_prefix,
                                                              self.get_switches_hnd,
                                                              self.__multinet_config_file_path]),
                                                    '[Multinet.'
-                                                   'deploy_handler]')[0]
+                                                   'deploy_handler]')
         if exit_status == 0:
             self.status = 'GOT SWITCHES'
             logging.info("[Multinet] Successful got switches")
+
         else:
             self.status = 'NOT GOT SWITCHES'
             logging.error("[Multinet] Failure during getting switches")
