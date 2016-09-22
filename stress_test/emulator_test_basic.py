@@ -10,6 +10,7 @@ import logging
 import json
 import os
 import emulator
+import itertools
 import sys
 
 # define a root logger
@@ -37,3 +38,15 @@ sb_emu = emulator.SBEmu.new(emulator_base_dir, test_config)
 
 # initialize a connection
 sb_emu.init_ssh()
+
+for (sb_emu.simulated_hosts,
+     sb_emu.switches_per_thread,
+     sb_emu.threads,
+     sb_emu.thread_creation_delay_ms,
+     sb_emu.delay_before_traffic_ms
+     ) in itertools.product(test_config['mtcbench_simulated_hosts'],
+                            test_config['mtcbench_switches_per_thread'],
+                            test_config['mtcbench_threads'],
+                            test_config['mtcbench_thread_creation_delay_ms'],
+                            test_config['mtcbench_delay_before_traffic_ms']):
+    sb_emu.run('127.0.0.1', 6653)

@@ -131,14 +131,26 @@ class MTCBench(SBEmu):
         self.ms_per_test = test_config['mtcbench_ms_per_test']
         self.internal_repeats = test_config['mtcbench_internal_repeats']
 
-    def run(self):
+    def run(self, ctrl_ip, ctrl_sb_port):
         """ Wrapper to the MTCBench SB-Emulator run handler
         """
         logging.info('[MTCBench] Starting')
         self.status = 'STARTING'
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.run_hnd]),
+                                                   ' '.join([self.run_hnd,
+                                                             ctrl_ip,
+                                                             ctrl_sb_port,
+                                                             self.threads,
+                                                             self.switches_per_thread,
+                                                             (self.threads * self.switches_per_thread),
+                                                             self.thread_creation_delay_ms,
+                                                             self.delay_before_traffic_ms,
+                                                             self.ms_per_test,
+                                                             self.internal_repeats,
+                                                             self.simulated_hosts,
+                                                             self.warmup,
+                                                             self.mode]),
                                                    '[MTCBench.'
                                                    'run_handler]')[0]
         if exit_status == 0:
