@@ -34,8 +34,10 @@ class SBEmu:
         self.ssh_user = test_config['SB-Emulator_node_username']
         self.ssh_pass = test_config['SB-Emulator_node_password']
 
-        self.build_hnd = self.base_dir + test_config['SB-Emulator_build_handler']
-        self.clean_hnd = self.base_dir + test_config['SB-Emulator_clean_handler']
+        self.build_hnd = (self.base_dir +
+                          test_config['SB-Emulator_build_handler'])
+        self.clean_hnd = (self.base_dir +
+                          test_config['SB-Emulator_clean_handler'])
         self.status = 'UNKNOWN'
         self.__ssh_conn = None
 
@@ -64,10 +66,10 @@ class SBEmu:
             format(self.name, self.ip))
 
         self.__ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                             int(self.ssh_port),
-                                                             self.ssh_user,
-                                                             self.ssh_pass,
-                                                             10)
+                                                              int(self.ssh_port),
+                                                              self.ssh_user,
+                                                              self.ssh_pass,
+                                                              10)
 
     def build(self):
         """ Wrapper to the SB-Emulator build handler
@@ -148,8 +150,10 @@ class Multinet(SBEmu):
 
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
 
-        self.deploy_hnd = self.base_dir + test_config['topology_rest_server_boot']
-        self.cleanup_hnd = self.base_dir + test_config['topology_rest_server_stop']
+        self.deploy_hnd = (self.base_dir +
+                           test_config['topology_rest_server_boot'])
+        self.cleanup_hnd = (self.base_dir +
+                            test_config['topology_rest_server_stop'])
         self.master_rest_port = test_config['topology_rest_server_port']
 
         self.init_hnd = test_config['topology_init_handler']
@@ -158,19 +162,23 @@ class Multinet(SBEmu):
         self.get_switches_hnd = test_config['topology_get_switches_handler']
 
         if 'topology_traffic_gen_handler' in test_config:
-            self.traffic_gen_hnd = self.base_dir + test_config['topology_traffic_gen_handler']
+            self.traffic_gen_hnd = (self.base_dir +
+                                    test_config['topology_traffic_gen_handler'])
         if 'topology_get_flows_handler' in test_config:
-            self.get_flows_hnd = self.base_dir + test_config['topology_get_flows_handler']
-
+            self.get_flows_hnd = (self.base_dir +
+                                  test_config['topology_get_flows_handler'])
         self.topo_size = test_config['multinet_topo_size']
         self.topo_type = test_config['multinet_topo_type']
         self.topo_hosts_per_switch = test_config['multinet_topo_hosts_per_switch']
         self.topo_group_size = test_config['multinet_topo_group_size']
         self.topo_group_delay_ms = test_config['multinet_topo_group_delay_ms']
 
-        self.init_topos_hnd = self.base_dir + test_config['topology_init_handler']
-        self.start_topos_hnd = self.base_dir + test_config['topology_start_switches_handler']
-        self.stop_topos_hnd = self.base_dir + test_config['topology_stop_switches_handler']
+        self.init_topos_hnd = (self.base_dir +
+                               test_config['topology_init_handler'])
+        self.start_topos_hnd = (self.base_dir +
+                                test_config['topology_start_switches_handler'])
+        self.stop_topos_hnd = (self.base_dir +
+                               test_config['topology_stop_switches_handler'])
 
         if 'traffic_generation_duration_ms' in test_config:
             self.traffic_gen_duration_ms = test_config['traffic_generation_duration_ms']
@@ -226,7 +234,8 @@ class Multinet(SBEmu):
         with open(self.__multinet_config_file_path, 'w') as config_json_file:
             json.dump(config_data, config_json_file)
         if not os.path.isfile(self.__multinet_config_file_path):
-            raise IOError("Multinet JSON configuration file could not be created.")
+            raise IOError("Multinet JSON configuration file"
+                          " could not be created.")
 
     def __parse_multinet_output(self, multinet_handler_name, multinet_output):
         """Gets the console output of a multinet handler and extracts the

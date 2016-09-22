@@ -38,11 +38,16 @@ class Controller:
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
-        self.build_hnd = self.base_dir + test_config['controller_build_handler']
-        self.start_hnd = self.base_dir + test_config['controller_start_handler']
-        self.stop_hnd = self.base_dir + test_config['controller_stop_handler']
-        self.status_hnd = self.base_dir + test_config['controller_status_handler']
-        self.clean_hnd = self.base_dir + test_config['controller_clean_handler']
+        self.build_hnd = (self.base_dir +
+                          test_config['controller_build_handler'])
+        self.start_hnd = (self.base_dir +
+                          test_config['controller_start_handler'])
+        self.stop_hnd = (self.base_dir +
+                         test_config['controller_stop_handler'])
+        self.status_hnd = (self.base_dir +
+                           test_config['controller_status_handler'])
+        self.clean_hnd = (self.base_dir +
+                          test_config['controller_clean_handler'])
 
         self.status = 'UNKNOWN'
 
@@ -83,10 +88,10 @@ class Controller:
             format(self.name, self.ip))
 
         self.__ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                             int(self.ssh_port),
-                                                             self.ssh_user,
-                                                             self.ssh_pass,
-                                                             10)
+                                                              int(self.ssh_port),
+                                                              self.ssh_user,
+                                                              self.ssh_pass,
+                                                              10)
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
@@ -280,19 +285,22 @@ class ODL(Controller):
 
         self.stat_period_ms = test_config['controller_statistics_period_ms']
         if 'controller_flowmods_conf_handler' in test_config:
-            self.flowmods_conf_hnd = ctrl_base_dir + test_config['controller_flowmods_conf_handler']
+            self.flowmods_conf_hnd = (ctrl_base_dir +
+                                      test_config['controller_flowmods_conf_handler'])
 
             #check handler's validity
             util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
         if 'controller_statistics_handler' in test_config:
-            self.statistics_hnd = ctrl_base_dir + test_config['controller_statistics_handler']
+            self.statistics_hnd = (ctrl_base_dir +
+                                   test_config['controller_statistics_handler'])
 
             #check handler's validity
             util.file_ops.check_filelist([self.statistics_hnd])
 
         if 'controller_persistent_handler' in test_config:
-            self.persistence_hnd = ctrl_base_dir + test_config['controller_persistent_handler']
+            self.persistence_hnd = (ctrl_base_dir +
+                                    test_config['controller_persistent_handler'])
 
             #check handler's validity
             util.file_ops.check_filelist([self.persistence_hnd])
@@ -302,10 +310,14 @@ class ODL(Controller):
             self.restconf_user = test_config['controller_restconf_user']
             self.restconf_pass = test_config['controller_restconf_password']
 
-        self.oper_hosts = ctrl_base_dir + test_config['controller_oper_hosts_handler']
-        self.oper_switches = ctrl_base_dir + test_config['controller_oper_switches_handler']
-        self.oper_links = ctrl_base_dir + test_config['controller_oper_links_handler']
-        self.oper_flows = ctrl_base_dir + test_config['controller_oper_flows_handler']
+        self.oper_hosts = (ctrl_base_dir +
+                           test_config['controller_oper_hosts_handler'])
+        self.oper_switches = (ctrl_base_dir +
+                              test_config['controller_oper_switches_handler'])
+        self.oper_links = (ctrl_base_dir +
+                           test_config['controller_oper_links_handler'])
+        self.oper_flows = (ctrl_base_dir +
+                           test_config['controller_oper_flows_handler'])
 
     def generate_xmls(self):
         """ Starts and then stops the controller to trigger the generation of
@@ -342,8 +354,8 @@ class ODL(Controller):
             format(self.stat_period_ms))
 
     def flowmods_config(self):
-        """configure controller to send flow modifications as a responce to ARP
-        Packet_INs.
+        """configure controller to send flow modifications as a
+        responce to ARP Packet_INs.
         """
         logging.info('[Controller] Configure flow modifications')
         util.netutil.ssh_run_command(self.__ssh_conn,
