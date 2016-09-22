@@ -283,7 +283,7 @@ class ODL(Controller):
 
         super(self.__class__, self).__init__(ctrl_base_dir, test_config)
 
-        self.stat_period_ms = test_config['controller_statistics_period_ms']
+        self.stat_period_ms = None
         if 'controller_flowmods_conf_handler' in test_config:
             self.flowmods_conf_hnd = (ctrl_base_dir +
                                       test_config['controller_flowmods_conf_handler'])

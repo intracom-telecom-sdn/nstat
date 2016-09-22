@@ -97,7 +97,8 @@ class SBEmu:
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
                                                    self.clean_hnd,
-                                                   '[SB-Emulator.clean_handler]')[0]
+                                                   '[SB-Emulator.'
+                                                   'clean_handler]')[0]
         if exit_status == 0:
             self.status = 'CLEANED'
             logging.info("[SB-Emulator] Successful cleanup")
@@ -112,14 +113,17 @@ class MTCBench(SBEmu):
 
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
 
-
         self.run_hnd = self.base_dir + test_config['mtcbench_run_handler']
 
-        self.simulated_hosts = test_config['mtcbench_simulated_hosts']
-        self.switches_per_thread = test_config['mtcbench_switches_per_thread']
-        self.threads = test_config['mtcbench_threads']
-        self.thread_creation_delay_ms = test_config['mtcbench_thread_creation_delay_ms']
-        self.delay_before_traffic_ms = test_config['mtcbench_delay_before_traffic_ms']
+        # The parameters initialized as None are dimensions of the test.
+        # These values are passed outside, from the test in the main for loop.
+        # ---------------------------------------------------------------------
+        self.simulated_hosts = None
+        self.switches_per_thread = None
+        self.threads = None
+        self.thread_creation_delay_ms = None
+        self.delay_before_traffic_ms = None
+        # ---------------------------------------------------------------------
         self.mode = test_config['mtcbench_mode']
         self.warmup = test_config['mtcbench_warmup']
         self.ms_per_test = test_config['mtcbench_ms_per_test']
@@ -156,10 +160,14 @@ class Multinet(SBEmu):
                             test_config['topology_rest_server_stop'])
         self.master_rest_port = test_config['topology_rest_server_port']
 
-        self.init_hnd = test_config['topology_init_handler']
-        self.start_switches_hnd = test_config['topology_start_switches_handler']
-        self.stop_switches_hnd = test_config['topology_stop_switches_handler']
-        self.get_switches_hnd = test_config['topology_get_switches_handler']
+        self.init_hnd = (sb_emu_base_dir +
+                         test_config['topology_init_handler'])
+        self.start_switches_hnd = (sb_emu_base_dir +
+                                   test_config['topology_start_switches_handler'])
+        self.stop_switches_hnd = (sb_emu_base_dir +
+                                  test_config['topology_stop_switches_handler'])
+        self.get_switches_hnd = (sb_emu_base_dir +
+                                 test_config['topology_get_switches_handler'])
 
         if 'topology_traffic_gen_handler' in test_config:
             self.traffic_gen_hnd = (self.base_dir +
@@ -239,7 +247,8 @@ class Multinet(SBEmu):
 
     def __parse_multinet_output(self, multinet_handler_name, multinet_output):
         """Gets the console output of a multinet handler and extracts the
-        aggregated result from all workers, as a numeric value. (Helper function)
+        aggregated result from all workers, as a numeric value.
+        (Helper function)
         :param multinet_handler_name: The name of multinet handler from which
         we get the results.
         :param multinet_output: The console output of multinet handler
@@ -250,9 +259,12 @@ class Multinet(SBEmu):
         :type multinet_output: string
         :raises exception: If the result of the parsed multinet output is None
         """
-        regex_result = re.search(r'INFO:root:\[{0}\]\[response data\].*'.format(multinet_handler_name), multinet_output)
+        regex_result = re.search(r'INFO:root:\[{0}\]\[response data\].*'.
+                                 format(multinet_handler_name),
+                                 multinet_output)
         if regex_result is None:
-            raise Exception('Failed to get results from {0} multinet handler.'.format(multinet_handler_name))
+            raise Exception('Failed to get results from {0} multinet handler.'.
+                            format(multinet_handler_name))
         else:
             json_result = regex_result.group(0).replace('INFO:root:[{0}][response data] '.format(multinet_handler_name), '')
         multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
@@ -318,7 +330,8 @@ class Multinet(SBEmu):
         if exit_status == 0:
             self.status = 'GOT FLOWS'
             logging.info("[Multinet] Successful got flows")
-            return self.__parse_multinet_output('get_flows_topology_handler', output)
+            return self.__parse_multinet_output('get_flows_topology_handler',
+                                                output)
         else:
             self.status = 'NOT GOT FLOWS'
             logging.error("[Multinet] Failure during getting flows")
