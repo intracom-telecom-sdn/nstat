@@ -37,3 +37,11 @@ sb_emu = emulator.SBEmu.new(emulator_base_dir, test_config)
 
 # initialize a connection
 sb_emu.init_ssh()
+
+#print (sb_emu.build_hnd)
+sb_emu.build()
+
+#sb_emu.run()
+sb_emu.clean()
+
+
