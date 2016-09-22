@@ -148,8 +148,8 @@ class Multinet(SBEmu):
 
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
 
-        self.deploy_hnd = test_config['topology_rest_server_boot']
-        self.cleanup_hnd = test_config['topology_rest_server_stop']
+        self.deploy_hnd = self.base_dir + test_config['topology_rest_server_boot']
+        self.cleanup_hnd = self.base_dir + test_config['topology_rest_server_stop']
         self.master_rest_port = test_config['topology_rest_server_port']
 
         self.init_hnd = test_config['topology_init_handler']
@@ -158,9 +158,9 @@ class Multinet(SBEmu):
         self.get_switches_hnd = test_config['topology_get_switches_handler']
 
         if 'topology_traffic_gen_handler' in test_config:
-            self.traffic_gen_hnd = test_config['topology_traffic_gen_handler']
+            self.traffic_gen_hnd = self.base_dir + test_config['topology_traffic_gen_handler']
         if 'topology_get_flows_handler' in test_config:
-            self.get_flows_hnd = test_config['topology_get_flows_handler']
+            self.get_flows_hnd = self.base_dir + test_config['topology_get_flows_handler']
 
         self.topo_size = test_config['multinet_topo_size']
         self.topo_type = test_config['multinet_topo_type']
@@ -288,7 +288,8 @@ class Multinet(SBEmu):
         if exit_status == 0:
             self.status = 'GOT SWITCHES'
             logging.info("[Multinet] Successful got switches")
-            return self.__parse_multinet_output('get_switches_topology_handler', output)
+            return self.__parse_multinet_output('get_switches_topology_'
+                                                'handler', output)
         else:
             self.status = 'NOT GOT SWITCHES'
             logging.error("[Multinet] Failure during getting switches")
@@ -321,11 +322,13 @@ class Multinet(SBEmu):
         self.status = 'INIT_MININET_TOPOS'
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.__pythonpath_cmd_prefix,
-                                                             self.init_topos_hnd,
-                                                             '--json-config',
-                                                             self.__multinet_config_file_path]),
-                                                   '[Multinet.init_topos_hnd]')[0]
+            ' '.join([self.__pythonpath_cmd_prefix,
+                      'python',
+                      self.init_topos_hnd,
+                      '--json-config',
+                      self.__multinet_config_file_path]),
+            '[Multinet.init_topos_hnd]')[0]
+
         if exit_status == 0:
             self.status = 'TOPOS INITIALIZED'
             logging.info('[Multinet] Successful initialization'
@@ -343,11 +346,13 @@ class Multinet(SBEmu):
         self.status = 'START_MININET_TOPOS'
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.__pythonpath_cmd_prefix,
-                                                             self.start_topos_hnd,
-                                                             '--json-config',
-                                                             self.__multinet_config_file_path]),
-                                                   '[Multinet.start_topos_hnd]')[0]
+            ' '.join([self.__pythonpath_cmd_prefix,
+                      'python',
+                      self.start_topos_hnd,
+                      '--json-config',
+                      self.__multinet_config_file_path]),
+            '[Multinet.start_topos_hnd]')[0]
+
         if exit_status == 0:
             self.status = 'TOPOS STARTED'
             logging.info('[Multinet] Successful start of Mininet topos')
@@ -357,7 +362,6 @@ class Multinet(SBEmu):
                           'mininet')
             raise Exception('[Multinet] Failure during the starting of topos')
 
-
     def stop_topos(self):
         """ Wrapper to the Multinet SB-Emulator stop_topos handler
         """
@@ -365,11 +369,13 @@ class Multinet(SBEmu):
         self.status = 'STOP_MININET_TOPOS'
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
-                                                   ' '.join([self.__pythonpath_cmd_prefix,
-                                                             self.stop_topos_hnd,
-                                                             '--json-config',
-                                                             self.__multinet_config_file_path]),
-                                                   '[Multinet.stop_topos_hnd]')[0]
+            ' '.join([self.__pythonpath_cmd_prefix,
+                      'python',
+                      self.stop_topos_hnd,
+                      '--json-config',
+                      self.__multinet_config_file_path]),
+            '[Multinet.stop_topos_hnd]')[0]
+
         if exit_status == 0:
             self.status = 'TOPOS STOPPED'
             logging.info('[Multinet] Successful stop of Mininet topos')
@@ -379,3 +385,50 @@ class Multinet(SBEmu):
                           'mininet')
             raise Exception('[Multinet] Failure during the stopping of topos')
 
+    def cleanup(self):
+        """ Wrapper to the Multinet SB-Emulator cleanup handler
+        """
+        logging.info('[Multinet] cleanup')
+        self.status = 'CLEANUP MININET'
+
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+            ' '.join([self.__pythonpath_cmd_prefix,
+                      'python',
+                      self.cleanup_hnd,
+                      '--json-config',
+                      self.__multinet_config_file_path]),
+            '[Multinet.cleanup_hnd]')[0]
+
+        if exit_status == 0:
+            self.status = 'TOPOS CLEANED'
+            logging.info('[Multinet] Successful cleanup of Mininet topos')
+        else:
+            self.status = 'TOPOS NOT CLEANED'
+            logging.error('[Multinet] Failure during the cleanup of topos'
+                          'mininet')
+            raise Exception('[Multinet] Failure during the cleanup of topos')
+
+    def generate_traffic(self):
+        """ Wrapper to the Multinet SB-Emulator traffic_gen handler
+        """
+        logging.info('[Multinet] traffic gen')
+        self.status = 'CREATE TRAFFIC'
+
+        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+            ' '.join([self.__pythonpath_cmd_prefix,
+                      'python',
+                      self.traffic_gen_hnd,
+                      '--json-config',
+                      self.__multinet_config_file_path]),
+            '[Multinet.generate_traffic_hnd]')[0]
+
+        if exit_status == 0:
+            self.status = 'TRAFFIC UP'
+            logging.info('[Multinet] Successful traffic generation'
+                         'from switches')
+        else:
+            self.status = 'TRAFFIC DOWN'
+            logging.error('[Multinet] Failure during traffic generation'
+                          'from switches')
+            raise Exception('[Multinet] Failure during traffic generation'
+                            'from switches')
