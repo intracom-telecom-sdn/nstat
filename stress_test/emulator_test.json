@@ -3,10 +3,10 @@
 "SB-Emulator_name":"MTCBench",
 "SB-Emulator_node_ip":"127.0.0.1",
 "SB-Emulator_node_ssh_port":22,
-"SB-Emulator_node_username":"vagrant",
-"SB-Emulator_node_password":"vagrant",
+"SB-Emulator_node_username":"jenkins",
+"SB-Emulator_node_password":"jenkins",
 
-"SB-Emulator_build_handler":"./build.sh",
+"SB-Emulator_build_handler":"build.sh",
 "SB-Emulator_clean_handler":"./clean.sh",
 "mtcbench_run_handler":"./run.sh",
 

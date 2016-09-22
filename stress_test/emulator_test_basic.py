@@ -39,6 +39,9 @@ sb_emu = emulator.SBEmu.new(emulator_base_dir, test_config)
 # initialize a connection
 sb_emu.init_ssh()
 
+# print (sb_emu.build_hnd)
+sb_emu.build()
+
 for (sb_emu.simulated_hosts,
      sb_emu.switches_per_thread,
      sb_emu.threads,
@@ -50,3 +53,6 @@ for (sb_emu.simulated_hosts,
                             test_config['mtcbench_thread_creation_delay_ms'],
                             test_config['mtcbench_delay_before_traffic_ms']):
     sb_emu.run('127.0.0.1', 6653)
+
+# sb_emu.run()
+sb_emu.clean()

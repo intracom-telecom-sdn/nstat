@@ -80,8 +80,11 @@ class SBEmu:
 
         exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
                                                    ' '.join([self.build_hnd]),
-                                                   '[SB-Emulator.'
+                                                   '[SB-Emulator.'       
                                                    'build_handler]')[0]
+
+        print (exit_status)
+
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[SB-Emulator] Successful building")
