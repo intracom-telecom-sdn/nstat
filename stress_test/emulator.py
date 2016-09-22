@@ -107,6 +107,7 @@ class SBEmu:
             logging.error("[SB-Emulator] Failure during cleaning")
             raise Exception('[SB-Emulator] Failure during cleaning')
 
+
 class MTCBench(SBEmu):
 
     def __init__(self, sb_emu_base_dir, test_config):

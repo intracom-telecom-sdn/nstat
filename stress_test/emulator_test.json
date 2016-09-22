@@ -19,6 +19,6 @@
 "mtcbench_mode":"Latency",
 "mtcbench_warmup":0,
 "mtcbench_ms_per_test":10000,
-"mtcbench_internal_repeats":2,
+"mtcbench_internal_repeats":2
 
 }
