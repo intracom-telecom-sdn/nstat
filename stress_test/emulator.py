@@ -40,7 +40,7 @@ class SBEmu:
         self.clean_hnd = (self.base_dir +
                           test_config['SB-Emulator_clean_handler'])
         self.status = 'UNKNOWN'
-        self.__ssh_conn = None
+        self._ssh_conn = None
 
         '''check handlers' validity'''
         util.file_ops.check_filelist([self.build_hnd,
@@ -66,7 +66,7 @@ class SBEmu:
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
 
-        self.__ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
+        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
                                                               int(self.ssh_port),
                                                               self.ssh_user,
                                                               self.ssh_pass,
@@ -78,9 +78,9 @@ class SBEmu:
         logging.info('[SB-Emulator] Building')
         self.status = 'BUILDING'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    ' '.join([self.build_hnd]),
-                                                   '[SB-Emulator.'       
+                                                   '[SB-Emulator.'
                                                    'build_handler]')[0]
 
         print (exit_status)
@@ -99,7 +99,7 @@ class SBEmu:
         logging.info('[SB-Emulator] Cleaning up')
         self.status = 'CLEANING'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    self.clean_hnd,
                                                    '[SB-Emulator.'
                                                    'clean_handler]')[0]
@@ -140,7 +140,7 @@ class MTCBench(SBEmu):
         logging.info('[MTCBench] Starting')
         self.status = 'STARTING'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    ' '.join([self.run_hnd,
                                                              ctrl_ip,
                                                              ctrl_sb_port,
@@ -294,11 +294,11 @@ class Multinet(SBEmu):
         self.status = 'DEPLOYING'
 
         self.__generate_multinet_config(cntrl_of_port, cntrl_ip)
-        util.netutil.ssh_copy_file_to_target(self.__ssh_conn,
+        util.netutil.ssh_copy_file_to_target(self._ssh_conn,
                                              self.__multinet_config_file_path,
                                              self.__multinet_config_file_path)
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    ' '.join([self.deploy_hnd,
                                                              '--json-config',
                                                              self.__multinet_config_file_path]),
@@ -318,7 +318,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING SWITCHES'
 
-        exit_status, output = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix, 'python',
                       self.get_switches_hnd, '--json-config',
                       self.__multinet_config_file_path]),
@@ -339,7 +339,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] get_flows')
         self.status = 'GETTING FLOWS'
 
-        exit_status, output = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix, 'python',
                       self.get_flows_hnd, '--json-config',
                       self.__multinet_config_file_path]),
@@ -360,7 +360,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] init_topos')
         self.status = 'INIT_MININET_TOPOS'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
                       'python',
                       self.init_topos_hnd,
@@ -384,7 +384,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] start_topos')
         self.status = 'START_MININET_TOPOS'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
                       'python',
                       self.start_topos_hnd,
@@ -407,7 +407,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] stop_topos')
         self.status = 'STOP_MININET_TOPOS'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
                       'python',
                       self.stop_topos_hnd,
@@ -430,7 +430,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] cleanup')
         self.status = 'CLEANUP MININET'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
                       'python',
                       self.cleanup_hnd,
@@ -453,7 +453,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] traffic gen')
         self.status = 'CREATE TRAFFIC'
 
-        exit_status = util.netutil.ssh_run_command(self.__ssh_conn,
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
                       'python',
                       self.traffic_gen_hnd,
