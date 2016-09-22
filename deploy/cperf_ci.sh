@@ -17,7 +17,7 @@ CONFIG_FILENAME="beryllium_RPC_sb_active_scalability_mtcbench"
 RESULTS_DIR=$CONFIG_FILENAME"_results_"
 
 mkdir $DOCKER_WORKSPACE
-wget -O $DOCKER_WORKSPACE/docker-compose.yml  https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/develop_Dockerfile_fix/deploy/docker/docker-compose.yml
+wget -O $DOCKER_WORKSPACE/docker-compose.yml  https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/docker/docker-compose.yml
 cd $DOCKER_WORKSPACE
 
 sudo docker pull intracom/nstat
