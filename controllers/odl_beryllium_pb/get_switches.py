@@ -1,6 +1,14 @@
 #! /usr/bin/env python3.4
+
+"""This handler returns the number of switches of a topology, connected
+to the controller. This information is extracted from controller's operational
+datastore, using RESTCONF.
+"""
+
 import sys
 import logging
+import requests
+
 
 def get_oper_switches():
     """Query number of switches registered in ODL operational DS
@@ -10,10 +18,10 @@ def get_oper_switches():
     :rtype: int
     """
 
-    ip = str(int(sys.argv[1]))
-    port = int(sys.argv[2])
-    username = str(int(sys.argv[3]))
-    password = str(int(sys.argv[4]))
+    ip = sys.argv[1]
+    port = sys.argv[2]
+    username = sys.argv[3]
+    password = sys.argv[4]
 
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
@@ -21,14 +29,18 @@ def get_oper_switches():
 
     auth_token = (username, password)
     try:
-        datastore = requests.get(url=url, auth=auth_token).json()['topology'][0]
+        datastore = requests.get(url=url,
+                                 auth=auth_token).json()['topology'][0]
     except:
-        logging.error('[get_oper_switches] Fail getting response from operational datastore')
+        logging.error('[get_oper_switches] Fail response from operational DS')
         return -1
 
-    switches = [node for node in datastore.get('node', []) if not node['node-id'].startswith('host:')]
-    logging.debug('[get_oper_switches] Discovered switches: {0}'.format(len(switches)))
-    return len(switches)
+    switches = [node for node in datastore.get('node', [])
+                if not node['node-id'].startswith('host:')]
+    logging.debug('[get_oper_switches] Discovered switches: {0}'.
+                  format(len(switches)))
+
+    print(len(switches))
 
 if __name__ == '__main__':
     get_oper_switches()

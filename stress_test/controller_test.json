@@ -9,7 +9,7 @@
 
 
 "controller_build_handler":"build.sh",
-"controller_start_handler":"start_droptestDS.sh",
+"controller_start_handler":"start.sh",
 "controller_stop_handler":"stop.sh",
 "controller_status_handler":"status.sh",
 "controller_clean_handler":"clean.sh",
@@ -28,6 +28,12 @@
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":100,
+
+"controller_restconf_port":8181,
+"controller_restconf_user":"admin",
+"controller_restconf_password":"admin",
+
+
 
 "java_opts":["-Xmx1G","-Xms512M","-XX:+UseG1GC","-XX:MaxPermSize=512M"]
 
