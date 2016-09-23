@@ -350,7 +350,7 @@ class ODL(Controller):
 
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.statistics_hnd,
-                                               str(self.stat_period_ms[0])]),
+                                               str(self.stat_period_ms)]),
                                      '[controller.statistics_handler]'
                                      ' Changing statistics interval')[0]
         logging.info(

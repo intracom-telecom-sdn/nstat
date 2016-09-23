@@ -82,9 +82,6 @@ class SBEmu:
                                                    ' '.join([self.build_hnd]),
                                                    '[SB-Emulator.'
                                                    'build_handler]')[0]
-
-        print (exit_status)
-
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[SB-Emulator] Successful building")
@@ -120,6 +117,9 @@ class MTCBench(SBEmu):
 
         self.run_hnd = self.base_dir + test_config['mtcbench_run_handler']
 
+        '''check handlers' validity'''
+        util.file_ops.check_filelist([self.run_hnd])
+
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.
         # ---------------------------------------------------------------------
@@ -134,6 +134,8 @@ class MTCBench(SBEmu):
         self.ms_per_test = test_config['mtcbench_ms_per_test']
         self.internal_repeats = test_config['mtcbench_internal_repeats']
 
+        self.rebuild = test_config['mtcbench_rebuild']
+
     def run(self, ctrl_ip, ctrl_sb_port):
         """ Wrapper to the MTCBench SB-Emulator run handler
         """
@@ -143,16 +145,16 @@ class MTCBench(SBEmu):
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    ' '.join([self.run_hnd,
                                                              ctrl_ip,
-                                                             ctrl_sb_port,
-                                                             self.threads,
-                                                             self.switches_per_thread,
-                                                             (self.threads * self.switches_per_thread),
-                                                             self.thread_creation_delay_ms,
-                                                             self.delay_before_traffic_ms,
-                                                             self.ms_per_test,
-                                                             self.internal_repeats,
-                                                             self.simulated_hosts,
-                                                             self.warmup,
+                                                             str(ctrl_sb_port),
+                                                             str(self.threads),
+                                                             str(self.switches_per_thread),
+                                                             str(self.threads * self.switches_per_thread),
+                                                             str(self.thread_creation_delay_ms),
+                                                             str(self.delay_before_traffic_ms),
+                                                             str(self.ms_per_test),
+                                                             str(self.internal_repeats),
+                                                             str(self.simulated_hosts),
+                                                             str(self.warmup),
                                                              self.mode]),
                                                    '[MTCBench.'
                                                    'run_handler]')[0]
@@ -177,21 +179,19 @@ class Multinet(SBEmu):
                             test_config['topology_rest_server_stop'])
         self.master_rest_port = test_config['topology_rest_server_port']
 
-        self.init_hnd = (sb_emu_base_dir +
-                         test_config['topology_init_handler'])
-        self.start_switches_hnd = (sb_emu_base_dir +
-                                   test_config['topology_start_switches_handler'])
-        self.stop_switches_hnd = (sb_emu_base_dir +
-                                  test_config['topology_stop_switches_handler'])
         self.get_switches_hnd = (sb_emu_base_dir +
                                  test_config['topology_get_switches_handler'])
 
         if 'topology_traffic_gen_handler' in test_config:
             self.traffic_gen_hnd = (self.base_dir +
                                     test_config['topology_traffic_gen_handler'])
+            util.file_ops.check_filelist([self.traffic_gen_hnd])
+
         if 'topology_get_flows_handler' in test_config:
             self.get_flows_hnd = (self.base_dir +
                                   test_config['topology_get_flows_handler'])
+            util.file_ops.check_filelist([self.get_flows_hnd])
+
         self.topo_size = test_config['multinet_topo_size']
         self.topo_type = test_config['multinet_topo_type']
         self.topo_hosts_per_switch = test_config['multinet_topo_hosts_per_switch']
@@ -221,6 +221,13 @@ class Multinet(SBEmu):
                                         format(self.base_dir))
         self.__multinet_config_file_path = ('{0}/config.json'.
                                             format(self.base_dir))
+
+        util.file_ops.check_filelist([self.start_switches_hnd,
+                                      self.stop_switches_hnd,
+                                      self.get_switches_hnd,
+                                      self.init_topos_hnd,
+                                      self.start_topos_hnd,
+                                      self.stop_topos_hnd])
 
     def __generate_multinet_config(self, cntrl_of_port, cntrl_ip):
         """
@@ -322,7 +329,7 @@ class Multinet(SBEmu):
             ' '.join([self.__pythonpath_cmd_prefix, 'python',
                       self.get_switches_hnd, '--json-config',
                       self.__multinet_config_file_path]),
-            '[Multinet. get_switches_hnd]')
+            '[Multinet.get_switches_hnd]')
         if exit_status == 0:
             self.status = 'GOT SWITCHES'
             logging.info("[Multinet] Successful got switches")
