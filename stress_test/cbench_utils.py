@@ -81,6 +81,8 @@ def cbench_thread(cbench_run_handler, cbench_cpus, controller_ip,
             data_queue.put(fail_msg, block=True)
         logging.error('[cbench_thread] Exception:{0}'.format(str(err)))
 
+
+
     return
 
 
