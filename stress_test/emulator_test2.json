@@ -22,11 +22,11 @@
 //"interpacket_delay_ms" //active test
 
 "multinet_switch_type":["ovsk"],
-"multinet_worker_ip_list":["127.0.0.1","127.0.0.1"],
-"multinet_worker_port_list":[3333,3334],
+"multinet_worker_ip_list":["192.168.160.202","192.168.160.203"],
+"multinet_worker_port_list":[3333,3333],
 
 "SB-Emulator_name":"Multinet",
-"SB-Emulator_node_ip":"127.0.0.1",
+"SB-Emulator_node_ip":"192.168.160.202",
 "SB-Emulator_node_ssh_port":22,
 "SB-Emulator_node_username":"jenkins",
 "SB-Emulator_node_password":"jenkins",
