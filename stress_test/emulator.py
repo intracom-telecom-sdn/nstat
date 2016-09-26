@@ -82,10 +82,6 @@ class SBEmu:
                                                    ' '.join([self.build_hnd]),
                                                    '[SB-Emulator.'
                                                    'build_handler]')[0]
-        print(self.build_hnd)
-        print(exit_status)
-        print(self._ssh_conn)
-
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[SB-Emulator] Successful building")
@@ -227,9 +223,8 @@ class Multinet(SBEmu):
         self.workers_ports = test_config['multinet_worker_port_list']
         self.__pythonpath_cmd_prefix = ('export PYTHONPATH=\"{0}\";'.
                                         format(self.base_dir))
-        self.__multinet_config_file_path = ('{0}/config.json'.
-                                            format(self.base_dir))
-
+        self.__multinet_config_file_remote_path = os.path.join(self.base_dir, "config", "config.json")
+        self.__multinet_config_file_local_path =  os.path.join(self.base_dir, "config.json")
 #        util.file_ops.check_filelist([self.start_topos_hnd,
 #                                      self.get_switches_hnd,
 #                                      self.init_topos_hnd,
@@ -275,6 +270,7 @@ class Multinet(SBEmu):
         with open(self.__multinet_config_file_path, 'w') as config_json_file:
             json.dump(config_data, config_json_file)
         if not os.path.isfile(self.__multinet_config_file_path):
+            logging.error("Multinet JSON conf could not be created")
             raise IOError("Multinet JSON configuration file"
                           " could not be created.")
 
@@ -310,16 +306,24 @@ class Multinet(SBEmu):
         self.status = 'DEPLOYING'
 
         self.__generate_multinet_config(cntrl_of_port, cntrl_ip)
-        util.netutil.ssh_copy_file_to_target(self._ssh_conn,
+        util.netutil.ssh_copy_file_to_target(self.ip,
+                                             self.ssh_port,
+                                             self.ssh_user,
+                                             self.ssh_pass,
                                              self.__multinet_config_file_path,
                                              self.__multinet_config_file_path)
 
+
+        print(' '.join([self.__pythonpath_cmd_prefix, self.deploy_hnd, '--json-config', self.__multinet_config_file_path]))
+
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.deploy_hnd,
+                                                   ' '.join([self.__pythonpath_cmd_prefix, 
+                                                             self.deploy_hnd,
                                                              '--json-config',
                                                              self.__multinet_config_file_path]),
                                                    '[Multinet.'
                                                    'deploy_handler]')[0]
+        print(str(exit_status))
         if exit_status == 0:
             self.status = 'DEPLOIED'
             logging.info("[Multinet] Successful deploied")
