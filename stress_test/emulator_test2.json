@@ -10,7 +10,7 @@
 
 "topology_traffic_gen_handler":,
 
-//"topology_get_flows_handler"//
+//"topology_get_flows_handler"//active or NB test
 
 "multinet_topo_size":[30,30],
 "multinet_topo_type":["linear"],
@@ -18,12 +18,12 @@
 "multinet_topo_group_size":[3],
 "multinet_topo_group_delay_ms":[1000],
 
-//"traffic_generation_duration_ms"
-//"interpacket_delay_ms"
+//"traffic_generation_duration_ms" //active test
+//"interpacket_delay_ms" //active test
 
 "multinet_switch_type":["ovsk"],
-"multinet_worker_ip_list":["192.168.160.201"],
-"multinet_worker_port_list":[3333],
+"multinet_worker_ip_list":["127.0.0.1","127.0.0.1"],
+"multinet_worker_port_list":[3333,3334],
 
 "SB-Emulator_name":"Multinet",
 "SB-Emulator_node_ip":"127.0.0.1",

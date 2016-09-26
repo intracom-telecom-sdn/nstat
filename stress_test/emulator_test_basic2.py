@@ -42,7 +42,7 @@ sb_emu.init_ssh()
 #Build a Multinet Emulator
 sb_emu.build()
 logging.info('[Testing] Build a {0} emulator on '
-                 '{1} host'.format(sb_emu.name,sb_emu.ip))
+             '{1} host'.format(sb_emu.name, sb_emu.ip))
 '''
 for (sb_emu.simulated_hosts,
      sb_emu.switches_per_thread,
