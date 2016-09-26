@@ -253,10 +253,12 @@ class Multinet(SBEmu):
         config_data['master_port'] = self.master_rest_port
         config_data['worker_ip_list'] = self.workers_ips
         config_data['worker_port_list'] = self.workers_ports
+        config_data['deploy'] = {}
         config_data['deploy']['multinet_base_dir'] = self.base_dir
         config_data['deploy']['ssh_port'] = self.ssh_port
         config_data['deploy']['username'] = self.ssh_user
         config_data['deploy']['password'] = self.ssh_pass
+        config_data['topo'] = {}
         config_data['topo']['controller_ip_address'] = cntrl_ip
         config_data['topo']['controller_of_port'] = cntrl_of_port
         config_data['topo']['switch_type'] = self.topo_switch_type
@@ -265,8 +267,9 @@ class Multinet(SBEmu):
         config_data['topo']['group_size'] = self.topo_group_size
         config_data['topo']['group_delay'] = self.topo_group_delay_ms
         config_data['topo']['hosts_per_switch'] = self.topo_hosts_per_switch
+        
         config_data['topo']['traffic_generation_duration_ms'] = \
-            self.traffic_generation_duration_ms
+            self.traffic_gen_duration_ms
         config_data['topo']['interpacket_delay_ms'] = self.interpacket_delay_ms
 
         with open(self.__multinet_config_file_path, 'w') as config_json_file:
