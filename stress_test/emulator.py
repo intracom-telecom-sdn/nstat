@@ -223,8 +223,11 @@ class Multinet(SBEmu):
         self.workers_ports = test_config['multinet_worker_port_list']
         self.__pythonpath_cmd_prefix = ('export PYTHONPATH=\"{0}\";'.
                                         format(self.base_dir))
-        self.__multinet_config_file_remote_path = os.path.join(self.base_dir, "config", "config.json")
-        self.__multinet_config_file_local_path =  os.path.join(self.base_dir, "config.json")
+        self.__multinet_config_file_remote_path = os.path.join(self.base_dir,
+                                                               "config",
+                                                               "config.json")
+        self.__multinet_config_file_local_path = os.path.join(self.base_dir,
+                                                              "config.json")
 #        util.file_ops.check_filelist([self.start_topos_hnd,
 #                                      self.get_switches_hnd,
 #                                      self.init_topos_hnd,
@@ -243,7 +246,6 @@ class Multinet(SBEmu):
         """
 
         config_data = {}
-
         config_data['master_ip'] = self.ip
         config_data['master_port'] = self.master_rest_port
         config_data['worker_ip_list'] = self.workers_ips
@@ -262,14 +264,13 @@ class Multinet(SBEmu):
         config_data['topo']['group_size'] = self.topo_group_size
         config_data['topo']['group_delay'] = self.topo_group_delay_ms
         config_data['topo']['hosts_per_switch'] = self.topo_hosts_per_switch
-        
         config_data['topo']['traffic_generation_duration_ms'] = \
             self.traffic_gen_duration_ms
         config_data['topo']['interpacket_delay_ms'] = self.interpacket_delay_ms
 
-        with open(self.__multinet_config_file_path, 'w') as config_json_file:
+        with open(self.__multinet_config_file_local_path, 'w') as config_json_file:
             json.dump(config_data, config_json_file)
-        if not os.path.isfile(self.__multinet_config_file_path):
+        if not os.path.isfile(self.__multinet_config_file_local_path):
             logging.error("Multinet JSON conf could not be created")
             raise IOError("Multinet JSON configuration file"
                           " could not be created.")
@@ -310,17 +311,16 @@ class Multinet(SBEmu):
                                              self.ssh_port,
                                              self.ssh_user,
                                              self.ssh_pass,
-                                             self.__multinet_config_file_path,
-                                             self.__multinet_config_file_path)
+                                             self.__multinet_config_file_local_path,
+                                             self.__multinet_config_file_remote_path)
 
-
-        print(' '.join([self.__pythonpath_cmd_prefix, self.deploy_hnd, '--json-config', self.__multinet_config_file_path]))
+        print(' '.join([self.__pythonpath_cmd_prefix, self.deploy_hnd, '--json-config', self.__multinet_config_file_remote_path]))
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.__pythonpath_cmd_prefix, 
+                                                   ' '.join([self.__pythonpath_cmd_prefix,
                                                              self.deploy_hnd,
                                                              '--json-config',
-                                                             self.__multinet_config_file_path]),
+                                                             self.__multinet_config_file_remote_path]),
                                                    '[Multinet.'
                                                    'deploy_handler]')[0]
         print(str(exit_status))
@@ -341,7 +341,7 @@ class Multinet(SBEmu):
         exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix, 'python',
                       self.get_switches_hnd, '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet.get_switches_hnd]')
         if exit_status == 0:
             self.status = 'GOT SWITCHES'
@@ -362,7 +362,7 @@ class Multinet(SBEmu):
         exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix, 'python',
                       self.get_flows_hnd, '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet. get_flows_hnd]')
         if exit_status == 0:
             self.status = 'GOT FLOWS'
@@ -385,7 +385,7 @@ class Multinet(SBEmu):
                       'python',
                       self.init_topos_hnd,
                       '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet.init_topos_hnd]')[0]
 
         if exit_status == 0:
@@ -409,7 +409,7 @@ class Multinet(SBEmu):
                       'python',
                       self.start_topos_hnd,
                       '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet.start_topos_hnd]')[0]
 
         if exit_status == 0:
@@ -432,7 +432,7 @@ class Multinet(SBEmu):
                       'python',
                       self.stop_topos_hnd,
                       '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet.stop_topos_hnd]')[0]
 
         if exit_status == 0:
@@ -455,7 +455,7 @@ class Multinet(SBEmu):
                       'python',
                       self.cleanup_hnd,
                       '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet.cleanup_hnd]')[0]
 
         if exit_status == 0:
