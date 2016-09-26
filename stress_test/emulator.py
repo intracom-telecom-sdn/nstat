@@ -82,6 +82,10 @@ class SBEmu:
                                                    ' '.join([self.build_hnd]),
                                                    '[SB-Emulator.'
                                                    'build_handler]')[0]
+        print(self.build_hnd)
+        print(exit_status)
+        print(self._ssh_conn)
+
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[SB-Emulator] Successful building")
@@ -185,12 +189,12 @@ class Multinet(SBEmu):
         if 'topology_traffic_gen_handler' in test_config:
             self.traffic_gen_hnd = (self.base_dir +
                                     test_config['topology_traffic_gen_handler'])
-            util.file_ops.check_filelist([self.traffic_gen_hnd])
+#            util.file_ops.check_filelist([self.traffic_gen_hnd])
 
         if 'topology_get_flows_handler' in test_config:
             self.get_flows_hnd = (self.base_dir +
                                   test_config['topology_get_flows_handler'])
-            util.file_ops.check_filelist([self.get_flows_hnd])
+#            util.file_ops.check_filelist([self.get_flows_hnd])
 
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.
@@ -226,12 +230,10 @@ class Multinet(SBEmu):
         self.__multinet_config_file_path = ('{0}/config.json'.
                                             format(self.base_dir))
 
-        util.file_ops.check_filelist([self.start_switches_hnd,
-                                      self.stop_switches_hnd,
-                                      self.get_switches_hnd,
-                                      self.init_topos_hnd,
-                                      self.start_topos_hnd,
-                                      self.stop_topos_hnd])
+#        util.file_ops.check_filelist([self.start_topos_hnd,
+#                                      self.get_switches_hnd,
+#                                      self.init_topos_hnd,
+#                                      self.stop_topos_hnd])
 
     def __generate_multinet_config(self, cntrl_of_port, cntrl_ip):
         """

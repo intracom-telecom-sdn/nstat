@@ -39,8 +39,10 @@ sb_emu = emulator.SBEmu.new(emulator_base_dir, test_config)
 # initialize a connection
 sb_emu.init_ssh()
 
+print(sb_emu._ssh_conn)
 #Build a Multinet Emulator
 sb_emu.build()
+
 logging.info('[Testing] Build a {0} emulator on '
              '{1} host'.format(sb_emu.name, sb_emu.ip))
 
@@ -55,8 +57,12 @@ for (sb_emu.topo_size,
                             test_config['multinet_topo_group_size'],
                             test_config['multinet_topo_group_delay_ms']):
 
-    sb_emu.run('127.0.0.1', 6653)
-    logging.info('[Testing] run MTCBench for thread value {0}'.format(sb_emu.threads))
-'''
+    sb_emu.deploy(6653,'102.168.160.201')
+    logging.info('[Testing] Generate multinet config file')
 
-sb_emu.cleanup()
+    sb_emu.init_topos()
+    sb_emu.start_topos()
+    sb_emu.cleanup()
+
+logging.info('[Testing] All done!')
+
