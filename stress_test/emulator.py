@@ -192,11 +192,15 @@ class Multinet(SBEmu):
                                   test_config['topology_get_flows_handler'])
             util.file_ops.check_filelist([self.get_flows_hnd])
 
-        self.topo_size = test_config['multinet_topo_size']
-        self.topo_type = test_config['multinet_topo_type']
-        self.topo_hosts_per_switch = test_config['multinet_topo_hosts_per_switch']
-        self.topo_group_size = test_config['multinet_topo_group_size']
-        self.topo_group_delay_ms = test_config['multinet_topo_group_delay_ms']
+        # The parameters initialized as None are dimensions of the test.
+        # These values are passed outside, from the test in the main for loop.
+        # ---------------------------------------------------------------------
+        self.topo_size = None
+        self.topo_type = None
+        self.topo_hosts_per_switch = None
+        self.topo_group_size = None
+        self.topo_group_delay_ms = None
+        # ---------------------------------------------------------------------
 
         self.init_topos_hnd = (self.base_dir +
                                test_config['topology_init_handler'])

@@ -21,7 +21,7 @@
 //"traffic_generation_duration_ms" //active test
 //"interpacket_delay_ms" //active test
 
-"multinet_switch_type":["ovsk"],
+"multinet_switch_type":"ovsk",
 "multinet_worker_ip_list":["192.168.160.202","192.168.160.203"],
 "multinet_worker_port_list":[3333,3333],
 
