@@ -270,10 +270,10 @@ class Multinet(SBEmu):
 
         with open(self.__multinet_config_file_local_path, 'w') as config_json_file:
             json.dump(config_data, config_json_file)
-        if not os.path.isfile(self.__multinet_config_file_local_path):
-            logging.error("Multinet JSON conf could not be created")
-            raise IOError("Multinet JSON configuration file"
-                          " could not be created.")
+
+        if not util.file_ops.file_exists(self.__multinet_config_file_local_path):
+            logging.error('[Multinet] Config local file has not been created')
+            raise Exception('[Multinet] Config local file has not been created')
 
     def __parse_multinet_output(self, multinet_handler_name, multinet_output):
         """Gets the console output of a multinet handler and extracts the
@@ -314,7 +314,9 @@ class Multinet(SBEmu):
                                              self.__multinet_config_file_local_path,
                                              self.__multinet_config_file_remote_path)
 
-        print(' '.join([self.__pythonpath_cmd_prefix, self.deploy_hnd, '--json-config', self.__multinet_config_file_remote_path]))
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.deploy_hnd]):
+            logging.error('[Multinet] Deploy handler does not exist')
+            raise Exception('[Multinet] Deploy handler does not exist')
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    ' '.join([self.__pythonpath_cmd_prefix,
@@ -323,20 +325,23 @@ class Multinet(SBEmu):
                                                              self.__multinet_config_file_remote_path]),
                                                    '[Multinet.'
                                                    'deploy_handler]')[0]
-        print(str(exit_status))
         if exit_status == 0:
             self.status = 'DEPLOIED'
-            logging.info("[Multinet] Successful deploied")
+            logging.info("[Multinet] Successful deployed")
         else:
             self.status = 'NOT DEPLOIED'
             logging.error("[Multinet] Failure during deploying")
-            raise Exception('[Multinet] Failure during deploing')
+            raise Exception('[Multinet] Failure during deploying')
 
     def get_switches(self):
         """ Wrapper to the Multinet SB-Emulator get_switches handler
         """
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING SWITCHES'
+
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.get_switches_hnd]):
+            logging.error('[Multinet] Get_switches handler does not exist')
+            raise Exception('[Multinet] Get_switches handler does not exist')
 
         exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix, 'python',
@@ -359,6 +364,10 @@ class Multinet(SBEmu):
         logging.info('[Multinet] get_flows')
         self.status = 'GETTING FLOWS'
 
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.get_flows_hnd]):
+            logging.error('[Multinet] Get_flows handler does not exist')
+            raise Exception('[Multinet] Get_flows handler does not exist')
+
         exit_status, output = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix, 'python',
                       self.get_flows_hnd, '--json-config',
@@ -380,6 +389,10 @@ class Multinet(SBEmu):
         logging.info('[Multinet] init_topos')
         self.status = 'INIT_MININET_TOPOS'
 
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.init_topos_hnd]):
+            logging.error('[Multinet] Init_topos handler does not exist')
+            raise Exception('[Multinet] Init_topos handler does not exist')
+
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
                       'python',
@@ -390,11 +403,11 @@ class Multinet(SBEmu):
 
         if exit_status == 0:
             self.status = 'TOPOS INITIALIZED'
-            logging.info('[Multinet] Successful initialization'
+            logging.info('[Multinet] Successful initialization '
                          'of Mininet topos')
         else:
             self.status = 'TOPOS NOT INITIALIZED'
-            logging.error('[Multinet] Failure during initialization of topos'
+            logging.error('[Multinet] Failure during initialization of topos '
                           'mininet')
             raise Exception('[Multinet] Failure during topos initialization')
 
@@ -403,6 +416,10 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] start_topos')
         self.status = 'START_MININET_TOPOS'
+
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.start_topos_hnd]):
+            logging.error('[Multinet] Start_topos handler does not exist')
+            raise Exception('[Multinet] Start_topos handler does not exist')
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
@@ -417,7 +434,7 @@ class Multinet(SBEmu):
             logging.info('[Multinet] Successful start of Mininet topos')
         else:
             self.status = 'TOPOS NOT STARTED'
-            logging.error('[Multinet] Failure during the starting of topos'
+            logging.error('[Multinet] Failure during the starting of topos '
                           'mininet')
             raise Exception('[Multinet] Failure during the starting of topos')
 
@@ -426,6 +443,10 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] stop_topos')
         self.status = 'STOP_MININET_TOPOS'
+
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.stop_topos_hnd]):
+            logging.error('[Multinet] Stop_topos handler does not exist')
+            raise Exception('[Multinet] Stop_topos handler does not exist')
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
@@ -440,7 +461,7 @@ class Multinet(SBEmu):
             logging.info('[Multinet] Successful stop of Mininet topos')
         else:
             self.status = 'TOPOS NOT STOPPED'
-            logging.error('[Multinet] Failure during the stopping of topos'
+            logging.error('[Multinet] Failure during the stopping of topos '
                           'mininet')
             raise Exception('[Multinet] Failure during the stopping of topos')
 
@@ -449,6 +470,10 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] cleanup')
         self.status = 'CLEANUP MININET'
+
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.cleanup_hnd]):
+            logging.error('[Multinet] Cleanup handler does not exist')
+            raise Exception('[Multinet] Cleanup handler does not exist')
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
@@ -463,7 +488,7 @@ class Multinet(SBEmu):
             logging.info('[Multinet] Successful cleanup of Mininet topos')
         else:
             self.status = 'TOPOS NOT CLEANED'
-            logging.error('[Multinet] Failure during the cleanup of topos'
+            logging.error('[Multinet] Failure during the cleanup of topos '
                           'mininet')
             raise Exception('[Multinet] Failure during the cleanup of topos')
 
@@ -472,6 +497,10 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] traffic gen')
         self.status = 'CREATE TRAFFIC'
+
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.traffic_gen_hnd]):
+            logging.error('[Multinet] Traffic_generator handler does not exist')
+            raise Exception('[Multinet] Traffic_generator handler does not exist')
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
@@ -483,11 +512,11 @@ class Multinet(SBEmu):
 
         if exit_status == 0:
             self.status = 'TRAFFIC UP'
-            logging.info('[Multinet] Successful traffic generation'
+            logging.info('[Multinet] Successful traffic generation '
                          'from switches')
         else:
             self.status = 'TRAFFIC DOWN'
-            logging.error('[Multinet] Failure during traffic generation'
+            logging.error('[Multinet] Failure during traffic generation '
                           'from switches')
-            raise Exception('[Multinet] Failure during traffic generation'
+            raise Exception('[Multinet] Failure during traffic generation '
                             'from switches')

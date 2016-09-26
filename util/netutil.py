@@ -11,6 +11,7 @@ import os
 import paramiko
 import stat
 import time
+import errno
 
 def copy_dir_local_to_remote(connection, local_path, remote_path):
     """Copy a local directory on a remote machine.
@@ -149,6 +150,34 @@ def remove_remote_directory(connection, path):
     sftp.rmdir(path)
     ssh_connection_close(sftp, transport_layer)
 
+
+def isfile(ip, port, username, password, file_list):
+    """Checks if all files in a given list exist. All files are located remotely
+    :param ip: ip address of the remote host 
+    :param port: port number of the remote host
+    :param username: username of the remote host
+    :param password: password of the remote host
+    :param file_list: list of filenames to be checked
+    :returns: True if the given path is a directory false otherwise.
+    :rtype: bool
+    :type ip: str
+    :type port: int
+    :type username: str
+    :type password: str
+    :type file_list: list<str>
+    """
+    
+    (sftp, transport_layer) = ssh_connection_open2(ip, port, username, password)
+    for filename in file_list:
+        try:
+            sftp.stat(filename)
+        except IOError as e:
+            if e.errno == errno.EEXIST:
+                return False
+            raise IOError('[utils.netutils.isfile]Other error number')
+        else:
+            return True
+
 def ssh_connect_or_return(connection, maxretries):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
@@ -166,7 +195,7 @@ def ssh_connect_or_return(connection, maxretries):
 
     while retries <= maxretries:
         logging.info(
-            '[ssh_connect_or_return] Trying to connect to {0}:{1} ({2}/{3})'.
+            '[utils.netutils.ssh_connect_or_return] Trying to connect to {0}:{1} ({2}/{3})'.
             format(connection.ip, connection.ssh_port, retries, maxretries))
 
         try:
@@ -175,12 +204,12 @@ def ssh_connect_or_return(connection, maxretries):
             ssh.connect(hostname=connection.ip, port=connection.ssh_port,
                         username=connection.username,
                         password=connection.password)
-            logging.info('[ssh_connect_or_return] connected to {0} '.
+            logging.info('[utils.netutils.ssh_connect_or_return] connected to {0} '.
                          format(connection.ip))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[ssh_connect_or_return] authentication failed when connecting to {0}'.
+                '[utils.netutils.ssh_connect_or_return] authentication failed when connecting to {0}'.
                 format(connection.ip))
 
         retries += 1
@@ -213,7 +242,7 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
 
     while retries <= maxretries:
         logging.info(
-            '[ssh_connect_or_return2] Trying to connect to {0}:{1} ({2}/{3})'.
+            '[utils.netutils.ssh_connect_or_return2] Trying to connect to {0}:{1} ({2}/{3})'.
             format(ip, ssh_port, retries, maxretries))
 
         try:
@@ -223,12 +252,12 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
             ssh.connect(hostname=ip, port=ssh_port,
                         username=username,
                         password=password)
-            logging.info('[ssh_connect_or_return2] connected to {0} '.
+            logging.info('[utils.netutils.ssh_connect_or_return2] connected to {0} '.
                          format(ip))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[ssh_connect_or_return2] authentication failed when connecting to {0}'.
+                '[utils.netutils.ssh_connect_or_return2] authentication failed when connecting to {0}'.
                 format(ip))
 
         retries += 1
