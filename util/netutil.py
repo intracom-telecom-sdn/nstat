@@ -272,19 +272,51 @@ def ssh_connection_open(connection):
         logging.error('[ssh_connection_open] error: check connection object')
 
 
-def ssh_copy_file_to_target(connection, local_file, remote_file):
+def ssh_connection_open2(ip, ssh_port, username, password):
+    """ Opens an ssh connection on a remote node
+
+    :param ip: ip address of the remote host
+    :param ssh_port: port number of the remote host
+    :param username: username of the remote host
+    :param password: password of the remote host
+    :returns sftp, transport_layer
+    :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
+    :type ip: str
+    :type ssh_port: int
+    :type username: str
+    :type password: str
+    """
+    try:
+        transport_layer = paramiko.Transport((ip, ssh_port))
+        transport_layer.connect(username=username,
+                                password=password)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
+
+        return (sftp, transport_layer)
+    except:
+        logging.error('[ssh_connection_open] error: check connection object')
+
+
+def ssh_copy_file_to_target(ip, ssh_port, username, password, local_file,
+                            remote_file):
     """Copies local file on a remote machine target.
 
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
+    :param ip: ip address of the remote host
+    :param ssh_port: port number of the remote host
+    :param username: username of the remote host
+    :param password: password of the remote host
     :param local_file: file from local machine to copy,full location required
     :param remote_file: remote destination, full location required
     i.e /tmp/foo.txt
-    :type connection: collections.namedtuple
+    :type ip: str
+    :type ssh_port: int
+    :type username: str
+    :type password: str
     :type local_file: str
     :type remote_file: str
     """
-    (sftp, transport_layer) = ssh_connection_open(connection)
+    (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port, username,
+                                                   password)
     sftp.put(local_file, remote_file)
     ssh_connection_close(sftp, transport_layer)
 
