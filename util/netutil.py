@@ -13,6 +13,7 @@ import stat
 import time
 import errno
 
+
 def copy_dir_local_to_remote(connection, local_path, remote_path):
     """Copy a local directory on a remote machine.
 
@@ -47,6 +48,7 @@ def copy_dir_local_to_remote(connection, local_path, remote_path):
 
     ssh_connection_close(sftp, transport_layer)
 
+
 def copy_dir_remote_to_local(connection, remote_path, local_path):
     """Copy recursively remote directories (Copies all files and other
     sub-directories).
@@ -65,16 +67,17 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
     files = sftp.listdir(path=remote_path)
 
     for file_item in files:
-        if file_item != None:
+        if file_item is not None:
             remote_filepath = os.path.join(remote_path, file_item)
             if isdir(remote_filepath, sftp):
                 if not os.path.exists(os.path.join(local_path, file_item)):
                     os.makedirs(os.path.join(local_path, file_item))
                 copy_dir_remote_to_local(connection, remote_filepath,
-                                      os.path.join(local_path, file_item))
+                                         os.path.join(local_path, file_item))
             else:
                 sftp.get(remote_filepath, os.path.join(local_path, file_item))
     ssh_connection_close(sftp, transport_layer)
+
 
 def create_dir_remote(connection, remote_path):
     """Opens an ssh connection to a remote machine and creates a new directory.
@@ -113,6 +116,7 @@ def isdir(path, sftp):
     except IOError:
         return False
 
+
 def make_remote_file_executable(connection, remote_file):
     """Makes the remote file executable.
 
@@ -125,6 +129,7 @@ def make_remote_file_executable(connection, remote_file):
     (sftp, transport_layer) = ssh_connection_open(connection)
     sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
     ssh_connection_close(sftp, transport_layer)
+
 
 def remove_remote_directory(connection, path):
     """Removes recursively remote directories (removes all files and
@@ -152,8 +157,9 @@ def remove_remote_directory(connection, path):
 
 
 def isfile(ip, port, username, password, file_list):
-    """Checks if all files in a given list exist. All files are located remotely
-    :param ip: ip address of the remote host 
+    """Checks if all files in a given list exist. All files are
+    located remotely
+    :param ip: ip address of the remote host
     :param port: port number of the remote host
     :param username: username of the remote host
     :param password: password of the remote host
@@ -166,17 +172,18 @@ def isfile(ip, port, username, password, file_list):
     :type password: str
     :type file_list: list<str>
     """
-    
-    (sftp, transport_layer) = ssh_connection_open2(ip, port, username, password)
+
+    sftp, = ssh_connection_open2(ip, port, username, password)[0]
     for filename in file_list:
         try:
             sftp.stat(filename)
         except IOError as e:
             if e.errno == errno.EEXIST:
                 return False
-            raise IOError('[utils.netutils.isfile]Other error number')
+            raise IOError('[utils.netutils.isfile] Other error number')
         else:
             return True
+
 
 def ssh_connect_or_return(connection, maxretries):
     """Opens a connection and returns a connection object. If it fails to open
@@ -195,7 +202,8 @@ def ssh_connect_or_return(connection, maxretries):
 
     while retries <= maxretries:
         logging.info(
-            '[utils.netutils.ssh_connect_or_return] Trying to connect to {0}:{1} ({2}/{3})'.
+            '[utils.netutils.ssh_connect_or_return] '
+            'Trying to connect to {0}:{1} ({2}/{3})'.
             format(connection.ip, connection.ssh_port, retries, maxretries))
 
         try:
@@ -204,20 +212,21 @@ def ssh_connect_or_return(connection, maxretries):
             ssh.connect(hostname=connection.ip, port=connection.ssh_port,
                         username=connection.username,
                         password=connection.password)
-            logging.info('[utils.netutils.ssh_connect_or_return] connected to {0} '.
+            logging.info('[utils.netutils.ssh_connect_or_return] '
+                         'connected to {0} '.
                          format(connection.ip))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[utils.netutils.ssh_connect_or_return] authentication failed when connecting to {0}'.
+                '[utils.netutils.ssh_connect_or_return] authentication '
+                'failed when connecting to {0}'.
                 format(connection.ip))
 
         retries += 1
         time.sleep(2)
     # If we exit while without ssh object been returned, then return -1
-    raise Exception('[netutil] could not connect to {0}. Returning'
-                 .format(connection.ip))
-
+    raise Exception('[netutil] could not connect to {0}.'
+                    'Returning'.format(connection.ip))
 
 
 def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
@@ -242,29 +251,33 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
 
     while retries <= maxretries:
         logging.info(
-            '[utils.netutils.ssh_connect_or_return2] Trying to connect to {0}:{1} ({2}/{3})'.
+            '[utils.netutils.ssh_connect_or_return2] Trying to '
+            'connect to {0}:{1} ({2}/{3})'.
             format(ip, ssh_port, retries, maxretries))
 
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.load_host_keys(os.path.expanduser(os.path.join("~",".ssh","known_hosts")))
+            ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh",
+                                                               "known_hosts")))
             ssh.connect(hostname=ip, port=ssh_port,
                         username=username,
                         password=password)
-            logging.info('[utils.netutils.ssh_connect_or_return2] connected to {0} '.
-                         format(ip))
+            logging.info('[utils.netutils.ssh_connect_or_return2] '
+                         'connected to {0} '.format(ip))
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[utils.netutils.ssh_connect_or_return2] authentication failed when connecting to {0}'.
+                '[utils.netutils.ssh_connect_or_return2] authentication '
+                'failed when connecting to {0}'.
                 format(ip))
 
         retries += 1
         time.sleep(2)
     # If we exit while without ssh object been returned, then return -1
-    raise Exception('[netutil] could not connect to {0}. Returning'
-                 .format(ip))
+    raise Exception('[netutil] could not connect to {0}.'
+                    ' Returning'.format(ip))
+
 
 def ssh_connection_close(sftp, transport_layer):
     """ Closes an ssh connection with a remote node
@@ -291,7 +304,8 @@ def ssh_connection_open(connection):
     :type connection: collections.namedtuple
     """
     try:
-        transport_layer = paramiko.Transport((connection.ip, connection.ssh_port))
+        transport_layer = paramiko.Transport((connection.ip,
+                                              connection.ssh_port))
         transport_layer.connect(username=connection.username,
                                 password=connection.password)
         sftp = paramiko.SFTPClient.from_transport(transport_layer)
