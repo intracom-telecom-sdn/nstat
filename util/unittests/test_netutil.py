@@ -122,8 +122,14 @@ class NetUtilTest(unittest.TestCase):
             self.file_paths_set.loc_node_file_name
         remotefile = self.remotenodefolderpath + '/' + \
             self.file_paths_set.loc_node_file_name
-        logging.info('copying from file: {0} from local path - to remote node {1} '.
-                     format(localfile, remotefile))
+        logging.info('copying from file: {0} from local path - to remote node '
+                     '{1} '.format(localfile, remotefile))
+        util.netutil.ssh_copy_file_to_target(self.connection.ip,
+                                             self.connection.ssh_port,
+                                             self.connection.username,
+                                             self.connection.password,
+                                             localfile,
+                                             remotefile)
 
     def test05_copy_dir_local_to_remote(self):
         """copy_dir_local_to_remote(). copying a local directory to remote node
@@ -152,7 +158,6 @@ class NetUtilTest(unittest.TestCase):
         self.assertIsNotNone(util.netutil.ssh_connect_or_return2(
              self.remote_node.ip, self.remote_node.ssh_port, self.remote_node.username, self.remote_node.password, self.constants_set.maxretries))
 
-        pass
     @classmethod
     def tearDownClass(cls):
         """cleans setUpClass environment
