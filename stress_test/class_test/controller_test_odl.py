@@ -9,7 +9,7 @@
 import logging
 import json
 import os
-import stress_test.class_test.controller
+import stress_test.controller
 import util.netutil
 import sys
 
@@ -34,7 +34,7 @@ with open(test_file, "r") as json_conf_file:
 ctrl_base_dir = str(sys.argv[2])
 
 # create a new Controller class instance, ctrl
-ctrl = stress_test.class_test.controller.Controller.new(ctrl_base_dir,
+ctrl = stress_test.controller.Controller.new(ctrl_base_dir,
                                                         test_config)
 
 # initialize a connection

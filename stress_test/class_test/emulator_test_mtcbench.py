@@ -9,7 +9,7 @@
 import logging
 import json
 import os
-import stress_test.class_test.emulator
+import stress_test.emulator
 import itertools
 import sys
 
@@ -34,7 +34,7 @@ with open(test_file, "r") as json_conf_file:
 emulator_base_dir = str(sys.argv[2])
 
 # create a new MTCBnench Emulator instance, sb_emu
-sb_emu = stress_test.class_test.emulator.SBEmu.new(emulator_base_dir,
+sb_emu = stress_test.emulator.SBEmu.new(emulator_base_dir,
                                                    test_config)
 
 # initialize a connection
