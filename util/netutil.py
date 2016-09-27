@@ -173,7 +173,7 @@ def isfile(ip, port, username, password, file_list):
     :type file_list: list<str>
     """
 
-    sftp, = ssh_connection_open2(ip, port, username, password)[0]
+    sftp = ssh_connection_open2(ip, port, username, password)[0]
     for filename in file_list:
         try:
             sftp.stat(filename)
