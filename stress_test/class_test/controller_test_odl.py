@@ -9,7 +9,7 @@
 import logging
 import json
 import os
-import controller
+import stress_test.class_test.controller
 import util.netutil
 import sys
 
@@ -34,7 +34,8 @@ with open(test_file, "r") as json_conf_file:
 ctrl_base_dir = str(sys.argv[2])
 
 # create a new Controller class instance, ctrl
-ctrl = controller.Controller.new(ctrl_base_dir, test_config)
+ctrl = stress_test.class_test.controller.Controller.new(ctrl_base_dir,
+                                                        test_config)
 
 # initialize a connection
 ctrl.init_ssh()

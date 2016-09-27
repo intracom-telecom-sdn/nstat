@@ -185,7 +185,6 @@ class Controller:
         elif self.check_status() == '1':
             logging.info('[start_controller] Controller already started.')
         else:
-            logging.error('[start_controller] Controller not started.')
             raise Exception('[start_controller] Fail to start')
         self.status = 'STARTED'
 
@@ -219,8 +218,7 @@ class Controller:
             self.status = 'BUILT'
             logging.info("[Controller] Successful building")
         else:
-            self.status = 'NOT BUILT'
-            logging.error("[Controller] Failure during building")
+            self.status = 'NOT_BUILT'
             raise Exception('[Controller] Failure during building')
 
     def wait_until_listens(self, timeout_ms):

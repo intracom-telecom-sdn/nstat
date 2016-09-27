@@ -8,7 +8,7 @@
 
 import logging
 import json
-import emulator
+import stress_test.class_test.emulator
 import itertools
 import sys
 
@@ -33,7 +33,8 @@ with open(test_file, "r") as json_conf_file:
 emulator_base_dir = str(sys.argv[2])
 
 # create a new Multinet Emulator instance, sb_emu
-sb_emu = emulator.SBEmu.new(emulator_base_dir, test_config)
+sb_emu = stress_test.class_test.emulator.SBEmu.new(emulator_base_dir,
+                                                   test_config)
 
 # initialize a connection
 sb_emu.init_ssh()
