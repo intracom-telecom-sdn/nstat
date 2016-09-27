@@ -9,7 +9,7 @@
 
 
 "controller_build_handler":"build.sh",
-"controller_start_handler":"start_droptestRPC.sh",
+"controller_start_handler":"start.sh",
 "controller_stop_handler":"stop.sh",
 "controller_status_handler":"status.sh",
 "controller_clean_handler":"clean.sh",
@@ -32,7 +32,6 @@
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",
 "controller_restconf_password":"admin",
-
 
 
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"]

@@ -1,6 +1,6 @@
 #! /usr/bin/env python3.4
 
-"""This handler disables the percistence mode in the configuration of the
+"""This handler disables the persistence mode in the configuration of the
 controller.
 """
 

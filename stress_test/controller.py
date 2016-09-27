@@ -56,7 +56,7 @@ class Controller:
 
         self._ssh_conn = None
 
-        #check handlers' validity
+        # check handlers' validity
         util.file_ops.check_filelist([self.build_hnd,
                                       self.start_hnd,
                                       self.stop_hnd,
@@ -88,10 +88,10 @@ class Controller:
             format(self.name, self.ip))
 
         self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                              int(self.ssh_port),
-                                                              self.ssh_user,
-                                                              self.ssh_pass,
-                                                              10)
+                                                             int(self.ssh_port),
+                                                             self.ssh_user,
+                                                             self.ssh_pass,
+                                                             10)
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
@@ -292,21 +292,21 @@ class ODL(Controller):
             self.flowmods_conf_hnd = (ctrl_base_dir +
                                       test_config['controller_flowmods_conf_handler'])
 
-            #check handler's validity
+            # check handler's validity
             util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
         if 'controller_statistics_handler' in test_config:
             self.statistics_hnd = (ctrl_base_dir +
                                    test_config['controller_statistics_handler'])
 
-            #check handler's validity
+            # check handler's validity
             util.file_ops.check_filelist([self.statistics_hnd])
 
         if 'controller_persistent_handler' in test_config:
             self.persistence_hnd = (ctrl_base_dir +
                                     test_config['controller_persistent_handler'])
 
-            #check handler's validity
+            # check handler's validity
             util.file_ops.check_filelist([self.persistence_hnd])
 
         if 'controller_restconf_port' in test_config:

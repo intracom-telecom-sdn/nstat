@@ -1,11 +1,18 @@
 FROM ubuntu:14.04
 
-ENV http_proxy='http://172.28.40.9:3128/'
-ENV https_proxy='http://172.28.40.9:3128/'
-ENV no_proxy='127.0.0.1,localhost'
+ENV http_proxy="http://172.28.40.9:3128/"
+ENV https_proxy="http://172.28.40.9:3128/"
 
 RUN echo 'Acquire::http::Proxy "http://172.28.40.9:3128/";' | tee -a /etc/apt/apt.conf
 RUN echo 'Acquire::https::Proxy "http://172.28.40.9:3128/";'| tee -a /etc/apt/apt.conf
+
+RUN echo "http_proxy=http://172.28.40.9:3128/" | tee -a /etc/environment
+RUN echo "https_proxy=http://172.28.40.9:3128/" | tee -a /etc/environment
+RUN echo "no_proxy=10.0.1.10,10.0.1.11,10.0.1.12,10.0.1.13,10.0.1.14,10.0.1.15,10.0.1.16,10.0.1.17,10.0.1.18,10.0.1.19,10.0.1.20,10.0.1.21,10.0.1.22,10.0.1.23,10.0.1.24,10.0.1.25,10.0.1.26,10.0.1.27,10.0.1.28,10.0.1.29,10.0.1.30,127.0.0.1,localhost" | tee -a /etc/environment
+RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
+RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
+RUN echo "NO_PROXY=10.0.1.10,10.0.1.11,10.0.1.12,10.0.1.13,10.0.1.14,10.0.1.15,10.0.1.16,10.0.1.17,10.0.1.18,10.0.1.19,10.0.1.20,10.0.1.21,10.0.1.22,10.0.1.23,10.0.1.24,10.0.1.25,10.0.1.26,10.0.1.27,10.0.1.28,10.0.1.29,10.0.1.30,127.0.0.1,localhost" | tee -a /etc/environment
+
 
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
@@ -13,7 +20,9 @@ RUN chmod 777 -R /opt
 RUN apt-get update
 RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/provision.sh
 RUN chmod +x /opt/provision.sh
-RUN /bin/bash -c "/opt/provision.sh $http_proxy"
+RUN /bin/bash -c "/opt/provision.sh 'http://172.28.40.9:3128/'"
+# Adding missing symbolic link for libnetsnmp.so.30 necessary for MTCBENCH
+RUN ln -s /usr/lib/x86_64-linux-gnu/libnetsnmp.so.30 /usr/lib/libnetsnmp.so.31
 #CMD ["service", "openvswitch-switch" "start"]
 
 # Configure ssh-server

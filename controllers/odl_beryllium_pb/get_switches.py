@@ -2,7 +2,7 @@
 
 """This handler returns the number of switches of a topology, connected
 to the controller. This information is extracted from controller's operational
-datastore, using RestCall.
+datastore, using RESTCONF.
 """
 
 import sys
