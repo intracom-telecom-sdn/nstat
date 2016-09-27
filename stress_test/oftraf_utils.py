@@ -104,6 +104,7 @@ def oftraf_get_of_counts(oftraf_rest_server):
     url = 'http://{0}:{1}/get_of_counts'.format(oftraf_rest_server.ip,
                                                 oftraf_rest_server.port)
     s = requests.Session()
+    s.trust_env = False
     req = s.get(url, headers=getheaders, stream=False)
     return req.content.decode('utf-8')
 

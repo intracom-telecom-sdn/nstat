@@ -33,9 +33,10 @@ def check_ds_hosts(controller_nb_interface):
            format(controller_nb_interface.ip, controller_nb_interface.port))
     auth_token = (controller_nb_interface.username,
                   controller_nb_interface.password)
+    s = requests.Session()
+    s.trust_env = False
     try:
-        datastore = requests.get(url=url,
-            auth=auth_token).json()['topology'][0]
+        datastore = s.get(url=url, auth=auth_token).json()['topology'][0]
     except:
         return -1
 
@@ -60,9 +61,10 @@ def check_ds_links(controller_nb_interface):
            format(controller_nb_interface.ip, controller_nb_interface.port))
     auth_token = (controller_nb_interface.username,
                   controller_nb_interface.password)
+    s = requests.Session()
+    s.trust_env = False
     try:
-        datastore = requests.get(url=url,
-            auth=auth_token).json()['topology'][0]
+        datastore = s.get(url=url, auth=auth_token).json()['topology'][0]
     except:
         return -1
 
@@ -86,10 +88,11 @@ def check_ds_switches(controller_nb_interface):
            format(controller_nb_interface.ip, controller_nb_interface.port))
     auth_token = (controller_nb_interface.username,
                   controller_nb_interface.password)
+    s = requests.Session()
+    s.trust_env = False
     logging.debug('[check_ds_switches] Making RestCall: {0}'.format(url))
     try:
-        datastore = requests.get(url=url,
-            auth=auth_token).json()['topology'][0]
+        datastore = s.get(url=url, auth=auth_token).json()['topology'][0]
     except:
         logging.error('[check_ds_switches] Fail getting response from '
                       'operational datastore')

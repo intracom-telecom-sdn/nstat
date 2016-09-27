@@ -25,11 +25,12 @@ def get_oper_hosts():
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
            format(ip, port))
-
+    s = requests.Session()
+    s.trust_env = False
     auth_token = (username, password)
     try:
-        datastore = requests.get(url=url,
-                                 auth=auth_token).json()['topology'][0]
+        datastore = s.get(url=url,
+                          auth=auth_token).json()['topology'][0]
     except:
         logging.error('[get_oper_hosts] Fail response from operational DS')
         return -1
