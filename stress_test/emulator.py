@@ -205,8 +205,8 @@ class Multinet(SBEmu):
         self.stop_topos_hnd = (self.base_dir +
                                test_config['topology_stop_switches_handler'])
 
-        if 'traffic_generation_duration_ms' in test_config:
-            self.traffic_gen_duration_ms = test_config['traffic_generation_duration_ms']
+        if 'multinet_traffic_gen_duration_ms' in test_config:
+            self.traffic_gen_duration_ms = test_config['multinet_traffic_gen_duration_ms']
         else:
             self.traffic_gen_duration_ms = 0
         if 'interpacket_delay_ms' in test_config:
@@ -224,10 +224,6 @@ class Multinet(SBEmu):
                                                                "config.json")
         self.__multinet_config_file_local_path = os.path.join(self.base_dir,
                                                               "config.json")
-#        util.file_ops.check_filelist([self.start_topos_hnd,
-#                                      self.get_switches_hnd,
-#                                      self.init_topos_hnd,
-#                                      self.stop_topos_hnd])
 
     def __generate_config(self, cntrl_of_port, cntrl_ip):
         """
@@ -297,7 +293,7 @@ class Multinet(SBEmu):
         multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
         return multinet_result
 
-    def deploy(self, cntrl_of_port, cntrl_ip):
+    def deploy(self, cntrl_ip, cntrl_of_port):
         """ Wrapper to the Multinet SB-Emulator deploy handler
         """
         logging.info('[Multinet] Deploy')
@@ -492,7 +488,7 @@ class Multinet(SBEmu):
                       'python',
                       self.traffic_gen_hnd,
                       '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet.generate_traffic_hnd]')[0]
 
         if exit_status == 0:

@@ -363,7 +363,8 @@ class ODL(Controller):
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.flowmods_conf_hnd]),
                                      '[controller.flowmod_configure_handler]')[0]
-
+        logging.info('[Controller] Controller is configured to send flow mods')
+         
     def get_oper_hosts(self):
         """Wrapper to the controller oper_hosts handler
         """
