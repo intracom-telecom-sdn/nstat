@@ -8,7 +8,6 @@
 
 import logging
 import json
-import os
 import emulator
 import itertools
 import sys
@@ -40,6 +39,7 @@ sb_emu = emulator.SBEmu.new(emulator_base_dir, test_config)
 sb_emu.init_ssh()
 
 print(sb_emu._ssh_conn)
+
 #Build a Multinet Emulator
 sb_emu.build()
 
@@ -57,7 +57,7 @@ for (sb_emu.topo_size,
                             test_config['multinet_topo_group_size'],
                             test_config['multinet_topo_group_delay_ms']):
 
-    sb_emu.deploy(6653,'192.168.160.201')
+    sb_emu.deploy(6653, '192.168.160.201')
     logging.info('[Testing] Generate multinet config file')
 
     sb_emu.init_topos()
@@ -65,4 +65,3 @@ for (sb_emu.topo_size,
     sb_emu.cleanup()
 
 logging.info('[Testing] All done!')
-

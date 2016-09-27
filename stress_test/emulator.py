@@ -12,7 +12,7 @@ import os
 import re
 import util.netutil
 import util.file_ops
-import util.process
+
 
 class SBEmu:
 
@@ -67,10 +67,10 @@ class SBEmu:
             format(self.name, self.ip))
 
         self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                              int(self.ssh_port),
-                                                              self.ssh_user,
-                                                              self.ssh_pass,
-                                                              10)
+                                                             int(self.ssh_port),
+                                                             self.ssh_user,
+                                                             self.ssh_pass,
+                                                             10)
 
     def build(self):
         """ Wrapper to the SB-Emulator build handler
@@ -268,12 +268,14 @@ class Multinet(SBEmu):
             self.traffic_gen_duration_ms
         config_data['topo']['interpacket_delay_ms'] = self.interpacket_delay_ms
 
-        with open(self.__multinet_config_file_local_path, 'w') as config_json_file:
+        with open(self.__multinet_config_file_local_path,
+                  'w') as config_json_file:
             json.dump(config_data, config_json_file)
 
         if not util.file_ops.file_exists(self.__multinet_config_file_local_path):
             logging.error('[Multinet] Config local file has not been created')
-            raise Exception('[Multinet] Config local file has not been created')
+            raise Exception('[Multinet] Config local file '
+                            'has not been created')
 
     def __parse_multinet_output(self, multinet_handler_name, multinet_output):
         """Gets the console output of a multinet handler and extracts the
@@ -314,7 +316,8 @@ class Multinet(SBEmu):
                                              self.__multinet_config_file_local_path,
                                              self.__multinet_config_file_remote_path)
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.deploy_hnd]):
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.deploy_hnd]):
             logging.error('[Multinet] Deploy handler does not exist')
             raise Exception('[Multinet] Deploy handler does not exist')
 
@@ -339,7 +342,8 @@ class Multinet(SBEmu):
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING SWITCHES'
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.get_switches_hnd]):
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.get_switches_hnd]):
             logging.error('[Multinet] Get_switches handler does not exist')
             raise Exception('[Multinet] Get_switches handler does not exist')
 
@@ -364,7 +368,8 @@ class Multinet(SBEmu):
         logging.info('[Multinet] get_flows')
         self.status = 'GETTING FLOWS'
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.get_flows_hnd]):
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.get_flows_hnd]):
             logging.error('[Multinet] Get_flows handler does not exist')
             raise Exception('[Multinet] Get_flows handler does not exist')
 
@@ -389,7 +394,8 @@ class Multinet(SBEmu):
         logging.info('[Multinet] init_topos')
         self.status = 'INIT_MININET_TOPOS'
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.init_topos_hnd]):
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.init_topos_hnd]):
             logging.error('[Multinet] Init_topos handler does not exist')
             raise Exception('[Multinet] Init_topos handler does not exist')
 
@@ -417,7 +423,8 @@ class Multinet(SBEmu):
         logging.info('[Multinet] start_topos')
         self.status = 'START_MININET_TOPOS'
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.start_topos_hnd]):
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.start_topos_hnd]):
             logging.error('[Multinet] Start_topos handler does not exist')
             raise Exception('[Multinet] Start_topos handler does not exist')
 
@@ -444,7 +451,8 @@ class Multinet(SBEmu):
         logging.info('[Multinet] stop_topos')
         self.status = 'STOP_MININET_TOPOS'
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.stop_topos_hnd]):
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.stop_topos_hnd]):
             logging.error('[Multinet] Stop_topos handler does not exist')
             raise Exception('[Multinet] Stop_topos handler does not exist')
 
@@ -471,7 +479,8 @@ class Multinet(SBEmu):
         logging.info('[Multinet] cleanup')
         self.status = 'CLEANUP MININET'
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.cleanup_hnd]):
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.cleanup_hnd]):
             logging.error('[Multinet] Cleanup handler does not exist')
             raise Exception('[Multinet] Cleanup handler does not exist')
 
@@ -498,9 +507,12 @@ class Multinet(SBEmu):
         logging.info('[Multinet] traffic gen')
         self.status = 'CREATE TRAFFIC'
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user, self.ssh_pass, [self.traffic_gen_hnd]):
-            logging.error('[Multinet] Traffic_generator handler does not exist')
-            raise Exception('[Multinet] Traffic_generator handler does not exist')
+        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
+                                   self.ssh_pass, [self.traffic_gen_hnd]):
+            logging.error('[Multinet] Traffic_generator handler '
+                          'does not exist')
+            raise Exception('[Multinet] Traffic_generator handler '
+                            'does not exist')
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
             ' '.join([self.__pythonpath_cmd_prefix,
