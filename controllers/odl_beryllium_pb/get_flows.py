@@ -48,6 +48,7 @@ def get_flow_stats(ip, port, username, password):
     headers = {'Accept': 'application/json'}
     found_flows = 0
     s = requests.Session()
+    s.trust_env = False
     auth_token = (username, password)
     try:
         req = s.get(url, headers=headers, stream=False, auth=auth_token)
