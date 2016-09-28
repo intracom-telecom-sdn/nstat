@@ -71,10 +71,10 @@ class Controller:
         :rtype: failed_flow_ops int
         """
         name = test_config['controller_name']
-        if (name == 'ODL'):
+        if (name == 'odl'):
             return ODL(ctrl_base_dir, test_config)
 
-        elif name == 'ONOS':
+        elif name == 'onos':
             raise NotImplementedError('ONOS is not supported yet')
         #  return ONOS(ctrl_base_dir, test_config)
 
@@ -364,7 +364,7 @@ class ODL(Controller):
                                      ' '.join([self.flowmods_conf_hnd]),
                                      '[controller.flowmod_configure_handler]')[0]
         logging.info('[Controller] Controller is configured to send flow mods')
-         
+
     def get_oper_hosts(self):
         """Wrapper to the controller oper_hosts handler
         """

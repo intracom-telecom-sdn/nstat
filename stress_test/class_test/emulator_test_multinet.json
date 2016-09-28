@@ -22,12 +22,12 @@
 "multinet_worker_ip_list":["192.168.160.202","192.168.160.203"],
 "multinet_worker_port_list":[3333,3333],
 
-"SB-Emulator_name":"Multinet",
-"SB-Emulator_node_ip":"192.168.160.202",
-"SB-Emulator_node_ssh_port":22,
-"SB-Emulator_node_username":"jenkins",
-"SB-Emulator_node_password":"jenkins",
+"sb_emulator_name":"multinet",
+"sb_emulator_node_ip":"192.168.160.202",
+"sb_emulator_node_ssh_port":22,
+"sb_emulator_node_username":"jenkins",
+"sb_emulator_node_password":"jenkins",
 
-"SB-Emulator_build_handler":"build.sh",
-"SB-Emulator_clean_handler":"./clean.sh"
+"sb_emulator_build_handler":"build.sh",
+"sb_emulator_clean_handler":"./clean.sh"
 }

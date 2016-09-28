@@ -20,25 +20,25 @@ class SBEmu:
 
         """Create an SB-Emulator object. Options from JSON input file
         :param test_config: JSON input configuration
-        :param sb_emu_base_dir: emuulator base directory
+        :param sb_emu_base_dir: emulator base directory
         :type test_config: JSON configuration dictionary
         :type sb_emu_base_dir: str
         """
-        self.name = test_config['SB-Emulator_name']
+        self.name = test_config['sb_emulator_name']
         self.base_dir = sb_emu_base_dir
 
         # self.host_spec = test_config['SB-Emulator_node_spec']
         # self.host_ip = test_config['SB-Emulator_host_ip']
 
-        self.ip = test_config['SB-Emulator_node_ip']
-        self.ssh_port = test_config['SB-Emulator_node_ssh_port']
-        self.ssh_user = test_config['SB-Emulator_node_username']
-        self.ssh_pass = test_config['SB-Emulator_node_password']
+        self.ip = test_config['sb_emulator_node_ip']
+        self.ssh_port = test_config['sb_emulator_node_ssh_port']
+        self.ssh_user = test_config['sb_emulator_node_username']
+        self.ssh_pass = test_config['sb_emulator_node_password']
 
         self.build_hnd = (self.base_dir +
-                          test_config['SB-Emulator_build_handler'])
+                          test_config['sb_emulator_build_handler'])
         self.clean_hnd = (self.base_dir +
-                          test_config['SB-Emulator_clean_handler'])
+                          test_config['sb_emulator_clean_handler'])
         self.status = 'UNKNOWN'
         self._ssh_conn = None
 
@@ -53,10 +53,10 @@ class SBEmu:
         :returns: a subclass or None
         :rtype: object
         """
-        name = test_config['SB-Emulator_name']
-        if (name == 'MTCBench'):
+        name = test_config['sb_emulator_name']
+        if (name == 'mtcbench'):
             return MTCBench(sb_emu_base_dir, test_config)
-        elif (name == 'Multinet'):
+        elif (name == 'multinet'):
             return Multinet(sb_emu_base_dir, test_config)
         else:
             raise NotImplementedError('Not supported yet')
