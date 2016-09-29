@@ -34,7 +34,7 @@ apt-get update && apt-get install -y \
 
 # Controller node provisioning actions
 #------------------------------------------------------------------------------
--E add-apt-repository ppa:openjdk-r/ppa -y
+add-apt-repository ppa:openjdk-r/ppa -y
 
 apt-get update && apt-get install -y \
     openjdk-7-jdk \
