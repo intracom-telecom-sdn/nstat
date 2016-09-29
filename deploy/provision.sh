@@ -39,7 +39,7 @@ apt-get update && apt-get install -y \
 apt-get update && apt-get install -y \
     openjdk-7-jdk \
     openjdk-8-jdk
-
+exit
 # Make JAVA 8 default java
 #------------------------------------------------------------------------------
 update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk-amd64/ 1100
