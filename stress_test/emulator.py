@@ -20,25 +20,25 @@ class SBEmu:
 
         """Create an SB-Emulator object. Options from JSON input file
         :param test_config: JSON input configuration
-        :param sb_emu_base_dir: emuulator base directory
+        :param sb_emu_base_dir: emulator base directory
         :type test_config: JSON configuration dictionary
         :type sb_emu_base_dir: str
         """
-        self.name = test_config['SB-Emulator_name']
+        self.name = test_config['sb_emulator_name']
         self.base_dir = sb_emu_base_dir
 
         # self.host_spec = test_config['SB-Emulator_node_spec']
         # self.host_ip = test_config['SB-Emulator_host_ip']
 
-        self.ip = test_config['SB-Emulator_node_ip']
-        self.ssh_port = test_config['SB-Emulator_node_ssh_port']
-        self.ssh_user = test_config['SB-Emulator_node_username']
-        self.ssh_pass = test_config['SB-Emulator_node_password']
+        self.ip = test_config['sb_emulator_node_ip']
+        self.ssh_port = test_config['sb_emulator_node_ssh_port']
+        self.ssh_user = test_config['sb_emulator_node_username']
+        self.ssh_pass = test_config['sb_emulator_node_password']
 
         self.build_hnd = (self.base_dir +
-                          test_config['SB-Emulator_build_handler'])
+                          test_config['sb_emulator_build_handler'])
         self.clean_hnd = (self.base_dir +
-                          test_config['SB-Emulator_clean_handler'])
+                          test_config['sb_emulator_clean_handler'])
         self.status = 'UNKNOWN'
         self._ssh_conn = None
 
@@ -53,10 +53,10 @@ class SBEmu:
         :returns: a subclass or None
         :rtype: object
         """
-        name = test_config['SB-Emulator_name']
-        if (name == 'MTCBench'):
+        name = test_config['sb_emulator_name']
+        if (name == 'mtcbench'):
             return MTCBench(sb_emu_base_dir, test_config)
-        elif (name == 'Multinet'):
+        elif (name == 'multinet'):
             return Multinet(sb_emu_base_dir, test_config)
         else:
             raise NotImplementedError('Not supported yet')
@@ -205,8 +205,8 @@ class Multinet(SBEmu):
         self.stop_topos_hnd = (self.base_dir +
                                test_config['topology_stop_switches_handler'])
 
-        if 'traffic_generation_duration_ms' in test_config:
-            self.traffic_gen_duration_ms = test_config['traffic_generation_duration_ms']
+        if 'multinet_traffic_gen_duration_ms' in test_config:
+            self.traffic_gen_duration_ms = test_config['multinet_traffic_gen_duration_ms']
         else:
             self.traffic_gen_duration_ms = 0
         if 'interpacket_delay_ms' in test_config:
@@ -224,10 +224,6 @@ class Multinet(SBEmu):
                                                                "config.json")
         self.__multinet_config_file_local_path = os.path.join(self.base_dir,
                                                               "config.json")
-#        util.file_ops.check_filelist([self.start_topos_hnd,
-#                                      self.get_switches_hnd,
-#                                      self.init_topos_hnd,
-#                                      self.stop_topos_hnd])
 
     def __generate_config(self, cntrl_of_port, cntrl_ip):
         """
@@ -297,7 +293,7 @@ class Multinet(SBEmu):
         multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
         return multinet_result
 
-    def deploy(self, cntrl_of_port, cntrl_ip):
+    def deploy(self, cntrl_ip, cntrl_of_port):
         """ Wrapper to the Multinet SB-Emulator deploy handler
         """
         logging.info('[Multinet] Deploy')
@@ -492,7 +488,7 @@ class Multinet(SBEmu):
                       'python',
                       self.traffic_gen_hnd,
                       '--json-config',
-                      self.__multinet_config_file_path]),
+                      self.__multinet_config_file_remote_path]),
             '[Multinet.generate_traffic_hnd]')[0]
 
         if exit_status == 0:
