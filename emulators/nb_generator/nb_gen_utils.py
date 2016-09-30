@@ -231,6 +231,7 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
                    format(ctrl_ip, ctrl_port))
     node_names = []
     session = requests.Session()
+    session.trust_env = False
     try:
         while True:
             logging.debug(

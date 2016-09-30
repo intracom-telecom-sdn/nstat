@@ -142,6 +142,7 @@ class FlowExplorer(object):
         # Disable logging during performing requests
         logging.disable(logging.CRITICAL)
         s = requests.Session()
+        s.trust_env = False
         try:
             req = s.get(self.inventory_stats_url,
                         headers=self.getheaders,
