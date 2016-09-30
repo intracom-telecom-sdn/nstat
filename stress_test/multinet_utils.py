@@ -11,7 +11,6 @@ Multinet-related utilities
 import common
 import json
 import logging
-import os
 import re
 import subprocess
 import time
@@ -73,13 +72,10 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
     run_cmd_prefix = ''
     if is_privileged:
         run_cmd_prefix = 'sudo'
-    venv_cmd = ''
-    if os.path.isdir('/opt/venv_multinet/bin/'):
-        venv_cmd = 'source /opt/venv_multinet/bin/activate'
-    multinet_run_cmd = ('{0}; {1} PYTHONPATH=\"{2}\" python {3} --json-config {4}'.
-                            format(venv_cmd, run_cmd_prefix, multinet_base_dir,
-                                   exec_path,
-                                   multinet_base_dir + 'config/config.json'))
+
+    multinet_run_cmd = ('{0} PYTHONPATH=\"{1}\" python {2} --json-config {3}'.
+                        format(run_cmd_prefix, multinet_base_dir, exec_path,
+                               multinet_base_dir + 'config/config.json'))
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
     return subprocess.check_output(multinet_run_cmd, stderr=subprocess.STDOUT,
