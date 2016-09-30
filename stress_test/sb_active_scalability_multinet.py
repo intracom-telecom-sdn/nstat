@@ -393,9 +393,9 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             logging.info(
                 '{0} stopping REST daemon in Multinet node.'.
                 format(test_type))
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
-                multinet_base_dir)
+            #multinet_utils.multinet_command_runner(
+            #    multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
+            #    multinet_base_dir)
 
         except:
             pass
