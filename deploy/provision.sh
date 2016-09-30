@@ -34,8 +34,15 @@ apt-get update && apt-get install -y \
 
 # Controller node provisioning actions
 #------------------------------------------------------------------------------
+add-apt-repository ppa:openjdk-r/ppa -y
+
 apt-get update && apt-get install -y \
-    openjdk-7-jdk
+    openjdk-7-jdk \
+    openjdk-8-jdk
+
+# Make JAVA 8 default java
+#------------------------------------------------------------------------------
+update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk-amd64/ 1100
 
 # MT-Cbench node provisioning actions
 #------------------------------------------------------------------------------
