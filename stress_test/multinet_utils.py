@@ -28,11 +28,7 @@ def multinet_pre_post_actions(action_handler):
 
     logging.debug('[{0}] Executing command: {1}'.
                   format('multinet_pre_post_actions', action_handler))
-    if os.path.isdir('/opt/venv_multinet/bin/'):
-        cmd_to_run = 'source /opt/venv_multinet/bin/activate; {0}'.format(action_handler)
-    else:
-        cmd_to_run = action_handler
-    util.customsubprocess.check_output_streaming(cmd_to_run,
+    util.customsubprocess.check_output_streaming(action_handler,
                                                  '[multinet_pre_post_actions]')
 
 def parse_multinet_output(multinet_handler_name, multinet_output):
