@@ -99,6 +99,7 @@ try:
     ctrl.check_status()
     for stat_period in test_config['controller_statistics_period_ms']:
         ctrl.stat_period_ms = stat_period
+        ctrl.flowmods_config()
         ctrl.start()
         # change stat period
         ctrl.change_stats()
@@ -142,7 +143,7 @@ try:
                   ' are: {0}'.format(links))
         except AttributeError:
             print('[Testing] Error during the query of links in DS')
-
+ 
         try:
             flows = ctrl.get_oper_flows()
             print('[Testing] The number of installed flows on datastore are: '
@@ -153,9 +154,10 @@ try:
 except:
     logging.info('[Testing] Error, check the logs')
 
-
 finally:
     ctrl.stop()
     ctrl.check_status()
     if ctrl.need_cleanup:
         ctrl.clean_hnd()
+
+

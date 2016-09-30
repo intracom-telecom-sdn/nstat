@@ -58,11 +58,14 @@ for (sb_emu.topo_size,
                             test_config['multinet_topo_group_size'],
                             test_config['multinet_topo_group_delay_ms']):
 
-    sb_emu.deploy(6653, '192.168.160.201')
+    sb_emu.deploy('192.168.160.201', 6653)
     logging.info('[Testing] Generate multinet config file')
 
     sb_emu.init_topos()
     sb_emu.start_topos()
+    logging.info("The whole number of switches are: {0}".format(sb_emu.get_switches()))
+    logging.info("The whole number of flows are: {0}".format(sb_emu.get_flows()))
+    sb_emu.generate_traffic()
     sb_emu.cleanup()
 
 logging.info('[Testing] All done!')

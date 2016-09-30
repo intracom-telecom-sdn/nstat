@@ -37,6 +37,7 @@ def change_proactive_flow_mod():
     input_file = os.path.sep.join([os.path.dirname(os.path.realpath(__file__)),
                                    CONTROLLER_DIR_NAME, 'etc', 'opendaylight',
                                    'karaf', '54-arphandler.xml'])
+
     xml_utils.manipulate_xml(input_file, input_file, string_to_find,
                              'false')
 

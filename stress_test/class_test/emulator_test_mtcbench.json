@@ -1,13 +1,13 @@
 {
 
-"SB-Emulator_name":"MTCBench",
-"SB-Emulator_node_ip":"127.0.0.1",
-"SB-Emulator_node_ssh_port":22,
-"SB-Emulator_node_username":"jenkins",
-"SB-Emulator_node_password":"jenkins",
+"sb_emulator_name":"mtcbench",
+"sb_emulator_node_ip":"127.0.0.1",
+"sb_emulator_node_ssh_port":22,
+"sb_emulator_node_username":"jenkins",
+"sb_emulator_node_password":"jenkins",
 
-"SB-Emulator_build_handler":"./build.sh",
-"SB-Emulator_clean_handler":"./clean.sh",
+"sb_emulator_build_handler":"./build.sh",
+"sb_emulator_clean_handler":"./clean.sh",
 "mtcbench_run_handler":"./run.sh",
 
 
@@ -16,7 +16,7 @@
 "mtcbench_threads":[1,1,1],
 "mtcbench_thread_creation_delay_ms":[150],
 "mtcbench_delay_before_traffic_ms":[150],
-"mtcbench_mode":"Latency",
+"mtcbench_mode":"latency",
 "mtcbench_warmup":0,
 "mtcbench_ms_per_test":10000,
 "mtcbench_internal_repeats":1,
