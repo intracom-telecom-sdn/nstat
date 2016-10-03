@@ -233,7 +233,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                           format(test_type))
 
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
-                'deploy_multinet', multinet_base_dir, is_privileged=False)
+                'deploy_multinet', multinet_base_dir)
 
             logging.info(
                 '{0} initiating topology on REST server and start '
@@ -338,12 +338,11 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
                 oftraf_handlers_set.oftraf_stop_handler,
                 oftraf_rest_server, controller_ssh_client)
 
-            logging.info('{0} stopping REST daemon in Multinet node'.
-                format(test_type))
-
-            multinet_utils.multinet_command_runner(
-                multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
-                multinet_base_dir)
+            #logging.info('{0} stopping REST daemon in Multinet node'.
+            #    format(test_type))
+            #multinet_utils.multinet_command_runner(
+            #    multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
+            #    multinet_base_dir)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
@@ -410,9 +409,9 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         except:
             pass
 
-        logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
-        multinet_utils.multinet_pre_post_actions(
-            multinet_local_handlers_set.clean_handler)
+        #logging.info('{0} Cleanup Multinet nodes.'.format(test_type))
+        #multinet_utils.multinet_pre_post_actions(
+        #    multinet_local_handlers_set.clean_handler)
 
         # Closing ssh connections with controller/Multinet nodes
         common.close_ssh_connections([controller_ssh_client])
