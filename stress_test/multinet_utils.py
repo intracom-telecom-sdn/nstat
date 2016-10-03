@@ -73,7 +73,7 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
     if is_privileged:
         run_cmd_prefix = 'sudo'
 
-    multinet_run_cmd = ('source /opt/venv_multinet/bin/activate; {0} PYTHONPATH=\"{1}\" python {2} --json-config {3}'.
+    multinet_run_cmd = ('{0} PYTHONPATH=\"{1}\" python {2} --json-config {3}'.
                         format(run_cmd_prefix, multinet_base_dir, exec_path,
                                multinet_base_dir + 'config/config.json'))
     logging.debug('[{0}] multinet command to run: {1}'.
