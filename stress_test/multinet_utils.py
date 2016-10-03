@@ -70,9 +70,9 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir):
         config_json = json.load(config_json_file)
     venv_path = '\" \"'
     if 'venv_path' in config_json:
-        venv_path = 'source {0}/bin/activate'.format(config_json["venv_path"])
+        venv_path = config_json["venv_path"]
 
-    multinet_run_cmd = ('{1}/bin/venv_handler_master.sh {2} {3} {4} {5}'.
+    multinet_run_cmd = ('{0}/bin/venv_handler_master.sh {1} {2} {3} {4}'.
                         format(multinet_base_dir, venv_path, multinet_base_dir,
                                exec_path, multinet_config_path))
     logging.debug('[{0}] multinet command to run: {1}'.
