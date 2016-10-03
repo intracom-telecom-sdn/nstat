@@ -130,8 +130,7 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
         time.sleep(int(expected_switches/group_size) * mininet_group_delay)
         try:
             result_get_sw = multinet_command_runner(get_switches_handler,
-                '[get_switches_handler]', multinet_base_dir,
-                is_privileged=False)
+                '[get_switches_handler]', multinet_base_dir)
             # get Multinet switches number
             discovered_switches = \
                 parse_multinet_output('get_switches_topology_handler',
@@ -237,7 +236,7 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
 
 def get_topology_flows(multinet_base_dir, get_flows_handler):
     result_get_flows = multinet_command_runner(get_flows_handler,
-        '[get_flows_handler]', multinet_base_dir, is_privileged=False)
+        '[get_flows_handler]', multinet_base_dir)
 
     # Get total flows from multinet topology switches
     discovered_flows = parse_multinet_output('get_flows_topology_handler', result_get_flows)
