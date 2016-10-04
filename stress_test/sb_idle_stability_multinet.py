@@ -201,7 +201,7 @@ def sb_idle_stability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
         logging.info('{0} Booting up Multinet REST server'.
                       format(test_type))
         multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
-            'deploy_multinet', multinet_base_dir, is_privileged=False)
+            'deploy_multinet', multinet_base_dir)
 
         logging.info(
             '{0} Initiating topology on REST server and start '

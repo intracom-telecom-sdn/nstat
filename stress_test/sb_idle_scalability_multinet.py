@@ -197,7 +197,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
-                'deploy_multinet', multinet_base_dir, is_privileged=False)
+                'deploy_multinet', multinet_base_dir)
 
             logging.info('{0} creating queue'.format(test_type))
             result_queue = multiprocessing.Queue()
@@ -280,7 +280,7 @@ def sb_idle_scalability_multinet_run(out_json, ctrl_base_dir, multinet_base_dir,
 
             multinet_utils.multinet_command_runner(
                 multinet_handlers_set.rest_server_stop, 'cleanup_multinet',
-                multinet_base_dir, is_privileged=False)
+                multinet_base_dir)
 
     except:
         logging.error('{0} :::::::::: Exception :::::::::::'.format(test_type))
