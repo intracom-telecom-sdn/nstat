@@ -38,11 +38,16 @@ class Controller:
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
-        self.build_hnd = self.base_dir + test_config['controller_build_handler']
-        self.start_hnd = self.base_dir + test_config['controller_start_handler']
-        self.stop_hnd = self.base_dir + test_config['controller_stop_handler']
-        self.status_hnd = self.base_dir + test_config['controller_status_handler']
-        self.clean_hnd = self.base_dir + test_config['controller_clean_handler']
+        self.build_hnd = (self.base_dir +
+                          test_config['controller_build_handler'])
+        self.start_hnd = (self.base_dir +
+                          test_config['controller_start_handler'])
+        self.stop_hnd = (self.base_dir +
+                         test_config['controller_stop_handler'])
+        self.status_hnd = (self.base_dir +
+                           test_config['controller_status_handler'])
+        self.clean_hnd = (self.base_dir +
+                          test_config['controller_clean_handler'])
 
         self.status = 'UNKNOWN'
 
@@ -51,7 +56,7 @@ class Controller:
 
         self._ssh_conn = None
 
-        #check handlers' validity
+        # check handlers' validity
         util.file_ops.check_filelist([self.build_hnd,
                                       self.start_hnd,
                                       self.stop_hnd,
@@ -66,10 +71,10 @@ class Controller:
         :rtype: failed_flow_ops int
         """
         name = test_config['controller_name']
-        if (name == 'ODL'):
+        if (name == 'odl'):
             return ODL(ctrl_base_dir, test_config)
 
-        elif name == 'ONOS':
+        elif name == 'onos':
             raise NotImplementedError('ONOS is not supported yet')
         #  return ONOS(ctrl_base_dir, test_config)
 
@@ -180,7 +185,6 @@ class Controller:
         elif self.check_status() == '1':
             logging.info('[start_controller] Controller already started.')
         else:
-            logging.error('[start_controller] Controller not started.')
             raise Exception('[start_controller] Fail to start')
         self.status = 'STARTED'
 
@@ -214,8 +218,7 @@ class Controller:
             self.status = 'BUILT'
             logging.info("[Controller] Successful building")
         else:
-            self.status = 'NOT BUILT'
-            logging.error("[Controller] Failure during building")
+            self.status = 'NOT_BUILT'
             raise Exception('[Controller] Failure during building')
 
     def wait_until_listens(self, timeout_ms):
@@ -278,23 +281,30 @@ class ODL(Controller):
 
         super(self.__class__, self).__init__(ctrl_base_dir, test_config)
 
-        self.stat_period_ms = test_config['controller_statistics_period_ms']
+        # The parameters initialized as None are dimensions of the test.
+        # These values are passed outside, from the test in the main for loop.
+        # ---------------------------------------------------------------------
+        self.stat_period_ms = None
+        # ---------------------------------------------------------------------
         if 'controller_flowmods_conf_handler' in test_config:
-            self.flowmods_conf_hnd = ctrl_base_dir + test_config['controller_flowmods_conf_handler']
+            self.flowmods_conf_hnd = (ctrl_base_dir +
+                                      test_config['controller_flowmods_conf_handler'])
 
-            #check handler's validity
+            # check handler's validity
             util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
         if 'controller_statistics_handler' in test_config:
-            self.statistics_hnd = ctrl_base_dir + test_config['controller_statistics_handler']
+            self.statistics_hnd = (ctrl_base_dir +
+                                   test_config['controller_statistics_handler'])
 
-            #check handler's validity
+            # check handler's validity
             util.file_ops.check_filelist([self.statistics_hnd])
 
         if 'controller_persistent_handler' in test_config:
-            self.persistence_hnd = ctrl_base_dir + test_config['controller_persistent_handler']
+            self.persistence_hnd = (ctrl_base_dir +
+                                    test_config['controller_persistent_handler'])
 
-            #check handler's validity
+            # check handler's validity
             util.file_ops.check_filelist([self.persistence_hnd])
 
         if 'controller_restconf_port' in test_config:
@@ -302,10 +312,14 @@ class ODL(Controller):
             self.restconf_user = test_config['controller_restconf_user']
             self.restconf_pass = test_config['controller_restconf_password']
 
-        self.oper_hosts = ctrl_base_dir + test_config['controller_oper_hosts_handler']
-        self.oper_switches = ctrl_base_dir + test_config['controller_oper_switches_handler']
-        self.oper_links = ctrl_base_dir + test_config['controller_oper_links_handler']
-        self.oper_flows = ctrl_base_dir + test_config['controller_oper_flows_handler']
+        self.oper_hosts = (ctrl_base_dir +
+                           test_config['controller_oper_hosts_handler'])
+        self.oper_switches = (ctrl_base_dir +
+                              test_config['controller_oper_switches_handler'])
+        self.oper_links = (ctrl_base_dir +
+                           test_config['controller_oper_links_handler'])
+        self.oper_flows = (ctrl_base_dir +
+                           test_config['controller_oper_flows_handler'])
 
     def generate_xmls(self):
         """ Starts and then stops the controller to trigger the generation of
@@ -334,7 +348,7 @@ class ODL(Controller):
 
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.statistics_hnd,
-                                               str(self.stat_period_ms[0])]),
+                                               str(self.stat_period_ms)]),
                                      '[controller.statistics_handler]'
                                      ' Changing statistics interval')[0]
         logging.info(
@@ -342,13 +356,14 @@ class ODL(Controller):
             format(self.stat_period_ms))
 
     def flowmods_config(self):
-        """configure controller to send flow modifications as a responce to ARP
-        Packet_INs.
+        """configure controller to send flow modifications as a
+        responce to ARP Packet_INs.
         """
         logging.info('[Controller] Configure flow modifications')
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.flowmods_conf_hnd]),
                                      '[controller.flowmod_configure_handler]')[0]
+        logging.info('[Controller] Controller is configured to send flow mods')
 
     def get_oper_hosts(self):
         """Wrapper to the controller oper_hosts handler

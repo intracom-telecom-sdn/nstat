@@ -47,8 +47,8 @@ def parse_multinet_output(multinet_handler_name, multinet_output):
     if regex_result == None:
         raise Exception('Failed to get results from {0} multinet handler.'.format(multinet_handler_name))
     else:
-        result_get_flows = regex_result.group(0).replace('INFO:root:[{0}][response data] '.format(multinet_handler_name), '')
-    multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(result_get_flows)])
+        json_result = regex_result.group(0).replace('INFO:root:[{0}][response data] '.format(multinet_handler_name), '')
+    multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
     return multinet_result
 
 

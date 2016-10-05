@@ -9,7 +9,7 @@
 
 
 "controller_build_handler":"build.sh",
-"controller_start_handler":"start.sh",
+"controller_start_handler":"start_droptestRPC.sh",
 "controller_stop_handler":"stop.sh",
 "controller_status_handler":"status.sh",
 "controller_clean_handler":"clean.sh",
@@ -19,12 +19,13 @@
 "controller_oper_links_handler":"get_links.py",
 "controller_oper_switches_handler":"get_switches.py",
 "controller_oper_flows_handler":"get_flows.py",
+"controller_flowmods_conf_handler":"flowmods_configure.py",
 
 "controller_logs_dir":"distribution-karaf-0.4.0-Beryllium/data/log/",
 
 "controller_rebuild":true,
 "controller_cleanup":false,
-"controller_name":"ODL",
+"controller_name":"odl",
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
 "controller_cpu_shares":100,
@@ -35,6 +36,6 @@
 
 
 
-"java_opts":["-Xmx1G","-Xms512M","-XX:+UseG1GC","-XX:MaxPermSize=512M"]
+"java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"]
 
 }
