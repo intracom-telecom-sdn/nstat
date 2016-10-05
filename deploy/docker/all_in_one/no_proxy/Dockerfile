@@ -6,9 +6,44 @@ RUN apt-get update
 RUN apt-get install --force-yes -y wget
 RUN chmod 777 -R /opt
 RUN apt-get update
+
+# ------------------------------------------------------------------------------
+# NSTAT
+# ------------------------------------------------------------------------------
 RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/provision.sh
-RUN chmod +x /opt/provision.sh
-RUN /bin/bash -c "/opt/provision.sh $http_proxy"
+RUN mv /opt/provision.sh /opt/provision_nstat.sh
+RUN chmod +x /opt/provision_nstat.sh
+RUN /bin/bash -c "/opt/provision_nstat.sh 'http://172.28.40.9:3128/'"
+
+# ------------------------------------------------------------------------------
+# MULTINET
+# ------------------------------------------------------------------------------
+RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/multinet/master/deploy/provision.sh
+RUN mv /opt/provision.sh /opt/provision_multinet.sh
+RUN chmod +x /opt/provision_multinet.sh
+RUN /bin/bash -c "/opt/provision_multinet.sh 'http://172.28.40.9:3128/'"
+
+# ------------------------------------------------------------------------------
+# MTCBENCH
+# ------------------------------------------------------------------------------
+RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/mtcbench/master/deploy/docker/provision.sh
+RUN mv /opt/provision.sh /opt/provision_mtcbench.sh
+RUN chmod +x /opt/provision_mtcbench.sh
+RUN /bin/bash -c "/opt/provision_mtcbench.sh 'http://172.28.40.9:3128/'"
+
+# ------------------------------------------------------------------------------
+# OFTRAF
+# ------------------------------------------------------------------------------
+RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/oftraf/virtenv-rqrmnts/deploy/provision.sh
+RUN mv /opt/provision.sh /opt/provision_oftraf.sh
+RUN chmod +x /opt/provision_oftraf.sh
+RUN /bin/bash -c "/opt/provision_oftraf.sh 'http://172.28.40.9:3128/'"
+
+# ------------------------------------------------------------------------------
+# ODL PREBuilt controllers
+# ------------------------------------------------------------------------------
+RUN wget -P /opt/ https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium/distribution-karaf-0.4.0-Beryllium.zip
+RUN wget -P /opt/ https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.5.0-Boron/distribution-karaf-0.5.0-Boron.zip
 
 # Configure ssh-server
 RUN mkdir /var/run/sshd
