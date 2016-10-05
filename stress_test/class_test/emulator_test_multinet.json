@@ -16,6 +16,9 @@
 "multinet_topo_group_size":[2],
 "multinet_topo_group_delay_ms":[1000],
 
+"venv_path":"/opt/venv_multinet",
+"venv_handler_master":"./bin/venv_handler_master.sh"
+
 "multinet_traffic_gen_duration_ms":20000,
 
 "multinet_switch_type":"ovsk",
