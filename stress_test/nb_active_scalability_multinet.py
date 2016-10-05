@@ -218,7 +218,7 @@ def nb_active_scalability_multinet_run(out_json, ctrl_base_dir,
             logging.info('{0} booting up Multinet REST server'.
                           format(test_type))
             multinet_utils.multinet_command_runner(multinet_handlers_set.rest_server_boot,
-                'deploy_multinet', multinet_base_dir, is_privileged=False)
+                'deploy_multinet', multinet_base_dir)
 
             logging.info('{0} starting controller'.format(test_type))
             cpid = controller_utils.start_controller(controller_handlers_set,
