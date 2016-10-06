@@ -16,7 +16,8 @@ import util.netutil
 
 class NBgen:
 
-    def __init__(self, nb_gen_base_dir, test_config, controller, sbemu):
+    def __init__(self, nb_gen_base_dir, test_config, controller, sbemu,
+                 log_level="DEBUG"):
         """Create an NB-generator object. Options from JSON input file
         :param test_config: JSON input configuration
         :param nb_gen_base_dir: emulator base directory
@@ -44,7 +45,7 @@ class NBgen:
 
         self.flow_delete_flag = test_config['flow_delete_flag']
         self.flows_per_request = test_config['flows_per_request']
-        self.log_level
+        self.log_level = log_level
 
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.
@@ -232,10 +233,10 @@ def monitor_threads_run(self, t_start):
     monitor_thread_ds = multiprocessing.Process(target=self.__poll_flows_ds,
                                                 args=(t_start))
     monitor_thread_sw = \
-        multiprocessing.Process(target = self.__poll_flows_switches,
+        multiprocessing.Process(target=self.__poll_flows_switches,
                                 args=(t_start))
     monitor_thread_ds_confirm = \
-        multiprocessing.Process(target= self.__poll_flows_ds_confirm)
+        multiprocessing.Process(target=self.__poll_flows_ds_confirm)
     monitor_thread_ds.start()
     monitor_thread_sw.start()
     monitor_thread_ds_confirm.start()

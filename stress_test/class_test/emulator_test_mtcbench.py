@@ -22,7 +22,7 @@ STREAM_HANDLER = logging.StreamHandler(sys.stdout)
 LOGGER.addHandler(STREAM_HANDLER)
 logging.info('[Testing] Parsing test configuration')
 
-# define Class inputs:json_conf_file and ctrl_base_dir
+# define Class inputs:json_conf_file and emulator_base_dir
 if str(sys.argv[1]) == '-h':
     print ('[Testing] emulator_test_basic.py <input json file> '
            '<emulator base directory>')
@@ -35,16 +35,16 @@ emulator_base_dir = str(sys.argv[2])
 
 # create a new MTCBnench Emulator instance, sb_emu
 sb_emu = stress_test.emulator.SBEmu.new(emulator_base_dir,
-                                                   test_config)
+                                        test_config)
 
 # initialize a connection
 sb_emu.init_ssh()
 
-#build a MTCBench Emulator
+# build a MTCBench Emulator
 if sb_emu.rebuild:
     sb_emu.build()
     logging.info('[Testing] Build a {0} emulator on '
-                 '{1} host'.format(sb_emu.name,sb_emu.ip))
+                 '{1} host'.format(sb_emu.name, sb_emu.ip))
 
 for (sb_emu.simulated_hosts,
      sb_emu.switches_per_thread,

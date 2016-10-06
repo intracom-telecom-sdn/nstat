@@ -1,0 +1,17 @@
+{
+
+"nb_generator_node_spec":"/nstat/vagrant/node_nb_generator/Vagrantfile",
+"nb_generator_run_handler":"./run_handler.py",
+"nb_generator_host_ip":"127.0.0.1",
+"nb_generator_node_ip":"127.0.0.1",
+"nb_generator_node_ssh_port":"22",
+"nb_generator_node_username":"jenkins",
+"nb_generator_node_password":"jenkins",
+
+"flow_workers":[1],
+"total_flows":[1000, 10000],
+"flow_operations_delay_ms":[10],
+"flow_delete_flag":false,
+"flows_per_request":10
+
+}
