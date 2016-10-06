@@ -1,5 +1,5 @@
 {
-"topology_rest_server_boot":"./bin/deploy",
+"topology_rest_server_boot":"bin/deploy",
 "topology_rest_server_stop":"./bin/cleanup",
 "topology_rest_server_port":3300,
 
@@ -17,7 +17,7 @@
 "multinet_topo_group_delay_ms":[1000],
 
 "venv_path":"/opt/venv_multinet",
-"venv_handler_master":"./bin/venv_handler_master.sh"
+"venv_handler_master":"bin/venv_handler_master.sh",
 
 "multinet_traffic_gen_duration_ms":20000,
 
