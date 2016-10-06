@@ -68,7 +68,7 @@
 "interpacket_delay_ms":5000,
 
 "oftraf_rest_server_port":5555,
-
+"oftraf_venv_path":"/opt/venv_oftraf",
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
 
