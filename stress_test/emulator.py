@@ -223,12 +223,9 @@ class Multinet(SBEmu):
                                                                "config.json")
         self.__multinet_config_file_local_path = os.path.join(self.base_dir,
                                                               "config.json")
-        if 'multinet_venv_path' in test_config:
-            self.venv_path = test_config['multinet_venv_path']
-        else:
-            self.venv_path = ''
-        self.venv_hnd = (self.base_dir +
-                         test_config['multinet_venv_handler_master'])
+
+        self.venv_path = "/opt/venv_multinet"
+        self.venv_hnd = self.base_dir + "bin/venv_handler_master.sh"
 
     def __generate_config(self, cntrl_of_port, cntrl_ip):
         """
