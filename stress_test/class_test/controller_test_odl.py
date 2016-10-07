@@ -34,8 +34,7 @@ with open(test_file, "r") as json_conf_file:
 ctrl_base_dir = str(sys.argv[2])
 
 # create a new Controller class instance, ctrl
-ctrl = stress_test.controller.Controller.new(ctrl_base_dir,
-                                                        test_config)
+ctrl = stress_test.controller.Controller.new(ctrl_base_dir, test_config)
 
 # initialize a connection
 ctrl.init_ssh()
@@ -143,7 +142,7 @@ try:
                   ' are: {0}'.format(links))
         except AttributeError:
             print('[Testing] Error during the query of links in DS')
- 
+
         try:
             flows = ctrl.get_oper_flows()
             print('[Testing] The number of installed flows on datastore are: '
@@ -159,5 +158,3 @@ finally:
     ctrl.check_status()
     if ctrl.need_cleanup:
         ctrl.clean_hnd()
-
-
