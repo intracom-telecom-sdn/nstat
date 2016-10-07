@@ -34,6 +34,14 @@ RUN apt-get install --force-yes -y openjdk-8-jdk
 RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk-amd64/ 1100
 
 # ------------------------------------------------------------------------------
+# OFTRAF
+# ------------------------------------------------------------------------------
+RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/oftraf/virtenv-rqrmnts/deploy/provision.sh
+RUN mv /opt/provision.sh /opt/provision_oftraf.sh
+RUN chmod +x /opt/provision_oftraf.sh
+RUN /bin/bash -c "/opt/provision_oftraf.sh 'http://172.28.40.9:3128/'"
+
+# ------------------------------------------------------------------------------
 # ODL PREBuilt controllers
 # ------------------------------------------------------------------------------
 RUN wget -P /opt/ https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium/distribution-karaf-0.4.0-Beryllium.zip

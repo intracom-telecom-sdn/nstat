@@ -13,7 +13,7 @@ RUN apt-get update
 RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/provision.sh
 RUN mv /opt/provision.sh /opt/provision_nstat.sh
 RUN chmod +x /opt/provision_nstat.sh
-RUN /bin/bash -c "/opt/provision_nstat.sh 'http://172.28.40.9:3128/'"
+RUN /bin/bash -c "/opt/provision_nstat.sh"
 
 # ------------------------------------------------------------------------------
 # MULTINET
@@ -21,7 +21,7 @@ RUN /bin/bash -c "/opt/provision_nstat.sh 'http://172.28.40.9:3128/'"
 RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/multinet/master/deploy/provision.sh
 RUN mv /opt/provision.sh /opt/provision_multinet.sh
 RUN chmod +x /opt/provision_multinet.sh
-RUN /bin/bash -c "/opt/provision_multinet.sh 'http://172.28.40.9:3128/'"
+RUN /bin/bash -c "/opt/provision_multinet.sh"
 
 # ------------------------------------------------------------------------------
 # MTCBENCH
@@ -29,7 +29,7 @@ RUN /bin/bash -c "/opt/provision_multinet.sh 'http://172.28.40.9:3128/'"
 RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/mtcbench/master/deploy/docker/provision.sh
 RUN mv /opt/provision.sh /opt/provision_mtcbench.sh
 RUN chmod +x /opt/provision_mtcbench.sh
-RUN /bin/bash -c "/opt/provision_mtcbench.sh 'http://172.28.40.9:3128/'"
+RUN /bin/bash -c "/opt/provision_mtcbench.sh"
 
 # ------------------------------------------------------------------------------
 # OFTRAF
@@ -37,7 +37,7 @@ RUN /bin/bash -c "/opt/provision_mtcbench.sh 'http://172.28.40.9:3128/'"
 RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/oftraf/virtenv-rqrmnts/deploy/provision.sh
 RUN mv /opt/provision.sh /opt/provision_oftraf.sh
 RUN chmod +x /opt/provision_oftraf.sh
-RUN /bin/bash -c "/opt/provision_oftraf.sh 'http://172.28.40.9:3128/'"
+RUN /bin/bash -c "/opt/provision_oftraf.sh"
 
 # ------------------------------------------------------------------------------
 # ODL PREBuilt controllers
