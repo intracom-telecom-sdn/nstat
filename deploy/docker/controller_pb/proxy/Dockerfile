@@ -16,10 +16,12 @@ RUN echo "NO_PROXY=10.0.1.10,10.0.1.11,10.0.1.12,10.0.1.13,10.0.1.14,10.0.1.15,1
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
 RUN chmod 777 -R /opt
+RUN apt-get install --force-yes -y software-properties-common
 RUN apt-get update
-RUN apt-get install openjdk-7-jdk
+RUN apt-get install --force-yes -y openjdk-7-jdk
 RUN add-apt-repository ppa:openjdk-r/ppa -y
-RUN apt-get install openjdk-8-jdk
+RUN apt-get update
+RUN apt-get install --force-yes -y openjdk-8-jdk
 RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk-amd64/ 1100
 
 # ------------------------------------------------------------------------------
