@@ -13,6 +13,13 @@ RUN echo "HTTP_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
 RUN echo "HTTPS_PROXY=http://172.28.40.9:3128/" | tee -a /etc/environment
 RUN echo "NO_PROXY=10.0.1.10,10.0.1.11,10.0.1.12,10.0.1.13,10.0.1.14,10.0.1.15,10.0.1.16,10.0.1.17,10.0.1.18,10.0.1.19,10.0.1.20,10.0.1.21,10.0.1.22,10.0.1.23,10.0.1.24,10.0.1.25,10.0.1.26,10.0.1.27,10.0.1.28,10.0.1.29,10.0.1.30,127.0.0.1,localhost" | tee -a /etc/environment
 
+RUN apt-get install --force-yes -y openssh-server
+RUN apt-get install --force-yes -y openssh-client
+RUN apt-get install --force-yes -y openssl
+RUN apt-get install --force-yes -y net-tools
+RUN apt-get install --force-yes -y unzip
+RUN apt-get install --force-yes -y bzip2
+
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
 RUN chmod 777 -R /opt

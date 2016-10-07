@@ -2,6 +2,13 @@ FROM ubuntu:14.04
 
 ENV http_proxy=
 
+RUN apt-get install --force-yes -y openssh-server
+RUN apt-get install --force-yes -y openssh-client
+RUN apt-get install --force-yes -y openssl
+RUN apt-get install --force-yes -y net-tools
+RUN apt-get install --force-yes -y unzip
+RUN apt-get install --force-yes -y bzip2
+
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
 RUN chmod 777 -R /opt
