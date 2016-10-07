@@ -52,8 +52,10 @@ multinet_base_dir = str(sys.argv[6])
 ctrl = stress_test.controller.Controller.new(ctrl_base_dir, test_config_ctrl)
 multinet = stress_test.emulator.SBEmu.new(multinet_base_dir,
                                           test_config_multinet)
-
-
+nb_generator = stress_test.nb_generator.NBgen(nb_generator_base_dir,
+                                              test_config_nb_generator,
+                                              ctrl, multinet)
+nb_generator.init_ssh()
 # --------------------------------------------------------------------- -------
 # Controller preparation
 
@@ -132,16 +134,23 @@ for (multinet.topo_size,
      multinet.topo_hosts_per_switch,
      multinet.topo_group_size,
      multinet.topo_group_delay_ms,
-     ctrl.stat_period_ms
+     ctrl.stat_period_ms,
+     nb_generator.flow_workers,
+     nb_generator.total_flows,
+     nb_generator.flow_operations_delay_ms
      ) in itertools.product(test_config_multinet['multinet_topo_size'],
                             test_config_multinet['multinet_topo_type'],
                             test_config_multinet['multinet_topo_hosts_per_switch'],
                             test_config_multinet['multinet_topo_group_size'],
                             test_config_multinet['multinet_topo_group_delay_ms'],
-                            test_config_ctrl['controller_statistics_period_ms']):
+                            test_config_ctrl['controller_statistics_period_ms'],
+                            test_config_nb_generator['flow_workers'],
+                            test_config_nb_generator['total_flows'],
+                            test_config_nb_generator['flow_operations_delay_ms']):
     pass
 
 ctrl.stop()
 ctrl.check_status()
 if ctrl.need_cleanup:
     ctrl.clean_hnd()
+multinet.cleanup()
