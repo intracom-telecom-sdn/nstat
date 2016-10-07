@@ -2,6 +2,8 @@ FROM ubuntu:14.04
 
 ENV http_proxy=
 
+RUN apt-get update
+
 RUN apt-get install --force-yes -y openssh-server
 RUN apt-get install --force-yes -y openssh-client
 RUN apt-get install --force-yes -y openssl
