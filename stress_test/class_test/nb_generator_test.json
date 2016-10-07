@@ -1,5 +1,5 @@
 {
-
+"nb_generator_name":"nb-generator",
 "nb_generator_node_spec":"/nstat/vagrant/node_nb_generator/Vagrantfile",
 "nb_generator_run_handler":"./run_handler.py",
 "nb_generator_host_ip":"127.0.0.1",

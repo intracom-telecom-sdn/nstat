@@ -33,7 +33,7 @@ class NBgen:
         self.name = test_config['nb_generator_name']
         self.base_dir = nb_gen_base_dir
 
-        self.ip = test_config['nb_generator_ode_ip']
+        self.ip = test_config['nb_generator_node_ip']
         self.ssh_port = test_config['nb_generator_node_ssh_port']
         self.ssh_user = test_config['nb_generator_node_username']
         self.ssh_pass = test_config['nb_generator_node_password']

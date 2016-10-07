@@ -114,19 +114,10 @@ if ctrl.persistence_hnd:
     else:
         logging.info('[Testing] Persistence is still enabled')
 
-# start a controller
-ctrl.check_status()
-ctrl.start()
-# -----------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------
 # Multinet preparation
-
-multinet.deploy('192.168.160.201', 6653)
-logging.info('[Testing] Generate multinet config file')
-
-multinet.init_topos()
-multinet.start_topos()
+multinet.init_ssh()
+multinet.build()
 # -----------------------------------------------------------------------------
 
 for (multinet.topo_size,
@@ -149,8 +140,22 @@ for (multinet.topo_size,
                             test_config_nb_generator['flow_operations_delay_ms']):
     pass
 
-ctrl.stop()
-ctrl.check_status()
+    # start a controller
+    ctrl.check_status()
+    ctrl.start()
+    
+    # run Multinet
+    multinet.deploy(ctrl.ip, ctrl.of_port)
+    logging.info('[Testing] Generate multinet config file')
+
+    multinet.init_topos()
+    multinet.start_topos()
+
+    multinet.cleanup()
+
+
+    ctrl.stop()
+    ctrl.check_status()
+ 
 if ctrl.need_cleanup:
     ctrl.clean_hnd()
-multinet.cleanup()
