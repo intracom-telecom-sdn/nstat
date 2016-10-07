@@ -17,7 +17,7 @@ MAX_START_TRIES=10
 IFNAME=$(sudo ip addr show | grep $1"/" | awk '{print $NF}')
 
 #nohup sudo python $SCRIPT_DIR/oftraf.py --rest-host $1 --rest-port $2 --of-port $3 --ifname $IFNAME --server &
-sudo bash $SCRIPT_DIR/venv_handler.sh $4 $SCRIPT_DIR/oftraf.py $1 $2 $3 $IFNAME
+sudo bash $SCRIPT_DIR/venv_handler.sh $SCRIPT_DIR/oftraf.py $1 $2 $3 $IFNAME
 
 if [ $? -ne 0 ]; then
     echo "[start.sh] start of oftraf failed. Exiting ..."
