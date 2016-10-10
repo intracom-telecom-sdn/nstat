@@ -67,6 +67,7 @@
 
 "oftraf_rest_server_port":5555,
 
+
 "java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
 
 "test_repeats":2,
