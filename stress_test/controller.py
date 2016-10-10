@@ -238,7 +238,7 @@ class Controller:
             time.sleep(1)
             gpid = util.process.getpid_listeningonport(self.of_port,
                                                        self._ssh_conn)
-            logging.info('[Controller] Returned pid listening'
+            logging.info('[Controller] Returned pid listening '
                          'on port {0}: {1}'.format(self.of_port, gpid))
 
             if gpid > 0:
@@ -270,7 +270,7 @@ class Controller:
                 return
 
         raise Exception('Controller failed to start. '
-                        'Status check returned 0 after'
+                        'Status check returned 0 after '
                         'trying for {0} seconds.'.
                         format(float(timeout_ms) / 1000))
 

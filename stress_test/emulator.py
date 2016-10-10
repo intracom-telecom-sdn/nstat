@@ -186,7 +186,6 @@ class Multinet(SBEmu):
         if 'topology_get_flows_handler' in test_config:
             self.get_flows_hnd = (self.base_dir +
                                   test_config['topology_get_flows_handler'])
-#            util.file_ops.check_filelist([self.get_flows_hnd])
 
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.

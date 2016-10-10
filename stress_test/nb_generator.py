@@ -143,113 +143,112 @@ class NBgen:
             time.sleep(1)
 
 
-def __poll_flows_ds_confirm(self):
-    """
-    Monitors operational DS until the expected number of flows are found
-    or the deadline is reached.
-    :returns: Returns a float number containing the time in which
-    total flows were discovered otherwise containing -1.0 on failure.
-    :rtype: float
-    """
-    t_start = time.time()
-    t_discovery_start = time.time()
-    previous_discovered_flows = 0
-    while True:
-        if (time.time() - t_discovery_start) > \
-                self.flows_ds_discovery_deadline:
-            logging.info('[NB_generator] Deadline of {0} seconds passed'
-                         .format(self.flows_ds_discovery_deadline))
-            self.confirm_time = -1.0
-            return
-        else:
-            oper_ds_found_flows = self.controller.get_oper_hosts()
-            logging.debug('[NB_generator] Found {0} flows at inventory'.
-                          format(oper_ds_found_flows))
-            if (oper_ds_found_flows - previous_discovered_flows) != 0:
-                t_discovery_start = time.time()
-                previous_discovered_flows = oper_ds_found_flows
-            if oper_ds_found_flows == self.total_flows:
-                time_interval = time.time() - t_start
-                logging.debug('[NB_generator] Flow-Master '
-                              '{0} flows found in {1} seconds'.
-                              format(self.total_flows, time_interval))
-                self.confirm_time = time_interval
+    def __poll_flows_ds_confirm(self):
+        """
+        Monitors operational DS until the expected number of flows are found
+        or the deadline is reached.
+        :returns: Returns a float number containing the time in which
+        total flows were discovered otherwise containing -1.0 on failure.
+        :rtype: float
+        """
+        t_start = time.time()
+        t_discovery_start = time.time()
+        previous_discovered_flows = 0
+        while True:
+            if (time.time() - t_discovery_start) > \
+                    self.flows_ds_discovery_deadline:
+                logging.info('[NB_generator] Deadline of {0} seconds passed'
+                             .format(self.flows_ds_discovery_deadline))
+                self.confirm_time = -1.0
                 return
-        time.sleep(1)
+            else:
+                oper_ds_found_flows = self.controller.get_oper_hosts()
+                logging.debug('[NB_generator] Found {0} flows at inventory'.
+                              format(oper_ds_found_flows))
+                if (oper_ds_found_flows - previous_discovered_flows) != 0:
+                    t_discovery_start = time.time()
+                    previous_discovered_flows = oper_ds_found_flows
+                if oper_ds_found_flows == self.total_flows:
+                    time_interval = time.time() - t_start
+                    logging.debug('[NB_generator] Flow-Master '
+                                  '{0} flows found in {1} seconds'.
+                                  format(self.total_flows, time_interval))
+                    self.confirm_time = time_interval
+                    return
+            time.sleep(1)
 
 
-def __poll_flows_switches(self, t_start):
-    """
-    Monitors installed flows into switches of Multinet from the first REST
-    request, until the expected number of flows are found or the deadline
-    is reached.
-    :param t_start: timestamp for beginning of discovery
-    :returns: Returns a float number containing the time in which
-    total flows were discovered in Multinet switches. Otherwise containing
-    -1.0 on failure.
-    :rtype: float
-    :type t_start: float
-    """
-    t_discovery_start = time.time()
-    previous_discovered_flows = 0
-    while True:
-        if (time.time() - t_discovery_start) > \
-                self.flows_ds_discovery_deadline:
-            logging.info('[NB_generator] Deadline of {0} seconds passed'
-                         .format(self.flows_ds_discovery_deadline))
-            self.discover_flows_on_switches_time = -1.0
-            return
-        else:
-            discovered_flows = self.sbemu.get_flows()
-            logging.debug('[NB_generator] Found {0} flows at topology switches'
-                          .format(discovered_flows))
-            if (discovered_flows - previous_discovered_flows) != 0:
-                t_discovery_start = time.time()
-                previous_discovered_flows = discovered_flows
-            if discovered_flows == self.total_flows:
-                time_interval = time.time() - t_start
-                logging.debug('[NB_generator] expected flows = {0} \n '
-                              'discovered flows = {1}'.
-                              format(self.total_flows, discovered_flows))
-                self.discover_flows_on_switches_time = time_interval
+    def __poll_flows_switches(self, t_start):
+        """
+        Monitors installed flows into switches of Multinet from the first REST
+        request, until the expected number of flows are found or the deadline
+        is reached.
+        :param t_start: timestamp for beginning of discovery
+        :returns: Returns a float number containing the time in which
+        total flows were discovered in Multinet switches. Otherwise containing
+        -1.0 on failure.
+        :rtype: float
+        :type t_start: float
+        """
+        t_discovery_start = time.time()
+        previous_discovered_flows = 0
+        while True:
+            if (time.time() - t_discovery_start) > \
+                    self.flows_ds_discovery_deadline:
+                logging.info('[NB_generator] Deadline of {0} seconds passed'
+                             .format(self.flows_ds_discovery_deadline))
+                self.discover_flows_on_switches_time = -1.0
                 return
-        time.sleep(1)
-    return
+            else:
+                discovered_flows = self.sbemu.get_flows()
+                logging.debug('[NB_generator] Found {0} flows at topology switches'
+                              .format(discovered_flows))
+                if (discovered_flows - previous_discovered_flows) != 0:
+                    t_discovery_start = time.time()
+                    previous_discovered_flows = discovered_flows
+                if discovered_flows == self.total_flows:
+                    time_interval = time.time() - t_start
+                    logging.debug('[NB_generator] expected flows = {0} \n '
+                                  'discovered flows = {1}'.
+                                  format(self.total_flows, discovered_flows))
+                    self.discover_flows_on_switches_time = time_interval
+                    return
+            time.sleep(1)
+        return
 
 
-def monitor_threads_run(self, t_start):
-    """
-    Monitors operational flows in switches of Multinet until the expected
-    number of flows are found or the deadline is reached.
-    :param t_start: timestamp for begin of discovery
-    :returns: Returns a float number containing the time in which
-    total flows were discovered otherwise containing -1.0 on failure.
-    :rtype: float
-    :type t_start:
-    """
+    def monitor_threads_run(self, t_start):
+        """
+        Monitors operational flows in switches of Multinet until the expected
+        number of flows are found or the deadline is reached.
+        :param t_start: timestamp for begin of discovery
+        :returns: Returns a float number containing the time in which
+        total flows were discovered otherwise containing -1.0 on failure.
+        :rtype: float
+        :type t_start:
+        """
 
-    logging.info('[NB_generator] creating result queues for ...')
-    logging.info('[NB_generator]creating thread for '
-                 'end_to_end_installation_time measurement')
-    monitor_thread_ds = multiprocessing.Process(target=self.__poll_flows_ds,
-                                                args=(t_start))
-    monitor_thread_sw = \
-        multiprocessing.Process(target=self.__poll_flows_switches,
-                                args=(t_start))
-    monitor_thread_ds_confirm = \
-        multiprocessing.Process(target=self.__poll_flows_ds_confirm)
-    monitor_thread_ds.start()
-    monitor_thread_sw.start()
-    monitor_thread_ds_confirm.start()
+        logging.info('[NB_generator]creating thread for '
+                     'end_to_end_installation_time measurement')
+        monitor_thread_ds = multiprocessing.Process(target=self.__poll_flows_ds,
+                                                    args=(t_start,))
+        monitor_thread_sw = \
+            multiprocessing.Process(target=self.__poll_flows_switches,
+                                    args=(t_start,))
+        monitor_thread_ds_confirm = \
+            multiprocessing.Process(target=self.__poll_flows_ds_confirm)
+        monitor_thread_ds.start()
+        monitor_thread_sw.start()
+        monitor_thread_ds_confirm.start()
 
-    monitor_thread_ds.join()
-    monitor_thread_sw.join()
-    monitor_thread_ds_confirm.join()
+        monitor_thread_ds.join()
+        monitor_thread_sw.join()
+        monitor_thread_ds_confirm.join()
 
-    time_start = time.time()
-    discovered_flows = self.sbemu.get_flows()
-    flows_measurement_latency_interval = time.time() - time_start
-    logging.info('[NB_generator] Flows measurement latency'
-                 'interval:{0} [sec] | Discovered flows:{1}'
-                 .format(flows_measurement_latency_interval, discovered_flows))
+        time_start = time.time()
+        discovered_flows = self.sbemu.get_flows()
+        flows_measurement_latency_interval = time.time() - time_start
+        logging.info('[NB_generator] Flows measurement latency'
+                     'interval:{0} [sec] | Discovered flows: {1}'
+                     .format(flows_measurement_latency_interval, discovered_flows))
 
