@@ -158,5 +158,3 @@ finally:
     ctrl.check_status()
     if ctrl.need_cleanup:
         ctrl.clean_hnd()
-
-

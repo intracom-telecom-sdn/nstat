@@ -229,7 +229,6 @@ def get_node_names(ctrl_ip, ctrl_port, auth_token):
     url_request = ('http://{0}:{1}/restconf/operational/network-topology:'
                    'network-topology/network-topology:topology/flow:1'.
                    format(ctrl_ip, ctrl_port))
-    print(url_request)
     node_names = []
     session = requests.Session()
     session.trust_env = False

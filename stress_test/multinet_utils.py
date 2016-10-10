@@ -52,8 +52,7 @@ def parse_multinet_output(multinet_handler_name, multinet_output):
     return multinet_result
 
 
-def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
-                            is_privileged=False):
+def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir):
     """
     General wrapper for running multinet handlers and deploy/cleanup multinet
     scripts
@@ -61,21 +60,21 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir,
     :param exec_path: the full path of handler or script to be executed
     :param logging_prefix: the logging message prefix
     :param multinet_base_dir: the full path to the multinet root folder
-    :param is_privileged: flag to indicate if the executed script or handler
-    will be executed in privileged mode
     :type exec_path: str
     :type logging_prefix: str
-    :type is_privileged: bool
     :type multinet_base_dir: str
     """
 
-    run_cmd_prefix = ''
-    if is_privileged:
-        run_cmd_prefix = 'sudo'
-    multinet_run_cmd = ('{0} PYTHONPATH=\"{1}\" python {2} --json-config {3}'.
-                            format(run_cmd_prefix, multinet_base_dir,
-                                   exec_path,
-                                   multinet_base_dir + 'config/config.json'))
+    multinet_config_path = '{0}/config/config.json'.format(multinet_base_dir)
+    with open(multinet_config_path, 'r') as config_json_file:
+        config_json = json.load(config_json_file)
+    venv_path = '\" \"'
+    if 'venv_path' in config_json:
+        venv_path = config_json["venv_path"]
+
+    multinet_run_cmd = ('{0}/bin/venv_handler_master.sh {1} {2} {3} {4}'.
+                        format(multinet_base_dir, venv_path, multinet_base_dir,
+                               exec_path, multinet_config_path))
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
     return subprocess.check_output(multinet_run_cmd, stderr=subprocess.STDOUT,
@@ -131,8 +130,7 @@ def check_topo_booted(expected_switches, group_size, group_delay_ms,
         time.sleep(int(expected_switches/group_size) * mininet_group_delay)
         try:
             result_get_sw = multinet_command_runner(get_switches_handler,
-                '[get_switches_handler]', multinet_base_dir,
-                is_privileged=False)
+                '[get_switches_handler]', multinet_base_dir)
             # get Multinet switches number
             discovered_switches = \
                 parse_multinet_output('get_switches_topology_handler',
@@ -238,7 +236,7 @@ def generate_multinet_config(controller_sb_interface, multinet_rest_server,
 
 def get_topology_flows(multinet_base_dir, get_flows_handler):
     result_get_flows = multinet_command_runner(get_flows_handler,
-        '[get_flows_handler]', multinet_base_dir, is_privileged=False)
+        '[get_flows_handler]', multinet_base_dir)
 
     # Get total flows from multinet topology switches
     discovered_flows = parse_multinet_output('get_flows_topology_handler', result_get_flows)

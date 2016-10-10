@@ -48,7 +48,6 @@ def northbound_generator():
                      sys.argv[5], sys.argv[7], sys.argv[8],
                      sys.argv[9], sys.argv[10])
 
-    print(cmd)
     p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
     cmd_output = p.stdout.read().decode(sys.stdout.encoding)
