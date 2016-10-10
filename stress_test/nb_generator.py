@@ -28,7 +28,7 @@ class NBgen:
         :type controller: object
         :type sbemu: object
         """
-        self.controller = controller
+        self.controller = controller 
         self.sbemu = sbemu
         self.name = test_config['nb_generator_name']
         self.base_dir = nb_gen_base_dir
@@ -232,23 +232,23 @@ class NBgen:
                      'end_to_end_installation_time measurement')
         monitor_thread_ds = multiprocessing.Process(target=self.__poll_flows_ds,
                                                     args=(t_start,))
-        monitor_thread_sw = \
-            multiprocessing.Process(target=self.__poll_flows_switches,
-                                    args=(t_start,))
-        monitor_thread_ds_confirm = \
-            multiprocessing.Process(target=self.__poll_flows_ds_confirm)
+#        monitor_thread_sw = \
+#            multiprocessing.Process(target=self.__poll_flows_switches,
+#                                    args=(t_start,))
+#        monitor_thread_ds_confirm = \
+#            multiprocessing.Process(target=self.__poll_flows_ds_confirm)
         monitor_thread_ds.start()
-        monitor_thread_sw.start()
-        monitor_thread_ds_confirm.start()
+#        monitor_thread_sw.start()
+#        monitor_thread_ds_confirm.start()
 
         monitor_thread_ds.join()
-        monitor_thread_sw.join()
-        monitor_thread_ds_confirm.join()
+#        monitor_thread_sw.join()
+#        monitor_thread_ds_confirm.join()
 
-        time_start = time.time()
-        discovered_flows = self.sbemu.get_flows()
-        flows_measurement_latency_interval = time.time() - time_start
-        logging.info('[NB_generator] Flows measurement latency'
-                     'interval:{0} [sec] | Discovered flows: {1}'
-                     .format(flows_measurement_latency_interval, discovered_flows))
+#        time_start = time.time()
+#        discovered_flows = self.sbemu.get_flows()
+#        flows_measurement_latency_interval = time.time() - time_start
+#        logging.info('[NB_generator] Flows measurement latency'
+#                     'interval:{0} [sec] | Discovered flows: {1}'
+#                     .format(flows_measurement_latency_interval, discovered_flows))
 

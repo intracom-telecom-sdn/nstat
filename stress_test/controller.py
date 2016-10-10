@@ -370,6 +370,7 @@ class ODL(Controller):
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')
+
         ret = util.netutil.ssh_run_command(self._ssh_conn,
                                            ' '.join([self.oper_hosts,
                                                      str(self.ip),

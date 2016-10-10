@@ -38,7 +38,6 @@ sb_emu = stress_test.emulator.SBEmu.new(emulator_base_dir, test_config)
 # initialize a connection
 sb_emu.init_ssh()
 
-print(sb_emu._ssh_conn)
 
 #Build a Multinet Emulator
 sb_emu.build()

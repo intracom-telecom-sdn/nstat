@@ -154,7 +154,7 @@ except:
     logging.info('[Testing] Error, check the logs')
 
 finally:
-    ctrl.stop()
+#    ctrl.stop()
     ctrl.check_status()
-    if ctrl.need_cleanup:
-        ctrl.clean_hnd()
+#    if ctrl.need_cleanup:
+#        ctrl.clean_hnd()

@@ -239,7 +239,7 @@ class Multinet(SBEmu):
         """
 
         config_data = {}
-        config_data['venv_path'] = self.venv_path
+#        config_data['venv_path'] = self.venv_path
         config_data['master_ip'] = self.ip
         config_data['master_port'] = self.master_rest_port
         config_data['worker_ip_list'] = self.workers_ips
@@ -315,7 +315,6 @@ class Multinet(SBEmu):
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
                                                    ' '.join([self.venv_hnd,
-                                                             self.venv_path,
                                                              self.base_dir,
                                                              self.deploy_hnd,
                                                              self.__multinet_config_file_remote_path]),
@@ -341,7 +340,6 @@ class Multinet(SBEmu):
         exit_status, output = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.get_switches_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -367,7 +365,6 @@ class Multinet(SBEmu):
         exit_status, output = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.get_flows_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -393,7 +390,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.init_topos_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -420,7 +416,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.start_topos_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -445,7 +440,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.stop_topos_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -470,7 +464,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.cleanup_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -495,7 +488,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.traffic_gen_hnd,
                                                    self.__multinet_config_file_remote_path]),
