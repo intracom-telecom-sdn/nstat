@@ -6,11 +6,10 @@
 
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
+import gevent
 import logging
+# import multiprocessing
 import time
-# import stress_test.controller
-# import stress_test.emulator
-import multiprocessing
 import util.netutil
 
 
@@ -28,7 +27,7 @@ class NBgen:
         :type controller: object
         :type sbemu: object
         """
-        self.controller = controller 
+        self.controller = controller
         self.sbemu = sbemu
         self.name = test_config['nb_generator_name']
         self.base_dir = nb_gen_base_dir
@@ -140,8 +139,8 @@ class NBgen:
                                   format(self.total_flows, time_interval))
                     self.e2e_installation_time = time_interval
                     return
-            time.sleep(1)
-
+            gevent.sleep(1)
+#            time.sleep(1)
 
     def __poll_flows_ds_confirm(self):
         """
@@ -175,8 +174,8 @@ class NBgen:
                                   format(self.total_flows, time_interval))
                     self.confirm_time = time_interval
                     return
-            time.sleep(1)
-
+            gevent.sleep(1)
+#            time.sleep(1)
 
     def __poll_flows_switches(self, t_start):
         """
@@ -201,7 +200,8 @@ class NBgen:
                 return
             else:
                 discovered_flows = self.sbemu.get_flows()
-                logging.debug('[NB_generator] Found {0} flows at topology switches'
+                logging.debug('[NB_generator] Found {0} flows at '
+                              'topology switches'
                               .format(discovered_flows))
                 if (discovered_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
@@ -213,9 +213,9 @@ class NBgen:
                                   format(self.total_flows, discovered_flows))
                     self.discover_flows_on_switches_time = time_interval
                     return
-            time.sleep(1)
+            gevent.sleep(1)
+#            time.sleep(1)
         return
-
 
     def monitor_threads_run(self, t_start):
         """
@@ -230,25 +230,32 @@ class NBgen:
 
         logging.info('[NB_generator]creating thread for '
                      'end_to_end_installation_time measurement')
-        monitor_thread_ds = multiprocessing.Process(target=self.__poll_flows_ds,
-                                                    args=(t_start,))
+#        monitor_thread_ds = \
+#            multiprocessing.Process(target=self.__poll_flows_ds,
+#                                    args=(t_start,))
 #        monitor_thread_sw = \
 #            multiprocessing.Process(target=self.__poll_flows_switches,
 #                                    args=(t_start,))
 #        monitor_thread_ds_confirm = \
 #            multiprocessing.Process(target=self.__poll_flows_ds_confirm)
-        monitor_thread_ds.start()
+#        monitor_thread_ds.start()
 #        monitor_thread_sw.start()
 #        monitor_thread_ds_confirm.start()
-
-        monitor_thread_ds.join()
+#
+#        monitor_thread_ds.join()
 #        monitor_thread_sw.join()
 #        monitor_thread_ds_confirm.join()
 
-#        time_start = time.time()
-#        discovered_flows = self.sbemu.get_flows()
-#        flows_measurement_latency_interval = time.time() - time_start
-#        logging.info('[NB_generator] Flows measurement latency'
-#                     'interval:{0} [sec] | Discovered flows: {1}'
-#                     .format(flows_measurement_latency_interval, discovered_flows))
+        monitor_ds = gevent.spawn(self.__poll_flows_ds)
+        monitor_sw = gevent.spawn(self.__poll_flows_switches)
+        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
 
+        gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
+
+        time_start = time.time()
+        discovered_flows = self.sbemu.get_flows()
+        flows_measurement_latency_interval = time.time() - time_start
+        logging.info('[NB_generator] Flows measurement latency'
+                     'interval:{0} [sec] | Discovered flows: {1}'
+                     .format(flows_measurement_latency_interval,
+                             discovered_flows))
