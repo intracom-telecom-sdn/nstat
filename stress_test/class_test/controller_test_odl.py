@@ -150,11 +150,12 @@ try:
         except AttributeError:
             print('[Testing] Error during the query of flows in DS')
 
+        ctrl.stop()
+
 except:
     logging.info('[Testing] Error, check the logs')
 
 finally:
-#    ctrl.stop()
     ctrl.check_status()
-#    if ctrl.need_cleanup:
-#        ctrl.clean_hnd()
+    if ctrl.need_cleanup:
+        ctrl.clean_hnd()
