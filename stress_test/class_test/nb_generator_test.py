@@ -155,7 +155,7 @@ for (multinet.topo_size,
     # run NB-generator
     first_REST_request = time.time()
     nb_generator.run()
-#    nb_generator.monitor_threads_run(first_REST_request)
+    nb_generator.monitor_threads_run(first_REST_request)
     print('End to End installation time is: {0}'.format(nb_generator.e2e_installation_time))
     print('Confirmation time is: {0}'.format(nb_generator.confirm_time))
     print('Time to discover flows on switches is: {0}'.format(nb_generator.discover_flows_on_switches_time))
