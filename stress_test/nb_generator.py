@@ -256,8 +256,9 @@ class NBgen:
 #        monitor_thread_sw.join()
 #        monitor_thread_ds_confirm.join()
 
-        monitor_ds = gevent.spawn(self.__poll_flows_ds)
-        monitor_sw = gevent.spawn(self.__poll_flows_switches)
+        time_start = time.time()
+        monitor_ds = gevent.spawn(self.__poll_flows_ds(time_start))
+        monitor_sw = gevent.spawn(self.__poll_flows_switches(time_start))
         monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
 
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
@@ -268,4 +269,4 @@ class NBgen:
         logging.info('[NB_generator] Flows measurement latency '
                      'interval: {0} sec. | Discovered flows: {1}'
                      .format(flows_measurement_latency_interval,
-                             discovered_flows))
+                             discovered_flows))

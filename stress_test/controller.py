@@ -378,7 +378,7 @@ class ODL(Controller):
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
                                            '[controller.operational_hosts_handler]')[1]
-        return ret
+        return int(ret)
 
     def get_oper_switches(self):
         """Wrapper to the controller oper_switches handler
