@@ -129,6 +129,7 @@ class NBgen:
                 logging.info('[NB_generator] End to End installation time '
                              'is: {0}'
                              .format(self.e2e_installation_time))
+                return
             else:
                 oper_ds_found_flows = self.controller.get_oper_hosts()
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
@@ -140,8 +141,11 @@ class NBgen:
                                   '{0} flows found in {1} seconds'.
                                   format(self.total_flows, time_interval))
                     self.e2e_installation_time = time_interval
+                    logging.info('[NB_generator] End to End installation time '
+                                 'is: {0}'
+                                 .format(self.e2e_installation_time))
+                    return
             gevent.sleep(1)
-            return
 #            time.sleep(1)
 
     def __poll_flows_ds_confirm(self):
@@ -163,6 +167,7 @@ class NBgen:
                 self.confirm_time = -1.0
                 logging.info('[NB_generator] Confirmation time is: {0}'
                              .format(self.confirm_time))
+                return
             else:
                 oper_ds_found_flows = self.controller.get_oper_hosts()
                 logging.debug('[NB_generator] Found {0} flows at inventory'.
@@ -178,9 +183,8 @@ class NBgen:
                     self.confirm_time = time_interval
                     logging.info('[NB_generator] Confirmation time is: {0}'
                                  .format(self.confirm_time))
-
+                    return
             gevent.sleep(1)
-            return
 #            time.sleep(1)
 
     def __poll_flows_switches(self, t_start):
@@ -206,6 +210,7 @@ class NBgen:
                 logging.info('[NB_generator] Time to discover flows on '
                              'switches is: {0}'
                              .format(self.discover_flows_on_switches_time))
+                return
             else:
                 discovered_flows = self.sbemu.get_flows()
                 logging.debug('[NB_generator] Found {0} flows at '
@@ -220,12 +225,12 @@ class NBgen:
                                   'discovered flows = {1}'.
                                   format(self.total_flows, discovered_flows))
                     self.discover_flows_on_switches_time = time_interval
-                logging.info('[NB_generator] Time to discover flows on '
-                             'switches is: {0}'
-                             .format(self.discover_flows_on_switches_time))
+                    logging.info('[NB_generator] Time to discover flows on '
+                                 'switches is: {0}'
+                                 .format(self.discover_flows_on_switches_time))
+                    return
             gevent.sleep(1)
-#            time.sleep(1)
-        return
+
 
     def monitor_threads_run(self, t_start):
         """
