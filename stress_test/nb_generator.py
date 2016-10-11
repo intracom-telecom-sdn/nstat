@@ -7,15 +7,11 @@
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
 import gevent
-#from gevent import monkey
+from gevent import monkey
 import logging
-# import multiprocessing
 import time
 import util.netutil
 
-
-# Monkey patch runtime
-#monkey.patch_all()
 
 class NBgen:
 
@@ -166,7 +162,7 @@ class NBgen:
         while True:
             if (time.time() - t_discovery_start) > \
                     self.flows_ds_discovery_deadline:
-                logging.info('[NB_generator] Deadline of {0} seconds passed'
+                logging.info('[NB_generator] [Poll_flows_confirm thread] Deadline of {0} seconds passed'
                              .format(self.flows_ds_discovery_deadline))
                 self.confirm_time = -1.0
                 logging.info('[NB_generator] [Poll_flows_confirm thread] Confirmation '
@@ -245,7 +241,6 @@ class NBgen:
         :rtype: float
         :type t_start:
         """
-
         logging.info('[NB_generator] Creating thread for '
                      'end_to_end_installation_time measurement')
 #        monitor_thread_ds = \
@@ -264,7 +259,8 @@ class NBgen:
 #        monitor_thread_sw.join()
 #        monitor_thread_ds_confirm.join()
 
-        time_start = time.time()
+        # Monkey patch runtime
+        monkey.patch_all()
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
         monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
