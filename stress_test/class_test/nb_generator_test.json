@@ -9,9 +9,9 @@
 "nb_generator_node_password":"jenkins",
 
 "flow_workers":[1],
-"total_flows":[1000, 10000],
+"total_flows":[10, 100],
 "flow_operations_delay_ms":[10],
 "flow_delete_flag":false,
-"flows_per_request":10
+"flows_per_request":2
 
 }
