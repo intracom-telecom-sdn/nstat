@@ -36,7 +36,7 @@ RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk
 # ------------------------------------------------------------------------------
 # OFTRAF
 # ------------------------------------------------------------------------------
-RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/oftraf/virtenv-rqrmnts/deploy/provision.sh
+RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/oftraf/master/deploy/provision.sh
 RUN mv /opt/provision.sh /opt/provision_oftraf.sh
 RUN chmod +x /opt/provision_oftraf.sh
 RUN /bin/bash -c "/opt/provision_oftraf.sh 'http://172.28.40.9:3128/'"
