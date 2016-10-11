@@ -7,11 +7,15 @@
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
 import gevent
+#from gevent import monkey
 import logging
 # import multiprocessing
 import time
 import util.netutil
 
+
+# Monkey patch runtime
+#monkey.patch_all()
 
 class NBgen:
 
@@ -261,9 +265,9 @@ class NBgen:
 #        monitor_thread_ds_confirm.join()
 
         time_start = time.time()
-        monitor_ds = gevent.spawn(self.__poll_flows_ds(t_start))
-        monitor_sw = gevent.spawn(self.__poll_flows_switches(t_start))
-        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm())
+        monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
+        monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
+        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
 
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
