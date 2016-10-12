@@ -7,8 +7,6 @@
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
 import gevent
-#from gevent import monkey; gevent.monkey.patch_all()
-
 import logging
 import time
 import util.netutil
@@ -132,8 +130,10 @@ class NBgen:
                              'installation time monitor FAILED')
                 return
             else:
-                oper_ds_found_flows = self.controller.get_oper_hosts()
-#                oper_ds_found_flows = 5
+                new_ssh = self.controller.init_ssh()    
+                oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
+                logging.debug('[NB_generator] [Poll_flows_ thread] Found {0} flows at inventory'.
+                              format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = oper_ds_found_flows
@@ -172,8 +172,8 @@ class NBgen:
                              'time monitoring FAILED')
                 return
             else:
-                oper_ds_found_flows = self.controller.get_oper_hosts()
-#                oper_ds_found_flows = 5
+                new_ssh = self.controller.init_ssh()
+                oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
                 logging.debug('[NB_generator] [Poll_flows_confirm thread] Found {0} flows at inventory'.
                               format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
@@ -190,7 +190,6 @@ class NBgen:
                     return
             print('sleep_confirm')
             gevent.sleep(1)
-#            time.sleep(1)
 
     def __poll_flows_switches(self, t_start):
         """
@@ -216,8 +215,8 @@ class NBgen:
                              'switches FAILED')
                 return
             else:
-                discovered_flows = self.sbemu.get_flows()
-#                discovered_flows = 122
+                new_ssh = self.sbemu.init_ssh()
+                discovered_flows = self.sbemu.get_flows(new_ssh)
                 logging.debug('[NB_generator] [Poll_flows_switches thread] Found {0} flows at '
                               'topology switches'
                               .format(discovered_flows))
@@ -268,13 +267,13 @@ class NBgen:
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
         monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
-
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
         time_start = time.time()
         discovered_flows = self.sbemu.get_flows()
-        flows_measurement_latency_interval = time.time() - time_start
+        flow_measurement_latency_interval = time.time() - time_start
         logging.info('[NB_generator] Flows measurement latency '
                      'interval: {0} sec. | Discovered flows: {1}'
                      .format(flow_measurement_latency_interval,
                              discovered_flows))
+

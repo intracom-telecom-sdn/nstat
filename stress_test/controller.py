@@ -381,6 +381,7 @@ class ODL(Controller):
             used_ssh_conn = new_ssh_conn
         else:
             used_ssh_conn = self._ssh_conn
+
         ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_hosts,
                                                      str(self.ip),
@@ -441,6 +442,7 @@ class ODL(Controller):
             used_ssh_conn = new_ssh_conn
         else:
             used_ssh_conn = self._ssh_conn
+
         ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_flows,
                                                     str(self.ip),

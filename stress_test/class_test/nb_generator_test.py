@@ -150,7 +150,7 @@ for (multinet.topo_size,
 
     multinet.init_topos()
     multinet.start_topos()
-
+    time.sleep(10)
     # run NB-generator
     first_REST_request = time.time()
     nb_generator.run()
