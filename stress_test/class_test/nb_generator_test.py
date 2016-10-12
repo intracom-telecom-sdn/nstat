@@ -58,7 +58,6 @@ nb_generator = stress_test.nb_generator.NBgen(nb_generator_base_dir,
 nb_generator.init_ssh()
 # --------------------------------------------------------------------- -------
 # Controller preparation
-
 # initialize a connection
 ctrl.init_ssh()
 
@@ -155,13 +154,9 @@ for (multinet.topo_size,
     first_REST_request = time.time()
     nb_generator.run()
     nb_generator.monitor_threads_run(first_REST_request)
-#    print('End to End installation time is: {0}'.format(nb_generator.e2e_installation_time))
-#    print('Confirmation time is: {0}'.format(nb_generator.confirm_time))
-#    print('Time to discover flows on switches is: {0}'.format(nb_generator.discover_flows_on_switches_time))
+
     # cleanup activities
     multinet.cleanup()
-
-
     ctrl.stop()
     ctrl.check_status()
 

@@ -112,9 +112,10 @@ try:
         'monitor-interval>'
 
         cmd = ('grep {0} {1}'.format(pattern, path_file))
-        exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
-                                                           cmd,
-                                                           'Check_stats_period')
+        exit_status, output = \
+            util.netutil.ssh_run_command(ctrl._ssh_conn,
+                                         cmd,
+                                         'Check_stats_period')
         if (output is not None):
             logging.info('[Testing] Interval statistics have been '
                          'updated successfully')

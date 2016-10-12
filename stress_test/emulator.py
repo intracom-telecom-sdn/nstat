@@ -66,11 +66,12 @@ class SBEmu:
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
         if self._ssh_conn is None:
-            self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                                 int(self.ssh_port),
-                                                                 self.ssh_user,
-                                                                 self.ssh_pass,
-                                                                 10)
+            self._ssh_conn = \
+                util.netutil.ssh_connect_or_return2(self.ip,
+                                                    int(self.ssh_port),
+                                                    self.ssh_user,
+                                                    self.ssh_pass,
+                                                    10)
         else:
             # Return a new client ssh object for the emulator node
             return util.netutil.ssh_connect_or_return2(self.ip,
@@ -147,22 +148,22 @@ class MTCBench(SBEmu):
         logging.info('[MTCBench] Starting')
         self.status = 'STARTING'
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.run_hnd,
-                                                             ctrl_ip,
-                                                             str(ctrl_sb_port),
-                                                             str(self.threads),
-                                                             str(self.switches_per_thread),
-                                                             str(self.threads * self.switches_per_thread),
-                                                             str(self.thread_creation_delay_ms),
-                                                             str(self.delay_before_traffic_ms),
-                                                             str(self.ms_per_test),
-                                                             str(self.internal_repeats),
-                                                             str(self.simulated_hosts),
-                                                             str(self.warmup),
-                                                             self.mode]),
-                                                   '[MTCBench.'
-                                                   'run_handler]')[0]
+        exit_status = \
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([self.run_hnd,
+                                                   ctrl_ip,
+                                                   str(ctrl_sb_port),
+                                                   str(self.threads),
+                                                   str(self.switches_per_thread),
+                                                   str(self.threads * self.switches_per_thread),
+                                                   str(self.thread_creation_delay_ms),
+                                                   str(self.delay_before_traffic_ms),
+                                                   str(self.ms_per_test),
+                                                   str(self.internal_repeats),
+                                                   str(self.simulated_hosts),
+                                                   str(self.warmup),
+                                                   self.mode]),
+                                         '[MTCBench.run_handler]')[0]
         if exit_status == 0:
             self.status = 'STARTED'
             logging.info("[MTCBench] Successful started")
@@ -187,8 +188,8 @@ class Multinet(SBEmu):
                                  test_config['topology_get_switches_handler'])
 
         if 'topology_traffic_gen_handler' in test_config:
-            self.traffic_gen_hnd = (self.base_dir +
-                                    test_config['topology_traffic_gen_handler'])
+            self.traffic_gen_hnd = \
+                self.base_dir + test_config['topology_traffic_gen_handler']
 
         if 'topology_get_flows_handler' in test_config:
             self.get_flows_hnd = (self.base_dir +
@@ -212,7 +213,8 @@ class Multinet(SBEmu):
                                test_config['topology_stop_switches_handler'])
 
         if 'multinet_traffic_gen_duration_ms' in test_config:
-            self.traffic_gen_duration_ms = test_config['multinet_traffic_gen_duration_ms']
+            self.traffic_gen_duration_ms = \
+                test_config['multinet_traffic_gen_duration_ms']
         else:
             self.traffic_gen_duration_ms = 0
         if 'interpacket_delay_ms' in test_config:
@@ -298,8 +300,13 @@ class Multinet(SBEmu):
             raise Exception('Failed to get results from {0} multinet handler.'.
                             format(multinet_handler_name))
         else:
-            json_result = regex_result.group(0).replace('INFO:root:[{0}][response data] '.format(multinet_handler_name), '')
-        multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
+            json_result = \
+                regex_result.group(0).replace('INFO:root:[{0}]'
+                                              '[response data] '
+                                              .format(multinet_handler_name),
+                                              '')
+        multinet_result = \
+            sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
         return multinet_result
 
     def deploy(self, cntrl_ip, cntrl_of_port):
@@ -309,6 +316,7 @@ class Multinet(SBEmu):
         self.status = 'DEPLOYING'
 
         self.__generate_config(cntrl_of_port, cntrl_ip)
+
         util.netutil.ssh_copy_file_to_target(self.ip,
                                              self.ssh_port,
                                              self.ssh_user,
@@ -320,13 +328,13 @@ class Multinet(SBEmu):
                                    self.ssh_pass, [self.deploy_hnd]):
             raise Exception('[Multinet] Deploy handler does not exist')
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.venv_hnd,
-                                                             self.base_dir,
-                                                             self.deploy_hnd,
-                                                             self.__multinet_config_file_remote_path]),
-                                                   '[Multinet.'
-                                                   'deploy_handler]')[0]
+        exit_status = \
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([self.venv_hnd,
+                                                   self.base_dir,
+                                                   self.deploy_hnd,
+                                                   self.__multinet_config_file_remote_path]),
+                                         '[Multinet.deploy_handler]')[0]
         if exit_status == 0:
             self.status = 'DEPLOYED'
             logging.info("[Multinet] Successful deployed")

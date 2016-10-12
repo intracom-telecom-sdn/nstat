@@ -103,7 +103,6 @@ class NBgen:
         else:
             self.status = 'FAILED'
             raise Exception('[NB_generator] Failure during running')
-
         return output
 
     def __poll_flows_ds(self, t_start):
@@ -130,26 +129,25 @@ class NBgen:
                              'installation time monitor FAILED')
                 return
             else:
-                new_ssh = self.controller.init_ssh()    
+                new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows_ thread] Found {0} flows at inventory'.
+                logging.debug('[NB_generator] [Poll_flows_ thread] Found {0}'
+                              ' flows at inventory'.
                               format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = oper_ds_found_flows
                 if oper_ds_found_flows == self.total_flows:
                     time_interval = time.time() - t_start
-                    logging.debug('[NB_generator] [Poll_flows thread] Flow-Master '
-                                  '{0} flows found in {1} seconds'.
-                                  format(self.total_flows, time_interval))
+                    logging.debug('[NB_generator] [Poll_flows thread] '
+                                  'Flow-Master {0} flows found in {1} seconds'
+                                  .format(self.total_flows, time_interval))
                     self.e2e_installation_time = time_interval
-                    logging.info('[NB_generator] [Poll_flows thread] End to End installation time '
-                                 'is: {0}'
+                    logging.info('[NB_generator] [Poll_flows thread] '
+                                 'End to End installation time is: {0}'
                                  .format(self.e2e_installation_time))
                     return
-            print('sleep_e2e')
             gevent.sleep(1)
-#            time.sleep(1)
 
     def __poll_flows_ds_confirm(self):
         """
@@ -165,30 +163,32 @@ class NBgen:
         while True:
             if (time.time() - t_discovery_start) > \
                     self.flows_ds_discovery_deadline:
-                logging.info('[NB_generator] [Poll_flows_confirm thread] Deadline of {0} seconds passed'
+                logging.info('[NB_generator] [Poll_flows_confirm thread] '
+                             ' Deadline of {0} seconds passed'
                              .format(self.flows_ds_discovery_deadline))
                 self.confirm_time = -1.0
-                logging.info('[NB_generator] [Poll_flows_confirm thread] Confirmation '
-                             'time monitoring FAILED')
+                logging.info('[NB_generator] [Poll_flows_confirm thread] '
+                             'Confirmation time monitoring FAILED')
                 return
             else:
                 new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows_confirm thread] Found {0} flows at inventory'.
-                              format(oper_ds_found_flows))
+                logging.debug('[NB_generator] [Poll_flows_confirm thread] '
+                              'Found {0} flows at inventory'
+                              .format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = oper_ds_found_flows
                 if oper_ds_found_flows == self.total_flows:
                     time_interval = time.time() - t_start
-                    logging.debug('[NB_generator] [Poll_flows_confirm thread] Flow-Master '
-                                  '{0} flows found in {1} seconds'.
-                                  format(self.total_flows, time_interval))
+                    logging.debug('[NB_generator] [Poll_flows_confirm thread] '
+                                  'Flow-Master {0} flows found in {1} seconds'
+                                  .format(self.total_flows, time_interval))
                     self.confirm_time = time_interval
-                    logging.info('[NB_generator] [Poll_flows_confirm thread] Confirmation time is: {0}'
+                    logging.info('[NB_generator] [Poll_flows_confirm thread] '
+                                 'Confirmation time is: {0}'
                                  .format(self.confirm_time))
                     return
-            print('sleep_confirm')
             gevent.sleep(1)
 
     def __poll_flows_switches(self, t_start):
@@ -208,34 +208,34 @@ class NBgen:
         while True:
             if (time.time() - t_discovery_start) > \
                     self.flows_ds_discovery_deadline:
-                logging.info('[NB_generator] [Poll_flows_switches thread] Deadline of {0} seconds passed'
+                logging.info('[NB_generator] [Poll_flows_switches thread] '
+                             'Deadline of {0} seconds passed'
                              .format(self.flows_ds_discovery_deadline))
                 self.discover_flows_on_switches_time = -1.0
-                logging.info('[NB_generator] [Poll_flows_switches thread] Discovering flows on '
-                             'switches FAILED')
+                logging.info('[NB_generator] [Poll_flows_switches thread] '
+                             'Discovering flows on switches FAILED')
                 return
             else:
                 new_ssh = self.sbemu.init_ssh()
                 discovered_flows = self.sbemu.get_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows_switches thread] Found {0} flows at '
-                              'topology switches'
+                logging.debug('[NB_generator] [Poll_flows_switches thread] '
+                              'Found {0} flows at topology switches'
                               .format(discovered_flows))
                 if (discovered_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = discovered_flows
                 if discovered_flows == self.total_flows:
                     time_interval = time.time() - t_start
-                    logging.debug('[NB_generator] [Poll_flows_switches thread] expected flows = {0} \n '
-                                  'discovered flows = {1}'.
-                                  format(self.total_flows, discovered_flows))
+                    logging.debug('[NB_generator] [Poll_flows_switches thread]'
+                                  ' expected flows = {0} \n '
+                                  'discovered flows = {1}'
+                                  .format(self.total_flows, discovered_flows))
                     self.discover_flows_on_switches_time = time_interval
-                    logging.info('[NB_generator] [Poll_flows_switches thread] Time to discover flows on '
-                                 'switches is: {0}'
+                    logging.info('[NB_generator] [Poll_flows_switches thread] '
+                                 'Time to discover flows on switches is: {0}'
                                  .format(self.discover_flows_on_switches_time))
                     return
-            print('sleep_switches')
             gevent.sleep(1)
-
 
     def monitor_threads_run(self, t_start):
         """
@@ -276,4 +276,3 @@ class NBgen:
                      'interval: {0} sec. | Discovered flows: {1}'
                      .format(flow_measurement_latency_interval,
                              discovered_flows))
-

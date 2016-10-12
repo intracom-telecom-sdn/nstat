@@ -8,7 +8,6 @@
 
 import logging
 import json
-import os
 import stress_test.emulator
 import itertools
 import sys
@@ -58,7 +57,8 @@ for (sb_emu.simulated_hosts,
                             test_config['mtcbench_delay_before_traffic_ms']):
 
     sb_emu.run('127.0.0.1', 6653)
-    logging.info('[Testing] run MTCBench for thread value {0}'.format(sb_emu.threads))
+    logging.info('[Testing] run MTCBench for '
+                 'thread value {0}'.format(sb_emu.threads))
 
 # sb_emu.run()
 sb_emu.cleanup()
