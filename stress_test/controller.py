@@ -83,6 +83,10 @@ class Controller:
         #   return None
 
     def init_ssh(self):
+        """Initializes a new SSH client object, with the controller node and
+        stores it to the protected variable _ssh_conn. If a connection already
+        exists it returns a new SSH client object to the controller node.
+        """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
