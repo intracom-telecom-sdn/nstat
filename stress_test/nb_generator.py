@@ -7,6 +7,8 @@
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
 import gevent
+#from gevent import monkey; gevent.monkey.patch_all()
+
 import logging
 import time
 import util.netutil
@@ -131,6 +133,7 @@ class NBgen:
                 return
             else:
                 oper_ds_found_flows = self.controller.get_oper_hosts()
+#                oper_ds_found_flows = 5
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = oper_ds_found_flows
@@ -144,6 +147,7 @@ class NBgen:
                                  'is: {0}'
                                  .format(self.e2e_installation_time))
                     return
+            print('sleep_e2e')
             gevent.sleep(1)
 #            time.sleep(1)
 
@@ -169,6 +173,7 @@ class NBgen:
                 return
             else:
                 oper_ds_found_flows = self.controller.get_oper_hosts()
+#                oper_ds_found_flows = 5
                 logging.debug('[NB_generator] [Poll_flows_confirm thread] Found {0} flows at inventory'.
                               format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
@@ -183,6 +188,7 @@ class NBgen:
                     logging.info('[NB_generator] [Poll_flows_confirm thread] Confirmation time is: {0}'
                                  .format(self.confirm_time))
                     return
+            print('sleep_confirm')
             gevent.sleep(1)
 #            time.sleep(1)
 
@@ -211,6 +217,7 @@ class NBgen:
                 return
             else:
                 discovered_flows = self.sbemu.get_flows()
+#                discovered_flows = 122
                 logging.debug('[NB_generator] [Poll_flows_switches thread] Found {0} flows at '
                               'topology switches'
                               .format(discovered_flows))
@@ -227,6 +234,7 @@ class NBgen:
                                  'switches is: {0}'
                                  .format(self.discover_flows_on_switches_time))
                     return
+            print('sleep_switches')
             gevent.sleep(1)
 
 
@@ -240,8 +248,7 @@ class NBgen:
         :rtype: float
         :type t_start:
         """
-        logging.info('[NB_generator] Creating thread for '
-                     'end_to_end_installation_time measurement')
+        logging.info('[NB_generator] Start polling measurements')
 #        monitor_thread_ds = \
 #            multiprocessing.Process(target=self.__poll_flows_ds,
 #                                    args=(t_start,))
@@ -269,5 +276,5 @@ class NBgen:
         flows_measurement_latency_interval = time.time() - time_start
         logging.info('[NB_generator] Flows measurement latency '
                      'interval: {0} sec. | Discovered flows: {1}'
-                     .format(flows_measurement_latency_interval,
+                     .format(flow_measurement_latency_interval,
                              discovered_flows))

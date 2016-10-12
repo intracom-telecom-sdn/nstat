@@ -9,7 +9,6 @@
 import stress_test.controller
 import stress_test.emulator
 import stress_test.nb_generator
-from gevent import monkey
 import itertools
 import json
 import logging
@@ -17,9 +16,6 @@ import os
 import sys
 import util.netutil
 import time
-
-# Monkey patch runtime
-monkey.patch_all()
 
 # define a root logger
 LOGGER = logging.getLogger()
