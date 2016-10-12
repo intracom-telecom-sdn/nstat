@@ -8,7 +8,6 @@
 
 BASE_DIR="/opt"
 VENV_DIR_NSTAT="venv_nstat"
-VENV_DIR_MULTINET="venv_multinet"
 
 # PROXY value is passed either from Vagrantfile/Dockerfile
 #------------------------------------------------------------------------------
@@ -95,25 +94,6 @@ wget https://raw.githubusercontent.com/intracom-telecom-sdn/nstat/master/deploy/
 source $BASE_DIR/$VENV_DIR_NSTAT/bin/activate
 pip3 $pip_options install -r $BASE_DIR/requirements.txt
 rm -rf $BASE_DIR/requirements.txt
-deactivate
-
-# Multinet node
-#------------------------------------------------------------------------------
-apt-get update && apt-get install -y \
-    uuid-runtime \
-    mz
-git clone https://github.com/mininet/mininet.git $BASE_DIR/mininet
-git --git-dir=$BASE_DIR/mininet/.git --work-tree=$BASE_DIR/mininet checkout -b 2.2.1 2.2.1
-
-$BASE_DIR/mininet/util/install.sh -n3f
-$BASE_DIR/mininet/util/install.sh -V 2.3.0
-
-mkdir $BASE_DIR/$VENV_DIR_MULTINET
-virtualenv --system-site-packages $BASE_DIR/$VENV_DIR_MULTINET
-
-git clone -b master https://github.com/intracom-telecom-sdn/multinet.git $BASE_DIR"/multinet"
-source $BASE_DIR/$VENV_DIR_MULTINET/bin/activate
-pip $pip_options install -r $BASE_DIR"/multinet/requirements.txt"
 deactivate
 
 # NSTAT installation

@@ -248,7 +248,6 @@ class Multinet(SBEmu):
         """
 
         config_data = {}
-#        config_data['venv_path'] = self.venv_path
         config_data['master_ip'] = self.ip
         config_data['master_port'] = self.master_rest_port
         config_data['worker_ip_list'] = self.workers_ips

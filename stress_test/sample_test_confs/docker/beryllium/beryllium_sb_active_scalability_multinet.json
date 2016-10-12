@@ -29,7 +29,7 @@
 "controller_persistent_handler":"change_persistence.py",
 "controller_flowmods_conf_handler":"flowmods_configure.py",
 
-"controller_logs_dir":"distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
+"controller_logs_dir":"distribution-karaf-0.4.0-Beryllium/data/log/",
 
 "controller_rebuild":true,
 "controller_cleanup":false,
@@ -68,6 +68,7 @@
 "interpacket_delay_ms":5000,
 
 "oftraf_rest_server_port":5555,
+
 
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],

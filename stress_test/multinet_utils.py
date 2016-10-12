@@ -30,6 +30,7 @@ def multinet_pre_post_actions(action_handler):
     util.customsubprocess.check_output_streaming(action_handler,
                                                  '[multinet_pre_post_actions]')
 
+
 def parse_multinet_output(multinet_handler_name, multinet_output):
     """Gets the console output of a multinet handler and extracts the
     aggregated result from all workers, as a numeric value. (Helper function)
@@ -66,14 +67,8 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir):
     """
 
     multinet_config_path = '{0}/config/config.json'.format(multinet_base_dir)
-    with open(multinet_config_path, 'r') as config_json_file:
-        config_json = json.load(config_json_file)
-    venv_path = '\" \"'
-    if 'venv_path' in config_json:
-        venv_path = config_json["venv_path"]
-
-    multinet_run_cmd = ('{0}/bin/venv_handler_master.sh {1} {2} {3} {4}'.
-                        format(multinet_base_dir, venv_path, multinet_base_dir,
+    multinet_run_cmd = ('{0}/bin/venv_handler_master.sh {1} {2} {3}'.
+                        format(multinet_base_dir, multinet_base_dir,
                                exec_path, multinet_config_path))
     logging.debug('[{0}] multinet command to run: {1}'.
                   format(logging_prefix, multinet_run_cmd))
@@ -82,8 +77,9 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir):
 
 
 def check_topo_booted(expected_switches, group_size, group_delay_ms,
-                     get_switches_handler, rest_server,
-                     controller_nb_interface, multinet_base_dir, num_tries=10):
+                      get_switches_handler, rest_server,
+                      controller_nb_interface, multinet_base_dir,
+                      num_tries=10):
     """
     Check if a topology has been booted. Check both from the Mininet
     side and from the controller operational DS.

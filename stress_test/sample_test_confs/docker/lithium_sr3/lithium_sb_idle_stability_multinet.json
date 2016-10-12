@@ -66,6 +66,7 @@
 "oftraf_test_interval_ms":10000,
 "oftraf_rest_server_port":5555,
 
+
 "number_of_samples":150,
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],

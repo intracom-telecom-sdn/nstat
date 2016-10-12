@@ -1,5 +1,5 @@
 {
-"topology_rest_server_boot":"./bin/deploy",
+"topology_rest_server_boot":"bin/deploy",
 "topology_rest_server_stop":"./bin/cleanup",
 "topology_rest_server_port":3300,
 

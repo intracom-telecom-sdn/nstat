@@ -28,7 +28,7 @@
 "controller_statistics_handler":"change_stats_period.py",
 "controller_persistent_handler":"change_persistence.py",
 
-"controller_logs_dir":"distribution-karaf-0.4.0-Beryllium-RC2/data/log/",
+"controller_logs_dir":"distribution-karaf-0.4.0-Beryllium/data/log/",
 
 "controller_rebuild":true,
 "controller_cleanup":false,
@@ -65,6 +65,7 @@
 
 "oftraf_test_interval_ms":10000,
 "oftraf_rest_server_port":5555,
+
 
 "number_of_samples":150,
 

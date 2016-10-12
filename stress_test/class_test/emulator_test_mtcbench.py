@@ -61,4 +61,4 @@ for (sb_emu.simulated_hosts,
                  'thread value {0}'.format(sb_emu.threads))
 
 # sb_emu.run()
-sb_emu.cleanup()
+sb_emu.clean()
