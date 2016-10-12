@@ -15,8 +15,8 @@ RUN apt-get update
 RUN apt-get install --force-yes -y wget
 RUN chmod 777 -R /opt
 RUN apt-get install --force-yes -y software-properties-common
-RUN apt-get update
-RUN apt-get install --force-yes -y openjdk-7-jdk
+#RUN apt-get update
+#RUN apt-get install --force-yes -y openjdk-7-jdk
 RUN add-apt-repository ppa:openjdk-r/ppa -y
 RUN apt-get update
 RUN apt-get install --force-yes -y openjdk-8-jdk
