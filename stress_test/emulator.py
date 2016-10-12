@@ -327,7 +327,7 @@ class Multinet(SBEmu):
             self.status = 'NOT_DEPLOYED'
             raise Exception('[Multinet] Failure during deploying')
 
-    def get_switches(self):
+    def get_switches(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_switches handler
         """
         logging.info('[Multinet] get_switches')
@@ -336,14 +336,19 @@ class Multinet(SBEmu):
         if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
                                    self.ssh_pass, [self.get_switches_hnd]):
             raise Exception('[Multinet] Get_switches handler does not exist')
-
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
         exit_status, output = \
-            util.netutil.ssh_run_command(self._ssh_conn,
+            util.netutil.ssh_run_command(used_ssh_conn,
                                          ' '.join([self.venv_hnd,
                                                    self.base_dir,
                                                    self.get_switches_hnd,
                                                    self.__multinet_config_file_remote_path]),
                                          '[Multinet.get_switches_hnd]')
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
         if exit_status == 0:
             self.status = 'GOT_SWITCHES'
             logging.info("[Multinet] Successful got switches")
@@ -352,7 +357,7 @@ class Multinet(SBEmu):
             self.status = 'NOT_GOT_SWITCHES'
             raise Exception('[Multinet] Failure during getting switches')
 
-    def get_flows(self):
+    def get_flows(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_flows handler
         """
         logging.info('[Multinet] get_flows')
@@ -361,7 +366,10 @@ class Multinet(SBEmu):
         if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
                                    self.ssh_pass, [self.get_flows_hnd]):
             raise Exception('[Multinet] Get_flows handler does not exist')
-
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
         exit_status, output = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
@@ -369,6 +377,8 @@ class Multinet(SBEmu):
                                                    self.get_flows_hnd,
                                                    self.__multinet_config_file_remote_path]),
                                          '[Multinet. get_flows_hnd]')
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
         if exit_status == 0:
             self.status = 'GOT_FLOWS'
             logging.info("[Multinet] Successful got flows")

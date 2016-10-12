@@ -365,62 +365,85 @@ class ODL(Controller):
                                      '[controller.flowmod_configure_handler]')[0]
         logging.info('[Controller] Controller is configured to send flow mods')
 
-    def get_oper_hosts(self):
+    def get_oper_hosts(self, new_ssh_conn=None):
         """Wrapper to the controller oper_hosts handler
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')
-
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+        ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_hosts,
                                                      str(self.ip),
                                                      str(self.restconf_port),
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
                                            '[controller.operational_hosts_handler]')[1]
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
         return int(ret)
 
-    def get_oper_switches(self):
+    def get_oper_switches(self, new_ssh_conn=None):
         """Wrapper to the controller oper_switches handler
         """
         logging.info('[Controller] Query number of switches '
                      ' registered in ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+        ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_switches,
                                                      str(self.ip),
                                                      str(self.restconf_port),
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
                                            '[controller.operational_switches_handler]')[1]
-        return ret
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
+        return int(ret)
 
-    def get_oper_links(self):
+    def get_oper_links(self, new_ssh_conn=None):
         """Wrapper to the controller oper_links handler
         """
         logging.info('[Controller] Query number of links registered in '
                      ' ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+        ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_links,
                                                      str(self.ip),
                                                      str(self.restconf_port),
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
                                            '[controller.operational_links_handler]')[1]
-        return ret
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
+        return int(ret)
 
-    def get_oper_flows(self):
+    def get_oper_flows(self, new_ssh_conn=None):
         """Wrapper to the controller oper_flows handler
         """
         logging.info('[Controller] Query number of flows installed for '
                      'all installed nodes of the topology')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+        ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_flows,
                                                     str(self.ip),
                                                     str(self.restconf_port),
                                                     str(self.restconf_user),
                                                     str(self.restconf_pass)]),
                                            '[controller.operational_flows_handler]')[1]
-        return ret
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
+        return int(ret)
 
 
 class ONOS(Controller):
