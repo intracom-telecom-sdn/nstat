@@ -86,12 +86,19 @@ class Controller:
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-
-        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                             int(self.ssh_port),
-                                                             self.ssh_user,
-                                                             self.ssh_pass,
-                                                             10)
+        if self._ssh_conn is None:
+            self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
+                                                                 int(self.ssh_port),
+                                                                 self.ssh_user,
+                                                                 self.ssh_pass,
+                                                                 10)
+        else:
+            # Return a new client ssh object for the controller node
+            return util.netutil.ssh_connect_or_return2(self.ip,
+                                                       int(self.ssh_port),
+                                                       self.ssh_user,
+                                                       self.ssh_pass,
+                                                       10)
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler

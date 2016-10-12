@@ -65,12 +65,19 @@ class SBEmu:
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-
-        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                             int(self.ssh_port),
-                                                             self.ssh_user,
-                                                             self.ssh_pass,
-                                                             10)
+        if self._ssh_conn is None:
+            self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
+                                                                 int(self.ssh_port),
+                                                                 self.ssh_user,
+                                                                 self.ssh_pass,
+                                                                 10)
+        else:
+            # Return a new client ssh object for the emulator node
+            return util.netutil.ssh_connect_or_return2(self.ip,
+                                                       int(self.ssh_port),
+                                                       self.ssh_user,
+                                                       self.ssh_pass,
+                                                       10)
 
     def build(self):
         """ Wrapper to the SB-Emulator build handler
