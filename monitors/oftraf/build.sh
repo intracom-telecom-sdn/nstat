@@ -14,6 +14,7 @@ OFTRAF_LOCATION="https://github.com/intracom-telecom-sdn/oftraf.git"
 
 if [ ! -d $SCRIPT_DIR"/oftraf" ]; then
     git clone $OFTRAF_LOCATION $SCRIPT_DIR"/oftraf"
+    git --git-dir=$SCRIPT_DIR"/oftraf/.git --work-tree=$SCRIPT_DIR"/oftraf checkout 02be17f .
     if [ $? -ne 0 ]; then
         echo "[build.sh] Cloning oftraf failed. Exiting ..."
         exit $?

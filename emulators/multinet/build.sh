@@ -14,6 +14,7 @@ MULTINET_LOCATION="https://github.com/intracom-telecom-sdn/multinet.git"
 
 if [ ! -d $SCRIPT_DIR"/multinet" ]; then
     git clone $MULTINET_LOCATION $SCRIPT_DIR"/multinet"
+    git --git-dir=$SCRIPT_DIR"/multinet/.git --work-tree=$SCRIPT_DIR"/multinet checkout 44fc9b3 .
     if [ $? -ne 0 ]; then
         echo "[build.sh] Cloning multinet failed. Exiting ..."
         exit 1
