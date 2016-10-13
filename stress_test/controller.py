@@ -142,7 +142,6 @@ class Controller:
 
     def check_other_controller(self):
         """Checks for processes listening on the specified port
-
         :raises Exception: when another process listens on controller's port.
         """
 
@@ -174,7 +173,6 @@ class Controller:
     def start(self):
         """Wrapper to the controller start handler
         :raises Exception: When controller fails to start.
-        :rtype: int
         """
         logging.info('[Controller] Starting')
 
