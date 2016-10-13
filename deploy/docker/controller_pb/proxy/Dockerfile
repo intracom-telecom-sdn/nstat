@@ -31,7 +31,7 @@ RUN apt-get install --force-yes -y software-properties-common
 RUN add-apt-repository ppa:openjdk-r/ppa -y
 RUN apt-get update
 RUN apt-get install --force-yes -y openjdk-8-jdk
-RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk-amd64/ 1100
+#RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-openjdk-amd64/ 1100
 
 # ------------------------------------------------------------------------------
 # OFTRAF
