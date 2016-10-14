@@ -58,7 +58,7 @@ then
     sleep $INIT_CONTROLLER
     UNTIL_COUNTER=0
     CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
-    echo $
+    echo $CONTROLLER_PID
     until [ ! -z "$CONTROLLER_PID" ] ;
     do
         CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
