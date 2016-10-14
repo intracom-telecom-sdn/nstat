@@ -35,6 +35,8 @@ RUN /bin/bash -c "/opt/provision_oftraf.sh"
 # ------------------------------------------------------------------------------
 RUN wget -P /opt/ https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium/distribution-karaf-0.4.0-Beryllium.zip
 RUN wget -P /opt/ https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.5.0-Boron/distribution-karaf-0.5.0-Boron.zip
+RUN wget -P /opt/ https://nexus.opendaylight.org/content/repositories/public/org/opendaylight/integration/distribution-karaf/0.4.3-Beryllium-SR3/distribution-karaf-0.4.3-Beryllium-SR3.zip
+
 
 # Configure ssh-server
 RUN mkdir /var/run/sshd
