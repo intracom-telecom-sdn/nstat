@@ -21,6 +21,7 @@ RUN apt-get install --force-yes -y openssl
 RUN apt-get install --force-yes -y net-tools
 RUN apt-get install --force-yes -y unzip
 RUN apt-get install --force-yes -y bzip2
+RUN apt-get install --force-yes -y python3-lxml
 
 RUN apt-get update
 RUN apt-get install --force-yes -y wget
