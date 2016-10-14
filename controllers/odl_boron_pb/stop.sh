@@ -20,7 +20,7 @@ else
     exit 1
 fi
 
-CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
+CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $15}')
 
 if [ ! -z "$CONTROLLER_PID" ]; then
     echo "Found Karaf process id:" $CONTROLLER_PID
