@@ -96,7 +96,6 @@ class NBgen:
                       self.flows_per_request,
                       self.log_level))
         logging.debug('Generator handler command:{0}.'.format(cmd))
-
         exit_status, output = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          cmd,

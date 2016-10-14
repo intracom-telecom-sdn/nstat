@@ -35,27 +35,27 @@ def northbound_generator():
     nstat orchestrator)
     """
 
-    venv = 'source /opt/venv_nstat/bin/activate;'
-    if os.path.isdir(venv) is False:
+    venv = 'source /opt/venv_nstat/bin/activate'
+    if os.path.isfile(venv) is False:
         venv = ''
+    else:
+        venv+=';'
 
-    cmd = (venv,
-           'python3.4 nb_gen.py --controller-ip=\'{0}\' '
-           '--controller-port=\'{1}\' '
-           '--number-of-flows=\'{2}\' '
-           '--number-of-workers=\'{3}\' '
-           '--operation-delay=\'{4}\' '
-           '--restconf-user=\'{5}\' '
-           '--restconf-password=\'{6}\' '
-           '--fpr={7} '
-           '--logging-level=\'{8}\'')
+    cmd = ('{0} python3.4 nb_gen.py --controller-ip=\'{1}\' '
+           '--controller-port=\'{2}\' '
+           '--number-of-flows=\'{3}\' '
+           '--number-of-workers=\'{4}\' '
+           '--operation-delay=\'{5}\' '
+           '--restconf-user=\'{6}\' '
+           '--restconf-password=\'{7}\' '
+           '--fpr={8} '
+           '--logging-level=\'{9}\'')
 
     if sys.argv[6] == 'True':
         cmd += ' --delete-flows'
-    cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
+    cmd = cmd.format(venv, sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
                      sys.argv[5], sys.argv[7], sys.argv[8],
                      sys.argv[9], sys.argv[10])
-
     p = subprocess.Popen(cmd, shell=True,
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
