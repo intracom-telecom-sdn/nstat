@@ -10,9 +10,9 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $SCRIPT_DIR
 
 L_UNTIL_MAX_TRIES=120
-L_UNTIL_SLEEP_TIME=5
+L_UNTIL_SLEEP_TIME=2
 L_UNTIL_COUNTER=0
-L_INIT_CONTROLLER=60
+L_INIT_CONTROLLER=20
 L_KARAF_PATH="distribution-karaf-0.2.3-Helium-SR3"
 
 function exec_client_command()

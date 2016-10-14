@@ -10,9 +10,9 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd $SCRIPT_DIR
 
 UNTIL_MAX_TRIES=120
-UNTIL_SLEEP_TIME=5
+UNTIL_SLEEP_TIME=2
 UNTIL_COUNTER=0
-INIT_CONTROLLER=60
+INIT_CONTROLLER=20
 KARAF_PATH="distribution-karaf-0.5.0-Boron"
 
 function exec_client_command()
