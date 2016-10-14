@@ -8,6 +8,7 @@
 
 import gevent
 import logging
+import os
 import time
 import util.netutil
 
@@ -58,6 +59,9 @@ class NBgen:
         self.e2e_installation_time = 0.0
         self.discover_flows_on_switches_time = 0.0
 
+        self.venv_hnd = \
+            (self.base_dir + "emulators/nb_generator/venv_handler.sh")
+
     def init_ssh(self):
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
@@ -97,6 +101,8 @@ class NBgen:
             util.netutil.ssh_run_command(self._ssh_conn,
                                          cmd,
                                          '[NB_generator_run_handler]')
+
+
         if exit_status == 0:
             self.status = 'FINISHED'
             logging.info("[NB_generator] Successful ran")
@@ -248,21 +254,6 @@ class NBgen:
         :type t_start:
         """
         logging.info('[NB_generator] Start polling measurements')
-#        monitor_thread_ds = \
-#            multiprocessing.Process(target=self.__poll_flows_ds,
-#                                    args=(t_start,))
-#        monitor_thread_sw = \
-#            multiprocessing.Process(target=self.__poll_flows_switches,
-#                                    args=(t_start,))
-#        monitor_thread_ds_confirm = \
-#            multiprocessing.Process(target=self.__poll_flows_ds_confirm)
-#        monitor_thread_ds.start()
-#        monitor_thread_sw.start()
-#        monitor_thread_ds_confirm.start()
-#
-#        monitor_thread_ds.join()
-#        monitor_thread_sw.join()
-#        monitor_thread_ds_confirm.join()
 
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)

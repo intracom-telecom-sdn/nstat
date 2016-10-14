@@ -10,9 +10,11 @@
 Run handler of NorthBound traffic generator
 """
 import json
+import os
 import re
 import subprocess
 import sys
+
 
 def northbound_generator():
     """
@@ -33,30 +35,40 @@ def northbound_generator():
     nstat orchestrator)
     """
 
-    cmd = ('python3.4 nb_gen.py --controller-ip=\'{0}\' '
-                            '--controller-port=\'{1}\' '
-                            '--number-of-flows=\'{2}\' '
-                            '--number-of-workers=\'{3}\' '
-                            '--operation-delay=\'{4}\' '
-                            '--restconf-user=\'{5}\' '
-                            '--restconf-password=\'{6}\' '
-                            '--fpr={7} '
-                            '--logging-level=\'{8}\'')
+    venv = 'source /opt/venv_nstat/bin/activate;'
+    if os.path.isdir(venv) is False:
+        venv = ''
+
+    cmd = (venv,
+           'python3.4 nb_gen.py --controller-ip=\'{0}\' '
+           '--controller-port=\'{1}\' '
+           '--number-of-flows=\'{2}\' '
+           '--number-of-workers=\'{3}\' '
+           '--operation-delay=\'{4}\' '
+           '--restconf-user=\'{5}\' '
+           '--restconf-password=\'{6}\' '
+           '--fpr={7} '
+           '--logging-level=\'{8}\'')
+
     if sys.argv[6] == 'True':
         cmd += ' --delete-flows'
     cmd = cmd.format(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4],
                      sys.argv[5], sys.argv[7], sys.argv[8],
                      sys.argv[9], sys.argv[10])
 
-    p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+    p = subprocess.Popen(cmd, shell=True,
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT,
+                         close_fds=True)
+
     cmd_output = p.stdout.read().decode(sys.stdout.encoding)
     cmd_output = cmd_output.strip()
     regex_result = re.search(r"Total_failed_flows = [0-9].*", cmd_output)
-    if regex_result == None:
+    if regex_result is None:
         sys.exit(1)
-    #21: is the string offset from expression "Total_failed_flows = " to extract
-    # the results
+    # 21: is the string offset from expression "Total_failed_flows =
+    # " to extract the results
     result = [float(x) for x in regex_result.group()[21:].strip().split('/')]
     print(json.dumps(result))
 

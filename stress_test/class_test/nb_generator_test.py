@@ -151,9 +151,9 @@ for (multinet.topo_size,
     multinet.start_topos()
     time.sleep(10)
     # run NB-generator
-    first_REST_request = time.time()
+    start_rest_request_time = time.time()
     nb_generator.run()
-    nb_generator.monitor_threads_run(first_REST_request)
+    nb_generator.monitor_threads_run(start_rest_request_time)
 
     # cleanup activities
     multinet.cleanup()
