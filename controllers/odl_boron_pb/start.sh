@@ -57,10 +57,11 @@ if [ $? -eq 0 ]
 then
     sleep $INIT_CONTROLLER
     UNTIL_COUNTER=0
-    CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
+    CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $15}')
+
     until [ ! -z "$CONTROLLER_PID" ] ;
     do
-        CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $9}')
+        CONTROLLER_PID=$(./client -u karaf "instance:list" 2>/dev/null | grep "Started" | awk '{print $15}')
         UNTIL_COUNTER=$(($UNTIL_COUNTER+1))
         if [ $UNTIL_COUNTER -eq $UNTIL_MAX_TRIES ]; then
             # The following line covers the case where the controller starts with
