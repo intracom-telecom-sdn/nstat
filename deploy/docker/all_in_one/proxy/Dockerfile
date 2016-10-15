@@ -45,7 +45,7 @@ RUN /bin/bash -c "/opt/provision_mtcbench.sh 'http://172.28.40.9:3128/'"
 # ------------------------------------------------------------------------------
 # OFTRAF
 # ------------------------------------------------------------------------------
-RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/oftraf/virtenv-rqrmnts/deploy/provision.sh
+RUN wget -P /opt/ https://raw.githubusercontent.com/intracom-telecom-sdn/oftraf/master/deploy/provision.sh
 RUN mv /opt/provision.sh /opt/provision_oftraf.sh
 RUN chmod +x /opt/provision_oftraf.sh
 RUN /bin/bash -c "/opt/provision_oftraf.sh 'http://172.28.40.9:3128/'"
@@ -55,6 +55,7 @@ RUN /bin/bash -c "/opt/provision_oftraf.sh 'http://172.28.40.9:3128/'"
 # ------------------------------------------------------------------------------
 RUN wget -P /opt/ https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.4.0-Beryllium/distribution-karaf-0.4.0-Beryllium.zip
 RUN wget -P /opt/ https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.5.0-Boron/distribution-karaf-0.5.0-Boron.zip
+RUN wget -P /opt/ https://nexus.opendaylight.org/content/repositories/public/org/opendaylight/integration/distribution-karaf/0.4.3-Beryllium-SR3/distribution-karaf-0.4.3-Beryllium-SR3.zip
 
 # Configure ssh-server
 RUN mkdir /var/run/sshd
