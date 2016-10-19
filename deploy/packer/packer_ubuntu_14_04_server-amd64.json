@@ -6,7 +6,7 @@
         "no_proxy": "{{env `no_proxy`}}",
         "user": "jenkins",
         "password": "jenkins",
-        "disk_size": "100000"
+        "disk_size": "40000"
     },
 
     "builders":
@@ -31,13 +31,13 @@
              ],
 
             "http_directory": "http",
-
+            "output_directory": "build_output",
             "ssh_username": "{{user `user`}}",
             "ssh_password": "{{user `password`}}",
             "ssh_wait_timeout": "60m",
             "shutdown_command": "echo '{{user `password`}}'|sudo -S shutdown -P now",
 
-            "boot_wait": "2s",
+            "boot_wait": "5s",
             "boot_command": [
                 "<esc><esc><enter><wait>",
                 "/install/vmlinuz url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",

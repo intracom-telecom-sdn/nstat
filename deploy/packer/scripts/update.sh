@@ -1,6 +1,6 @@
 # Update the box
-useradd -m -s /bin/bash -p $(openssl passwd -crypt adminubuntu) -U adminubuntu
-echo "adminubuntu ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins
+echo "jenkins ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
 
 http_proxy=http://172.28.40.9:3128/
 https_proxy=$http_proxy
