@@ -1,8 +1,8 @@
 # Update the box
-useradd -m -s /bin/bash -p $(openssl passwd -crypt jenkins) -U jenkins
-echo "jenkins ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
+useradd -m -s /bin/bash -p $(openssl passwd -crypt $2) -U $2
+echo "$2 ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
 
-http_proxy=http://172.28.40.9:3128/
+http_proxy=$1
 https_proxy=$http_proxy
 
 # Bipass proxy settings if http_proxy is empty
