@@ -1,3 +1,4 @@
+#!/bin/bash
 # Update the box
 useradd -m -s /bin/bash -p $(openssl passwd -crypt $2) -U $2
 echo "$2 ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
@@ -24,3 +25,6 @@ fi
 
 sudo apt-get -y update
 sudo apt-get -y upgrade
+
+# Run the rest provisioning actions
+./projects_provisioner.sh

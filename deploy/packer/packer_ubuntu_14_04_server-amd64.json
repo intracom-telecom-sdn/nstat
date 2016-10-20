@@ -64,7 +64,6 @@
             "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
             "scripts": [
                 "scripts/update.sh '{{env `http_proxy`}}' '{{user `user`}}'",
-                "../provision.sh '{{env `http_proxy`}}'"
             ]
         }
     ]
