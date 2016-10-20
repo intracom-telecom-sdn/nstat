@@ -63,7 +63,8 @@
             "type": "shell",
             "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}' '{{user `http_proxy`}}' '{{user `user`}}'",
             "scripts": [
-                "scripts/update.sh"
+                "scripts/update.sh",
+                "scripts/projects_provisioner.sh"
             ]
         }
     ]

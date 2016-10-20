@@ -25,6 +25,3 @@ fi
 
 sudo apt-get -y update
 sudo apt-get -y upgrade
-
-# Run the rest provisioning actions
-./projects_provisioner.sh
