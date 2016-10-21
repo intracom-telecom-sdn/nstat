@@ -61,7 +61,7 @@
     "provisioners": [
         {
             "type": "shell",
-            "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}' '{{user `http_proxy`}}' '{{user `user`}}'",
+            "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}' '{{user `user`}}' '{{user `password`}}' '{{user `http_proxy`}}'",
             "scripts": [
                 "scripts/update.sh",
                 "scripts/projects_provisioner.sh"
