@@ -25,7 +25,7 @@ function provisioner {
     then
         sudo -E bash $BASE_DIR/$PROJECT/deploy/provision.sh $PROXY
     else
-        echo "Provision script for multinet does not exist."
+        echo "Provision script for $PROJECT does not exist."
         exit 1
     fi
 }
