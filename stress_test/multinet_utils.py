@@ -67,7 +67,6 @@ def multinet_command_runner(exec_path, logging_prefix, multinet_base_dir):
     """
 
     multinet_config_path = '{0}/config/config.json'.format(multinet_base_dir)
-
     multinet_run_cmd = ('{0}/bin/venv_handler_master.sh {1} {2} {3}'.
                         format(multinet_base_dir, multinet_base_dir,
                                exec_path, multinet_config_path))

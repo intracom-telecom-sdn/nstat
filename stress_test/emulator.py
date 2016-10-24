@@ -62,18 +62,32 @@ class SBEmu:
             raise NotImplementedError('Not supported yet')
 
     def init_ssh(self):
+        """Initializes a new SSH client object, with the emulator node and
+        stores it to the protected variable _ssh_conn. If a connection already
+        exists it returns a new SSH client object to the emulator node.
+        """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-
-        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                             int(self.ssh_port),
-                                                             self.ssh_user,
-                                                             self.ssh_pass,
-                                                             10)
+        if self._ssh_conn is None:
+            self._ssh_conn = \
+                util.netutil.ssh_connect_or_return2(self.ip,
+                                                    int(self.ssh_port),
+                                                    self.ssh_user,
+                                                    self.ssh_pass,
+                                                    10)
+        else:
+            # Return a new client ssh object for the emulator node
+            return util.netutil.ssh_connect_or_return2(self.ip,
+                                                       int(self.ssh_port),
+                                                       self.ssh_user,
+                                                       self.ssh_pass,
+                                                       10)
 
     def build(self):
         """ Wrapper to the SB-Emulator build handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[SB-Emulator] Building')
         self.status = 'BUILDING'
@@ -91,6 +105,8 @@ class SBEmu:
 
     def cleanup(self):
         """Wrapper to the SB-Emulator cleanup handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[SB-Emulator] Cleaning up')
         self.status = 'CLEANING'
@@ -136,26 +152,31 @@ class MTCBench(SBEmu):
 
     def run(self, ctrl_ip, ctrl_sb_port):
         """ Wrapper to the MTCBench SB-Emulator run handler
+        :param ctrl_ip: The ip address of the controller
+        :param ctrl_sb_port: the port number of the SouthBound interface of
+        the controller
+        :type ctrl_ip: str
+        :type ctrl_sb_port: int
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[MTCBench] Starting')
         self.status = 'STARTING'
-
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.run_hnd,
-                                                             ctrl_ip,
-                                                             str(ctrl_sb_port),
-                                                             str(self.threads),
-                                                             str(self.switches_per_thread),
-                                                             str(self.threads * self.switches_per_thread),
-                                                             str(self.thread_creation_delay_ms),
-                                                             str(self.delay_before_traffic_ms),
-                                                             str(self.ms_per_test),
-                                                             str(self.internal_repeats),
-                                                             str(self.simulated_hosts),
-                                                             str(self.warmup),
-                                                             self.mode]),
-                                                   '[MTCBench.'
-                                                   'run_handler]')[0]
+        exit_status = \
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([self.run_hnd,
+                                                   ctrl_ip,
+                                                   str(ctrl_sb_port),
+                                                   str(self.threads),
+                                                   str(self.switches_per_thread),
+                                                   str(self.threads * self.switches_per_thread),
+                                                   str(self.thread_creation_delay_ms),
+                                                   str(self.delay_before_traffic_ms),
+                                                   str(self.ms_per_test),
+                                                   str(self.internal_repeats),
+                                                   str(self.simulated_hosts),
+                                                   str(self.warmup),
+                                                   self.mode]),
+                                         '[MTCBench.run_handler]')[0]
         if exit_status == 0:
             self.status = 'STARTED'
             logging.info("[MTCBench] Successful started")
@@ -180,13 +201,12 @@ class Multinet(SBEmu):
                                  test_config['topology_get_switches_handler'])
 
         if 'topology_traffic_gen_handler' in test_config:
-            self.traffic_gen_hnd = (self.base_dir +
-                                    test_config['topology_traffic_gen_handler'])
+            self.traffic_gen_hnd = \
+                self.base_dir + test_config['topology_traffic_gen_handler']
 
         if 'topology_get_flows_handler' in test_config:
             self.get_flows_hnd = (self.base_dir +
                                   test_config['topology_get_flows_handler'])
-#            util.file_ops.check_filelist([self.get_flows_hnd])
 
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.
@@ -206,7 +226,8 @@ class Multinet(SBEmu):
                                test_config['topology_stop_switches_handler'])
 
         if 'multinet_traffic_gen_duration_ms' in test_config:
-            self.traffic_gen_duration_ms = test_config['multinet_traffic_gen_duration_ms']
+            self.traffic_gen_duration_ms = \
+                test_config['multinet_traffic_gen_duration_ms']
         else:
             self.traffic_gen_duration_ms = 0
         if 'interpacket_delay_ms' in test_config:
@@ -238,9 +259,7 @@ class Multinet(SBEmu):
         :type cntrl_ip: str
         :raises IOError: if it fails to create the configuration JSON file
         """
-
         config_data = {}
-        config_data['venv_path'] = self.venv_path
         config_data['master_ip'] = self.ip
         config_data['master_port'] = self.master_rest_port
         config_data['worker_ip_list'] = self.workers_ips
@@ -292,8 +311,13 @@ class Multinet(SBEmu):
             raise Exception('Failed to get results from {0} multinet handler.'.
                             format(multinet_handler_name))
         else:
-            json_result = regex_result.group(0).replace('INFO:root:[{0}][response data] '.format(multinet_handler_name), '')
-        multinet_result = sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
+            json_result = \
+                regex_result.group(0).replace('INFO:root:[{0}]'
+                                              '[response data] '
+                                              .format(multinet_handler_name),
+                                              '')
+        multinet_result = \
+            sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
         return multinet_result
 
     def deploy(self, cntrl_ip, cntrl_of_port):
@@ -301,7 +325,6 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] Deploy')
         self.status = 'DEPLOYING'
-
         self.__generate_config(cntrl_of_port, cntrl_ip)
         util.netutil.ssh_copy_file_to_target(self.ip,
                                              self.ssh_port,
@@ -314,14 +337,13 @@ class Multinet(SBEmu):
                                    self.ssh_pass, [self.deploy_hnd]):
             raise Exception('[Multinet] Deploy handler does not exist')
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.venv_hnd,
-                                                             self.venv_path,
-                                                             self.base_dir,
-                                                             self.deploy_hnd,
-                                                             self.__multinet_config_file_remote_path]),
-                                                   '[Multinet.'
-                                                   'deploy_handler]')[0]
+        exit_status = \
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([self.venv_hnd,
+                                                   self.base_dir,
+                                                   self.deploy_hnd,
+                                                   self.__multinet_config_file_remote_path]),
+                                         '[Multinet.deploy_handler]')[0]
         if exit_status == 0:
             self.status = 'DEPLOYED'
             logging.info("[Multinet] Successful deployed")
@@ -329,8 +351,14 @@ class Multinet(SBEmu):
             self.status = 'NOT_DEPLOYED'
             raise Exception('[Multinet] Failure during deploying')
 
-    def get_switches(self):
+    def get_switches(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_switches handler
+        :param new_ssh_conn: an SSH client connection object
+        :returns: The per worker number of switches in json string
+        :rtype: str
+        :type new_ssh_conn: paramiko.SFTPClient
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING_SWITCHES'
@@ -338,15 +366,19 @@ class Multinet(SBEmu):
         if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
                                    self.ssh_pass, [self.get_switches_hnd]):
             raise Exception('[Multinet] Get_switches handler does not exist')
-
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
         exit_status, output = \
-            util.netutil.ssh_run_command(self._ssh_conn,
+            util.netutil.ssh_run_command(used_ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.get_switches_hnd,
                                                    self.__multinet_config_file_remote_path]),
                                          '[Multinet.get_switches_hnd]')
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
         if exit_status == 0:
             self.status = 'GOT_SWITCHES'
             logging.info("[Multinet] Successful got switches")
@@ -355,8 +387,14 @@ class Multinet(SBEmu):
             self.status = 'NOT_GOT_SWITCHES'
             raise Exception('[Multinet] Failure during getting switches')
 
-    def get_flows(self):
+    def get_flows(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_flows handler
+        :param new_ssh_conn: an SSH client connection object
+        :returns: The per worker total number of flows in json string
+        :rtype: str
+        :type new_ssh_conn: paramiko.SFTPClient
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[Multinet] get_flows')
         self.status = 'GETTING_FLOWS'
@@ -364,15 +402,19 @@ class Multinet(SBEmu):
         if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
                                    self.ssh_pass, [self.get_flows_hnd]):
             raise Exception('[Multinet] Get_flows handler does not exist')
-
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
         exit_status, output = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.get_flows_hnd,
                                                    self.__multinet_config_file_remote_path]),
                                          '[Multinet. get_flows_hnd]')
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
         if exit_status == 0:
             self.status = 'GOT_FLOWS'
             logging.info("[Multinet] Successful got flows")
@@ -383,6 +425,8 @@ class Multinet(SBEmu):
 
     def init_topos(self):
         """ Wrapper to the Multinet SB-Emulator init_topos handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[Multinet] init_topos')
         self.status = 'INIT_MININET_TOPOS'
@@ -394,7 +438,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.init_topos_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -410,6 +453,8 @@ class Multinet(SBEmu):
 
     def start_topos(self):
         """ Wrapper to the Multinet SB-Emulator start_topos handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[Multinet] start_topos')
         self.status = 'START_MININET_TOPOS'
@@ -421,7 +466,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.start_topos_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -435,6 +479,8 @@ class Multinet(SBEmu):
 
     def stop_topos(self):
         """ Wrapper to the Multinet SB-Emulator stop_topos handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[Multinet] stop_topos')
         self.status = 'STOP_MININET_TOPOS'
@@ -446,7 +492,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.stop_topos_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -460,6 +505,8 @@ class Multinet(SBEmu):
 
     def cleanup(self):
         """ Wrapper to the Multinet SB-Emulator cleanup handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[Multinet] cleanup')
         self.status = 'CLEANUP_MININET'
@@ -471,7 +518,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.cleanup_hnd,
                                                    self.__multinet_config_file_remote_path]),
@@ -485,6 +531,8 @@ class Multinet(SBEmu):
 
     def generate_traffic(self):
         """ Wrapper to the Multinet SB-Emulator traffic_gen handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
         """
         logging.info('[Multinet] traffic gen')
         self.status = 'CREATE_TRAFFIC'
@@ -496,7 +544,6 @@ class Multinet(SBEmu):
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([self.venv_hnd,
-                                                   self.venv_path,
                                                    self.base_dir,
                                                    self.traffic_gen_hnd,
                                                    self.__multinet_config_file_remote_path]),

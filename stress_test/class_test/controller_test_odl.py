@@ -62,7 +62,7 @@ if ctrl.need_rebuild:
     cmd = ('test {0} && echo "exists"'.format(build_check_file))
     exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
                                                        cmd,
-                                                       'Check_persistence')
+                                                       'Build_controller')
     if (output is not None):
         logging.info('[Testing] Controller files have been created')
     else:
@@ -112,9 +112,10 @@ try:
         'monitor-interval>'
 
         cmd = ('grep {0} {1}'.format(pattern, path_file))
-        exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
-                                                           cmd,
-                                                           'Check_stats_period')
+        exit_status, output = \
+            util.netutil.ssh_run_command(ctrl._ssh_conn,
+                                         cmd,
+                                         'Check_stats_period')
         if (output is not None):
             logging.info('[Testing] Interval statistics have been '
                          'updated successfully')
@@ -150,11 +151,12 @@ try:
         except AttributeError:
             print('[Testing] Error during the query of flows in DS')
 
+        ctrl.stop()
+
 except:
     logging.info('[Testing] Error, check the logs')
 
 finally:
-    ctrl.stop()
     ctrl.check_status()
     if ctrl.need_cleanup:
         ctrl.clean_hnd()
