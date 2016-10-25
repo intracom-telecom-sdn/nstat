@@ -254,7 +254,7 @@ def sb_active_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler'],
         '',
-        ctrl_base_dir + conf['controller_persistent_handler']
+        ''
         )
     """
     controller_handlers_set = conf_collections_util.controller_handlers(
