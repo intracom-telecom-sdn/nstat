@@ -13,7 +13,7 @@ Orchestrator for stress tests.
 import argparse
 
 def main():
-    """This is the main function where the main test application starts.
+    """Main function where NSTAT test application starts.
     """
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -41,19 +41,19 @@ def main():
                         dest='ctrl_base_dir',
                         action='store',
                         help='controller base directory')
-    parser.add_argument('--sb-generator-base-dir',
+    parser.add_argument('--sb-emulator-base-dir',
                         required=True,
                         type=str,
-                        dest='sb_gen_base_dir',
+                        dest='sb_emu_base_dir',
                         action='store',
-                        help='southbound generator base directory,\n'
-                             'supported generators: MT-Cbench, Multinet')
-    parser.add_argument('--nb-generator-base-dir',
+                        help='southbound emulator base directory,\n'
+                             'supported emulators: MT-Cbench, Multinet')
+    parser.add_argument('--nb-emulator-base-dir',
                         required=False,
                         type=str,
-                        dest='nb_gen_base_dir',
+                        dest='nb_emu_base_dir',
                         action='store',
-                        help='northbound generator base directory')
+                        help='northbound emulator base directory')
     parser.add_argument('--json-config',
                         required=True,
                         type=str,
@@ -95,13 +95,23 @@ def main():
 
     args = parser.parse_args()
 
-    ctrl = stress_test.controller.Controller.new(ctrl_base_dir, json_config)
-    sb_emulator = stress_test.emulator.SBEmu.new(emu_base_dir, json_config)
+    json_conf = {}
+    with open(args.json_config) as conf_file:
+        json_conf = json.load(conf_file)
 
-    if nb_base_dir exist:
-        nb_emulator = stress_test.emulator.SBEmu.new(nb_base_dir, json_config)
+    ctrl_base_dir = args.ctrl_base_dir
+    sb_emu_base_dir = args.sb_emu_base_dir
 
-    test = stress_test.test_type.TestCase(json_config, ctrl, emulator)
+    controller = stress_test.controller.Controller.new(ctrl_base_dir, json_conf)
+    sb_emulator = stress_test.emulator.SBEmu.new(sb_emu_base_dir, json_conf)
+
+    if hasattr(args, 'nb_emu_base_dir'):
+        nb_emu_base_dir = args.nb_emu_base_dir
+        nb_emulator = stress_test.emulator.SBEmu.new(nb_emu_base_dir, json_conf)
+
+    test = stress_test.test_type.TestCase(controller, sb_emulator, nb_emulator,
+                                          json_conf)
+    exit
 
 if __name__ == '__main__':
     main()
