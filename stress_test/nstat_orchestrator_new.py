@@ -11,6 +11,9 @@ Orchestrator for stress tests.
 """
 
 import argparse
+import json
+import stress_test.controller
+import stress_test.emulator
 
 def main():
     """Main function where NSTAT test application starts.
@@ -94,7 +97,8 @@ def main():
                              "ERROR")
 
     args = parser.parse_args()
-
+    print(args.ctrl_base_dir)
+    exit
     json_conf = {}
     with open(args.json_config) as conf_file:
         json_conf = json.load(conf_file)
@@ -109,9 +113,8 @@ def main():
         nb_emu_base_dir = args.nb_emu_base_dir
         nb_emulator = stress_test.emulator.SBEmu.new(nb_emu_base_dir, json_conf)
 
-    test = stress_test.test_type.TestCase(controller, sb_emulator, nb_emulator,
-                                          json_conf)
-    exit
+    test = stress_test.test_type.TestCase(json_conf, controller,
+                                          sb_emulator, nb_emulator)
 
 if __name__ == '__main__':
     main()
