@@ -35,7 +35,7 @@ def get_flow_stats(ip, port, username, password):
     :param port: controller restconf port number
     :param username: username for restconf authorization
     :param password: password for restconf authorization
-    :returns: the number of installed flows in the topotlogy nodes
+    :returns: the number of installed flows in the topology nodes
     or a negative number in a negative case
     :rtype: int
     :type ip: str
@@ -43,8 +43,8 @@ def get_flow_stats(ip, port, username, password):
     :type username: str
     :type password: str
     """
-    url = 'http://{0}:{1}/restconf/operational/opendaylight'
-    '-inventory:nodes'.format(ip, port)
+    url = ('http://{0}:{1}/restconf/operational/opendaylight'
+    '-inventory:nodes'.format(ip, port))
     headers = {'Accept': 'application/json'}
     found_flows = 0
     s = requests.Session()

@@ -83,15 +83,27 @@ class Controller:
         #   return None
 
     def init_ssh(self):
+        """Initializes a new SSH client object, with the controller node and
+        stores it to the protected variable _ssh_conn. If a connection already
+        exists it returns a new SSH client object to the controller node.
+        """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-
-        self._ssh_conn = util.netutil.ssh_connect_or_return2(self.ip,
-                                                             int(self.ssh_port),
-                                                             self.ssh_user,
-                                                             self.ssh_pass,
-                                                             10)
+        if self._ssh_conn is None:
+            self._ssh_conn = \
+                util.netutil.ssh_connect_or_return2(self.ip,
+                                                    int(self.ssh_port),
+                                                    self.ssh_user,
+                                                    self.ssh_pass,
+                                                    10)
+        else:
+            # Return a new client ssh object for the controller node
+            return util.netutil.ssh_connect_or_return2(self.ip,
+                                                       int(self.ssh_port),
+                                                       self.ssh_user,
+                                                       self.ssh_pass,
+                                                       10)
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
@@ -130,7 +142,6 @@ class Controller:
 
     def check_other_controller(self):
         """Checks for processes listening on the specified port
-
         :raises Exception: when another process listens on controller's port.
         """
 
@@ -162,7 +173,6 @@ class Controller:
     def start(self):
         """Wrapper to the controller start handler
         :raises Exception: When controller fails to start.
-        :rtype: int
         """
         logging.info('[Controller] Starting')
 
@@ -211,9 +221,10 @@ class Controller:
         logging.info('[Controller] Building')
         self.status = 'BUILDING'
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.build_hnd]),
-                                                   '[controller.build_handler]')[0]
+        exit_status = \
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([self.build_hnd]),
+                                         '[controller.build_handler]')[0]
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[Controller] Successful building")
@@ -238,7 +249,7 @@ class Controller:
             time.sleep(1)
             gpid = util.process.getpid_listeningonport(self.of_port,
                                                        self._ssh_conn)
-            logging.info('[Controller] Returned pid listening'
+            logging.info('[Controller] Returned pid listening '
                          'on port {0}: {1}'.format(self.of_port, gpid))
 
             if gpid > 0:
@@ -270,7 +281,7 @@ class Controller:
                 return
 
         raise Exception('Controller failed to start. '
-                        'Status check returned 0 after'
+                        'Status check returned 0 after '
                         'trying for {0} seconds.'.
                         format(float(timeout_ms) / 1000))
 
@@ -287,22 +298,22 @@ class ODL(Controller):
         self.stat_period_ms = None
         # ---------------------------------------------------------------------
         if 'controller_flowmods_conf_handler' in test_config:
-            self.flowmods_conf_hnd = (ctrl_base_dir +
-                                      test_config['controller_flowmods_conf_handler'])
+            self.flowmods_conf_hnd = \
+                ctrl_base_dir + test_config['controller_flowmods_conf_handler']
 
             # check handler's validity
             util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
         if 'controller_statistics_handler' in test_config:
-            self.statistics_hnd = (ctrl_base_dir +
-                                   test_config['controller_statistics_handler'])
+            self.statistics_hnd = \
+                ctrl_base_dir + test_config['controller_statistics_handler']
 
             # check handler's validity
             util.file_ops.check_filelist([self.statistics_hnd])
 
         if 'controller_persistent_handler' in test_config:
-            self.persistence_hnd = (ctrl_base_dir +
-                                    test_config['controller_persistent_handler'])
+            self.persistence_hnd = \
+                ctrl_base_dir + test_config['controller_persistent_handler']
 
             # check handler's validity
             util.file_ops.check_filelist([self.persistence_hnd])
@@ -338,7 +349,8 @@ class ODL(Controller):
 
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.persistence_hnd]),
-                                     '[controller.change_persistent_handler]')[0]
+                                     '[controller.change'
+                                     '_persistent_handler]')[0]
 
     def change_stats(self):
         """Wrapper to the controller statistics handler
@@ -362,64 +374,96 @@ class ODL(Controller):
         logging.info('[Controller] Configure flow modifications')
         util.netutil.ssh_run_command(self._ssh_conn,
                                      ' '.join([self.flowmods_conf_hnd]),
-                                     '[controller.flowmod_configure_handler]')[0]
+                                     '[controller.flowmod'
+                                     '_configure_handler]')[0]
         logging.info('[Controller] Controller is configured to send flow mods')
 
-    def get_oper_hosts(self):
+    def get_oper_hosts(self, new_ssh_conn=None):
         """Wrapper to the controller oper_hosts handler
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+
+        ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_hosts,
                                                      str(self.ip),
                                                      str(self.restconf_port),
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
-                                           '[controller.operational_hosts_handler]')[1]
-        return ret
+                                           '[controller.operational'
+                                           '_hosts_handler]')[1]
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
+        return int(ret)
 
-    def get_oper_switches(self):
+    def get_oper_switches(self, new_ssh_conn=None):
         """Wrapper to the controller oper_switches handler
         """
         logging.info('[Controller] Query number of switches '
                      ' registered in ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+        ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_switches,
                                                      str(self.ip),
                                                      str(self.restconf_port),
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
-                                           '[controller.operational_switches_handler]')[1]
-        return ret
+                                           '[controller.operational'
+                                           '_switches_handler]')[1]
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
+        return int(ret)
 
-    def get_oper_links(self):
+    def get_oper_links(self, new_ssh_conn=None):
         """Wrapper to the controller oper_links handler
         """
         logging.info('[Controller] Query number of links registered in '
                      ' ODL operational DS')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+        ret = util.netutil.ssh_run_command(used_ssh_conn,
                                            ' '.join([self.oper_links,
                                                      str(self.ip),
                                                      str(self.restconf_port),
                                                      str(self.restconf_user),
                                                      str(self.restconf_pass)]),
-                                           '[controller.operational_links_handler]')[1]
-        return ret
+                                           '[controller.operational_links'
+                                           '_handler]')[1]
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
+        return int(ret)
 
-    def get_oper_flows(self):
+    def get_oper_flows(self, new_ssh_conn=None):
         """Wrapper to the controller oper_flows handler
         """
         logging.info('[Controller] Query number of flows installed for '
                      'all installed nodes of the topology')
-        ret = util.netutil.ssh_run_command(self._ssh_conn,
-                                           ' '.join([self.oper_flows,
-                                                    str(self.ip),
-                                                    str(self.restconf_port),
-                                                    str(self.restconf_user),
-                                                    str(self.restconf_pass)]),
-                                           '[controller.operational_flows_handler]')[1]
-        return ret
+        if new_ssh_conn is not None:
+            used_ssh_conn = new_ssh_conn
+        else:
+            used_ssh_conn = self._ssh_conn
+
+        ret = \
+            util.netutil.ssh_run_command(used_ssh_conn,
+                                         ' '.join([self.oper_flows,
+                                                   str(self.ip),
+                                                   str(self.restconf_port),
+                                                   str(self.restconf_user),
+                                                   str(self.restconf_pass)]),
+                                         '[controller.operational_'
+                                         'flows_handler]')[1]
+        if new_ssh_conn is not None:
+            used_ssh_conn.close()
+        return int(ret)
 
 
 class ONOS(Controller):

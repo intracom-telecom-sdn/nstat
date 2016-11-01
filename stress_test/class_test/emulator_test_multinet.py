@@ -33,15 +33,13 @@ with open(test_file, "r") as json_conf_file:
 emulator_base_dir = str(sys.argv[2])
 
 # create a new Multinet Emulator instance, sb_emu
-sb_emu = stress_test.emulator.SBEmu.new(emulator_base_dir,
-                                                   test_config)
+sb_emu = stress_test.emulator.SBEmu.new(emulator_base_dir, test_config)
 
 # initialize a connection
 sb_emu.init_ssh()
 
-print(sb_emu._ssh_conn)
 
-#Build a Multinet Emulator
+# Build a Multinet Emulator
 sb_emu.build()
 
 logging.info('[Testing] Build a {0} emulator on '
@@ -63,8 +61,10 @@ for (sb_emu.topo_size,
 
     sb_emu.init_topos()
     sb_emu.start_topos()
-    logging.info("The whole number of switches are: {0}".format(sb_emu.get_switches()))
-    logging.info("The whole number of flows are: {0}".format(sb_emu.get_flows()))
+    logging.info("The whole number of switches are: {0}"
+                 .format(sb_emu.get_switches()))
+    logging.info("The whole number of flows are: {0}"
+                 .format(sb_emu.get_flows()))
     sb_emu.generate_traffic()
     sb_emu.cleanup()
 
