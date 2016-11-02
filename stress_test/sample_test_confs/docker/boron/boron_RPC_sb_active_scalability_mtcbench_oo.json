@@ -1,5 +1,12 @@
 {
 
+"nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
+"nstat_host_ip":"127.0.0.1",
+"nstat_node_ip":"10.0.1.10",
+"nstat_node_ssh_port":"22",
+"nstat_node_username":"root",
+"nstat_node_password":"root123",
+
 "sb_emulator_name":"MT-Cbench",
 "sb_emulator_node_ip":"10.0.1.10",
 "sb_emulator_node_ssh_port":"22",
@@ -13,7 +20,7 @@
 "controller_node_password":"root123",
 
 "controller_build_handler":"build.sh",
-"controller_start_handler":"start_droptestDS.sh",
+"controller_start_handler":"start_droptestRPC.sh",
 "controller_stop_handler":"stop.sh",
 "controller_status_handler":"status.sh",
 "controller_clean_handler":"clean.sh",
@@ -33,7 +40,6 @@
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
 
-
 "sb_emulator_build_handler":"build.sh",
 "sb_emulator_clean_handler":"clean.sh",
 "mtcbench_run_handler":"run.sh",
@@ -51,8 +57,7 @@
 
 "mtcbench_rebuild":true,
 
-
-"java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
+"java_opts":["-Xmx1024m","-Xms512m","-XX:+UseG1GC","-XX:MaxPermSize=512m"],
 
 "test_repeats":2,
 
