@@ -40,6 +40,7 @@ class TestType:
 
         # compose full test name = test_type + emulator
 
+
         # Run the test
         if args.test_type == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:

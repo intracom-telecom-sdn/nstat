@@ -1,13 +1,9 @@
 {
-"nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
-"nstat_host_ip":"127.0.0.1",
 "nstat_node_ip":"10.0.1.10",
 "nstat_node_ssh_port":"22",
 "nstat_node_username":"root",
 "nstat_node_password":"root123",
 
-"controller_node_spec":"/nstat/vagrant/node_controller/Vagrantfile",
-"controller_host_ip":"127.0.0.1",
 "controller_node_ip":"10.0.1.11",
 "controller_node_ssh_port":"22",
 "controller_node_username":"root",
@@ -20,7 +16,6 @@
 "sb_emulator_node_password":"root123",
 
 "nb_generator_name":"nb-generator",
-"nb_generator_host_ip":"127.0.0.1",
 "nb_generator_node_ip":"10.0.1.12",
 "nb_generator_node_ssh_port":"22",
 "nb_generator_node_username":"root",

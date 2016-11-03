@@ -98,7 +98,6 @@ def main():
 
     args = parser.parse_args()
     print(args.ctrl_base_dir)
-    exit
     json_conf = {}
     with open(args.json_config) as conf_file:
         json_conf = json.load(conf_file)

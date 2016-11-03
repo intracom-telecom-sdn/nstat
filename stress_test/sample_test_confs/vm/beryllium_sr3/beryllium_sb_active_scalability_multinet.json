@@ -1,20 +1,14 @@
 {
-"nstat_node_spec":"/nstat/vagrant/node_nstat/Vagrantfile",
-"nstat_host_ip":"127.0.0.1",
 "nstat_node_ip":"192.168.160.200",
 "nstat_node_ssh_port":"22",
 "nstat_node_username":"jenkins",
 "nstat_node_password":"jenkins",
 
-"controller_node_spec":"/nstat/vagrant/node_controller/Vagrantfile",
-"controller_host_ip":"127.0.0.1",
 "controller_node_ip":"192.168.160.201",
 "controller_node_ssh_port":"22",
 "controller_node_username":"jenkins",
 "controller_node_password":"jenkins",
 
-"topology_node_spec":"/nstat/vagrant/node_cbench/Vagrantfile",
-"topology_host_ip":"127.0.0.1",
 "topology_node_ip":"192.168.160.204",
 "topology_node_ssh_port":"22",
 "topology_node_username":"vagrant",

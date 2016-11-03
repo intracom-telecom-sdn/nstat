@@ -54,9 +54,9 @@ class SBEmu:
         :rtype: object
         """
         name = test_config['sb_emulator_name']
-        if (name == 'mtcbench'):
+        if (name == 'MTCBENCH'):
             return MTCBench(sb_emu_base_dir, test_config)
-        elif (name == 'multinet'):
+        elif (name == 'MULTINET'):
             return Multinet(sb_emu_base_dir, test_config)
         else:
             raise NotImplementedError('Not supported yet')
