@@ -4,6 +4,7 @@
         "https_proxy": "{{env `https_proxy`}}",
         "ftp_proxy": "{{env `ftp_proxy`}}",
         "no_proxy": "{{env `no_proxy`}}",
+        "is_headless": "{{env `is_headless`}}",
         "user": "jenkins",
         "password": "jenkins",
         "disk_size": "40000"
@@ -30,6 +31,7 @@
                 ["-m", "4096"]
              ],
 
+            "headless": "{{user `is_headless`}}",
             "http_directory": "http",
             "output_directory": "build_output",
             "ssh_username": "{{user `user`}}",
