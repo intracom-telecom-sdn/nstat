@@ -388,9 +388,7 @@ class Oftraf(Monitor):
             logging.info('[oftraf_monitor_thread] '
                          'get throughput of controller')
             response_data = \
-                json.loads(self.oftraf.oftraf_get_of_counts
-                           (self.oftraf.oftraf_rest_server.ip,
-                            self.oftraf.oftraf_rest_server.port))
+                json.loads(self.oftraf.oftraf_get_of_counts())
             tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
             tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
             out_traffic = tuple(response_data['OF_out_counts'])
