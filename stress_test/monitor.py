@@ -34,7 +34,7 @@ class Monitor:
         self.test_type = test_type
         self.global_sample_id = 0
 
-    def __sample_stats(self):
+    def system_results(self):
         """ Collect runtime statistics
         :returns: experiment statistics in dictionary
         :rtype: dict
@@ -96,6 +96,7 @@ class MTCbench(Monitor):
         self.result_queue = gevent.queue.JoinableQueue()
         self.term_success = '__successful_termination__'
         self.term_fail = '__failed_termination__'
+        self.total_samples = []
 
     def monitor_thread(self):
         """ Function executed by the monitor thread
@@ -188,11 +189,43 @@ class MTCbench(Monitor):
         # parallel section: starting monitor/cbench threads
 
         samples = self.result_queue.get(block=True)
-        total_samples = total_samples + samples
+        self.total_samples = total_samples + samples
         gevent.joinall(monitor_thread)
         self.result_queue.join()
         gevent.killall(monitor_thread)
-        return total_samples
+        return self.total_samples
+
+    def monitor_results_idle(self):
+        results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
+        results['cbench_simulated_hosts'] = \
+            self.mtcbench.simulated_hosts
+        results['cbench_switches'] = self.mtcbench.switches
+        results['cbench_threads'] = self.mtcbench.threads
+        results['cbench_switches_per_thread'] = \
+            self.mtcbench.switches_per_thread
+        results['cbench_thread_creation_delay_ms'] = \
+            self.mtcbench.thread_creation_delay_ms
+        results['controller_results_period_ms'] = \
+            self.controller.statistics_period_ms
+        results['cbench_delay_before_traffic_ms'] = \
+            self.mtcbench.delay_before_traffic_ms
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = str(self.controller.port)
+        results['cbench_mode'] = self.mtcbench.mode
+        results['cbench_ms_per_test'] = self.mtcbench.ms_per_test
+        results['cbench_internal_repeats'] = \
+            self.mtcbench.internal_repeats
+
+        results['cbench_warmup'] = self.mtcbench.warmup
+        results['bootup_time_secs'] = self.total_samples[0]
+        results['discovered_switches'] = self.total_samples[1]
+        results['max_discovered_switches'] = self.total_samples[2]
+        results['discovered_switches_error_code'] = self.total_samples[-1]
+        results['successful_bootup_time'] = \
+            self.total_samples[0] if (self.total_samples[-1] == 0) else -1
+        self.total_samples.append(results)
 
 
 class NBgen(Monitor):
@@ -236,7 +269,8 @@ class NBgen(Monitor):
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
-                                  .format(self.nbgen.total_flows, time_interval))
+                                  .format(self.nbgen.total_flows,
+                                          time_interval))
                     self.nbgen.e2e_installation_time = time_interval
                     logging.info('[NB_generator] [Poll_flows thread] '
                                  'End to End installation time is: {0}'
