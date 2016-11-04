@@ -34,6 +34,7 @@ class Monitor:
         self.test_type = test_type
         self.global_sample_id = 0
 
+
     def __sample_stats(self):
         """ Collect runtime statistics
         :returns: experiment statistics in dictionary
@@ -363,8 +364,9 @@ class Oftraf(Monitor):
     def __init__(self, ctrl_base_dir, test_config, test, oftraf):
         super(self.__class__, self).__init__(ctrl_base_dir, test_config, test)
         self.oftraf = oftraf
+        self.exit_flag = multiprocessing.Value('b', False)
 
-    def monitor_thread(self, results_queue, exit_flag):
+    def monitor_thread(self, results_queue):
         """Function executed inside a thread and returns the output in json
         format, of openflow packets counts
 
@@ -379,7 +381,7 @@ class Oftraf(Monitor):
         :type oftraf_rest_server: collections.namedtuple<str,int>
         :type results_queue: multiprocessing.Queue
         """
-        while exit_flag.value is False:
+        while self.exit_flag.value is False:
 
             oftraf_interval_sec = self.oftraf.oftraf_interval_ms / 1000
             logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'.
@@ -404,16 +406,14 @@ class Oftraf(Monitor):
         result_queue = multiprocessing.Queue(maxsize=1)
 
         # Parallel section
-        exit_flag = False
+        self.exit_flag.value = False
 #        logging.info('{0} creating idle stability with oftraf '
 #                     'monitor thread'.format(test_type))
         monitor_thread = multiprocessing.Process(target=self.monitor_thread,
-                                                 args=(result_queue,
-                                                       exit_flag))
-
+                                                 args=(result_queue))
         monitor_thread.start()
         res = result_queue.get(block=True)
-        exit_flag.value = True
+        self.exit_flag.value = True
         result_queue.close()
 
 #        logging.info('{0} joining monitor thread'.format(test_type))
