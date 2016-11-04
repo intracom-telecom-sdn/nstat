@@ -23,5 +23,5 @@ then
 fi
 
 sudo apt-get -y update
-sudo apt-get -y upgrade
+sudo apt-get -o Dpkg::Options::="--force-confnew" --force-yes -y upgrade
 sudo apt-get -y install git
