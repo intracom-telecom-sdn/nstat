@@ -34,7 +34,6 @@ class Monitor:
         self.test_type = test_type
         self.global_sample_id = 0
 
-
     def __sample_stats(self):
         """ Collect runtime statistics
         :returns: experiment statistics in dictionary
@@ -93,10 +92,12 @@ class MTCbench(Monitor):
     def __init__(self, ctrl_base_dir, test_config, test, mtcbench):
         super(self.__class__, self).__init__(ctrl_base_dir, test_config, test)
         self.mtcbench = mtcbench
+        self.data_queue = gevent.queue.Queue()
+        self.result_queue = gevent.queue.JoinableQueue()
         self.term_success = '__successful_termination__'
         self.term_fail = '__failed_termination__'
 
-    def monitor_thread(self, data_queue, result_queue):
+    def monitor_thread(self):
         """ Function executed by the monitor thread
         """
 
@@ -110,12 +111,13 @@ class MTCbench(Monitor):
         while True:
             try:
                 # read messages from queue while TERM_SUCCESS has not been sent
-                line = data_queue.get(block=True, timeout=10000)
+                line = self.data_queue.get(block=True, timeout=10000)
                 if line == self.term_success:
                     logging.info('[monitor_thread] successful termination '
                                  'string returned. Returning samples and '
                                  'exiting.')
-                    result_queue.put(samples, block=True)
+                    self.result_queue.put(samples, block=True)
+                    self.result_queue.task_done()
                     return
                 else:
                     # look for lines containing a substring like e.g.
@@ -124,24 +126,24 @@ class MTCbench(Monitor):
                     if match is not None or line == self.term_fail:
                         statistics = self.__sample_stats()
                         statistics['global_sample_id'] = \
-                            self.global_sample_id.value
+                            self.test.global_sample_id
                         self.global_sample_id.value += 1
-                        statistics['repeat_id'] = self.test.repeat_id.value
+                        statistics['repeat_id'] = self.test.repeat_id
                         statistics['internal_repeat_id'] = internal_repeat_id
                         statistics['cbench_simulated_hosts'] = \
-                            self.mtcbench.simulated_hosts.value
+                            self.mtcbench.simulated_hosts
                         statistics['cbench_switches'] = \
                             self.mtcbench.switches.value
                         statistics['cbench_threads'] = \
-                            self.mtcbench.cbench_threads.value
+                            self.mtcbench.cbench_threads
                         statistics['cbench_switches_per_thread'] = \
-                            self.mtcbench.switches_per_thread.value
+                            self.mtcbench.switches_per_thread
                         statistics['cbench_thread_creation_delay_ms'] = \
-                            self.mtcbenchthread_creation_delay_ms.value
+                            self.mtcbenchthread_creation_delay_ms
                         statistics['cbench_delay_before_traffic_ms'] = \
-                            self.mtcbench.delay_before_traffic_ms.value
+                            self.mtcbench.delay_before_traffic_ms
                         statistics['controller_statistics_period_ms'] = \
-                            self.controller.stat_period_ms.value
+                            self.controller.stat_period_ms
                         statistics['test_repeats'] = self.test.test_repeats
                         statistics['controller_node_ip'] = self.controller.ip
                         statistics['controller_port'] = \
@@ -160,37 +162,36 @@ class MTCbench(Monitor):
 
                             statistics['throughput_responses_sec'] = -1
                             samples.append(statistics)
-                            result_queue.put(samples, block=True)
+                            self.result_queue.put(samples, block=True)
                             return
 
                         if match is not None:
-
                             # extract the numeric portion from the above regex
                             statistics['throughput_responses_sec'] = \
                                 float(match.group(1)) * 1000.0
-
                             samples.append(statistics)
                         internal_repeat_id += 1
 
             except queue.Empty as exept:
                 logging.error('[monitor_thread] {0}'.format(str(exept)))
+                self.result_queue.put(samples, block=True)
+                self.result_queue.task_done()
 
     def monitor_run(self):
         total_samples = []
-        data_queue = multiprocessing.Queue()
-        result_queue = multiprocessing.Queue()
 
 #        logging.info('{0} creating monitor thread'.format(test_type))
-        monitor_thread = multiprocessing.Process(
-            target=self.monitor_thread, args=(data_queue, result_queue))
+        monitor_thread = [gevent.spawn(self.monitor_thread())]
 
 #       logging.info('{0} creating cbench thread'.format(test_type))
 
         # parallel section: starting monitor/cbench threads
-        monitor_thread.start()
-        samples = result_queue.get(block=True)
+
+        samples = self.result_queue.get(block=True)
         total_samples = total_samples + samples
-        monitor_thread.join()
+        gevent.joinall(monitor_thread)
+        self.result_queue.join()
+        gevent.killall(monitor_thread)
         return total_samples
 
 
