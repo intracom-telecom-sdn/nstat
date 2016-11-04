@@ -89,9 +89,12 @@ class Monitor:
 
 
 class MTCbench(Monitor):
-    def __init__(self, ctrl_base_dir, test_config, test, mtcbench):
+    def __init__(self, ctrl_base_dir, ctrl_ip, ctrl_sb_port, test_config,
+                 test, mtcbench):
         super(self.__class__, self).__init__(ctrl_base_dir, test_config, test)
         self.mtcbench = mtcbench
+        self.ctrl_ip = ctrl_ip
+        self.ctrl_sb_port = ctrl_sb_port
         self.data_queue = gevent.queue.Queue()
         self.result_queue = gevent.queue.JoinableQueue()
         self.term_success = '__successful_termination__'
@@ -177,22 +180,40 @@ class MTCbench(Monitor):
                 self.result_queue.put(samples, block=True)
                 self.result_queue.task_done()
 
+    def mtcbench_thread(self):
+        """ Function executed by mtcbench thread.
+        """
+        logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
+
+        try:
+            self.mtcbench.run(self.ctrl_ip, self.ctrl_sb_port)
+            # mtcbench ended, enqueue termination message
+            if self.data_queue is not None:
+                self.data_queue.put(self.term_success, block=True)
+            logging.info('[MTCbench.mtcbench_thread] MTCbench thread ended '
+                         'successfully')
+        except:
+            if self.data_queue is not None:
+                self.data_queue.put(self.term_fail, block=True)
+            logging.error('[MTCbench.mtcbench_thread] Exception: '
+                          'MTCbench_thread exited with error.')
+        return
+
     def monitor_run(self):
-        total_samples = []
 
-#        logging.info('{0} creating monitor thread'.format(test_type))
-        monitor_thread = [gevent.spawn(self.monitor_thread())]
-
-#       logging.info('{0} creating cbench thread'.format(test_type))
-
-        # parallel section: starting monitor/cbench threads
+        logging.info('[MTCbench.monitor_run] creating and starting'
+                     ' monitor and MTCbench threads.')
+        # Consumer - producer threads (mtcbench_thread is the producer,
+        # monitor_thread is the consumer)
+        threads = [gevent.spawn(self.monitor_thread()),
+                   gevent.spawn(self.mtcbench_thread())]
 
         samples = self.result_queue.get(block=True)
-        total_samples = total_samples + samples
-        gevent.joinall(monitor_thread)
+        self.total_samples = self.total_samples + samples
+        gevent.joinall(threads)
         self.result_queue.join()
-        gevent.killall(monitor_thread)
-        return total_samples
+        gevent.killall(threads)
+        return self.total_samples
 
 
 class NBgen(Monitor):
