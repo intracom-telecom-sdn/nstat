@@ -4,7 +4,7 @@
 "nstat_node_username":"root",
 "nstat_node_password":"root123",
 
-"sb_emulator_name":"MT-Cbench",
+"sb_emulator_name":"MTCBENCH",
 "sb_emulator_node_ip":"10.0.1.10",
 "sb_emulator_node_ssh_port":"22",
 "sb_emulator_node_username":"root",
