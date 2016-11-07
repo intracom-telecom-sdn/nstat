@@ -493,57 +493,49 @@ class Oftraf(Monitor):
         super(self.__class__, self).__init__(ctrl_base_dir, test_config, test)
         self.oftraf = oftraf
         self.exit_flag = False
+        self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
 
-    def monitor_thread(self, results_queue):
+    def monitor_thread(self):
         """Function executed inside a thread and returns the output in json
         format, of openflow packets counts
-
-        :param oftraf_interval_ms: interval in milliseconds, after which we
-        want to get an oftraf measurement
-        :param oftraf_rest_server: a named tuple python collection,
-        containing the IP address and the port number of oftraf rest server
-        :param results_queue: the multiprocessing Queue used for the
-        communication between the NSTAT master thread and oftraf thread.
-        In this Queue we return the result
-        :type oftraf_interval_ms: int
-        :type oftraf_rest_server: collections.namedtuple<str,int>
-        :type results_queue: multiprocessing.Queue
         """
-        while self.exit_flag.value is False:
-
-            oftraf_interval_sec = self.oftraf.oftraf_interval_ms / 1000
-            logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'.
-                         format(oftraf_interval_sec))
-            time.sleep(oftraf_interval_sec)
-            logging.info('[oftraf_monitor_thread] '
-                         'get throughput of controller')
-            response_data = \
-                json.loads(self.oftraf.oftraf_get_of_counts())
-            tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
-            tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
-            out_traffic = tuple(response_data['OF_out_counts'])
-            in_traffic = tuple(response_data['OF_in_counts'])
-            results = {'of_out_traffic': out_traffic,
-                       'of_in_traffic': in_traffic,
-                       'tcp_of_out_traffic': tcp_out_traffic,
-                       'tcp_of_in_traffic': tcp_in_traffic}
-            results_queue.put(results, block=True)
-        return
+        try:
+            while self.exit_flag is False:
+                oftraf_interval_sec = self.oftraf.oftraf_interval_ms / 1000
+                logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'.
+                             format(oftraf_interval_sec))
+                time.sleep(oftraf_interval_sec)
+                logging.info('[oftraf_monitor_thread] '
+                             'get throughput of controller')
+                response_data = \
+                    json.loads(self.oftraf.oftraf_get_of_counts())
+                tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
+                tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
+                out_traffic = tuple(response_data['OF_out_counts'])
+                in_traffic = tuple(response_data['OF_in_counts'])
+                results = {'of_out_traffic': out_traffic,
+                           'of_in_traffic': in_traffic,
+                           'tcp_of_out_traffic': tcp_out_traffic,
+                           'tcp_of_in_traffic': tcp_in_traffic}
+                self.results_queue.put(results, block=True)
+        except:
+            logging.error('[oftraf.monitor_thread] Error monitor thread '
+                          'failed.')
+        finally:
+            self.results_queue.task_done()
+            return
 
     def monitor_run(self):
-        result_queue = multiprocessing.Queue(maxsize=1)
 
         # Parallel section
-        self.exit_flag.value = False
+        self.exit_flag = False
 #        logging.info('{0} creating idle stability with oftraf '
 #                     'monitor thread'.format(test_type))
-        monitor_thread = multiprocessing.Process(target=self.monitor_thread,
-                                                 args=(result_queue))
-        monitor_thread.start()
-        res = result_queue.get(block=True)
-        self.exit_flag.value = True
-        result_queue.close()
+        monitor_thread = gevent.spawn(self.monitor_thread())
+        res = self.results_queue.get(block=True)
+        self.exit_flag = True
+        gevent.joinall(monitor_thread)
+        self.results_queue.join()
 
 #        logging.info('{0} joining monitor thread'.format(test_type))
-        monitor_thread.join()
         return res
