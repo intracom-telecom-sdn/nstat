@@ -99,7 +99,7 @@ class MTCbench(Monitor):
         self.term_fail = '__failed_termination__'
         self.total_samples = []
 
-    def monitor_thread(self):
+    def monitor_thread_active(self):
         """ Function executed by the monitor thread
         """
 
@@ -107,7 +107,7 @@ class MTCbench(Monitor):
         logging.info('[monitor_thread] Monitor thread started')
 
         # will hold samples taken in the lifetime of this thread
-        samples = []
+        results = []
         # Opening connection with controller
         # node to be utilized in the sequel
         while True:
@@ -118,7 +118,7 @@ class MTCbench(Monitor):
                     logging.info('[monitor_thread] successful termination '
                                  'string returned. Returning samples and '
                                  'exiting.')
-                    self.result_queue.put(samples, block=True)
+                    self.result_queue.put(results, block=True)
                     self.result_queue.task_done()
                     return
                 else:
@@ -126,85 +126,85 @@ class MTCbench(Monitor):
                     # 'total = 1.2345 per ms'
                     match = re.search(r'total = (.+) per ms', line)
                     if match is not None or line == self.term_fail:
-                        statistics = self.__sample_stats()
-                        statistics['global_sample_id'] = \
-                            self.test.global_sample_id
-                        self.global_sample_id.value += 1
-                        statistics['repeat_id'] = self.test.repeat_id
-                        statistics['internal_repeat_id'] = internal_repeat_id
-                        statistics['cbench_simulated_hosts'] = \
-                            self.mtcbench.simulated_hosts
-                        statistics['cbench_switches'] = \
-                            self.mtcbench.switches.value
-                        statistics['cbench_threads'] = \
-                            self.mtcbench.cbench_threads
-                        statistics['cbench_switches_per_thread'] = \
-                            self.mtcbench.switches_per_thread
-                        statistics['cbench_thread_creation_delay_ms'] = \
-                            self.mtcbenchthread_creation_delay_ms
-                        statistics['cbench_delay_before_traffic_ms'] = \
-                            self.mtcbench.delay_before_traffic_ms
-                        statistics['controller_statistics_period_ms'] = \
-                            self.controller.stat_period_ms
-                        statistics['test_repeats'] = self.test.test_repeats
-                        statistics['controller_node_ip'] = self.controller.ip
-                        statistics['controller_port'] = \
-                            str(self.controller.port)
-                        statistics['cbench_mode'] = self.mtcbench.mode
-                        statistics['cbench_ms_per_test'] = \
-                            self.mtcbench.ms_per_test
-                        statistics['cbench_internal_repeats'] = \
-                            self.mtcbenchinternal_repeats
-                        statistics['cbench_warmup'] = self.mtcbench.warmup
-                        if line == self.term_fail:
-                            logging.info('[monitor_thread] returned failed '
-                                         'termination '
-                                         'string returning gathered samples '
-                                         'and exiting.')
-
-                            statistics['throughput_responses_sec'] = -1
-                            samples.append(statistics)
-                            self.result_queue.put(samples, block=True)
-                            return
-
-                        if match is not None:
-                            # extract the numeric portion from the above regex
-                            statistics['throughput_responses_sec'] = \
-                                float(match.group(1)) * 1000.0
-                            samples.append(statistics)
-                        internal_repeat_id += 1
-
+                        results = \
+                            self.__monitor_results_active(internal_repeat_id,
+                                                          line, results, match)
             except queue.Empty as exept:
                 logging.error('[monitor_thread] {0}'.format(str(exept)))
-                self.result_queue.put(samples, block=True)
+                self.result_queue.put(results, block=True)
                 self.result_queue.task_done()
 
-    def mtcbench_thread(self):
-        """ Function executed by mtcbench thread.
+    def monitor_thread_idle(self, boot_start_time,
+                            sleep_before_discovery_ms,
+                            expected_switches, queuecomm):
         """
-        logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
+        Poll operational DS to discover installed switches
+        :param boot_start_time: The time we begin starting topology switches
+        :param sleep_before_discovery_ms: amount of time (in milliseconds)
+        to sleep before starting polling datastore to discover switches
+        :param expected_switches: switches expected to find in the DS
+        should discover switches (in milliseconds)
+        :param queuecomm: queue for communicating with the main context
+        :type boot_start_time: int
+        :type sleep_before_discovery_ms: int
+        :type expected_switches: int
+        :type queuecomm: multiprocessing.Queue
+        """
 
-        try:
-            self.mtcbench.run(self.ctrl_ip, self.ctrl_sb_port)
-            # mtcbench ended, enqueue termination message
-            if self.data_queue is not None:
-                self.data_queue.put(self.term_success, block=True)
-            logging.info('[MTCbench.mtcbench_thread] MTCbench thread ended '
-                         'successfully')
-        except:
-            if self.data_queue is not None:
-                self.data_queue.put(self.term_fail, block=True)
-            logging.error('[MTCbench.mtcbench_thread] Exception: '
-                          'MTCbench_thread exited with error.')
-        return
+        discovery_deadline = 120
+        sleep_before_discovery = float(sleep_before_discovery_ms) / 1000
+        logging.info('[monitor_thread_idle] Monitor thread started')
+        t_start = boot_start_time.value
+        logging.info('[monitor_thread_idle] Starting discovery')
+        previous_discovered_switches = 0
+        discovered_switches = 0
+        time.sleep(sleep_before_discovery)
+        t_discovery_start = time.time()
+        error_code = 0
+        max_discovered_switches = 0
 
-    def monitor_run(self):
+        while True:
+            if (time.time() - t_discovery_start) > discovery_deadline:
+                error_code = 201
+                logging.info(
+                    '[poll_ds_thread] Deadline of {0} seconds passed, '
+                    'discovered {1} switches.'.format(discovery_deadline,
+                                                      discovered_switches))
+                discovery_time = time.time() - t_start - discovery_deadline
+                queuecomm.put((discovery_time, discovered_switches,
+                               max_discovered_switches, error_code))
 
-        logging.info('[MTCbench.monitor_run] creating and starting'
+                return 0
+            else:
+                discovered_switches = self.controller.get_switches()
+
+                if discovered_switches == -1:
+                    discovered_switches = previous_discovered_switches
+                if discovered_switches > max_discovered_switches:
+                    max_discovered_switches = discovered_switches
+
+                if discovered_switches != previous_discovered_switches:
+                    t_discovery_start = time.time()
+                    previous_discovered_switches = discovered_switches
+
+                if discovered_switches == expected_switches.value:
+                    delta_t = time.time() - t_start
+                    logging.info(
+                        '[poll_ds_thread] {0} switches found in {1} seconds'.
+                        format(discovered_switches, delta_t))
+
+                    queuecomm.put((delta_t, discovered_switches,
+                                   max_discovered_switches, error_code))
+                    return 0
+            time.sleep(1)
+
+    def monitor_run_active(self):
+
+        logging.info('[MTCbench.monitor_run_active] creating and starting'
                      ' monitor and MTCbench threads.')
         # Consumer - producer threads (mtcbench_thread is the producer,
         # monitor_thread is the consumer)
-        threads = [gevent.spawn(self.monitor_thread()),
+        threads = [gevent.spawn(self.monitor_thread_active()),
                    gevent.spawn(self.mtcbench_thread())]
 
         samples = self.result_queue.get(block=True)
@@ -214,6 +214,57 @@ class MTCbench(Monitor):
         self.result_queue.join()
         gevent.killall(threads)
         return self.total_samples
+
+    def __monitor_results_active(self, internal_repeat_id,
+                                 line, results, match):
+        statistics = self.system_results()
+        statistics['global_sample_id'] = \
+            self.test.global_sample_id
+        self.global_sample_id.value += 1
+        statistics['repeat_id'] = self.test.repeat_id
+        statistics['internal_repeat_id'] = internal_repeat_id
+        statistics['cbench_simulated_hosts'] = \
+            self.mtcbench.simulated_hosts
+        statistics['cbench_switches'] = \
+            self.mtcbench.switches.value
+        statistics['cbench_threads'] = \
+            self.mtcbench.cbench_threads
+        statistics['cbench_switches_per_thread'] = \
+            self.mtcbench.switches_per_thread
+        statistics['cbench_thread_creation_delay_ms'] = \
+            self.mtcbenchthread_creation_delay_ms
+        statistics['cbench_delay_before_traffic_ms'] = \
+            self.mtcbench.delay_before_traffic_ms
+        statistics['controller_statistics_period_ms'] = \
+            self.controller.stat_period_ms
+        statistics['test_repeats'] = self.test.test_repeats
+        statistics['controller_node_ip'] = self.controller.ip
+        statistics['controller_port'] = \
+            str(self.controller.port)
+        statistics['cbench_mode'] = self.mtcbench.mode
+        statistics['cbench_ms_per_test'] = \
+            self.mtcbench.ms_per_test
+        statistics['cbench_internal_repeats'] = \
+            self.mtcbenchinternal_repeats
+        statistics['cbench_warmup'] = self.mtcbench.warmup
+        if line == self.term_fail:
+            logging.info('[monitor_thread] returned failed '
+                         'termination '
+                         'string returning gathered samples '
+                         'and exiting.')
+
+            statistics['throughput_responses_sec'] = -1
+            results.append(statistics)
+            self.result_queue.put(results, block=True)
+            return
+
+        if match is not None:
+            # extract the numeric portion from the above regex
+            statistics['throughput_responses_sec'] = \
+                float(match.group(1)) * 1000.0
+            results.append(statistics)
+        internal_repeat_id += 1
+        return results
 
     def monitor_results_idle(self):
         results = self.system_results()
@@ -246,6 +297,25 @@ class MTCbench(Monitor):
         results['successful_bootup_time'] = \
             self.total_samples[0] if (self.total_samples[-1] == 0) else -1
         self.total_samples.append(results)
+
+    def mtcbench_thread(self):
+        """ Function executed by mtcbench thread.
+        """
+        logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
+
+        try:
+            self.mtcbench.run(self.ctrl_ip, self.ctrl_sb_port)
+            # mtcbench ended, enqueue termination message
+            if self.data_queue is not None:
+                self.data_queue.put(self.term_success, block=True)
+            logging.info('[MTCbench.mtcbench_thread] MTCbench thread ended '
+                         'successfully')
+        except:
+            if self.data_queue is not None:
+                self.data_queue.put(self.term_fail, block=True)
+            logging.error('[MTCbench.mtcbench_thread] Exception: '
+                          'MTCbench_thread exited with error.')
+        return
 
 
 class NBgen(Monitor):
