@@ -17,11 +17,11 @@ import queue
 
 class TestType:
 
-    def __init__(self, ctrl_base_dir, test_config):
+    def __init__(self, json_conf, controller, sb_emulator, nb_emulator):
 
         """
         """
-        self.name = test_config['controller_name']
+        self.test_name = test_config['controller_name']
 
     def load_test_conf(self):
         """
