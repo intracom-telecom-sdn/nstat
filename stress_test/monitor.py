@@ -9,6 +9,7 @@
 import gevent
 import json
 import logging
+import overloading
 import queue
 import re
 import subprocess
@@ -98,8 +99,11 @@ class Emulator(Monitor):
         self.term_fail = '__failed_termination__'
         self.total_samples = []
 
-    def monitor_thread_active(self):
-        """ Function executed by the monitor thread
+    @overloading.overload
+    def monitor_thread(self):
+        """
+        This monitor function is used by active tests
+        Function executed by the monitor thread
         """
 
         internal_repeat_id = 0
@@ -134,10 +138,10 @@ class Emulator(Monitor):
                 self.result_queue.task_done()
                 return
 
-    def monitor_thread_idle(self, boot_start_time,
-                            sleep_before_discovery_ms,
-                            expected_switches, queuecomm):
+    @overloading.overload
+    def monitor_thread(self, boot_start_time):
         """
+        This monitor function is used from idle tests.
         Poll operational DS to discover installed switches
         :param boot_start_time: The time we begin starting topology switches
         :param sleep_before_discovery_ms: amount of time (in milliseconds)
@@ -173,8 +177,8 @@ class Emulator(Monitor):
                     'discovered {1} switches.'.format(discovery_deadline,
                                                       discovered_switches))
                 discovery_time = time.time() - t_start - discovery_deadline
-                queuecomm.put((discovery_time, discovered_switches,
-                               max_discovered_switches, error_code))
+                self.result_queue.put((discovery_time, discovered_switches,
+                                       max_discovered_switches, error_code))
 
                 return 0
             else:
@@ -195,26 +199,33 @@ class Emulator(Monitor):
                         '[poll_ds_thread] {0} switches found in {1} seconds'.
                         format(discovered_switches, delta_t))
 
-                    queuecomm.put((delta_t, discovered_switches,
-                                   max_discovered_switches, error_code))
+                    self.result_queue.put((delta_t, discovered_switches,
+                                           max_discovered_switches,
+                                           error_code))
                     return 0
             time.sleep(1)
 
-    def monitor_run_active(self):
+    def monitor_run(self, boot_start_time=None):
 
-        logging.info('[MTCbench.monitor_run_active] creating and starting'
+        logging.info('[MTCbench.monitor_run] creating and starting'
                      ' monitor and MTCbench threads.')
         # Consumer - producer threads (mtcbench_thread is the producer,
         # monitor_thread is the consumer)
-        threads = [gevent.spawn(self.monitor_thread_active()),
-                   gevent.spawn(self.mtcbench_thread())]
+        if boot_start_time is None:
+            logging.info('[MTCbench.monitor_run] Active test monitor is '
+                         'running')
+            monitor_thread = gevent.spawn(self.monitor_thread())
+        else:
+            logging.info('[MTCbench.monitor_run] Idle test monitor is running')
+            monitor_thread = gevent.spawn(self.monitor_thread(boot_start_time))
+        mtcbench_thread = gevent.spawn(self.mtcbench_thread())
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
 
         self.total_samples = self.total_samples + samples
-        gevent.joinall(threads)
+        gevent.joinall([monitor_thread, mtcbench_thread])
         self.result_queue.join()
-        gevent.killall(threads)
+        gevent.killall([monitor_thread, mtcbench_thread])
         return self.total_samples
 
     def __monitor_results_active(self, internal_repeat_id,
