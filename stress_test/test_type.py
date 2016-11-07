@@ -21,15 +21,15 @@ class TestType:
 
         """
         """
-        self.test_name = test_config['controller_name']
+        self.test_type = args.test_type
         self.test_name = test_config['controller_name']
 
     def load_test_conf(self):
         """
         """
         json_conf = {}
-            with open(args.json_config) as conf_file:
-                json_conf = json.load(conf_file)
+        with open(args.json_config) as conf_file:
+            json_conf = json.load(conf_file)
 
             ctrl_base_dir = args.ctrl_base_dir
             sb_emu_base_dir = args.sb_emu_base_dir
@@ -43,11 +43,6 @@ class TestType:
                 nb_emu_base_dir = args.nb_emu_base_dir
                 nb_emulator = stress_test.emulator.SBEmu.new(nb_emu_base_dir,
                                                              json_conf)
-
-            test = stress_test.test_type.TestCase(json_conf, controller,
-                                                  sb_emulator, nb_emulator)
-        pass
-
 
     def set_log_level_test(self):
         """Setting log level for NSTAT experiment
@@ -80,11 +75,15 @@ class TestType:
                 file_logging_handler.setLevel(level=logging.DEBUG)
 
 
-    def test_selector(self):
+    def test_selector(self, args):
         """
         """
-
+        #1. load test_configuration
+        self.load_test_conf(args)
+        self.set_log_level(args)
         # compose full test name = test_type + emulator
+        emulator_name
+        test_type = args.test_type + args.emulator_name
 
         # Run the test
         if args.test_type == 'sb_active_scalability_mtcbench':
@@ -185,7 +184,9 @@ class TestType:
 
     def __sb_active_scalability_cbench_run(self):
         """
+
         """
+
         pass
     def __sb_active_stability_cbench_run(self):
         """

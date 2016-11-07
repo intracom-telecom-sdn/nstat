@@ -97,8 +97,8 @@ def main():
                              "ERROR")
 
     args = parser.parse_args()
-    print(args.ctrl_base_dir)
-
+    test = stress_test.test_type.TestCase(args)
+    test.test_selector(args)
 
 
 if __name__ == '__main__':
