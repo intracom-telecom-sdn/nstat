@@ -17,7 +17,7 @@ import queue
 
 class TestType:
 
-    def __init__(self, test_config, controller, sb_emulator, nb_emulator):
+    def __init__(self, args):
 
         """
         """
@@ -27,6 +27,25 @@ class TestType:
     def load_test_conf(self):
         """
         """
+        json_conf = {}
+            with open(args.json_config) as conf_file:
+                json_conf = json.load(conf_file)
+
+            ctrl_base_dir = args.ctrl_base_dir
+            sb_emu_base_dir = args.sb_emu_base_dir
+
+            controller = stress_test.controller.Controller.new(ctrl_base_dir,
+                                                               json_conf)
+            sb_emulator = stress_test.emulator.SBEmu.new(sb_emu_base_dir,
+                                                         json_conf)
+
+            if hasattr(args, 'nb_emu_base_dir'):
+                nb_emu_base_dir = args.nb_emu_base_dir
+                nb_emulator = stress_test.emulator.SBEmu.new(nb_emu_base_dir,
+                                                             json_conf)
+
+            test = stress_test.test_type.TestCase(json_conf, controller,
+                                                  sb_emulator, nb_emulator)
         pass
 
 
@@ -66,7 +85,7 @@ class TestType:
         """
 
         # compose full test name = test_type + emulator
-        
+
         # Run the test
         if args.test_type == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
