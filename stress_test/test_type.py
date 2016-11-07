@@ -17,10 +17,11 @@ import queue
 
 class TestType:
 
-    def __init__(self, json_conf, controller, sb_emulator, nb_emulator):
+    def __init__(self, test_config, controller, sb_emulator, nb_emulator):
 
         """
         """
+        self.test_name = test_config['controller_name']
         self.test_name = test_config['controller_name']
 
     def load_test_conf(self):
@@ -65,7 +66,7 @@ class TestType:
         """
 
         # compose full test name = test_type + emulator
-
+        
         # Run the test
         if args.test_type == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
