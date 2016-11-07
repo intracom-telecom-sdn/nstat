@@ -9,7 +9,6 @@
 import gevent
 import json
 import logging
-import multiprocessing
 import queue
 import re
 import subprocess
