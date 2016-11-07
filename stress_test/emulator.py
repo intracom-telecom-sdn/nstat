@@ -150,6 +150,14 @@ class MTCBench(SBEmu):
 
         self.rebuild = test_config['mtcbench_rebuild']
 
+    def get_topo_bootup_ms(self):
+        topo_bootup_ms = self.threads * self.thread_creation_delay_ms
+        return topo_bootup_ms
+
+    def get_overall_topo_size(self):
+        overall_topo_size = self.threads * self.switches_per_thread
+        return overall_topo_size
+
     def run(self, ctrl_ip, ctrl_sb_port):
         """ Wrapper to the MTCBench SB-Emulator run handler
         :param ctrl_ip: The ip address of the controller
@@ -247,6 +255,15 @@ class Multinet(SBEmu):
 
         self.venv_path = "/opt/venv_multinet"
         self.venv_hnd = self.base_dir + "bin/venv_handler_master.sh"
+
+    def get_topo_bootup_ms(self):
+        topo_bootup_ms = \
+            (self.topo_size // self.topo_group_size) * self.topo_group_delay_ms
+        return topo_bootup_ms
+
+    def get_overall_topo_size(self):
+        overall_topo_size = self.topo_size * len(self.workers_ips)
+        return overall_topo_size
 
     def __generate_config(self, cntrl_of_port, cntrl_ip):
         """
