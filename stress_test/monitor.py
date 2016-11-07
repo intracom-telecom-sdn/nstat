@@ -542,10 +542,12 @@ class Oftraf(Monitor):
 #        logging.info('{0} creating idle stability with oftraf '
 #                     'monitor thread'.format(test_type))
         monitor_thread = gevent.spawn(self.monitor_thread())
+        gevent.sleep(0)
         res = self.results_queue.get(block=True)
         self.exit_flag = True
-        gevent.joinall(monitor_thread)
+        gevent.joinall([monitor_thread])
         self.results_queue.join()
+        gevent.killall([monitor_thread])
 
 #        logging.info('{0} joining monitor thread'.format(test_type))
         return res
