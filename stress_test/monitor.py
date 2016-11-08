@@ -80,7 +80,6 @@ class Monitor:
             util.sysstats.sys_load_average(self.controller.ssh_client)[1]
         system_statistics['fifteen_minute_load'] = \
             util.sysstats.sys_load_average(self.controller.ssh_client)[2]
-
         return system_statistics
 
 
@@ -91,6 +90,80 @@ class Emulator(Monitor):
         self.emulator = emulator
         self.result_queue = gevent.queue.JoinableQueue()
         self.total_samples = []
+
+    def _monitor_results_active(self, internal_repeat_id,
+                                 line, results, match):
+        statistics = self.system_results()
+        statistics['global_sample_id'] = \
+            self.test.global_sample_id
+        self.global_sample_id += 1
+        statistics['repeat_id'] = self.test.repeat_id
+        statistics['internal_repeat_id'] = internal_repeat_id
+        statistics['cbench_simulated_hosts'] = \
+            self.emulator.simulated_hosts
+        statistics['cbench_switches'] = \
+            self.emulator.switches
+        statistics['cbench_threads'] = \
+            self.emulator.cbench_threads
+        statistics['cbench_switches_per_thread'] = \
+            self.emulator.switches_per_thread
+        statistics['cbench_thread_creation_delay_ms'] = \
+            self.emulator.thread_creation_delay_ms
+        statistics['cbench_delay_before_traffic_ms'] = \
+            self.emulator.delay_before_traffic_ms
+        statistics['controller_statistics_period_ms'] = \
+            self.controller.stat_period_ms
+        statistics['test_repeats'] = self.test.test_repeats
+        statistics['controller_node_ip'] = self.controller.ip
+        statistics['controller_port'] = \
+            str(self.controller.port)
+        statistics['cbench_mode'] = self.emulator.mode
+        statistics['cbench_ms_per_test'] = \
+            self.emulator.ms_per_test
+        statistics['cbench_internal_repeats'] = \
+            self.emulator.internal_repeats
+        statistics['cbench_warmup'] = self.emulator.warmup
+        if line == self.term_fail:
+            logging.info('[monitor_thread] returned failed '
+                         'termination '
+                         'string returning gathered samples '
+                         'and exiting.')
+            statistics['throughput_responses_sec'] = -1
+            results.append(statistics)
+            self.result_queue.put(results, block=True)
+            return
+        if match is not None:
+            # extract the numeric portion from the above regex
+            statistics['throughput_responses_sec'] = \
+                float(match.group(1)) * 1000.0
+            results.append(statistics)
+        internal_repeat_id += 1
+        return results
+
+    def _monitor_results_idle(self):
+        results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
+        results['cbench_simulated_hosts'] = \
+            self.emulator.simulated_hosts
+        results['cbench_switches'] = self.emulator.switches
+        results['cbench_threads'] = self.emulator.threads
+        results['cbench_switches_per_thread'] = \
+            self.emulator.switches_per_thread
+        results['cbench_thread_creation_delay_ms'] = \
+            self.emulator.thread_creation_delay_ms
+        results['controller_results_period_ms'] = \
+            self.controller.statistics_period_ms
+        results['cbench_delay_before_traffic_ms'] = \
+            self.emulator.delay_before_traffic_ms
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = str(self.controller.port)
+        results['cbench_mode'] = self.emulator.mode
+        results['cbench_ms_per_test'] = self.emulator.ms_per_test
+        results['cbench_internal_repeats'] = \
+            self.emulator.internal_repeats
+        results['cbench_warmup'] = self.emulator.warmup
+        return results
 
     @overloading.overload
     def monitor_thread(self, boot_start_time):
@@ -132,9 +205,13 @@ class Emulator(Monitor):
                     'discovered {1} switches.'.format(discovery_deadline,
                                                       discovered_switches))
                 discovery_time = time.time() - t_start - discovery_deadline
-                self.result_queue.put((discovery_time, discovered_switches,
-                                       max_discovered_switches, error_code))
-
+                results = self._monitor_results_idle()
+                results['bootup_time_secs'] = discovery_time
+                results['discovered_switches'] = discovered_switches
+                results['max_discovered_switches'] = max_discovered_switches
+                results['discovered_switches_error_code'] = error_code
+                results['successful_bootup_time'] = -1
+                self.result_queue.put([results])
                 return 0
             else:
                 discovered_switches = self.controller.get_switches()
@@ -153,13 +230,15 @@ class Emulator(Monitor):
                     logging.info(
                         '[poll_ds_thread] {0} switches found in {1} seconds'.
                         format(discovered_switches, delta_t))
-
-                    self.result_queue.put((delta_t, discovered_switches,
-                                           max_discovered_switches,
-                                           error_code))
+                    results = self._monitor_results_idle()
+                    results['bootup_time_secs'] = delta_t
+                    results['discovered_switches'] = discovered_switches
+                    results['max_discovered_switches'] = max_discovered_switches
+                    results['discovered_switches_error_code'] = error_code
+                    results['successful_bootup_time'] = delta_t
+                    self.result_queue.put([results])
                     return 0
             time.sleep(1)
-
 
 class Mtcbench(Emulator):
     def __init__(self, controller, test_type, test, emulator):
@@ -201,7 +280,7 @@ class Mtcbench(Emulator):
                     match = re.search(r'total = (.+) per ms', line)
                     if match is not None or line == self.term_fail:
                         results = \
-                            self.__monitor_results_active(internal_repeat_id,
+                            self._monitor_results_active(internal_repeat_id,
                                                           line, results, match)
             except queue.Empty as exept:
                 logging.error('[monitor_thread] {0}'.format(str(exept)))
@@ -225,94 +304,11 @@ class Mtcbench(Emulator):
         mtcbench_thread = gevent.spawn(self.mtcbench_thread())
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
-        self.total_samples = self.total_samples + samples
+        self.total_samples.append(samples)
         gevent.joinall([monitor_thread, mtcbench_thread])
         self.result_queue.join()
         gevent.killall([monitor_thread, mtcbench_thread])
         return self.total_samples
-
-    def __monitor_results_active(self, internal_repeat_id,
-                                 line, results, match):
-        statistics = self.system_results()
-        statistics['global_sample_id'] = \
-            self.test.global_sample_id
-        self.global_sample_id += 1
-        statistics['repeat_id'] = self.test.repeat_id
-        statistics['internal_repeat_id'] = internal_repeat_id
-        statistics['cbench_simulated_hosts'] = \
-            self.emulator.simulated_hosts
-        statistics['cbench_switches'] = \
-            self.emulator.switches
-        statistics['cbench_threads'] = \
-            self.emulator.cbench_threads
-        statistics['cbench_switches_per_thread'] = \
-            self.emulator.switches_per_thread
-        statistics['cbench_thread_creation_delay_ms'] = \
-            self.emulator.thread_creation_delay_ms
-        statistics['cbench_delay_before_traffic_ms'] = \
-            self.emulator.delay_before_traffic_ms
-        statistics['controller_statistics_period_ms'] = \
-            self.controller.stat_period_ms
-        statistics['test_repeats'] = self.test.test_repeats
-        statistics['controller_node_ip'] = self.controller.ip
-        statistics['controller_port'] = \
-            str(self.controller.port)
-        statistics['cbench_mode'] = self.emulator.mode
-        statistics['cbench_ms_per_test'] = \
-            self.emulator.ms_per_test
-        statistics['cbench_internal_repeats'] = \
-            self.emulator.internal_repeats
-        statistics['cbench_warmup'] = self.emulator.warmup
-        if line == self.term_fail:
-            logging.info('[monitor_thread] returned failed '
-                         'termination '
-                         'string returning gathered samples '
-                         'and exiting.')
-
-            statistics['throughput_responses_sec'] = -1
-            results.append(statistics)
-            self.result_queue.put(results, block=True)
-            return
-
-        if match is not None:
-            # extract the numeric portion from the above regex
-            statistics['throughput_responses_sec'] = \
-                float(match.group(1)) * 1000.0
-            results.append(statistics)
-        internal_repeat_id += 1
-        return results
-
-    def monitor_results_idle(self):
-        results = self.system_results()
-        results['global_sample_id'] = self.global_sample_id
-        self.global_sample_id += 1
-        results['cbench_simulated_hosts'] = \
-            self.emulator.simulated_hosts
-        results['cbench_switches'] = self.emulator.switches
-        results['cbench_threads'] = self.emulator.threads
-        results['cbench_switches_per_thread'] = \
-            self.emulator.switches_per_thread
-        results['cbench_thread_creation_delay_ms'] = \
-            self.emulator.thread_creation_delay_ms
-        results['controller_results_period_ms'] = \
-            self.controller.statistics_period_ms
-        results['cbench_delay_before_traffic_ms'] = \
-            self.emulator.delay_before_traffic_ms
-        results['controller_node_ip'] = self.controller.ip
-        results['controller_port'] = str(self.controller.port)
-        results['cbench_mode'] = self.emulator.mode
-        results['cbench_ms_per_test'] = self.emulator.ms_per_test
-        results['cbench_internal_repeats'] = \
-            self.emulator.internal_repeats
-
-        results['cbench_warmup'] = self.emulator.warmup
-        results['bootup_time_secs'] = self.total_samples[0]
-        results['discovered_switches'] = self.total_samples[1]
-        results['max_discovered_switches'] = self.total_samples[2]
-        results['discovered_switches_error_code'] = self.total_samples[-1]
-        results['successful_bootup_time'] = \
-            self.total_samples[0] if (self.total_samples[-1] == 0) else -1
-        self.total_samples.append(results)
 
     def mtcbench_thread(self):
         """ Function executed by mtcbench thread.
