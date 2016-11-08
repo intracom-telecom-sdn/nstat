@@ -9,7 +9,6 @@
 import gevent
 import json
 import logging
-import overloading
 import queue
 import re
 import subprocess
@@ -83,64 +82,121 @@ class Monitor:
         return system_statistics
 
 
-class Emulator(Monitor):
+class Oftraf(Monitor):
 
-    def __init__(self, controller, test_type, test, emulator):
+    def __init__(self, test, oftraf):
         super(self.__class__, self).__init__(test)
+        self.oftraf = oftraf
+        self.exit_flag = False
+        self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
+
+    def monitor_thread(self):
+        """Function executed inside a thread and returns the output in json
+        format, of openflow packets counts
+        """
+        try:
+            while self.exit_flag is False:
+                oftraf_interval_sec = self.oftraf.oftraf_interval_ms / 1000
+                logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'
+                             .format(oftraf_interval_sec))
+                time.sleep(oftraf_interval_sec)
+                logging.info('[oftraf_monitor_thread] '
+                             'get throughput of controller')
+                response_data = \
+                    json.loads(self.oftraf.oftraf_get_of_counts())
+                tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
+                tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
+                out_traffic = tuple(response_data['OF_out_counts'])
+                in_traffic = tuple(response_data['OF_in_counts'])
+                results = {'of_out_traffic': out_traffic,
+                           'of_in_traffic': in_traffic,
+                           'tcp_of_out_traffic': tcp_out_traffic,
+                           'tcp_of_in_traffic': tcp_in_traffic}
+                self.results_queue.put(results, block=True)
+        except:
+            logging.error('[oftraf.monitor_thread] Error monitor thread '
+                          'failed.')
+        finally:
+            self.results_queue.task_done()
+            return
+
+    def monitor_run(self):
+
+        # Parallel section
+        self.exit_flag = False
+#        logging.info('{0} creating idle stability with oftraf '
+#                     'monitor thread'.format(test_type))
+        monitor_thread = gevent.spawn(self.monitor_thread())
+        gevent.sleep(0)
+        res = self.results_queue.get(block=True)
+        self.exit_flag = True
+        gevent.joinall([monitor_thread])
+        self.results_queue.join()
+        gevent.killall([monitor_thread])
+
+#        logging.info('{0} joining monitor thread'.format(test_type))
+        return res
+
+
+class Mtcbench(Monitor):
+    def __init__(self, controller, test_type, test, emulator):
+        super(self.__class__, self).__init__(test,
+                                             emulator)
+
         self.emulator = emulator
         self.result_queue = gevent.queue.JoinableQueue()
         self.total_samples = []
+        self.term_success = '__successful_termination__'
+        self.term_fail = '__failed_termination__'
+        self.data_queue = gevent.queue.Queue()
 
-    def _monitor_results_active(self, internal_repeat_id,
-                                 line, results, match):
-        statistics = self.system_results()
-        statistics['global_sample_id'] = \
+    def monitor_results_active(self, internal_repeat_id, line, match):
+        results = self.system_results()
+        results['global_sample_id'] = \
             self.test.global_sample_id
         self.global_sample_id += 1
-        statistics['repeat_id'] = self.test.repeat_id
-        statistics['internal_repeat_id'] = internal_repeat_id
-        statistics['cbench_simulated_hosts'] = \
+        results['repeat_id'] = self.test.repeat_id
+        results['internal_repeat_id'] = internal_repeat_id
+        results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
-        statistics['cbench_switches'] = \
+        results['cbench_switches'] = \
             self.emulator.switches
-        statistics['cbench_threads'] = \
+        results['cbench_threads'] = \
             self.emulator.cbench_threads
-        statistics['cbench_switches_per_thread'] = \
+        results['cbench_switches_per_thread'] = \
             self.emulator.switches_per_thread
-        statistics['cbench_thread_creation_delay_ms'] = \
+        results['cbench_thread_creation_delay_ms'] = \
             self.emulator.thread_creation_delay_ms
-        statistics['cbench_delay_before_traffic_ms'] = \
+        results['cbench_delay_before_traffic_ms'] = \
             self.emulator.delay_before_traffic_ms
-        statistics['controller_statistics_period_ms'] = \
+        results['controller_statistics_period_ms'] = \
             self.controller.stat_period_ms
-        statistics['test_repeats'] = self.test.test_repeats
-        statistics['controller_node_ip'] = self.controller.ip
-        statistics['controller_port'] = \
+        results['test_repeats'] = self.test.test_repeats
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = \
             str(self.controller.port)
-        statistics['cbench_mode'] = self.emulator.mode
-        statistics['cbench_ms_per_test'] = \
+        results['cbench_mode'] = self.emulator.mode
+        results['cbench_ms_per_test'] = \
             self.emulator.ms_per_test
-        statistics['cbench_internal_repeats'] = \
+        results['cbench_internal_repeats'] = \
             self.emulator.internal_repeats
-        statistics['cbench_warmup'] = self.emulator.warmup
+        results['cbench_warmup'] = self.emulator.warmup
         if line == self.term_fail:
             logging.info('[monitor_thread] returned failed '
                          'termination '
                          'string returning gathered samples '
                          'and exiting.')
-            statistics['throughput_responses_sec'] = -1
-            results.append(statistics)
+            results['throughput_responses_sec'] = -1
             self.result_queue.put(results, block=True)
-            return
+            return results
         if match is not None:
             # extract the numeric portion from the above regex
-            statistics['throughput_responses_sec'] = \
+            results['throughput_responses_sec'] = \
                 float(match.group(1)) * 1000.0
-            results.append(statistics)
         internal_repeat_id += 1
         return results
 
-    def _monitor_results_idle(self):
+    def monitor_results_idle(self):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
@@ -152,7 +208,7 @@ class Emulator(Monitor):
             self.emulator.switches_per_thread
         results['cbench_thread_creation_delay_ms'] = \
             self.emulator.thread_creation_delay_ms
-        results['controller_results_period_ms'] = \
+        results['controller_statistics_period_ms'] = \
             self.controller.statistics_period_ms
         results['cbench_delay_before_traffic_ms'] = \
             self.emulator.delay_before_traffic_ms
@@ -165,8 +221,7 @@ class Emulator(Monitor):
         results['cbench_warmup'] = self.emulator.warmup
         return results
 
-    @overloading.overload
-    def monitor_thread(self, boot_start_time):
+    def monitor_thread_idle(self, boot_start_time):
         """
         This monitor function is used from idle tests.
         Poll operational DS to discover installed switches.
@@ -201,11 +256,11 @@ class Emulator(Monitor):
             if (time.time() - t_discovery_start) > discovery_deadline:
                 error_code = 201
                 logging.info(
-                    '[poll_ds_thread] Deadline of {0} seconds passed, '
+                    '[monitor_thread_idle] Deadline of {0} seconds passed, '
                     'discovered {1} switches.'.format(discovery_deadline,
                                                       discovered_switches))
                 discovery_time = time.time() - t_start - discovery_deadline
-                results = self._monitor_results_idle()
+                results = self.monitor_results_idle()
                 results['bootup_time_secs'] = discovery_time
                 results['discovered_switches'] = discovered_switches
                 results['max_discovered_switches'] = max_discovered_switches
@@ -228,28 +283,21 @@ class Emulator(Monitor):
                 if discovered_switches == expected_switches:
                     delta_t = time.time() - t_start
                     logging.info(
-                        '[poll_ds_thread] {0} switches found in {1} seconds'.
+                        '[monitor_thread_idle] {0} switches found in '
+                        '{1} seconds'.
                         format(discovered_switches, delta_t))
-                    results = self._monitor_results_idle()
+                    results = self.monitor_results_idle()
                     results['bootup_time_secs'] = delta_t
                     results['discovered_switches'] = discovered_switches
-                    results['max_discovered_switches'] = max_discovered_switches
+                    results['max_discovered_switches'] = \
+                        max_discovered_switches
                     results['discovered_switches_error_code'] = error_code
                     results['successful_bootup_time'] = delta_t
                     self.result_queue.put([results])
                     return 0
             time.sleep(1)
 
-class Mtcbench(Emulator):
-    def __init__(self, controller, test_type, test, emulator):
-        super(self.__class__, self).__init__(test,
-                                             emulator)
-        self.term_success = '__successful_termination__'
-        self.term_fail = '__failed_termination__'
-        self.data_queue = gevent.queue.Queue()
-
-    @overloading.overload
-    def monitor_thread(self):
+    def monitor_thread_active(self):
         """
         This monitor function is used by active tests
         Function executed by the monitor thread
@@ -257,7 +305,7 @@ class Mtcbench(Emulator):
         """
 
         internal_repeat_id = 0
-        logging.info('[monitor_thread] Monitor thread started')
+        logging.info('[monitor_thread_active] Monitor thread started')
 
         # will hold samples taken in the lifetime of this thread
         results = []
@@ -268,9 +316,9 @@ class Mtcbench(Emulator):
                 # read messages from queue while TERM_SUCCESS has not been sent
                 line = self.data_queue.get(block=True, timeout=10000)
                 if line == self.term_success:
-                    logging.info('[monitor_thread] successful termination '
-                                 'string returned. Returning samples and '
-                                 'exiting.')
+                    logging.info('[monitor_thread_active] successful '
+                                 'termination string returned. Returning '
+                                 'samples and exiting.')
                     self.result_queue.put(results, block=True)
                     self.result_queue.task_done()
                     return
@@ -280,10 +328,10 @@ class Mtcbench(Emulator):
                     match = re.search(r'total = (.+) per ms', line)
                     if match is not None or line == self.term_fail:
                         results = \
-                            self._monitor_results_active(internal_repeat_id,
-                                                          line, results, match)
+                            self.monitor_results_active(internal_repeat_id,
+                                                        line, results, match)
             except queue.Empty as exept:
-                logging.error('[monitor_thread] {0}'.format(str(exept)))
+                logging.error('[monitor_thread_active] {0}'.format(str(exept)))
                 self.result_queue.put(results, block=True)
                 self.result_queue.task_done()
                 return
@@ -297,10 +345,11 @@ class Mtcbench(Emulator):
         if boot_start_time is None:
             logging.info('[MTCbench.monitor_run] Active test monitor is '
                          'running')
-            monitor_thread = gevent.spawn(self.monitor_thread())
+            monitor_thread = gevent.spawn(self.monitor_thread_active())
         else:
             logging.info('[MTCbench.monitor_run] Idle test monitor is running')
-            monitor_thread = gevent.spawn(self.monitor_thread(boot_start_time))
+            monitor_thread = \
+                gevent.spawn(self.monitor_thread_idle(boot_start_time))
         mtcbench_thread = gevent.spawn(self.mtcbench_thread())
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
@@ -330,25 +379,26 @@ class Mtcbench(Emulator):
         return
 
 
-class Multinet(Emulator):
+class Multinet(Oftraf):
     def __init__(self, controller, test_type, test, emulator):
-        super(self.__class__, self).__init__(test,
-                                             emulator)
+        super(self.__class__, self).__init__(test, emulator)
         self.data_queue = gevent.queue.Queue()
 
     def monitor_run(self, boot_start_time=None):
 
         logging.info('[Multinet.monitor_run] creating and starting'
-                     ' monitor and MTCbench threads.')
+                     ' monitoring of Multinet worker events.')
         # Consumer - producer threads (mtcbench_thread is the producer,
         # monitor_thread is the consumer)
         if boot_start_time is None:
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
-            monitor_thread = gevent.spawn(self.monitor_thread())
+            monitor_thread = gevent.spawn(self.monitor_thread_active())
         else:
             logging.info('[Multinet.monitor_run] Idle test monitor is running')
-            monitor_thread = gevent.spawn(self.monitor_thread(boot_start_time))
+            monitor_thread = \
+                gevent.spawn(self.monitor_thread_idle(boot_start_time))
+            self.emulator.start_topos()
 
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
@@ -357,6 +407,137 @@ class Multinet(Emulator):
         self.result_queue.join()
         gevent.killall([monitor_thread])
         return self.total_samples
+
+    def monitor_results_active(self):
+        results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
+        results['multinet_workers'] = len(self.emulator.workers_ips)
+        results['multinet_size'] = \
+            self.emulator.topo_size * len(self.emulator.workers_ips)
+        results['multinet_worker_topo_size'] = self.emulator.topo_size
+        results['multinet_topology_type'] = self.emulator.topo_type
+        results['multinet_hosts_per_switch'] = \
+            self.emulator.topohosts_per_switch
+        results['multinet_group_size'] = self.emulator.topogroup_size
+        results['multinet_group_delay_ms'] = self.emulator.topogroup_delay_ms
+        results['controller_statistics_period_ms'] = \
+            self.controller.stat_period_ms
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = str(self.controller.port)
+        results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
+        results['traffic_generation_duration_ms'] = \
+            self.emulator.traffic_gen_duration_ms
+        return results
+
+    def monitor_results_idle(self):
+            results = self.system_results()
+            results['global_sample_id'] = self.global_sample_id
+            self.global_sample_id += 1
+            results['multinet_workers'] = len(self.emulator.workers_ips)
+            results['multinet_worker_topo_size'] = self.emulator.topo_size
+            results['multinet_topology_type'] = self.emulator.topo_type
+            results['multinet_hosts_per_switch'] = \
+                self.emulator.topo_hosts_per_switch
+            results['multinet_group_size'] = self.emulator.topo_group_size
+            results['multinet_group_delay_ms'] = \
+                self.emulator.topo_group_delay_ms
+            results['controller_statistics_period_ms'] = \
+                self.controller.stat_period_ms
+            results['controller_node_ip'] = self.controller.ip
+            results['controller_port'] = str(self.controller.port)
+            return results
+
+    def monitor_thread_idle(self, boot_start_time):
+        """
+        This monitor function is used from idle tests.
+        Poll operational DS to discover installed switches.
+        It is used for idle tests from mtcbench and multinet emulators.
+        """
+
+        discovery_deadline = 120
+        expected_switches = self.emulator.get_overall_topo_size()
+        topology_bootup_time_ms = self.emulator.get_topo_bootup_ms()
+        sleep_before_discovery = float(topology_bootup_time_ms) / 1000
+        logging.info('[monitor_thread_idle] Monitor thread started')
+        t_start = boot_start_time
+        logging.info('[monitor_thread_idle] Starting discovery')
+        previous_discovered_switches = 0
+        discovered_switches = 0
+        time.sleep(sleep_before_discovery)
+        t_discovery_start = time.time()
+        error_code = 0
+        max_discovered_switches = 0
+
+        while True:
+            results['multinet_size'] = topology_bootup_time_ms
+            if (time.time() - t_discovery_start) > discovery_deadline:
+                error_code = 201
+                logging.info(
+                    '[monitor_thread_idle] Deadline of {0} seconds passed, '
+                    'discovered {1} switches.'.format(discovery_deadline,
+                                                      discovered_switches))
+                discovery_time = time.time() - t_start - discovery_deadline
+                results = self.monitor_results_idle()
+                results['bootup_time_secs'] = discovery_time
+                results['discovered_switches'] = discovered_switches
+                results['max_discovered_switches'] = max_discovered_switches
+                results['discovered_switches_error_code'] = error_code
+                results['successful_bootup_time'] = -1
+                self.result_queue.put([results])
+                return 0
+            else:
+                discovered_switches = self.controller.get_switches()
+
+                if discovered_switches == -1:
+                    discovered_switches = previous_discovered_switches
+                if discovered_switches > max_discovered_switches:
+                    max_discovered_switches = discovered_switches
+
+                if discovered_switches != previous_discovered_switches:
+                    t_discovery_start = time.time()
+                    previous_discovered_switches = discovered_switches
+
+                if discovered_switches == expected_switches:
+                    delta_t = time.time() - t_start
+                    logging.info(
+                        '[monitor_thread_idle] {0} switches found in '
+                        '{1} seconds'.
+                        format(discovered_switches, delta_t))
+                    results = self.monitor_results_idle()
+                    results['bootup_time_secs'] = delta_t
+                    results['discovered_switches'] = discovered_switches
+                    results['max_discovered_switches'] = \
+                        max_discovered_switches
+                    results['discovered_switches_error_code'] = error_code
+                    results['successful_bootup_time'] = delta_t
+                    self.result_queue.put([results])
+                    return 0
+            time.sleep(1)
+
+    def monitor_thread_active(self):
+        """ Function executed by multinet thread.
+            It calls monitor_thread() method of Oftraf Class
+        """
+        super(Multinet, self).monitor_thread()
+        results = self.monitor_results_active()
+        traffic_gen_ms = float(self.emulator.traffic_gen_duration_ms) / 1000
+        results['of_out_bytes_per_sec'] = \
+            float(results['of_out_traffic'][1]) / traffic_gen_ms
+        results['of_in_packets_per_sec'] = \
+            float(results['of_in_traffic'][0]) / traffic_gen_ms
+        results['of_in_bytes_per_sec'] = \
+            float(results['of_in_traffic'][1]) / traffic_gen_ms
+        results['tcp_of_out_packets_per_sec'] = \
+            float(results['tcp_of_out_traffic'][0]) / traffic_gen_ms
+        results['tcp_of_out_bytes_per_sec'] = \
+            float(results['tcp_of_out_traffic'][1]) / traffic_gen_ms
+        results['tcp_of_in_packets_per_sec'] = \
+            float(results['tcp_of_in_traffic'][0]) / traffic_gen_ms
+        results['tcp_of_in_bytes_per_sec'] = \
+            float(results['tcp_of_in_traffic'][1]) / traffic_gen_ms
+        self.result_queue.put([results])
+        return 0
 
 
 class NBgen(Monitor):
@@ -523,59 +704,3 @@ class NBgen(Monitor):
                      'interval: {0} sec. | Discovered flows: {1}'
                      .format(flow_measurement_latency_interval,
                              discovered_flows))
-
-
-class Oftraf(Monitor):
-
-    def __init__(self, test, oftraf):
-        super(self.__class__, self).__init__(test)
-        self.oftraf = oftraf
-        self.exit_flag = False
-        self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
-
-    def monitor_thread(self):
-        """Function executed inside a thread and returns the output in json
-        format, of openflow packets counts
-        """
-        try:
-            while self.exit_flag is False:
-                oftraf_interval_sec = self.oftraf.oftraf_interval_ms / 1000
-                logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'.
-                             format(oftraf_interval_sec))
-                time.sleep(oftraf_interval_sec)
-                logging.info('[oftraf_monitor_thread] '
-                             'get throughput of controller')
-                response_data = \
-                    json.loads(self.oftraf.oftraf_get_of_counts())
-                tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
-                tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
-                out_traffic = tuple(response_data['OF_out_counts'])
-                in_traffic = tuple(response_data['OF_in_counts'])
-                results = {'of_out_traffic': out_traffic,
-                           'of_in_traffic': in_traffic,
-                           'tcp_of_out_traffic': tcp_out_traffic,
-                           'tcp_of_in_traffic': tcp_in_traffic}
-                self.results_queue.put(results, block=True)
-        except:
-            logging.error('[oftraf.monitor_thread] Error monitor thread '
-                          'failed.')
-        finally:
-            self.results_queue.task_done()
-            return
-
-    def monitor_run(self):
-
-        # Parallel section
-        self.exit_flag = False
-#        logging.info('{0} creating idle stability with oftraf '
-#                     'monitor thread'.format(test_type))
-        monitor_thread = gevent.spawn(self.monitor_thread())
-        gevent.sleep(0)
-        res = self.results_queue.get(block=True)
-        self.exit_flag = True
-        gevent.joinall([monitor_thread])
-        self.results_queue.join()
-        gevent.killall([monitor_thread])
-
-#        logging.info('{0} joining monitor thread'.format(test_type))
-        return res
