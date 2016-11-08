@@ -21,11 +21,20 @@ class TestType:
 
         """
         """
-        self.test_type = args.test_type
-        self.test_name = test_config['controller_name']
+        self.nstat_test_type = args.test_type
 
-    def load_test_conf(self):
-        """
+
+    def load_test_conf(self, args):
+        """ Loading test configuration for NSTAT experiment. Parsing
+        configuration options from JSON input file
+
+        :param args: ArgumentParser object containing user specified
+        parameters (i.e test type, controller base directory, generator base
+        directory) when running NSTAT
+        :returns: test_config:
+        :rtype: test_config:  python object resulting from a deserialized file
+        like object containing a json document
+        :type args: ArgumentParser object
         """
         json_conf = {}
         with open(args.json_config) as conf_file:
@@ -44,7 +53,7 @@ class TestType:
                 nb_emulator = stress_test.emulator.SBEmu.new(nb_emu_base_dir,
                                                              json_conf)
 
-    def set_log_level_test(self):
+    def set_test_log_level(self, args):
         """Setting log level for NSTAT experiment
 
         :param args: ArgumentParser object containing user specified
@@ -78,18 +87,19 @@ class TestType:
     def test_selector(self, args):
         """
         """
-        #1. load test_configuration
         self.load_test_conf(args)
         self.set_log_level(args)
-        # compose full test name = test_type + emulator
+        exit()
+        # compose full NSTAT test type depending on cli argument test_type and
+        # emulator type
         emulator_name
-        test_type = args.test_type + args.emulator_name
+        nstat_test_type = args.test_type + args.emulator_name
 
         # Run the test
-        if args.test_type == 'sb_active_scalability_mtcbench':
+        if nstat_test_type == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] Running test {0}'.
-                             format(args.test_type))
+                             format(nstat_test_type))
                 exit()
                 sb_active_scalability_cbench.sb_active_scalability_cbench_run(
                     args.json_output,
@@ -99,10 +109,10 @@ class TestType:
                     args.output_dir)
 
         # sb_active_stability_mtcbench
-        elif args.test_type == 'sb_active_stability_mtcbench':
+        elif nstat_test_type == 'sb_active_stability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] Running test {0}'.
-                             format(args.test_type))
+                             format(nstat_test_type))
                 exit()
                 sb_active_stability_cbench.sb_active_stability_cbench_run(
                     args.json_output,
@@ -111,10 +121,10 @@ class TestType:
                     test_config,
                     args.output_dir)
 
-        elif args.test_type == 'sb_active_scalability_multinet':
+        elif nstat_test_type == 'sb_active_scalability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] Running test {0}'.
-                             format(args.test_type))
+                             format(nstat_test_type))
                 exit()
                 oftraf_path = get_oftraf_path()
                 sb_active_scalability_multinet.sb_active_scalability_multinet_run(
@@ -125,10 +135,10 @@ class TestType:
                     args.output_dir,
                     oftraf_path)
 
-        elif args.test_type == 'sb_idle_scalability_mtcbench':
+        elif nstat_test_type == 'sb_idle_scalability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] Running test {0}'.
-                             format(args.test_type))
+                             format(nstat_test_type))
                 exit()
                 sb_idle_scalability_cbench.sb_idle_scalability_cbench_run(
                     args.json_output,
@@ -137,10 +147,10 @@ class TestType:
                     test_config,
                     args.output_dir)
 
-        elif args.test_type == 'sb_idle_scalability_multinet':
+        elif nstat_test_type == 'sb_idle_scalability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] Running test {0}'.
-                             format(args.test_type))
+                             format(nstat_test_type))
                 exit()
                 sb_idle_scalability_multinet.sb_idle_scalability_multinet_run(
                     args.json_output,
@@ -149,10 +159,10 @@ class TestType:
                     test_config,
                     args.output_dir)
 
-        elif args.test_type == 'sb_idle_stability_multinet':
+        elif nstat_test_type == 'sb_idle_stability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] Running test {0}'.
-                             format(args.test_type))
+                             format(nstat_test_type))
                 exit()
                 oftraf_path = get_oftraf_path()
                 sb_idle_stability_multinet.sb_idle_stability_multinet_run(
@@ -163,10 +173,10 @@ class TestType:
                     args.output_dir,
                     oftraf_path)
 
-        elif args.test_type == 'nb_active_scalability_multinet':
+        elif nstat_test_type == 'nb_active_scalability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] Running test {0}'.
-                             format(args.test_type))
+                             format(nstat_test_type))
                 exit()
                 nb_active_scalability_multinet.nb_active_scalability_multinet_run(
                     args.json_output,
@@ -181,34 +191,3 @@ class TestType:
             logging.error('[nstat_orchestrator] not valid test configuration')
             exit(0)
 
-
-    def __sb_active_scalability_cbench_run(self):
-        """
-
-        """
-
-        pass
-    def __sb_active_stability_cbench_run(self):
-        """
-        """
-        pass
-    def __sb_active_scalability_multinet_run(self):
-        """
-        """
-        pass
-    def __sb_idle_scalability_cbench_run(self):
-        """
-        """
-        pass
-    def __sb_idle_scalability_multinet_run(self):
-        """
-        """
-        pass
-    def __sb_idle_stability_multinet_run(self):
-        """
-        """
-        pass
-    def __nb_active_scalability_multinet_run(self):
-        """
-        """
-        pass
