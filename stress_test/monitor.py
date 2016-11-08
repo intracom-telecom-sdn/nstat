@@ -19,13 +19,11 @@ import util.sysstats
 
 class Monitor:
 
-    def __init__(self, test_config, controller, test_type, test):
+    def __init__(self, controller, test_type, test):
         """Create a Monitor. Options from JSON input file
-        :param test_config: JSON input configuration
         :param nb_gen_base_dir: emulator base directory
         :param controller: object of the Controller class
         :param sbemu: object of the SBEmu subclass
-        :type test_config: JSON configuration dictionary
         :type nb_gen_base_dir: str
         :type controller: object
         :type sbemu: object
@@ -87,62 +85,19 @@ class Monitor:
 
 
 class Emulator(Monitor):
-    def __init__(self, ctrl_base_dir, ctrl_ip, ctrl_sb_port, test_config,
-                 test, emulator):
-        super(self.__class__, self).__init__(ctrl_base_dir, test_config, test)
+
+    def __init__(self, controller, test_type, test, emulator):
+        super(self.__class__, self).__init__(test)
         self.emulator = emulator
-        self.ctrl_ip = ctrl_ip
-        self.ctrl_sb_port = ctrl_sb_port
-        self.data_queue = gevent.queue.Queue()
         self.result_queue = gevent.queue.JoinableQueue()
-        self.term_success = '__successful_termination__'
-        self.term_fail = '__failed_termination__'
         self.total_samples = []
-
-    @overloading.overload
-    def monitor_thread(self):
-        """
-        This monitor function is used by active tests
-        Function executed by the monitor thread
-        """
-
-        internal_repeat_id = 0
-        logging.info('[monitor_thread] Monitor thread started')
-
-        # will hold samples taken in the lifetime of this thread
-        results = []
-        # Opening connection with controller
-        # node to be utilized in the sequel
-        while True:
-            try:
-                # read messages from queue while TERM_SUCCESS has not been sent
-                line = self.data_queue.get(block=True, timeout=10000)
-                if line == self.term_success:
-                    logging.info('[monitor_thread] successful termination '
-                                 'string returned. Returning samples and '
-                                 'exiting.')
-                    self.result_queue.put(results, block=True)
-                    self.result_queue.task_done()
-                    return
-                else:
-                    # look for lines containing a substring like e.g.
-                    # 'total = 1.2345 per ms'
-                    match = re.search(r'total = (.+) per ms', line)
-                    if match is not None or line == self.term_fail:
-                        results = \
-                            self.__monitor_results_active(internal_repeat_id,
-                                                          line, results, match)
-            except queue.Empty as exept:
-                logging.error('[monitor_thread] {0}'.format(str(exept)))
-                self.result_queue.put(results, block=True)
-                self.result_queue.task_done()
-                return
 
     @overloading.overload
     def monitor_thread(self, boot_start_time):
         """
         This monitor function is used from idle tests.
-        Poll operational DS to discover installed switches
+        Poll operational DS to discover installed switches.
+        It is used for idle tests from mtcbench and multinet emulators.
         :param boot_start_time: The time we begin starting topology switches
         :param sleep_before_discovery_ms: amount of time (in milliseconds)
         to sleep before starting polling datastore to discover switches
@@ -205,6 +160,55 @@ class Emulator(Monitor):
                     return 0
             time.sleep(1)
 
+
+class Mtcbench(Emulator):
+    def __init__(self, controller, test_type, test, emulator):
+        super(self.__class__, self).__init__(test,
+                                             emulator)
+        self.term_success = '__successful_termination__'
+        self.term_fail = '__failed_termination__'
+        self.data_queue = gevent.queue.Queue()
+
+    @overloading.overload
+    def monitor_thread(self):
+        """
+        This monitor function is used by active tests
+        Function executed by the monitor thread
+        It is used for active tests.
+        """
+
+        internal_repeat_id = 0
+        logging.info('[monitor_thread] Monitor thread started')
+
+        # will hold samples taken in the lifetime of this thread
+        results = []
+        # Opening connection with controller
+        # node to be utilized in the sequel
+        while True:
+            try:
+                # read messages from queue while TERM_SUCCESS has not been sent
+                line = self.data_queue.get(block=True, timeout=10000)
+                if line == self.term_success:
+                    logging.info('[monitor_thread] successful termination '
+                                 'string returned. Returning samples and '
+                                 'exiting.')
+                    self.result_queue.put(results, block=True)
+                    self.result_queue.task_done()
+                    return
+                else:
+                    # look for lines containing a substring like e.g.
+                    # 'total = 1.2345 per ms'
+                    match = re.search(r'total = (.+) per ms', line)
+                    if match is not None or line == self.term_fail:
+                        results = \
+                            self.__monitor_results_active(internal_repeat_id,
+                                                          line, results, match)
+            except queue.Empty as exept:
+                logging.error('[monitor_thread] {0}'.format(str(exept)))
+                self.result_queue.put(results, block=True)
+                self.result_queue.task_done()
+                return
+
     def monitor_run(self, boot_start_time=None):
 
         logging.info('[MTCbench.monitor_run] creating and starting'
@@ -221,7 +225,6 @@ class Emulator(Monitor):
         mtcbench_thread = gevent.spawn(self.mtcbench_thread())
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
-
         self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread, mtcbench_thread])
         self.result_queue.join()
@@ -317,7 +320,7 @@ class Emulator(Monitor):
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
 
         try:
-            self.emulator.run(self.ctrl_ip, self.ctrl_sb_port)
+            self.emulator.run(self.controller.ip, self.controller.of_port)
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
                 self.data_queue.put(self.term_success, block=True)
@@ -331,9 +334,38 @@ class Emulator(Monitor):
         return
 
 
+class Multinet(Emulator):
+    def __init__(self, controller, test_type, test, emulator):
+        super(self.__class__, self).__init__(test,
+                                             emulator)
+        self.data_queue = gevent.queue.Queue()
+
+    def monitor_run(self, boot_start_time=None):
+
+        logging.info('[Multinet.monitor_run] creating and starting'
+                     ' monitor and MTCbench threads.')
+        # Consumer - producer threads (mtcbench_thread is the producer,
+        # monitor_thread is the consumer)
+        if boot_start_time is None:
+            logging.info('[Multinet.monitor_run] Active test monitor is '
+                         'running')
+            monitor_thread = gevent.spawn(self.monitor_thread())
+        else:
+            logging.info('[Multinet.monitor_run] Idle test monitor is running')
+            monitor_thread = gevent.spawn(self.monitor_thread(boot_start_time))
+
+        gevent.sleep(0)
+        samples = self.result_queue.get(block=True)
+        self.total_samples = self.total_samples + samples
+        gevent.joinall([monitor_thread])
+        self.result_queue.join()
+        gevent.killall([monitor_thread])
+        return self.total_samples
+
+
 class NBgen(Monitor):
-    def __init__(self, ctrl_base_dir, test_config, test, nbgen):
-        super(self.__class__, self).__init__(ctrl_base_dir, test_config, test)
+    def __init__(self, test, nbgen):
+        super(self.__class__, self).__init__(test)
         self.nbgen = nbgen
 
     def __poll_flows_ds(self, t_start):
@@ -499,8 +531,8 @@ class NBgen(Monitor):
 
 class Oftraf(Monitor):
 
-    def __init__(self, ctrl_base_dir, test_config, test, oftraf):
-        super(self.__class__, self).__init__(ctrl_base_dir, test_config, test)
+    def __init__(self, test, oftraf):
+        super(self.__class__, self).__init__(test)
         self.oftraf = oftraf
         self.exit_flag = False
         self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
