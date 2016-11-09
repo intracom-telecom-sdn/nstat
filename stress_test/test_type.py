@@ -55,8 +55,10 @@ class TestType:
 
             if hasattr(args, 'nb_emu_base_dir'):
                 nb_emu_base_dir = args.nb_emu_base_dir
-                nb_emulator = stress_test.emulator.SBEmu.new(nb_emu_base_dir,
-                                                             json_conf)
+                nb_emulator = stress_test.nb_generator.NBgen(nb_emu_base_dir,
+                                                             json_conf,
+                                                             controller,
+                                                             sb_emulator)
 
     def set_test_log_level(self, args):
         """Setting log level for NSTAT experiment
