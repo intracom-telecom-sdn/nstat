@@ -12,6 +12,7 @@ import os
 import time
 import stress_test.controller
 import stress_test.emulator
+import sys
 import util.file_ops
 import util.netutil
 import util.process
