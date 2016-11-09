@@ -150,13 +150,12 @@ class Mtcbench(Monitor):
         self.term_fail = '__failed_termination__'
         self.data_queue = gevent.queue.Queue()
 
-    def monitor_results_active(self, internal_repeat_id, line, match):
+    def monitor_results_active(self):
         results = self.system_results()
         results['global_sample_id'] = \
             self.test.global_sample_id
         self.global_sample_id += 1
         results['repeat_id'] = self.test.repeat_id
-        results['internal_repeat_id'] = internal_repeat_id
         results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
         results['cbench_switches'] = \
@@ -181,19 +180,6 @@ class Mtcbench(Monitor):
         results['cbench_internal_repeats'] = \
             self.emulator.internal_repeats
         results['cbench_warmup'] = self.emulator.warmup
-        if line == self.term_fail:
-            logging.info('[monitor_thread] returned failed '
-                         'termination '
-                         'string returning gathered samples '
-                         'and exiting.')
-            results['throughput_responses_sec'] = -1
-            self.result_queue.put(results, block=True)
-            return results
-        if match is not None:
-            # extract the numeric portion from the above regex
-            results['throughput_responses_sec'] = \
-                float(match.group(1)) * 1000.0
-        internal_repeat_id += 1
         return results
 
     def monitor_results_idle(self):
@@ -308,7 +294,7 @@ class Mtcbench(Monitor):
         logging.info('[monitor_thread_active] Monitor thread started')
 
         # will hold samples taken in the lifetime of this thread
-        results = []
+        test_samples = []
         # Opening connection with controller
         # node to be utilized in the sequel
         while True:
@@ -319,7 +305,7 @@ class Mtcbench(Monitor):
                     logging.info('[monitor_thread_active] successful '
                                  'termination string returned. Returning '
                                  'samples and exiting.')
-                    self.result_queue.put(results, block=True)
+                    self.result_queue.put(test_samples, block=True)
                     self.result_queue.task_done()
                     return
                 else:
@@ -327,12 +313,27 @@ class Mtcbench(Monitor):
                     # 'total = 1.2345 per ms'
                     match = re.search(r'total = (.+) per ms', line)
                     if match is not None or line == self.term_fail:
-                        results = \
-                            self.monitor_results_active(internal_repeat_id,
-                                                        line, results, match)
+                        results = self.monitor_results_active()
+                        if line == self.term_fail:
+                            logging.info('[monitor_thread] returned failed '
+                                         'termination '
+                                         'string returning gathered samples '
+                                         'and exiting.')
+                            results['throughput_responses_sec'] = -1
+                            test_samples.append(results)
+                            self.result_queue.put(test_samples, block=True)
+                            self.result_queue.task_done()
+                            return
+                        if match is not None:
+                            # extract the numeric portion from the above regex
+                            results['throughput_responses_sec'] = \
+                                float(match.group(1)) * 1000.0
+                        results['internal_repeat_id'] = internal_repeat_id
+                        test_samples.append(results)
+                        internal_repeat_id += 1
             except queue.Empty as exept:
                 logging.error('[monitor_thread_active] {0}'.format(str(exept)))
-                self.result_queue.put(results, block=True)
+                self.result_queue.put(test_samples, block=True)
                 self.result_queue.task_done()
                 return
 
@@ -353,7 +354,7 @@ class Mtcbench(Monitor):
         mtcbench_thread = gevent.spawn(self.mtcbench_thread())
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
-        self.total_samples.append(samples)
+        self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread, mtcbench_thread])
         self.result_queue.join()
         gevent.killall([monitor_thread, mtcbench_thread])
