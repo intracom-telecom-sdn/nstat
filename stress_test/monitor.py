@@ -470,7 +470,6 @@ class Multinet(Oftraf):
         max_discovered_switches = 0
 
         while True:
-            results['multinet_size'] = topology_bootup_time_ms
             if (time.time() - t_discovery_start) > discovery_deadline:
                 error_code = 201
                 logging.info(
@@ -479,6 +478,7 @@ class Multinet(Oftraf):
                                                       discovered_switches))
                 discovery_time = time.time() - t_start - discovery_deadline
                 results = self.monitor_results_idle()
+                results['multinet_size'] = topology_bootup_time_ms
                 results['bootup_time_secs'] = discovery_time
                 results['discovered_switches'] = discovered_switches
                 results['max_discovered_switches'] = max_discovered_switches
@@ -505,6 +505,7 @@ class Multinet(Oftraf):
                         '{1} seconds'.
                         format(discovered_switches, delta_t))
                     results = self.monitor_results_idle()
+                    results['multinet_size'] = topology_bootup_time_ms
                     results['bootup_time_secs'] = delta_t
                     results['discovered_switches'] = discovered_switches
                     results['max_discovered_switches'] = \
