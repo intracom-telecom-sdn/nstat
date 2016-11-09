@@ -98,7 +98,7 @@ def main():
                              "ERROR")
 
     args = parser.parse_args()
-    nstat_test = stress_test.test_type.TestCase(args)
+    nstat_test = stress_test.test_type.TestType(args)
     nstat_test.test_selector(args)
 
 
