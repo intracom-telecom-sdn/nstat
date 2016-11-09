@@ -91,7 +91,7 @@ class TestType:
     def test_selector(self, args):
         """
         """
-        self.set_log_level(args)
+        self.set_test_log_level(args)
         self.load_test_conf(args)
         exit()
         # compose full NSTAT test type depending on cli argument test_type and
