@@ -116,7 +116,7 @@ class TestType:
                 nstat_test_run.sb_active_scalability_cbench_run(
                     args.json_output,
                     args.ctrl_base_dir,
-                    args.sb_gen_base_dir,
+                    args.sb_emu_base_dir,
                     json_conf,
                     args.output_dir)
 
