@@ -107,7 +107,7 @@ class TestType:
         # Run the test
         if nstat_test_type_run == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] Running test {0}'.
+                logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 exit()
                 sb_active_scalability_cbench.sb_active_scalability_cbench_run(
@@ -120,7 +120,7 @@ class TestType:
         # sb_active_stability_mtcbench
         elif nstat_test_type_run == 'sb_active_stability_mtcbench':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] Running test {0}'.
+                logging.info('[nstat_orchestrator] running test:{0}'.
                              format(nstat_test_type_run))
                 exit()
                 sb_active_stability_cbench.sb_active_stability_cbench_run(
@@ -132,7 +132,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_active_scalability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] Running test {0}'.
+                logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 exit()
                 oftraf_path = get_oftraf_path()
@@ -146,7 +146,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_idle_scalability_mtcbench':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] Running test {0}'.
+                logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 exit()
                 sb_idle_scalability_cbench.sb_idle_scalability_cbench_run(
@@ -158,7 +158,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_idle_scalability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] Running test {0}'.
+                logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 exit()
                 sb_idle_scalability_multinet.sb_idle_scalability_multinet_run(
@@ -170,7 +170,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_idle_stability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] Running test {0}'.
+                logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 exit()
                 oftraf_path = get_oftraf_path()
@@ -184,7 +184,7 @@ class TestType:
 
         elif nstat_test_type_run == 'nb_active_scalability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] Running test {0}'.
+                logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 exit()
                 nb_active_scalability_multinet.nb_active_scalability_multinet_run(
