@@ -61,6 +61,7 @@ class TestType:
                                                              controller,
                                                              sb_emulator)
             '''
+        return json_conf
 
     def set_test_log_level(self, args):
         """Setting log level for NSTAT experiment
@@ -97,10 +98,10 @@ class TestType:
         """
         """
         self.set_test_log_level(args)
-        self.load_test_conf(args)
+        json_conf = self.load_test_conf(args)
         # compose full NSTAT test type depending on cli argument test_type and
         # emulator type
-        print(args.emulator_name)
+        print(json_conf['sb_emulator_name'])
         print(args.test_type)
         #nstat_test_type = args.test_type + '/' + args.emulator_name
         exit()
