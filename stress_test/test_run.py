@@ -20,13 +20,13 @@ class TestRun:
     def __init__(self, args, json_conf):
         """
         """
-        self.controller = stress_test.controller.Controller.new(args.ctrl_base_dir,
+        self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                            json_conf)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
-        self.oftraf = stress_test.oftraf.Oftraf(self, self.controller,
+        self.oftraf = stress_test.oftraf.Oftraf(self, self.ctrl,
                                                 json_conf)
-        self.test = stress_test.test_type.TestType(self,args)
+        self.test = stress_test.test_type.TestType(self, args)
 
     def sb_active_scalability_cbench_run(self, json_conf,
                                          ctrl_base_dir,
@@ -39,8 +39,8 @@ class TestRun:
 
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            self.controller.init_ssh()
-            self.controller.build()
+            self.ctrl.init_ssh()
+            self.ctrl.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
@@ -62,8 +62,8 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            self.controller.init_ssh()
-            self.controller.build()
+            self.ctrl.init_ssh()
+            self.ctrl.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
@@ -84,8 +84,8 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            self.controller.init_ssh()
-            self.controller.build()
+            self.ctrl.init_ssh()
+            self.ctrl.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
@@ -103,12 +103,6 @@ class TestRun:
 
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
-                                           ctrl,
-                                           ctrl_base_dir,
-                                           sb_emu,
-                                           sb_gen_base_dir,
-                                           oftraf,
-                                           oftraf_path,
                                            mon,
                                            json_output,
                                            output_dir):
@@ -119,31 +113,31 @@ class TestRun:
         try:
             # CONTROLLER preparation
             # ---------------------------------------------------------------
-            ctrl.init_ssh()
-            ctrl.build()
+            self.ctrl.init_ssh()
+            self.ctrl.build()
             logging.info('[sb_active_scalability_multinet] Controller files '
                          'have been created')
 
             # EMULATOR preparation
             # ---------------------------------------------------------------
-            sb_emu.init_ssh()
-            sb_emu.build()
+            self.sb_emu.init_ssh()
+            self.sb_emu.build()
 
             logging.info('[sb_active_scalability_multinet] Build a {0} '
                          'emulator on {1} host'.format(sb_emu.name, sb_emu.ip))
 
             # Oftraf preparation
             # ---------------------------------------------------------------
-            oftraf.build()
+            self.oftraf.build()
 
             # TEST run
             # ---------------------------------------------------------------
 
-            for (sb_emu.topo_size,
-                 sb_emu.topo_type,
-                 sb_emu.topo_hosts_per_switch,
-                 sb_emu.topo_group_size,
-                 sb_emu.topo_group_delay_ms
+            for (self.sb_emu.topo_size,
+                 self.sb_emu.topo_type,
+                 self.sb_emu.topo_hosts_per_switch,
+                 self.sb_emu.topo_group_size,
+                 self.sb_emu.topo_group_delay_ms
                  ) in itertools.product(
                     json_conf['multinet_topo_size'],
                     json_conf['multinet_topo_type'],
@@ -151,34 +145,34 @@ class TestRun:
                     json_conf['multinet_topo_group_size'],
                     json_conf['multinet_topo_group_delay_ms']):
 
-                    # start a controller
-                oftraf.start()
-                ctrl.check_status()
-                ctrl.start()
+                # start a controller
+                self.oftraf.start()
+                self.ctrl.check_status()
+                self.ctrl.start()
 
-                sb_emu.deploy(ctrl.ip, ctrl.of_port)
+                self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 logging.info('[sb_active_scalability_multinet] '
                              'Generate multinet config file')
 
-                sb_emu.init_topos()
-                sb_emu.start_topos()
+                self.sb_emu.init_topos()
+                self.sb_emu.start_topos()
                 time.sleep(10)
                 logging.info("The whole number of switches are: {0}"
-                             .format(sb_emu.get_switches()))
+                             .format(self.sb_emu.get_switches()))
                 logging.info("The whole number of flows are: {0}"
-                             .format(sb_emu.get_flows()))
+                             .format(self.sb_emu.get_flows()))
 
-                sb_emu.generate_traffic()
+                self.sb_emu.generate_traffic()
 
                 mon.monitor_run()
 
                 # Stop/clean nodes
                 # ---------------------------------------------------------
-                ctrl.stop()
-                ctrl.check_status()
-                sb_emu.init_topos()
-                oftraf.stop()
-                sb_emu.cleanup()
+                self.ctrl.stop()
+                self.ctrl.check_status()
+                self.sb_emu.init_topos()
+                self.oftraf.stop()
+                self.sb_emu.cleanup()
 
             logging.info('[Testing] All done!')
 
@@ -197,23 +191,23 @@ class TestRun:
 
             common.generate_json_results(mon.results, json_output)
             try:
-                ctrl.stop()
+                self.ctrl.stop()
             except:
                 pass
 
 # copy_dir_remote_to_local?
             if ctrl.need_cleanup:
-                ctrl.clean_hnd()
+                self.ctrl.clean_hnd()
             try:
-                sb_emu.cleanup()
+                self.sb_emu.cleanup()
             except:
                 pass
             try:
-                oftraf.stop()
+                self.oftraf.stop()
             except:
                 pass
 
-            sb_emu.clean()
+            self.sb_emu.clean()
             common.close_ssh_connections([ctrl._ssh_conn])
 
 
@@ -223,8 +217,8 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            self.controller.init_ssh()
-            self.controller.build()
+            self.ctrl.init_ssh()
+            self.ctrl.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
@@ -245,8 +239,8 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            self.controller.init_ssh()
-            self.controller.build()
+            self.ctrl.init_ssh()
+            self.ctrl.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
@@ -268,8 +262,8 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            self.controller.init_ssh()
-            self.controller.build()
+            self.ctrl.init_ssh()
+            self.ctrl.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
