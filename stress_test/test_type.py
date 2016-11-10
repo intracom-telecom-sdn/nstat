@@ -112,7 +112,7 @@ class TestType:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
 
-                test_run.sb_active_scalability_cbench_run(
+                stress_test.test_run.sb_active_scalability_cbench_run(
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
