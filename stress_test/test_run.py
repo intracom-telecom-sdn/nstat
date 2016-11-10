@@ -66,8 +66,6 @@ class TestRun:
             self.sb_emulator.init_ssh()
             self.sb_emulator.build()
 
-            exit()
-
             # TEST run
             #-------------------------------------------------------------------
 
@@ -89,8 +87,6 @@ class TestRun:
             #-------------------------------------------------------------------
             self.sb_emulator.init_ssh()
             self.sb_emulator.build()
-
-            exit()
 
             # TEST run
             #-------------------------------------------------------------------
@@ -115,7 +111,6 @@ class TestRun:
             self.sb_emulator.init_ssh()
             self.sb_emulator.build()
 
-            exit()
             # TEST run
             #-------------------------------------------------------------------
 
@@ -140,8 +135,6 @@ class TestRun:
             self.sb_emulator.init_ssh()
             self.sb_emulator.build()
 
-            exit()
-
             # TEST run
             #-------------------------------------------------------------------
 
@@ -163,8 +156,6 @@ class TestRun:
             #-------------------------------------------------------------------
             self.sb_emulator.init_ssh()
             self.sb_emulator.build()
-
-            exit()
 
             # TEST run
             #-------------------------------------------------------------------
@@ -188,8 +179,6 @@ class TestRun:
             #-------------------------------------------------------------------
             self.sb_emulator.init_ssh()
             self.sb_emulator.build()
-
-            exit()
 
             # TEST run
             #-------------------------------------------------------------------
