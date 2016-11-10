@@ -98,13 +98,12 @@ class TestType:
         """
         self.set_test_log_level(args)
         self.load_test_conf(args)
-        
-        exit()
         # compose full NSTAT test type depending on cli argument test_type and
         # emulator type
-        emulator_name
-        nstat_test_type = args.test_type + args.emulator_name
-
+        print(args.emulator_name)
+        print(args.test_type)
+        #nstat_test_type = args.test_type + '/' + args.emulator_name
+        exit()
         # Run the test
         if nstat_test_type == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
