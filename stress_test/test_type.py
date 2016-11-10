@@ -103,7 +103,8 @@ class TestType:
         # emulator type
         print(json_conf['sb_emulator_name'])
         print(args.test_type)
-        #nstat_test_type = args.test_type + '/' + args.emulator_name
+        nstat_test_type = args.test_type + '/' + args.emulator_name.lower()
+        print(nstat_test_type)
         exit()
         # Run the test
         if nstat_test_type == 'sb_active_scalability_mtcbench':
