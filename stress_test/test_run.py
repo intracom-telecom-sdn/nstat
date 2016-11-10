@@ -23,6 +23,8 @@ class TestRun:
         """
         """
         try:
+            print('Kostas Papadopoulos')
+            exit()
             # CONTROLLER preparation
             #-------------------------------------------------------------------
             ctrl.init_ssh()

@@ -14,6 +14,7 @@ import stress_test.controller
 import stress_test.emulator
 import stress_test.nb_generator
 import stress_test.test_type
+import stress_test.test_run
 import sys
 import util.file_ops
 import util.netutil
@@ -110,7 +111,7 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                exit()
+
                 test_run.sb_active_scalability_cbench_run(
                     args.json_output,
                     args.ctrl_base_dir,
@@ -128,7 +129,7 @@ class TestType:
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
-                    test_config,
+                    json_conf,
                     args.output_dir)
 
         elif nstat_test_type_run == 'sb_active_scalability_multinet':
@@ -141,7 +142,7 @@ class TestType:
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
-                    test_config,
+                    json_conf,
                     args.output_dir,
                     oftraf_path)
 
@@ -154,7 +155,7 @@ class TestType:
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
-                    test_config,
+                    json_conf,
                     args.output_dir)
 
         elif nstat_test_type_run == 'sb_idle_scalability_multinet':
@@ -166,7 +167,7 @@ class TestType:
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
-                    test_config,
+                    json_conf,
                     args.output_dir)
 
         elif nstat_test_type_run == 'sb_idle_stability_multinet':
@@ -179,7 +180,7 @@ class TestType:
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
-                    test_config,
+                    json_conf,
                     args.output_dir,
                     oftraf_path)
 
@@ -193,7 +194,7 @@ class TestType:
                     args.ctrl_base_dir,
                     args.nb_gen_base_dir,
                     args.sb_gen_base_dir,
-                    test_config,
+                    json_conf,
                     args.output_dir,
                     args.logging_level)
 
