@@ -18,7 +18,7 @@ import util.sysstats
 
 class Monitor:
 
-    def __init__(self, controller, test):
+    def __init__(self, controller):
         """Create a Monitor. Options from JSON input file
         :param nb_gen_base_dir: emulator base directory
         :param controller: object of the Controller class
@@ -29,6 +29,7 @@ class Monitor:
         """
         self.controller = controller
         self.global_sample_id = 0
+        self.repeat_id = 0
 
     def system_results(self):
         """ Collect runtime statistics
@@ -83,8 +84,8 @@ class Monitor:
 
 class Oftraf(Monitor):
 
-    def __init__(self, test, oftraf):
-        super(self.__class__, self).__init__(test)
+    def __init__(self, oftraf):
+        super(self.__class__, self).__init__(controller)
         self.oftraf = oftraf
         self.exit_flag = False
         self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
@@ -135,9 +136,8 @@ class Oftraf(Monitor):
 
 
 class Mtcbench(Monitor):
-    def __init__(self, controller, test, emulator):
-        super(self.__class__, self).__init__(test,
-                                             emulator)
+    def __init__(self, controller, emulator):
+        super(self.__class__, self).__init__(controller, emulator)
 
         self.emulator = emulator
         self.result_queue = gevent.queue.JoinableQueue()
@@ -149,9 +149,10 @@ class Mtcbench(Monitor):
     def monitor_results_active(self):
         results = self.system_results()
         results['global_sample_id'] = \
-            self.test.global_sample_id
+            self.global_sample_id
         self.global_sample_id += 1
-        results['repeat_id'] = self.test.repeat_id
+        results['repeat_id'] = self.repeat_id
+
         results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
         results['cbench_switches'] = \
@@ -166,7 +167,7 @@ class Mtcbench(Monitor):
             self.emulator.delay_before_traffic_ms
         results['controller_statistics_period_ms'] = \
             self.controller.stat_period_ms
-        results['test_repeats'] = self.test.test_repeats
+        results['test_repeats'] = self.test_repeats
         results['controller_node_ip'] = self.controller.ip
         results['controller_port'] = \
             str(self.controller.port)
@@ -377,8 +378,8 @@ class Mtcbench(Monitor):
 
 
 class Multinet(Oftraf):
-    def __init__(self, controller, test, emulator):
-        super(self.__class__, self).__init__(test, emulator)
+    def __init__(self, controller, emulator):
+        super(self.__class__, self).__init__(controller, emulator)
         self.data_queue = gevent.queue.Queue()
 
     def monitor_run(self, boot_start_time=None):
@@ -539,8 +540,8 @@ class Multinet(Oftraf):
 
 
 class NBgen(Monitor):
-    def __init__(self, test, nbgen):
-        super(self.__class__, self).__init__(test)
+    def __init__(self, nbgen):
+        super(self.__class__, self).__init__()
         self.nbgen = nbgen
 
     def __poll_flows_ds(self, t_start):
