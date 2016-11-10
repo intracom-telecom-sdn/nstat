@@ -32,7 +32,6 @@ class TestRun:
         """
         """
         try:
-            print('Kostas Papaste')
 
             # CONTROLLER preparation
             #-------------------------------------------------------------------
@@ -59,13 +58,15 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            ctrl.init_ssh()
-            ctrl.build()
+            self.controller.init_ssh()
+            self.controller.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sb_emu.init_ssh()
-            sb_emu.build()
+            self.sb_emulator.init_ssh()
+            self.sb_emulator.build()
+
+            exit()
 
             # TEST run
             #-------------------------------------------------------------------
@@ -81,13 +82,15 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            ctrl.init_ssh()
-            ctrl.build()
+            self.controller.init_ssh()
+            self.controller.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sb_emu.init_ssh()
-            sb_emu.build()
+            self.sb_emulator.init_ssh()
+            self.sb_emulator.build()
+
+            exit()
 
             # TEST run
             #-------------------------------------------------------------------
@@ -104,14 +107,15 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            ctrl.init_ssh()
-            ctrl.build()
+            self.controller.init_ssh()
+            self.controller.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sb_emu.init_ssh()
-            sb_emu.build()
+            self.sb_emulator.init_ssh()
+            self.sb_emulator.build()
 
+            exit()
             # TEST run
             #-------------------------------------------------------------------
 
@@ -128,13 +132,15 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            ctrl.init_ssh()
-            ctrl.build()
+            self.controller.init_ssh()
+            self.controller.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sb_emu.init_ssh()
-            sb_emu.build()
+            self.sb_emulator.init_ssh()
+            self.sb_emulator.build()
+
+            exit()
 
             # TEST run
             #-------------------------------------------------------------------
@@ -150,13 +156,15 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            ctrl.init_ssh()
-            ctrl.build()
+            self.controller.init_ssh()
+            self.controller.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sb_emu.init_ssh()
-            sb_emu.build()
+            self.sb_emulator.init_ssh()
+            self.sb_emulator.build()
+
+            exit()
 
             # TEST run
             #-------------------------------------------------------------------
@@ -173,13 +181,15 @@ class TestRun:
         try:
             # CONTROLLER preparation
             #-------------------------------------------------------------------
-            ctrl.init_ssh()
-            ctrl.build()
+            self.controller.init_ssh()
+            self.controller.build()
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sb_emu.init_ssh()
-            sb_emu.build()
+            self.sb_emulator.init_ssh()
+            self.sb_emulator.build()
+
+            exit()
 
             # TEST run
             #-------------------------------------------------------------------
