@@ -105,6 +105,7 @@ class TestType:
         # emulator type
         sb_emulator_name = json_conf['sb_emulator_name']
         nstat_test_type_run = args.test_type + '_' + sb_emulator_name.lower()
+        nstat_test_run = stress_test.test_run.TestRun(args)
 
         # Run the test
         if nstat_test_type_run == 'sb_active_scalability_mtcbench':
@@ -112,7 +113,7 @@ class TestType:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
 
-                stress_test.test_run.sb_active_scalability_cbench_run(
+                nstat_test_run.sb_active_scalability_cbench_run(
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
