@@ -6,6 +6,8 @@
 
 import logging
 import os
+import stress_test.controller
+import stress_test.emulator
 import time
 import util.file_ops
 import util.netutil
@@ -15,10 +17,13 @@ import queue
 
 class TestRun:
 
-    def __init__(self, args):
+    def __init__(self, args, json_conf):
         """
         """
-
+        self.controller = stress_test.controller.Controller.new(args.ctrl_base_dir,
+                                                           json_conf)
+        self.sb_emulator = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
+                                                     json_conf)
     def sb_active_scalability_cbench_run(self, json_conf,
                                          ctrl_base_dir,
                                          sb_emu_base_dir,
@@ -28,7 +33,7 @@ class TestRun:
         """
         try:
             print('Kostas Papadopoulos')
-            exit()
+
             # CONTROLLER preparation
             #-------------------------------------------------------------------
             ctrl.init_ssh()
@@ -36,9 +41,10 @@ class TestRun:
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sbemu.init_ssh()
+            sb_emu.init_ssh()
             sb_emu.build()
 
+            exit()
             # TEST run
             #-------------------------------------------------------------------
 
@@ -58,7 +64,7 @@ class TestRun:
 
             # EMULATOR preparation
             #-------------------------------------------------------------------
-            sbemu.init_ssh()
+            sb_emu.init_ssh()
             sb_emu.build()
 
             # TEST run

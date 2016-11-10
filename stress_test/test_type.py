@@ -47,22 +47,6 @@ class TestType:
         json_conf = {}
         with open(args.json_config) as conf_file:
             json_conf = json.load(conf_file)
-
-            ctrl_base_dir = args.ctrl_base_dir
-            sb_emu_base_dir = args.sb_emu_base_dir
-
-            controller = stress_test.controller.Controller.new(ctrl_base_dir,
-                                                               json_conf)
-            sb_emulator = stress_test.emulator.SBEmu.new(sb_emu_base_dir,
-                                                         json_conf)
-            '''
-            if hasattr(args, 'nb_emu_base_dir'):
-                nb_emu_base_dir = args.nb_emu_base_dir
-                nb_emulator = stress_test.nb_generator.NBgen(nb_emu_base_dir,
-                                                             json_conf,
-                                                             controller,
-                                                             sb_emulator)
-            '''
         return json_conf
 
     def set_test_log_level(self, args):
@@ -101,11 +85,11 @@ class TestType:
         """
         self.set_test_log_level(args)
         json_conf = self.load_test_conf(args)
-        # compose full NSTAT test type depending on cli argument test_type and
-        # emulator type
-        sb_emulator_name = json_conf['sb_emulator_name']
-        nstat_test_type_run = args.test_type + '_' + sb_emulator_name.lower()
-        nstat_test_run = stress_test.test_run.TestRun(args)
+        nstat_test_type_run = args.test_type + '_' + \
+                              json_conf['sb_emulator_name'].lower()
+
+        # Create instance of TestRun and initialize controller
+        nstat_test_run = stress_test.test_run.TestRun(args, json_conf)
 
         # Run the test
         if nstat_test_type_run == 'sb_active_scalability_mtcbench':
