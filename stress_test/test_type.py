@@ -99,8 +99,6 @@ class TestType:
 
                 nstat_test_run.sb_active_scalability_cbench_run(
                     json_conf,
-                    args.ctrl_base_dir,
-                    args.sb_emu_base_dir,
                     args.json_output,
                     args.output_dir)
 
@@ -109,7 +107,7 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test:{0}'.
                              format(nstat_test_type_run))
-                sb_active_stability_cbench.sb_active_stability_cbench_run(
+                nstat_test_run.sb_active_stability_cbench_run(
                     json_conf,
                     args.ctrl_base_dir,
                     args.sb_emu_base_dir,
@@ -121,19 +119,16 @@ class TestType:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 oftraf_path = get_oftraf_path()
-                sb_active_scalability_multinet.sb_active_scalability_multinet_run(
+                nstat_test_run.sb_active_scalability_multinet_run(
                     json_conf,
-                    args.ctrl_base_dir,
-                    args.sb_emu_base_dir,
                     args.json_output,
-                    args.output_dir,
-                    oftraf_path)
+                    args.output_dir)
 
         elif nstat_test_type_run == 'sb_idle_scalability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                sb_idle_scalability_cbench.sb_idle_scalability_cbench_run(
+                nstat_test_run.sb_idle_scalability_cbench_run(
                     json_conf,
                     args.ctrl_base_dir,
                     args.sb_emu_base_dir,
@@ -144,7 +139,7 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                sb_idle_scalability_multinet.sb_idle_scalability_multinet_run(
+                nstat_test_run.sb_idle_scalability_multinet_run(
                     json_conf,
                     args.ctrl_base_dir,
                     args.sb_emu_base_dir,
@@ -156,7 +151,7 @@ class TestType:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 oftraf_path = get_oftraf_path()
-                sb_idle_stability_multinet.sb_idle_stability_multinet_run(
+                nstat_test_run.sb_idle_stability_multinet_run(
                     json_conf,
                     args.ctrl_base_dir,
                     args.sb_emu_base_dir,
@@ -168,7 +163,7 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                nb_active_scalability_multinet.nb_active_scalability_multinet_run(
+                nstat_test_run.nb_active_scalability_multinet_run(
                     json_conf,
                     args.ctrl_base_dir,
                     args.sb_emu_base_dir,

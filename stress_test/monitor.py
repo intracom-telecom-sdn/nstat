@@ -18,7 +18,7 @@ import util.sysstats
 
 class Monitor:
 
-    def __init__(self, controller, test_type, test):
+    def __init__(self, controller, test):
         """Create a Monitor. Options from JSON input file
         :param nb_gen_base_dir: emulator base directory
         :param controller: object of the Controller class
@@ -28,7 +28,6 @@ class Monitor:
         :type sbemu: object
         """
         self.controller = controller
-        self.test_type = test_type
         self.global_sample_id = 0
 
     def system_results(self):
@@ -124,8 +123,6 @@ class Oftraf(Monitor):
 
         # Parallel section
         self.exit_flag = False
-#        logging.info('{0} creating idle stability with oftraf '
-#                     'monitor thread'.format(test_type))
         monitor_thread = gevent.spawn(self.monitor_thread())
         gevent.sleep(0)
         res = self.results_queue.get(block=True)
@@ -134,12 +131,11 @@ class Oftraf(Monitor):
         self.results_queue.join()
         gevent.killall([monitor_thread])
 
-#        logging.info('{0} joining monitor thread'.format(test_type))
         return res
 
 
 class Mtcbench(Monitor):
-    def __init__(self, controller, test_type, test, emulator):
+    def __init__(self, controller, test, emulator):
         super(self.__class__, self).__init__(test,
                                              emulator)
 
@@ -381,7 +377,7 @@ class Mtcbench(Monitor):
 
 
 class Multinet(Oftraf):
-    def __init__(self, controller, test_type, test, emulator):
+    def __init__(self, controller, test, emulator):
         super(self.__class__, self).__init__(test, emulator)
         self.data_queue = gevent.queue.Queue()
 

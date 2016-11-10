@@ -29,8 +29,6 @@ class TestRun:
         self.test = stress_test.test_type.TestType(self, args)
 
     def sb_active_scalability_cbench_run(self, json_conf,
-                                         ctrl_base_dir,
-                                         sb_emu_base_dir,
                                          json_output,
                                          output_dir):
         """
