@@ -13,6 +13,7 @@ import time
 import stress_test.controller
 import stress_test.emulator
 import stress_test.nb_generator
+import stress_test.test_type
 import sys
 import util.file_ops
 import util.netutil
@@ -110,11 +111,11 @@ class TestType:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
                 exit()
-                sb_active_scalability_cbench.sb_active_scalability_cbench_run(
+                test_run.sb_active_scalability_cbench_run(
                     args.json_output,
                     args.ctrl_base_dir,
                     args.sb_gen_base_dir,
-                    test_config,
+                    json_conf,
                     args.output_dir)
 
         # sb_active_stability_mtcbench

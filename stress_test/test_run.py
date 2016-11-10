@@ -37,8 +37,9 @@ class TestRun:
             #-------------------------------------------------------------------
 
         except:
-
+            pass
         finally:
+            pass
 
     def sb_active_stability_cbench_run(self):
         """
@@ -58,8 +59,9 @@ class TestRun:
             #-------------------------------------------------------------------
 
         except:
-
+            pass
         finally:
+            pass
 
     def sb_idle_scalability_cbench_run(self):
         """
@@ -79,8 +81,10 @@ class TestRun:
             #-------------------------------------------------------------------
 
         except:
+            pass
 
         finally:
+            pass
 
     def sb_active_scalability_multinet_run(self):
         """
@@ -100,8 +104,10 @@ class TestRun:
             #-------------------------------------------------------------------
 
         except:
+            pass
 
         finally:
+            pass
 
 
     def sb_idle_scalability_multinet_run(self):
@@ -122,8 +128,10 @@ class TestRun:
             #-------------------------------------------------------------------
 
         except:
+            pass
 
         finally:
+            pass
     def sb_idle_stability_multinet_run(self):
         """
         """
@@ -142,8 +150,10 @@ class TestRun:
             #-------------------------------------------------------------------
 
         except:
+            pass
 
         finally:
+            pass
 
     def nb_active_scalability_multinet_run(self):
         """
@@ -163,5 +173,7 @@ class TestRun:
             #-------------------------------------------------------------------
 
         except:
+            pass
 
         finally:
+            pass
