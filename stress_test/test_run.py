@@ -19,7 +19,7 @@ class TestRun:
         """
         """
 
-    def sb_active_scalability_cbench_run(self):
+    def sb_active_scalability_cbench_run(self, ):
         """
         """
         try:

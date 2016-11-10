@@ -129,7 +129,7 @@ class TestType:
                 sb_active_stability_cbench.sb_active_stability_cbench_run(
                     args.json_output,
                     args.ctrl_base_dir,
-                    args.sb_gen_base_dir,
+                    args.sb_emu_base_dir,
                     json_conf,
                     args.output_dir)
 
@@ -142,7 +142,7 @@ class TestType:
                 sb_active_scalability_multinet.sb_active_scalability_multinet_run(
                     args.json_output,
                     args.ctrl_base_dir,
-                    args.sb_gen_base_dir,
+                    args.sb_emu_base_dir,
                     json_conf,
                     args.output_dir,
                     oftraf_path)
@@ -155,7 +155,7 @@ class TestType:
                 sb_idle_scalability_cbench.sb_idle_scalability_cbench_run(
                     args.json_output,
                     args.ctrl_base_dir,
-                    args.sb_gen_base_dir,
+                    args.sb_emu_base_dir,
                     json_conf,
                     args.output_dir)
 
@@ -167,7 +167,7 @@ class TestType:
                 sb_idle_scalability_multinet.sb_idle_scalability_multinet_run(
                     args.json_output,
                     args.ctrl_base_dir,
-                    args.sb_gen_base_dir,
+                    args.sb_emu_base_dir,
                     json_conf,
                     args.output_dir)
 
@@ -180,7 +180,7 @@ class TestType:
                 sb_idle_stability_multinet.sb_idle_stability_multinet_run(
                     args.json_output,
                     args.ctrl_base_dir,
-                    args.sb_gen_base_dir,
+                    args.sb_emu_base_dir,
                     json_conf,
                     args.output_dir,
                     oftraf_path)
@@ -194,7 +194,7 @@ class TestType:
                     args.json_output,
                     args.ctrl_base_dir,
                     args.nb_gen_base_dir,
-                    args.sb_gen_base_dir,
+                    args.sb_emu_base_dir,
                     json_conf,
                     args.output_dir,
                     args.logging_level)
