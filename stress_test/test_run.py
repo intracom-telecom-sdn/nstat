@@ -25,8 +25,9 @@ class TestRun:
                                                            json_conf)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
-        self.oftraf = stress_test.oftraf.Oftraf(self, self.ctrl,
-                                                json_conf)
+
+        self.oftraf = stress_test.oftraf.Oftraf(self, self.ctrl, json_conf)
+
         self.test = stress_test.test_type.TestType(self, args)
 
         '''
