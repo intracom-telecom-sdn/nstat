@@ -26,7 +26,7 @@
 "controller_oper_links_handler":"get_links.py",
 "controller_oper_switches_handler":"get_switches.py",
 "controller_oper_flows_handler":"get_flows.py",
-"controller_flowmods_conf_handler":"controller_flowmods_configure.py",
+"controller_flowmods_conf_handler":"flowmods_configure.py",
 
 "controller_logs_dir":"distribution-karaf-0.5.0-Boron/data/log/",
 
