@@ -115,6 +115,7 @@ class TestRun:
         try:
             # CONTROLLER preparation
             # ---------------------------------------------------------------
+            print("STARTING THE TEST")
             self.ctrl.init_ssh()
             self.ctrl.build()
             logging.info('[sb_active_scalability_multinet] Controller files '
