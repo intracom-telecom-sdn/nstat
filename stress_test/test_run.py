@@ -112,78 +112,78 @@ class TestRun:
                                            output_dir):
         """
         """
-        try:
-            # CONTROLLER preparation
-            # ---------------------------------------------------------------
-            print("STARTING THE TEST")
-            self.ctrl.init_ssh()
-            self.ctrl.build()
-            logging.info('[sb_active_scalability_multinet] Controller files '
-                         'have been created')
+#        try:
+        # CONTROLLER preparation
+        # ---------------------------------------------------------------
+        print("STARTING THE TEST")
+        self.ctrl.init_ssh()
+        self.ctrl.build()
+        logging.info('[sb_active_scalability_multinet] Controller files '
+                     'have been created')
 
-            # EMULATOR preparation
-            # ---------------------------------------------------------------
-            self.sb_emu.init_ssh()
-            self.sb_emu.build()
+        # EMULATOR preparation
+        # ---------------------------------------------------------------
+        self.sb_emu.init_ssh()
+        self.sb_emu.build()
 
-            logging.info('[sb_active_scalability_multinet] Build a {0} '
-                         'emulator on {1} host'.format(self.sb_emu.name,
-                                                       self.sb_emu.ip))
+        logging.info('[sb_active_scalability_multinet] Build a {0} '
+                     'emulator on {1} host'.format(self.sb_emu.name,
+                                                   self.sb_emu.ip))
 
-            # Oftraf preparation
-            # ---------------------------------------------------------------
-            # self.oftraf.build()
-            print("READY to EXIT")
-            exit()
+        # Oftraf preparation
+        # ---------------------------------------------------------------
+        # self.oftraf.build()
+        print("READY to EXIT")
+        exit()
 
-            # TEST run
-            # ---------------------------------------------------------------
+        # TEST run
+        # ---------------------------------------------------------------
 
-            for (self.sb_emu.topo_size,
-                 self.sb_emu.topo_type,
-                 self.sb_emu.topo_hosts_per_switch,
-                 self.sb_emu.topo_group_size,
-                 self.sb_emu.topo_group_delay_ms
-                 ) in itertools.product(
-                    json_conf['multinet_topo_size'],
-                    json_conf['multinet_topo_type'],
-                    json_conf['multinet_topo_hosts_per_switch'],
-                    json_conf['multinet_topo_group_size'],
-                    json_conf['multinet_topo_group_delay_ms']):
+        for (self.sb_emu.topo_size,
+             self.sb_emu.topo_type,
+             self.sb_emu.topo_hosts_per_switch,
+             self.sb_emu.topo_group_size,
+             self.sb_emu.topo_group_delay_ms
+             ) in itertools.product(
+                json_conf['multinet_topo_size'],
+                json_conf['multinet_topo_type'],
+                json_conf['multinet_topo_hosts_per_switch'],
+                json_conf['multinet_topo_group_size'],
+                json_conf['multinet_topo_group_delay_ms']):
 
-                # start a controller
-                self.ctrl.check_status()
-                self.ctrl.start()
-                self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-                self.oftraf.start()
+            # start a controller
+            self.ctrl.check_status()
+            self.ctrl.start()
+            self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+            self.oftraf.start()
 
-                self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
-                logging.info('[sb_active_scalability_multinet] '
-                             'Generate multinet config file')
+            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+            logging.info('[sb_active_scalability_multinet] '
+                         'Generate multinet config file')
 
-                self.sb_emu.init_topos()
-                self.sb_emu.start_topos()
-                time.sleep(10)
-                logging.info("The whole number of switches are: {0}"
-                             .format(self.sb_emu.get_switches()))
-                logging.info("The whole number of flows are: {0}"
-                             .format(self.sb_emu.get_flows()))
+            self.sb_emu.init_topos()
+            self.sb_emu.start_topos()
+            time.sleep(10)
+            logging.info("The whole number of switches are: {0}"
+                         .format(self.sb_emu.get_switches()))
+            logging.info("The whole number of flows are: {0}"
+                         .format(self.sb_emu.get_flows()))
 
-                self.sb_emu.generate_traffic()
+            self.sb_emu.generate_traffic()
 
-                # mon.monitor_run()
+            # mon.monitor_run()
 
-                # Stop/clean nodes
-                # ---------------------------------------------------------
-                self.ctrl.stop()
-                self.ctrl.check_status()
-                self.sb_emu.init_topos()
-                self.oftraf.stop()
-                self.sb_emu.cleanup()
+            # Stop/clean nodes
+            # ---------------------------------------------------------
+            self.ctrl.stop()
+            self.ctrl.check_status()
+            self.sb_emu.init_topos()
+            self.oftraf.stop()
+            self.sb_emu.cleanup()
 
-            logging.info('[Testing] All done!')
+        logging.info('[Testing] All done!')
 
-        except:
+#        except:
             '''logging.error('{0} ::::::: Exception ::::::::'.format(test_type))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             logging.error('{0} Exception: {1}, {2}'.
@@ -195,28 +195,28 @@ class TestRun:
             logging.exception('')
             '''
 
-        finally:
+#        finally:
 
-            # common.generate_json_results(mon.results, json_output)
-            try:
-                self.ctrl.stop()
-            except:
-                pass
+        # common.generate_json_results(mon.results, json_output)
+        try:
+            self.ctrl.stop()
+        except:
+            pass
 
 # copy_dir_remote_to_local?
-            if self.ctrl.need_cleanup:
-                self.ctrl.clean_hnd()
-            try:
-                self.sb_emu.cleanup()
-            except:
-                pass
-            try:
-                self.oftraf.stop()
-            except:
-                pass
+        if self.ctrl.need_cleanup:
+            self.ctrl.clean_hnd()
+        try:
+            self.sb_emu.cleanup()
+        except:
+            pass
+        try:
+            self.oftraf.stop()
+        except:
+            pass
 
-            self.sb_emu.clean()
-            common.close_ssh_connections([self.ctrl._ssh_conn])
+        self.sb_emu.clean()
+        common.close_ssh_connections([self.ctrl._ssh_conn])
 
 
     def sb_idle_scalability_multinet_run(self):
