@@ -28,6 +28,12 @@ class TestRun:
                                                 json_conf)
         self.test = stress_test.test_type.TestType(self, args)
 
+        if self.sb_emu. == MTCBENCH
+            self.mon = stress_test.monitor.Mtcbench(self, self.ctrl, self.sb_emu)
+        elif: self.sb_emu. == MULTINET
+            self.mon = stress_test.monitor.Multinet(self, self.ctrl, self.sb_emu)
+        else
+
     def sb_active_scalability_cbench_run(self, json_conf,
                                          json_output,
                                          output_dir):
@@ -106,7 +112,7 @@ class TestRun:
                                            output_dir):
         """
         """
-        mon = self.mon = stress_test.monitor.Monitor(self)
+
 
         try:
             # CONTROLLER preparation
@@ -122,7 +128,8 @@ class TestRun:
             self.sb_emu.build()
 
             logging.info('[sb_active_scalability_multinet] Build a {0} '
-                         'emulator on {1} host'.format(sb_emu.name, sb_emu.ip))
+                         'emulator on {1} host'.format(self.sb_emu.name,
+                                                       self.sb_emu.ip))
 
             # Oftraf preparation
             # ---------------------------------------------------------------
