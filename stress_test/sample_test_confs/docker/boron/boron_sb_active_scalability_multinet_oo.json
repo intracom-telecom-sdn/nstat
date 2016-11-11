@@ -10,7 +10,7 @@
 "controller_node_password":"root123",
 
 "sb_emulator_name":"MULTINET",
-"sb_emulator_node_ip":"10.0.1.14",
+"sb_emulator_node_ip":"10.0.1.12",
 "sb_emulator_node_ssh_port":"22",
 "sb_emulator_node_username":"root",
 "sb_emulator_node_password":"root123",
@@ -58,7 +58,7 @@
 "sb_emulator_clean_handler":"clean.sh",
 
 "multinet_switch_type":"ovsk",
-"multinet_worker_ip_list":["10.0.1.14", "10.0.1.15"],
+"multinet_worker_ip_list":["10.0.1.12", "10.0.1.13"],
 "multinet_worker_port_list":[3333, 3333],
 
 "multinet_traffic_gen_duration_ms":60000,

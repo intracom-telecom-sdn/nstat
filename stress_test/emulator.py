@@ -103,12 +103,12 @@ class SBEmu:
             self.status = 'NOT_BUILT'
             raise Exception('[SB-Emulator] Failure during building')
 
-    def cleanup(self):
-        """Wrapper to the SB-Emulator cleanup handler
+    def clean(self):
+        """Wrapper to the SB-Emulator clean handler
         :raises: Exception if the handler does not exist on the remote host
         :raises: Exception if the exit status of the handler is not 0
         """
-        logging.info('[SB-Emulator] Cleaning up')
+        logging.info('[SB-Emulator] Cleaning')
         self.status = 'CLEANING'
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
@@ -117,7 +117,7 @@ class SBEmu:
                                                    'clean_handler]')[0]
         if exit_status == 0:
             self.status = 'CLEANED'
-            logging.info("[SB-Emulator] Successful cleanup")
+            logging.info("[SB-Emulator] Successful clean")
         else:
             self.status = 'NOT_CLEANED'
             raise Exception('[SB-Emulator] Failure during cleaning')
