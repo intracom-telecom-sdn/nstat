@@ -26,7 +26,6 @@ class TestRun:
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
         print(self.ctrl)
-        self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
 
         #self.test = stress_test.test_type.TestType(self, args)
 
@@ -155,9 +154,10 @@ class TestRun:
                     json_conf['multinet_topo_group_delay_ms']):
 
                 # start a controller
-                self.oftraf.start()
                 self.ctrl.check_status()
                 self.ctrl.start()
+                self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                self.oftraf.start()
 
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 logging.info('[sb_active_scalability_multinet] '
