@@ -90,17 +90,17 @@ class TestRun:
         """
         try:
             # CONTROLLER preparation
-            #-------------------------------------------------------------------
+            # ------------------------------------------------------------------
             self.ctrl.init_ssh()
             self.ctrl.build()
 
             # EMULATOR preparation
-            #-------------------------------------------------------------------
+            # ----------------------------------------------------------------
             self.sb_emu.init_ssh()
             self.sb_emu.build()
 
             # TEST run
-            #-------------------------------------------------------------------
+            # ----------------------------------------------------------------
 
         except:
             pass
@@ -114,8 +114,6 @@ class TestRun:
                                            output_dir):
         """
         """
-
-
         try:
             # CONTROLLER preparation
             # ---------------------------------------------------------------
@@ -135,7 +133,7 @@ class TestRun:
 
             # Oftraf preparation
             # ---------------------------------------------------------------
-            #self.oftraf.build()
+            # self.oftraf.build()
             exit()
 
             # TEST run
@@ -173,7 +171,7 @@ class TestRun:
 
                 self.sb_emu.generate_traffic()
 
-                mon.monitor_run()
+                # mon.monitor_run()
 
                 # Stop/clean nodes
                 # ---------------------------------------------------------
@@ -186,7 +184,7 @@ class TestRun:
             logging.info('[Testing] All done!')
 
         except:
-            logging.error('{0} ::::::: Exception ::::::::'.format(test_type))
+            '''logging.error('{0} ::::::: Exception ::::::::'.format(test_type))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             logging.error('{0} Exception: {1}, {2}'.
                           format(test_type, exc_type, exc_tb.tb_lineno))
@@ -195,17 +193,18 @@ class TestRun:
             for error in errors:
                 logging.error('{0} {1}'.format(test_type, error))
             logging.exception('')
+            '''
 
         finally:
 
-            common.generate_json_results(mon.results, json_output)
+            # common.generate_json_results(mon.results, json_output)
             try:
                 self.ctrl.stop()
             except:
                 pass
 
 # copy_dir_remote_to_local?
-            if ctrl.need_cleanup:
+            if self.ctrl.need_cleanup:
                 self.ctrl.clean_hnd()
             try:
                 self.sb_emu.cleanup()
@@ -217,7 +216,7 @@ class TestRun:
                 pass
 
             self.sb_emu.clean()
-            common.close_ssh_connections([ctrl._ssh_conn])
+            common.close_ssh_connections([self.ctrl._ssh_conn])
 
 
     def sb_idle_scalability_multinet_run(self):
