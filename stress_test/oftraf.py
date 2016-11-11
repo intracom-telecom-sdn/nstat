@@ -24,7 +24,8 @@ class Oftraf:
         :type controller: object
         """
 
-        self.interval_ms = test_config['oftraf_test_interval_ms']
+        if 'oftraf_test_interval_ms' in test_config:
+            self.interval_ms = test_config['oftraf_test_interval_ms']
         self.rest_server_port = test_config['oftraf_rest_server_port']
         self.rest_server_ip = self.controller.ip
 
