@@ -107,6 +107,14 @@ class ODLFlowModConfError(CtrlError):
                            format(additional_error_info))
 
 
+class ODLGetOperHostsError(CtrlError):
+    """ODL fail to get hosts from operational datastore error."""
+    def __init__(self, additional_error_info=''):
+        CtrlError.__init__(self, 'ODL fail to get hosts from '
+                           'operational datastore. {0}'.
+                           format(additional_error_info))
+
+
 class ODLGetOperFlowsError(CtrlError):
     """ODL fail to get installed flows from operational datastore error."""
     def __init__(self, additional_error_info=''):
