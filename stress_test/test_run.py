@@ -151,6 +151,8 @@ class TestRun:
                 json_conf['multinet_topo_group_size'],
                 json_conf['multinet_topo_group_delay_ms']):
 
+            i = 1
+            print("{0} repetition".format(i))
             # start a controller
             self.ctrl.check_status()
             self.ctrl.start()
@@ -180,6 +182,7 @@ class TestRun:
             self.sb_emu.init_topos()
             self.oftraf.stop()
             self.sb_emu.cleanup()
+            i+=1
 
         logging.info('[Testing] All done!')
 
