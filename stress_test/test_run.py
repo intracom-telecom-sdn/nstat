@@ -184,16 +184,16 @@ class TestRun:
         logging.info('[Testing] All done!')
 
 #        except:
-            '''logging.error('{0} ::::::: Exception ::::::::'.format(test_type))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            logging.error('{0} Exception: {1}, {2}'.
-                          format(test_type, exc_type, exc_tb.tb_lineno))
+        '''logging.error('{0} ::::::: Exception ::::::::'.format(test_type))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        logging.error('{0} Exception: {1}, {2}'.
+                      format(test_type, exc_type, exc_tb.tb_lineno))
 
-            errors = str(exc_obj).rstrip().split('\n')
-            for error in errors:
-                logging.error('{0} {1}'.format(test_type, error))
-            logging.exception('')
-            '''
+        errors = str(exc_obj).rstrip().split('\n')
+        for error in errors:
+            logging.error('{0} {1}'.format(test_type, error))
+        logging.exception('')
+        '''
 
 #        finally:
 
