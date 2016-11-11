@@ -67,7 +67,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
     else:
         controller_cpu_shares = 100
     multinet_switch_type = conf['multinet_switch_type']
-    """
+    
     controller_handlers_set = conf_collections_util.controller_handlers(
         ctrl_base_dir + conf['controller_build_handler'],
         ctrl_base_dir + conf['controller_start_handler'],
@@ -78,7 +78,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         ctrl_base_dir + conf['controller_flowmods_conf_handler'],
         ctrl_base_dir + conf['controller_persistent_handler']
         )
-    """
+    '''
     controller_handlers_set = conf_collections_util.controller_handlers(
         ctrl_base_dir + conf['controller_build_handler'],
         ctrl_base_dir + conf['controller_start_handler'],
@@ -89,7 +89,7 @@ def sb_active_scalability_multinet_run(out_json, ctrl_base_dir,
         ctrl_base_dir + conf['controller_flowmods_conf_handler'],
         ''
         )
-
+    '''
     multinet_handlers_set = conf_collections_util.topology_generator_handlers(
         multinet_base_dir + conf['topology_rest_server_boot'],
         multinet_base_dir + conf['topology_stop_switches_handler'],
