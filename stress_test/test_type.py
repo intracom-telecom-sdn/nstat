@@ -118,7 +118,7 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                oftraf_path = get_oftraf_path()
+                #oftraf_path = get_oftraf_path()
                 nstat_test_run.sb_active_scalability_multinet_run(
                     json_conf,
                     args.json_output,
