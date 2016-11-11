@@ -6,7 +6,7 @@
 
 import itertools
 import logging
-import stress_test.common
+import common
 import stress_test.controller
 import stress_test.emulator
 import stress_test.monitor
