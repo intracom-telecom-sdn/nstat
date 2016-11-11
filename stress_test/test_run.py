@@ -11,7 +11,7 @@ import stress_test.controller
 import stress_test.emulator
 import stress_test.monitor
 import stress_test.oftraf
-import stress_test.test_type
+# import stress_test.test_type
 import sys
 import time
 
@@ -22,12 +22,10 @@ class TestRun:
         """
         """
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
-                                                           json_conf)
+                                                          json_conf)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
-        print(self.ctrl)
-
-        #self.test = stress_test.test_type.TestType(self, args)
+        # self.test = stress_test.test_type.TestType(self, args)
 
         '''
         if self.sb_emu. == MTCBENCH
@@ -134,6 +132,7 @@ class TestRun:
             # Oftraf preparation
             # ---------------------------------------------------------------
             # self.oftraf.build()
+            print("READY to EXIT")
             exit()
 
             # TEST run

@@ -108,7 +108,7 @@ class SBEmu:
         :raises: Exception if the handler does not exist on the remote host
         :raises: Exception if the exit status of the handler is not 0
         """
-        logging.info('[SB-Emulator] Cleaning up')
+        logging.info('[SB-Emulator] Cleaning')
         self.status = 'CLEANING'
 
         exit_status = util.netutil.ssh_run_command(self._ssh_conn,
