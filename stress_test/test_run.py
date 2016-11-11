@@ -111,7 +111,6 @@ class TestRun:
 
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
-                                           mon,
                                            json_output,
                                            output_dir):
         """
