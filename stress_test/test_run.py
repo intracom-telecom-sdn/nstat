@@ -133,8 +133,7 @@ class TestRun:
         # Oftraf preparation
         # ---------------------------------------------------------------
         # self.oftraf.build()
-        print("READY to EXIT")
-        exit()
+        print("READY for the loop")
 
         # TEST run
         # ---------------------------------------------------------------
