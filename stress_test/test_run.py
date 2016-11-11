@@ -28,12 +28,13 @@ class TestRun:
                                                 json_conf)
         self.test = stress_test.test_type.TestType(self, args)
 
+'''
         if self.sb_emu. == MTCBENCH
             self.mon = stress_test.monitor.Mtcbench(self, self.ctrl, self.sb_emu)
         elif: self.sb_emu. == MULTINET
             self.mon = stress_test.monitor.Multinet(self, self.ctrl, self.sb_emu)
         else
-
+'''
     def sb_active_scalability_cbench_run(self, json_conf,
                                          json_output,
                                          output_dir):
