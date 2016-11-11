@@ -55,9 +55,22 @@ class TestRun:
             self.sb_emu.init_ssh()
             self.sb_emu.build()
 
-
             # TEST run
             #-------------------------------------------------------------------
+        for (self.sb_emu.threads,
+             self.sb_emu.switches_per_thread,
+             self.sb_emu.thread_creation_delay_ms,
+             self.sb_emu.delay_before_traffic_ms,
+             self.sb_emu.simulated_hosts,
+             repeat_id,
+             controller_statistics_period_ms) in \
+             itertools.product(json_conf['cbench_threads'],
+                               json_conf['cbench_switches_per_thread'],
+                               json_conf['cbench_thread_creation_delay_ms'],
+                               json_conf['cbench_delay_before_traffic_ms'],
+                               json_conf['cbench_simulated_hosts'],
+                               list(range(0, test_repeats)),
+                               json_conf['controller_statistics_period_ms']):
 
         except:
             pass
