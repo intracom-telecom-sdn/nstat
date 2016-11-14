@@ -35,55 +35,49 @@ class TestRun:
         else
         '''
 
-    def sb_active_scalability_cbench_run(self, json_conf,
+    def sb_active_scalability_cbench_run(self,
+                                         json_conf,
                                          json_output,
                                          output_dir):
         """
         """
-        try:
+        # CONTROLLER preparation
+        #-------------------------------------------------------------------
+        self.ctrl.init_ssh()
+        self.ctrl.build()
 
-            # CONTROLLER preparation
-            #-------------------------------------------------------------------
-            self.ctrl.init_ssh()
-            self.ctrl.build()
-
-            # EMULATOR preparation
-            #-------------------------------------------------------------------
-            self.sb_emu.init_ssh()
-            self.sb_emu.build()
-            print("Kostas Papadopoulos (before)",json_conf['cbench_threads'])
-            print(json_conf['cbench_threads'])
-            print(json_conf['cbench_switches_per_thread'])
-            print(json_conf['cbench_thread_creation_delay_ms'])
-            print(json_conf['cbench_delay_before_traffic_ms'])
-            print(json_conf['cbench_simulated_hosts'])
-            print(json_conf['test_repeats'])
-            print(json_conf['controller_statistics_period_ms'])
-            # TEST run
-            #-------------------------------------------------------------------
-            for (self.sb_emu.threads,
-                 self.sb_emu.switches_per_thread,
-                 self.sb_emu.thread_creation_delay_ms,
-                 self.sb_emu.delay_before_traffic_ms,
-                 self.sb_emu.simulated_hosts,
-                 self.repeat_id,
-                 self.ctrl.stat_period) in itertools.product(json_conf['cbench_threads'],
-                                   json_conf['cbench_switches_per_thread'],
-                                   json_conf['cbench_thread_creation_delay_ms'],
-                                   json_conf['cbench_delay_before_traffic_ms'],
-                                   json_conf['cbench_simulated_hosts'],
-                                   list(range(0, json_conf['test_repeats'])),
-                                   json_conf['controller_statistics_period_ms']):
-                print("Kostas Papadopoulos (within loop)")
-                # Change controller statistics period to controller statistics period in ms
-                #self.ctrl.change_stats()
-                #self.ctrl.start()
-                #self.ctrl.stop()
-
-        except:
-            pass
-        finally:
-            pass
+        # EMULATOR preparation
+        #-------------------------------------------------------------------
+        self.sb_emu.init_ssh()
+        self.sb_emu.build()
+        print("Kostas Papadopoulos (before)",json_conf['cbench_threads'])
+        print(json_conf['cbench_threads'])
+        print(json_conf['cbench_switches_per_thread'])
+        print(json_conf['cbench_thread_creation_delay_ms'])
+        print(json_conf['cbench_delay_before_traffic_ms'])
+        print(json_conf['cbench_simulated_hosts'])
+        print(json_conf['test_repeats'])
+        print(json_conf['controller_statistics_period_ms'])
+        # TEST run
+        #-------------------------------------------------------------------
+        for (self.sb_emu.threads,
+             self.sb_emu.switches_per_thread,
+             self.sb_emu.thread_creation_delay_ms,
+             self.sb_emu.delay_before_traffic_ms,
+             self.sb_emu.simulated_hosts,
+             self.repeat_id,
+             self.ctrl.stat_period) in itertools.product(json_conf['cbench_threads'],
+                               json_conf['cbench_switches_per_thread'],
+                               json_conf['cbench_thread_creation_delay_ms'],
+                               json_conf['cbench_delay_before_traffic_ms'],
+                               json_conf['cbench_simulated_hosts'],
+                               list(range(0, json_conf['test_repeats'])),
+                               json_conf['controller_statistics_period_ms']):
+            print("Kostas Papadopoulos (within loop)")
+            # Change controller statistics period to controller statistics period in ms
+            #self.ctrl.change_stats()
+            #self.ctrl.start()
+            #self.ctrl.stop()
 
     def sb_active_stability_cbench_run(self):
         """
