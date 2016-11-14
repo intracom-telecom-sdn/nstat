@@ -59,7 +59,7 @@ class TestRun:
              self.sb_emu.delay_before_traffic_ms,
              self.sb_emu.simulated_hosts,
              self.repeat_id,
-             self.ctrl.stat_period) in itertools.product(json_conf['mtcbench_threads'],
+             self.ctrl.stat_period_ms) in itertools.product(json_conf['mtcbench_threads'],
                                json_conf['mtcbench_switches_per_thread'],
                                json_conf['mtcbench_thread_creation_delay_ms'],
                                json_conf['mtcbench_delay_before_traffic_ms'],
