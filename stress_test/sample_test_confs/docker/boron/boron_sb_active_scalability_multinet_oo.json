@@ -1,16 +1,16 @@
 {
-"nstat_node_ip":"10.0.1.10",
+"nstat_node_ip":"10.0.1.13",
 "nstat_node_ssh_port":"22",
 "nstat_node_username":"root",
 "nstat_node_password":"root123",
 
-"controller_node_ip":"10.0.1.11",
+"controller_node_ip":"10.0.1.14",
 "controller_node_ssh_port":"22",
 "controller_node_username":"root",
 "controller_node_password":"root123",
 
 "sb_emulator_name":"MULTINET",
-"sb_emulator_node_ip":"10.0.1.12",
+"sb_emulator_node_ip":"10.0.1.15",
 "sb_emulator_node_ssh_port":"22",
 "sb_emulator_node_username":"root",
 "sb_emulator_node_password":"root123",
@@ -58,7 +58,7 @@
 "sb_emulator_clean_handler":"clean.sh",
 
 "multinet_switch_type":"ovsk",
-"multinet_worker_ip_list":["10.0.1.12", "10.0.1.13"],
+"multinet_worker_ip_list":["10.0.1.15", "10.0.1.16"],
 "multinet_worker_port_list":[3333, 3333],
 
 "multinet_traffic_gen_duration_ms":60000,
