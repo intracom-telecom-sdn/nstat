@@ -165,6 +165,7 @@ class TestRun:
             # start a controller
             self.ctrl.check_status()
             self.ctrl.start()
+            '''
             self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
             self.oftraf.start()
 
@@ -183,15 +184,17 @@ class TestRun:
             self.sb_emu.generate_traffic()
 
             # mon.monitor_run()
-
+            '''
             # Stop/clean nodes
             # ---------------------------------------------------------
             self.ctrl.stop()
+            '''
             self.ctrl.check_status()
             self.sb_emu.init_topos()
             self.oftraf.stop()
             self.sb_emu.cleanup()
-            i+=1
+            '''
+            i += 1
 
         logging.info('[Testing] All done!')
 
