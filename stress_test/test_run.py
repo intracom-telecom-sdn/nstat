@@ -66,7 +66,7 @@ class TestRun:
                                    json_conf['cbench_thread_creation_delay_ms'],
                                    json_conf['cbench_delay_before_traffic_ms'],
                                    json_conf['cbench_simulated_hosts'],
-                                   list(range(0, test_repeats)),
+                                   list(range(0, json_conf['test_repeats'])),
                                    json_conf['controller_statistics_period_ms']):
 
                 print("Kostas Papadopoulos")
