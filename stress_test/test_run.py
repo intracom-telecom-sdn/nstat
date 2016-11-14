@@ -66,11 +66,10 @@ class TestRun:
                                json_conf['mtcbench_simulated_hosts'],
                                list(range(0, json_conf['test_repeats'])),
                                json_conf['controller_statistics_period_ms']):
-            print("Kostas Papadopoulos (within loop)")
             # Change controller statistics period to controller statistics period in ms
             #self.ctrl.change_stats()
-            #self.ctrl.start()
-            #self.ctrl.stop()
+            self.ctrl.start()
+            self.ctrl.stop()
 
     def sb_active_stability_cbench_run(self):
         """
