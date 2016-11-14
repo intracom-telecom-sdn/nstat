@@ -21,18 +21,15 @@ class TestRun:
     def __init__(self, args, json_conf):
         """
         """
-        self.nstat_test_type_run = args.test_type + '_' + \
-                              json_conf['sb_emulator_name'].lower()
-
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                           json_conf)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
-        if self.nstat_test_type_run == "MTCBENCH":
+        if json_conf['sb_emulator_name'] == "MTCBENCH":
             self.mon = stress_test.monitor.Mtcbench(self,
                                                     self.ctrl,
                                                     self.sb_emu)
-        elif self.nstat_test_type_run == "MULTINET":
+        elif json_conf['sb_emulator_name'] == "MULTINET":
             self.mon = stress_test.monitor.Multinet(self,
                                                     self.ctrl,
                                                     self.sb_emu)
