@@ -54,25 +54,26 @@ class TestRun:
 
             # TEST run
             #-------------------------------------------------------------------
-        for (self.sb_emu.threads,
-             self.sb_emu.switches_per_thread,
-             self.sb_emu.thread_creation_delay_ms,
-             self.sb_emu.delay_before_traffic_ms,
-             self.sb_emu.simulated_hosts,
-             self.repeat_id,
-             self.ctrl.stat_period) in \
-             itertools.product(json_conf['cbench_threads'],
-                               json_conf['cbench_switches_per_thread'],
-                               json_conf['cbench_thread_creation_delay_ms'],
-                               json_conf['cbench_delay_before_traffic_ms'],
-                               json_conf['cbench_simulated_hosts'],
-                               list(range(0, test_repeats)),
-                               json_conf['controller_statistics_period_ms']):
-            logging.info('Kostas Papadopoulos')
-            # Change controller statistics period to controller statistics period in ms
-            #self.ctrl.change_stats()
-            #self.ctrl.start()
-            #self.ctrl.stop()
+            for (self.sb_emu.threads,
+                 self.sb_emu.switches_per_thread,
+                 self.sb_emu.thread_creation_delay_ms,
+                 self.sb_emu.delay_before_traffic_ms,
+                 self.sb_emu.simulated_hosts,
+                 self.repeat_id,
+                 self.ctrl.stat_period) in \
+                 itertools.product(json_conf['cbench_threads'],
+                                   json_conf['cbench_switches_per_thread'],
+                                   json_conf['cbench_thread_creation_delay_ms'],
+                                   json_conf['cbench_delay_before_traffic_ms'],
+                                   json_conf['cbench_simulated_hosts'],
+                                   list(range(0, test_repeats)),
+                                   json_conf['controller_statistics_period_ms']):
+
+                logging.info('Kostas Papadopoulos')
+                # Change controller statistics period to controller statistics period in ms
+                #self.ctrl.change_stats()
+                #self.ctrl.start()
+                #self.ctrl.stop()
 
         except:
             pass
