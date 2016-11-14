@@ -160,13 +160,13 @@ class TestRun:
                 json_conf['multinet_topo_group_delay_ms']):
 
             i = 1
-            print("{0} repetition".format(i))
+            print("repetition number: {0}".format(i))
             # start a controller
             self.ctrl.check_status()
             self.ctrl.start()
-            '''
-            self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-            self.oftraf.start()
+
+            # self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+            # self.oftraf.start()
 
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             logging.info('[sb_active_scalability_multinet] '
@@ -190,10 +190,11 @@ class TestRun:
             '''
             self.ctrl.check_status()
             self.sb_emu.init_topos()
-            self.oftraf.stop()
+            # self.oftraf.stop()
             self.sb_emu.cleanup()
-            '''
-            i += 1
+
+            i = i + 1
+            print(i)
 
         logging.info('[Testing] All done!')
 
@@ -215,7 +216,8 @@ class TestRun:
         try:
             self.ctrl.stop()
         except:
-            pass
+            print("FLAG: Error on stopping")
+            # pass
 
 # copy_dir_remote_to_local?
         if self.ctrl.need_cleanup:
@@ -223,11 +225,12 @@ class TestRun:
         try:
             self.sb_emu.cleanup()
         except:
+            print("FLAG: Error on cleaning")
             pass
-        try:
-            self.oftraf.stop()
-        except:
-            pass
+        # try:
+        #     self.oftraf.stop()
+        # except:
+        #     pass
 
         self.sb_emu.clean()
         common.close_ssh_connections([self.ctrl._ssh_conn])
