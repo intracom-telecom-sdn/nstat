@@ -21,19 +21,25 @@ class TestRun:
     def __init__(self, args, json_conf):
         """
         """
+        self.nstat_test_type_run = args.test_type + '_' + \
+                              json_conf['sb_emulator_name'].lower()
+
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                           json_conf)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
-        # self.test = stress_test.test_type.TestType(self, args)
+        if self.nstat_test_type_run == "MTCBENCH":
+            self.mon = stress_test.monitor.Mtcbench(self,
+                                                    self.ctrl,
+                                                    self.sb_emu)
+        elif self.nstat_test_type_run == "MULTINET":
+            self.mon = stress_test.monitor.Multinet(self,
+                                                    self.ctrl,
+                                                    self.sb_emu)
+        else:
+            raise NotImplementedError('Not supported yet')
 
-        '''
-        if self.sb_emu. == MTCBENCH
-            self.mon = stress_test.monitor.Mtcbench(self, self.ctrl, self.sb_emu)
-        elif: self.sb_emu. == MULTINET
-            self.mon = stress_test.monitor.Multinet(self, self.ctrl, self.sb_emu)
-        else
-        '''
+        # self.test = stress_test.test_type.TestType(self, args)
 
     def sb_active_scalability_cbench_run(self,
                                          json_conf,
@@ -68,6 +74,7 @@ class TestRun:
                                json_conf['controller_statistics_period_ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
+            total_samples = self.mon.monitor_run()
             self.ctrl.stop()
 
     def sb_active_stability_cbench_run(self):
