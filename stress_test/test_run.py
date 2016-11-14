@@ -52,6 +52,13 @@ class TestRun:
             self.sb_emu.init_ssh()
             self.sb_emu.build()
             print("Kostas Papadopoulos (before)")
+            print('cbench_threads:',json_conf['cbench_threads'])
+            print(json_conf['cbench_switches_per_thread'])
+            print(json_conf['cbench_thread_creation_delay_ms'])
+            print(json_conf['cbench_delay_before_traffic_ms'])
+            print(json_conf['cbench_simulated_hosts'])
+            print(json_conf['test_repeats'])
+            print(json_conf['controller_statistics_period_ms'])
             # TEST run
             #-------------------------------------------------------------------
             for (self.sb_emu.threads,
@@ -60,15 +67,13 @@ class TestRun:
                  self.sb_emu.delay_before_traffic_ms,
                  self.sb_emu.simulated_hosts,
                  self.repeat_id,
-                 self.ctrl.stat_period) in \
-                 itertools.product(json_conf['cbench_threads'],
+                 self.ctrl.stat_period) in itertools.product(json_conf['cbench_threads'],
                                    json_conf['cbench_switches_per_thread'],
                                    json_conf['cbench_thread_creation_delay_ms'],
                                    json_conf['cbench_delay_before_traffic_ms'],
                                    json_conf['cbench_simulated_hosts'],
                                    list(range(0, json_conf['test_repeats'])),
                                    json_conf['controller_statistics_period_ms']):
-
                 print("Kostas Papadopoulos (within loop)")
                 # Change controller statistics period to controller statistics period in ms
                 #self.ctrl.change_stats()
