@@ -69,7 +69,7 @@ class TestRun:
                                    list(range(0, test_repeats)),
                                    json_conf['controller_statistics_period_ms']):
 
-                logging.info('Kostas Papadopoulos')
+                print('Kostas Papadopoulos')
                 # Change controller statistics period to controller statistics period in ms
                 #self.ctrl.change_stats()
                 #self.ctrl.start()
