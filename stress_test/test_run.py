@@ -51,10 +51,10 @@ class TestRun:
             #-------------------------------------------------------------------
             self.sb_emu.init_ssh()
             self.sb_emu.build()
-            print("Kostas Papadopoulos (before)")
-            print('cbench_threads:',json_conf['cbench_threads'])
+            print(json_conf['cbench_threads'])
             print(json_conf['cbench_switches_per_thread'])
             print(json_conf['cbench_thread_creation_delay_ms'])
+            print("Kostas Papadopoulos (before)")
             print(json_conf['cbench_delay_before_traffic_ms'])
             print(json_conf['cbench_simulated_hosts'])
             print(json_conf['test_repeats'])
