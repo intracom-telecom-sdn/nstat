@@ -51,7 +51,7 @@ class TestRun:
             #-------------------------------------------------------------------
             self.sb_emu.init_ssh()
             self.sb_emu.build()
-
+            print("Kostas Papadopoulos (before)")
             # TEST run
             #-------------------------------------------------------------------
             for (self.sb_emu.threads,
@@ -69,7 +69,7 @@ class TestRun:
                                    list(range(0, json_conf['test_repeats'])),
                                    json_conf['controller_statistics_period_ms']):
 
-                print("Kostas Papadopoulos")
+                print("Kostas Papadopoulos (within loop)")
                 # Change controller statistics period to controller statistics period in ms
                 #self.ctrl.change_stats()
                 #self.ctrl.start()
