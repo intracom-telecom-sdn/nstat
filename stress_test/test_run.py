@@ -74,7 +74,10 @@ class TestRun:
             total_samples = self.mon.monitor_run()
             self.ctrl.stop()
 
-    def sb_active_stability_cbench_run(self):
+    def sb_active_stability_cbench_run(self,
+                                       json_conf,
+                                       json_output,
+                                       output_dir):
         """
         """
 
@@ -98,19 +101,22 @@ class TestRun:
              self.sb_emu.simulated_hosts,
              self.repeat_id,
              self.ctrl.stat_period_ms) in \
-             itertools.product(json_conf['mtcbench_threads'],
-                               json_conf['mtcbench_switches_per_thread'],
-                               json_conf['mtcbench_thread_creation_delay_ms'],
-                               json_conf['mtcbench_delay_before_traffic_ms'],
-                               json_conf['mtcbench_simulated_hosts'],
-                               list(range(0, json_conf['test_repeats'])),
-                               json_conf['controller_statistics_period_ms']):
+                 itertools.product(json_conf['mtcbench_threads'],
+                                   json_conf['mtcbench_switches_per_thread'],
+                                   json_conf['mtcbench_thread_creation_delay_ms'],
+                                   json_conf['mtcbench_delay_before_traffic_ms'],
+                                   json_conf['mtcbench_simulated_hosts'],
+                                   list(range(0, json_conf['test_repeats'])),
+                                   json_conf['controller_statistics_period_ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
             #total_samples = self.mon.monitor_run()
             self.ctrl.stop()
 
-    def sb_idle_scalability_cbench_run(self):
+    def sb_idle_scalability_cbench_run(self,
+                                       json_conf,
+                                       json_output,
+                                       output_dir):
         """
         """
 
@@ -131,16 +137,19 @@ class TestRun:
              self.sb_emu.thread_creation_delay_ms,
              self.sb_emu.delay_before_traffic_ms,
              self.sb_emu.simulated_host,
-             self.ctrl.stat_period_ms) in \
-             itertools.product(json_conf['mtcbench_threads'],
-                               json_conf['mtcbench_switches_per_thread'],
-                               json_conf['mtcbench_thread_creation_delay_ms'],
-                               json_conf['mtcbench_delay_before_traffic_ms'],
-                               json_conf['mtcbench_simulated_hosts'],
-                               json_conf['controller_statistics_period_ms']):
+             self.ctrl.stat_period_ms
+             ) in itertools.product(json_conf['mtcbench_threads'],
+                                    json_conf['mtcbench_switches_per_thread'],
+                                    json_conf['mtcbench_thread_creation_'
+                                              'delay_ms'],
+                                    json_conf['mtcbench_delay_before_'
+                                              'traffic_ms'],
+                                    json_conf['mtcbench_simulated_hosts'],
+                                    json_conf['controller_statistics_'
+                                              'period_ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
-            #total_samples = self.mon.monitor_run()
+            # total_samples = self.mon.monitor_run()
             self.ctrl.stop()
 
     def sb_active_scalability_multinet_run(self,
@@ -272,7 +281,10 @@ class TestRun:
         common.close_ssh_connections([self.ctrl._ssh_conn])
 
 
-    def sb_idle_scalability_multinet_run(self):
+    def sb_idle_scalability_multinet_run(self,
+                                         json_conf,
+                                         json_output,
+                                         output_dir):
         """
         """
         # CONTROLLER preparation
@@ -281,56 +293,64 @@ class TestRun:
         self.ctrl.build()
 
         # EMULATOR preparation
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         self.sb_emu.init_ssh()
         self.sb_emu.build()
 
         # TEST run
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         for (self.sb_emu.topo_size,
              self.sb_emu.topo_group_size,
              self.sb_emu.topo_group_delay_ms,
              self.sb_emu.topo_hosts_per_switch,
              self.sb_emu.topo_type,
-             self.ctrl.stat_period_ms) in \
-             itertools.product(json_conf['multinet_topo_size'],
-                               json_conf['multinet_topo_group_size'],
-                               json_conf['multinet_topo_group_delay_ms'],
-                               json_conf['multinet_topo_hosts_per_switch'],
-                               json_conf['multinet_topo_type'],
-                               json_conf['controller_statistics_period_ms']):
+             self.ctrl.stat_period_ms
+             ) in itertools.product(json_conf['multinet_topo_size'],
+                                    json_conf['multinet_topo_group_size'],
+                                    json_conf['multinet_topo_group_delay_ms'],
+                                    json_conf['multinet_topo_hosts_per_'
+                                              'switch'],
+                                    json_conf['multinet_topo_type'],
+                                    json_conf['controller_statistics_'
+                                              'period_ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
 
-            sb_emu.deploy(json_conf['controller_node_ip'],
-                          json_conf['controller_port'])
-            sb_emu.init_topos()
-            sb_emu.start_topos()
+            self.sb_emu.deploy(json_conf['controller_node_ip'],
+                               json_conf['controller_port'])
+            self.sb_emu.init_topos()
+            self.sb_emu.start_topos()
             self.ctrl.stop()
 
-
-
-    def sb_idle_stability_multinet_run(self):
+    def sb_idle_stability_multinet_run(self,
+                                       json_conf,
+                                       json_output,
+                                       output_dir):
         """
         """
 
         # CONTROLLER preparation
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         self.ctrl.init_ssh()
         self.ctrl.build()
 
         # EMULATOR preparation
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         self.sb_emu.init_ssh()
         self.sb_emu.build()
 
         # TEST run
-        #-------------------------------------------------------------------
-        for sample_id in list(range(json_conf['number_of_samples'] + 1)):
+        # ------------------------------------------------------------------
+        # for sample_id in list(range(json_conf['number_of_samples'] + 1)):
+        #    pass
 
-    def nb_active_scalability_multinet_run(self):
+    def nb_active_scalability_multinet_run(self,
+                                           json_conf,
+                                           json_output,
+                                           output_dir):
+        pass
         """
-        """
+
 
         # CONTROLLER preparation
         #-------------------------------------------------------------------
@@ -369,3 +389,4 @@ class TestRun:
                           json_conf['controller_port'])
             sb_emu.init_topos()
             sb_emu.start_topos()
+        """
