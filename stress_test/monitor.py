@@ -288,7 +288,7 @@ class Mtcbench(Monitor):
         """
 
         internal_repeat_id = 0
-        logging.info('[monitor_thread_active] Monitor thread started')
+        logging.info('[monitor_thread_active] monitor thread started')
 
         # will hold samples taken in the lifetime of this thread
         test_samples = []
@@ -341,11 +341,11 @@ class Mtcbench(Monitor):
         # Consumer - producer threads (mtcbench_thread is the producer,
         # monitor_thread is the consumer)
         if boot_start_time is None:
-            logging.info('[MTCbench.monitor_run] Active test monitor is '
+            logging.info('[MTCbench.monitor_run] active test monitor is '
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active())
         else:
-            logging.info('[MTCbench.monitor_run] Idle test monitor is running')
+            logging.info('[MTCbench.monitor_run] idle test monitor is running')
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle(boot_start_time))
         mtcbench_thread = gevent.spawn(self.mtcbench_thread())
