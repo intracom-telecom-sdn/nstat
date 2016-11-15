@@ -28,13 +28,6 @@ class TestRun:
         if json_conf['sb_emulator_name'] == "MTCBENCH":
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
-        elif json_conf['sb_emulator_name'] == "MULTINET":
-            self.mon = stress_test.monitor.Multinet(self.ctrl,
-                                                    self.sb_emu)
-        else:
-            raise NotImplementedError('not supported yet')
-
-
         # self.test = stress_test.test_type.TestType(self, args)
 
     def sb_active_scalability_cbench_run(self,
