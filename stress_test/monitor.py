@@ -82,7 +82,7 @@ class Monitor:
         return system_statistics
 
 
-class Oftraf(Monitor):
+class Oftraf_mon(Monitor):
 
     def __init__(self, controller, oftraf):
         super(self.__class__, self).__init__(controller)
@@ -377,7 +377,7 @@ class Mtcbench(Monitor):
         return
 
 
-class Multinet(Oftraf):
+class Multinet(Oftraf_mon):
     def __init__(self, controller, oftraf, emulator):
         super(self.__class__, self).__init__(controller, oftraf)
         self.data_queue = gevent.queue.Queue()
