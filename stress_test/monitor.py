@@ -9,8 +9,8 @@
 import gevent.queue
 import json
 import logging
-import queue
 import re
+import queue
 import subprocess
 import time
 import util.sysstats
@@ -84,7 +84,7 @@ class Monitor:
 
 class Oftraf(Monitor):
 
-    def __init__(self, oftraf):
+    def __init__(self, controller, oftraf):
         super(self.__class__, self).__init__(controller)
         self.oftraf = oftraf
         self.exit_flag = False
