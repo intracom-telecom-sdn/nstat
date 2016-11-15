@@ -8,7 +8,7 @@
 
 import gevent
 import logging
-import nb_generator_exceptions
+import stress_test.nb_generator_exceptions
 import time
 import util.netutil
 
@@ -72,8 +72,8 @@ class NBgen:
                     self.ip, int(self.ssh_port), self.ssh_user, self.ssh_pass,
                     10)
             except:
-                raise(nb_generator_exceptions.NBGenNodeConnectionError)
-        except nb_generator_exceptions.NBGenError as e:
+                raise(stress_test.nb_generator_exceptions.NBGenNodeConnectionError)
+        except stress_test.nb_generator_exceptions.NBGenError as e:
             self._error_handling(e.err_msg)
 
     def run(self):
@@ -109,15 +109,15 @@ class NBgen:
                     logging.info("[NB_generator] Successful ran")
                 else:
                     self.status = 'FAILED'
-                    raise(nb_generator_exceptions.NBGenRunError(
+                    raise(stress_test.nb_generator_exceptions.NBGenRunError(
                         '[NB_generator] Failure during running', 2))
                 return output
-            except nb_generator_exceptions.NBGenError as e:
+            except stress_test.nb_generator_exceptions.NBGenError as e:
                 if e.err_code != 2:
-                    raise(nb_generator_exceptions.NBGenRunError)
+                    raise(stress_test.nb_generator_exceptions.NBGenRunError)
             except:
-                raise(nb_generator_exceptions.NBGenRunError)
-        except nb_generator_exceptions.NBGenError as e:
+                raise(stress_test.nb_generator_exceptions.NBGenRunError)
+        except stress_test.nb_generator_exceptions.NBGenError as e:
             self._error_handling(e.err_msg)
 
     def __poll_flows_ds(self, t_start):
@@ -169,9 +169,9 @@ class NBgen:
                             return
                     gevent.sleep(1)
             except:
-                raise(nb_generator_exceptions.NBGenPollDSError(
+                raise(stress_test.nb_generator_exceptions.NBGenPollDSError(
                     'Error in end to end datastore flow polling.'))
-        except nb_generator_exceptions.NBGenError as e:
+        except stress_test.nb_generator_exceptions.NBGenError as e:
             self._error_handling(e.err_msg)
 
     def __poll_flows_ds_confirm(self):
@@ -224,9 +224,9 @@ class NBgen:
                             return
                     gevent.sleep(1)
             except:
-                raise(nb_generator_exceptions.NBGenPollDSError(
+                raise(stress_test.nb_generator_exceptions.NBGenPollDSError(
                     'Error in flow confirm datastore flow polling.'))
-        except nb_generator_exceptions.NBGenError as e:
+        except stress_test.nb_generator_exceptions.NBGenError as e:
             self._error_handling(e.err_msg)
 
     def __poll_flows_switches(self, t_start):
@@ -283,10 +283,10 @@ class NBgen:
                             return
                     gevent.sleep(1)
             except:
-                raise(nb_generator_exceptions.NBGenPollOVSError(
+                raise(stress_test.nb_generator_exceptions.NBGenPollOVSError(
                     'Error during discovery on flows installed directly on '
                     'Topology Switches (OpenVSwitch polling).'))
-        except nb_generator_exceptions.NBGenError as e:
+        except stress_test.nb_generator_exceptions.NBGenError as e:
             self._error_handling(e.err_msg)
 
     def monitor_threads_run(self, t_start):
@@ -315,6 +315,6 @@ class NBgen:
                              .format(flow_measurement_latency_interval,
                                      discovered_flows))
             except:
-                raise(nb_generator_exceptions.NBGenMonitorRunError)
-        except nb_generator_exceptions.NBGenError as e:
+                raise(stress_test.nb_generator_exceptions.NBGenMonitorRunError)
+        except stress_test.nb_generator_exceptions.NBGenError as e:
             self._error_handling(e.err_msg)
