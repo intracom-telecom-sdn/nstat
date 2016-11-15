@@ -137,7 +137,7 @@ class Oftraf(Monitor):
 
 class Mtcbench(Monitor):
     def __init__(self, controller, emulator):
-        super(self.__class__, self).__init__(controller, emulator)
+        super(self.__class__, self).__init__(controller)
 
         self.emulator = emulator
         self.result_queue = gevent.queue.JoinableQueue()

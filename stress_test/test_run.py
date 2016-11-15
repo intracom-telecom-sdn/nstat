@@ -26,7 +26,6 @@ class TestRun:
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
         if json_conf['sb_emulator_name'] == "MTCBENCH":
-            print('Konstantinos')
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
         elif json_conf['sb_emulator_name'] == "MULTINET":
