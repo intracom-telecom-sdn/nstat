@@ -85,7 +85,7 @@ class Monitor:
 class Oftraf(Monitor):
 
     def __init__(self, controller, oftraf):
-        super(self.__class__, self).__init__(controller,oftraf)
+        super(self.__class__, self).__init__(controller)
         self.oftraf = oftraf
         self.exit_flag = False
         self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
