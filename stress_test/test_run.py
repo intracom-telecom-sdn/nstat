@@ -34,6 +34,7 @@ class TestRun:
         else:
             raise NotImplementedError('not supported yet')
 
+
         # self.test = stress_test.test_type.TestType(self, args)
 
     def sb_active_scalability_cbench_run(self,
@@ -191,6 +192,14 @@ class TestRun:
             # start a controller
             self.ctrl.check_status()
             self.ctrl.start()
+
+            if json_conf['sb_emulator_name'] == "MULTINET":
+                self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                self.mon = stress_test.monitor.Multinet(self.ctrl,
+                                                        self.oftraf,
+                                                        self.sb_emu)
+            else:
+                raise NotImplementedError('Not supported yet')
 
             # self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
             # self.oftraf.start()
