@@ -163,10 +163,10 @@ class TestRun:
             self.ctrl.start()
 
             if json_conf['sb_emulator_name'] == "MULTINET":
-                self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-                self.mon = stress_test.monitor.Multinet(self.ctrl,
-                                                        self.oftraf,
-                                                        self.sb_emu)
+                oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                mon = stress_test.monitor.Multinet(self.ctrl,
+                                                   oftraf,
+                                                   self.sb_emu)
             else:
                 raise NotImplementedError('Not supported yet')
 
