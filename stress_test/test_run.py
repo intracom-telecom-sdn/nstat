@@ -103,7 +103,7 @@ class TestRun:
                                    json_conf['controller_statistics_period_ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
-            #total_samples = self.mon.monitor_run()
+            # total_samples = self.mon.monitor_run()
             self.ctrl.stop()
 
     def sb_idle_scalability_cbench_run(self,
@@ -196,9 +196,9 @@ class TestRun:
             self.ctrl.start()
 
             if json_conf['sb_emulator_name'] == "MULTINET":
-                oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                oftraf_node = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
                 mon = stress_test.monitor.Multinet(self.ctrl,
-                                                   oftraf,
+                                                   oftraf_node,
                                                    self.sb_emu)
             else:
                 raise NotImplementedError('Not supported yet')
@@ -220,7 +220,7 @@ class TestRun:
 
             self.sb_emu.generate_traffic()
 
-            # mon.monitor_run()
+            mon.monitor_run()
             '''
             # Stop/clean nodes
             # ---------------------------------------------------------
@@ -273,7 +273,6 @@ class TestRun:
         self.sb_emu.clean()
         common.close_ssh_connections([self.ctrl._ssh_conn])
 
-
     def sb_idle_scalability_multinet_run(self,
                                          json_conf,
                                          json_output,
@@ -281,7 +280,7 @@ class TestRun:
         """
         """
         # CONTROLLER preparation
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         self.ctrl.init_ssh()
         self.ctrl.build()
 
