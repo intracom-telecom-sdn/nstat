@@ -6,7 +6,7 @@
 
 """ Controller Class- All controller-related functionality is here"""
 
-import gevent
+import gevent.queue
 import json
 import logging
 import queue
