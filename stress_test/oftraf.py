@@ -111,9 +111,13 @@ class Oftraf:
         self.status = 'STOPPING'
 
         exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([stop_hnd]),
-                                         '[oftraf.stop_handler]')[0]
+            util.netutil.ssh_run_command(
+                self._ssh_conn,
+                ' '.join([stop_hnd,
+                          self.rest_server_ip,
+                          str(self.rest_server_port)]),
+                '[oftraf.stop_handler]')[0]
+
         if exit_status == 0:
             self.status = 'STOPED'
             logging.info("[Oftraf] Successful stopping")
