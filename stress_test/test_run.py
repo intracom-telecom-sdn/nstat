@@ -33,7 +33,8 @@ class TestRun:
         self.ctrl.build()
         self.ctrl.start()
         of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-
+        of.build()
+        of.start()
         exit()
 # ---------------------------------------------DEBUG--------------------------
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
