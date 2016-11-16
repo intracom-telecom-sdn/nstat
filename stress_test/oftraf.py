@@ -54,7 +54,6 @@ class Oftraf:
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([build_hnd]),
                                          '[oftraf.build_handler]')[0]
-        print(exit_status)
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[Oftraf] Successful building")
