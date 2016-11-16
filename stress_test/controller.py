@@ -122,7 +122,7 @@ class Controller:
             except:
                 raise(stress_test.controller_exceptions.CtrlNodeConnectionError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self.error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
@@ -139,7 +139,7 @@ class Controller:
             except:
                 raise(stress_test.controller_exceptions.CtrlCleanupError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self.error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def check_status(self):
         """Wrapper to the controller status handler
@@ -163,7 +163,7 @@ class Controller:
             except:
                 raise(stress_test.controller_exceptions.CtrlStatusUnknownError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self.error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def check_other_controller(self):
         """Checks for processes listening on the specified port

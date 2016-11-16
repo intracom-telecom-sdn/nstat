@@ -65,13 +65,15 @@ class SBEmu:
         else:
             raise NotImplementedError('Not supported yet')
 
-    def _error_handling(self, error_message):
+    def error_handling(self, error_message, error_num=1):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
                       format(exc_obj))
         logging.error(error_message)
+        logging.error('Error number: {0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        raise(stress_test.emulator_exceptions.SBEmuError)
 
     def init_ssh(self):
         """Initializes a new SSH client object, with the emulator node and
@@ -95,7 +97,7 @@ class SBEmu:
             except:
                 raise(stress_test.emulator_exceptions.SBEmuNodeConnectionError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def build(self):
         """ Wrapper to the SB-Emulator build handler
@@ -117,12 +119,11 @@ class SBEmu:
                     raise(stress_test.emulator_exceptions.SBEmuBuildError(
                         '[SB-Emulator] Failure during building', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.SBEmuBuildError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.SBEmuBuildError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def cleanup(self):
         """Wrapper to the SB-Emulator cleanup handler
@@ -145,12 +146,11 @@ class SBEmu:
                     raise(stress_test.emulator_exceptions.SBEmuCleanupError(
                         '[SB-Emulator] Failure during cleaning', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.SBEmuCleanupError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.SBEmuCleanupError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
 
 class MTCBench(SBEmu):
@@ -212,12 +212,11 @@ class MTCBench(SBEmu):
                     raise(stress_test.emulator_exceptions.MTCbenchRunError(
                         '[MTCBench] Failure during starting', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MTCbenchRunError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MTCbenchRunError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
 
 class Multinet(SBEmu):
@@ -329,12 +328,11 @@ class Multinet(SBEmu):
                         '[Multinet] Config local file has not been created',
                         2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetConfGenerateError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetConfGenerateError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def __parse_output(self, multinet_handler_name, multinet_output):
         """Gets the console output of a multinet handler and extracts the
@@ -358,7 +356,7 @@ class Multinet(SBEmu):
                 if regex_result is None:
                     raise(stress_test.emulator_exceptions.MultinetOutputParsingError(
                         'Failed to get results from {0} multinet handler.'.
-                        format(multinet_handler_name)))
+                        format(multinet_handler_name), 2))
                 else:
                     json_result = regex_result.group(0).replace(
                         'INFO:root:[{0}] [response data] '
@@ -367,12 +365,11 @@ class Multinet(SBEmu):
                     sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
                 return multinet_result
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetOutputParsingError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetOutputParsingError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def deploy(self, cntrl_ip, cntrl_of_port):
         """ Wrapper to the Multinet SB-Emulator deploy handler
@@ -406,12 +403,11 @@ class Multinet(SBEmu):
                     raise(stress_test.emulator_exceptions.MultinetDeployError(
                         '[Multinet] Failure during deploying', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetDeployError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetDeployError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_switches(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_switches handler
@@ -452,12 +448,11 @@ class Multinet(SBEmu):
                     raise(stress_test.emulator_exceptions.MultinetGetSwitchesError(
                         '[Multinet] Failure during getting switches', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetGetSwitchesError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetGetSwitchesError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_flows(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_flows handler
@@ -499,12 +494,11 @@ class Multinet(SBEmu):
                     raise(stress_test.emulator_exceptions.MultinetGetFlowsError(
                         '[Multinet] Failure during getting flows', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetGetFlowsError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetGetFlowsError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def init_topos(self):
         """ Wrapper to the Multinet SB-Emulator init_topos handler
@@ -536,12 +530,11 @@ class Multinet(SBEmu):
                     raise(stress_test.emulator_exceptions.MultinetInitToposError(
                         '[Multinet] Failure during topos initialization', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetInitToposError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetInitToposError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def start_topos(self):
         """ Wrapper to the Multinet SB-Emulator start_topos handler
@@ -571,12 +564,11 @@ class Multinet(SBEmu):
                     raise(stress_test.emulator_exceptions.MultinetStartToposError(
                         '[Multinet] Failure during the starting of topos', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetStartToposError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetStartToposError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def stop_topos(self):
         """ Wrapper to the Multinet SB-Emulator stop_topos handler
@@ -606,12 +598,11 @@ class Multinet(SBEmu):
                     raise(stress_test.emulator_exceptions.MultinetStopToposError(
                         '[Multinet] Failure during the stopping of topos', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetStopToposError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetStopToposError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def cleanup(self):
         """ Wrapper to the Multinet SB-Emulator cleanup handler
@@ -642,12 +633,11 @@ class Multinet(SBEmu):
                     raise(stress_test.emulator_exceptions.MultinetCleanupError(
                         '[Multinet] Failure during the cleanup of topos', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetCleanupError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetCleanupError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)
 
     def generate_traffic(self):
         """ Wrapper to the Multinet SB-Emulator traffic_gen handler
@@ -678,9 +668,8 @@ class Multinet(SBEmu):
                         '[Multinet] Failure during traffic generation '
                         'from switches', 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
-                if e.err_code != 2:
-                    raise(stress_test.emulator_exceptions.MultinetTraffigGenError)
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetTraffigGenError)
         except stress_test.emulator_exceptions.SBEmuError as e:
-            self._error_handling(e.err_msg)
+            self.error_handling(e.err_msg, e.err_code)

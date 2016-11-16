@@ -21,35 +21,35 @@ class NBGenError(Exception):
 
 class NBGenNodeConnectionError(NBGenError):
     """A NB generator node connection error."""
-    def __init__(self, additional_error_info=''):
+    def __init__(self, additional_error_info='', err_code=1):
         NBGenError.__init__(self, 'Fail to establish ssh connection with '
                             'NB generator node. {0}'.
-                            format(additional_error_info))
+                            format(additional_error_info), err_code)
 
 
 class NBGenRunError(NBGenError):
     """NB generator run failure."""
-    def __init__(self, additional_error_info=''):
+    def __init__(self, additional_error_info='', err_code=1):
         NBGenError.__init__(self, 'Fail to run NB generator. {0}'.
-                            format(additional_error_info))
+                            format(additional_error_info), err_code)
 
 
 class NBGenPollDSError(NBGenError):
     """NB generator failure during datastore polling."""
-    def __init__(self, additional_error_info=''):
+    def __init__(self, additional_error_info='', err_code=1):
         NBGenError.__init__(self, 'Fail during datastore polling. {0}'.
-                            format(additional_error_info))
+                            format(additional_error_info), err_code)
 
 
 class NBGenPollOVSError(NBGenError):
     """NB generator failure during OpenVSwitch polling."""
-    def __init__(self, additional_error_info=''):
+    def __init__(self, additional_error_info='', err_code=1):
         NBGenError.__init__(self, 'Fail during OpenVSwitch. {0}'.
-                            format(additional_error_info))
+                            format(additional_error_info), err_code)
 
 
 class NBGenMonitorRunError(NBGenError):
     """Error during running monitor threads."""
-    def __init__(self, additional_error_info=''):
+    def __init__(self, additional_error_info='', err_code=1):
         NBGenError.__init__(self, 'Failure in monitor run. {0}'.
-                            format(additional_error_info))
+                            format(additional_error_info), err_code)
