@@ -196,10 +196,12 @@ class TestRun:
             self.ctrl.start()
 
             if json_conf['sb_emulator_name'] == "MULTINET":
-                oftraf_node = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-                mon = stress_test.monitor.Multinet(self.ctrl,
-                                                   oftraf_node,
-                                                   self.sb_emu)
+                monitor = stress_test.monitor.Monitor(self.ctrl)
+                print("PRINT MONITOR object")
+                # oftraf_node = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                # mon = stress_test.monitor.Multinet(self.ctrl,
+                #                                   oftraf_node,
+                #                                   self.sb_emu)
             else:
                 raise NotImplementedError('Not supported yet')
 
@@ -220,7 +222,7 @@ class TestRun:
 
             self.sb_emu.generate_traffic()
 
-            mon.monitor_run()
+            # mon.monitor_run()
             '''
             # Stop/clean nodes
             # ---------------------------------------------------------
