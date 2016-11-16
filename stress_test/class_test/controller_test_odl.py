@@ -36,64 +36,55 @@ ctrl_base_dir = str(sys.argv[2])
 # create a new Controller class instance, ctrl
 ctrl = stress_test.controller.Controller.new(ctrl_base_dir, test_config)
 
-# initialize a connection
-ctrl.init_ssh()
-
 try:
     # check other connections on the OF port of the config file
     ctrl.check_other_controller()
-    logging.info('[Testing] Port {0} is free'.format(ctrl.of_port))
+    # initialize a connection
+    ctrl.init_ssh()
+    if ctrl.need_rebuild:
+        # build a controller
+        ctrl.build()
+        # check the effect of build()
+        host = ctrl.ssh_user + '@' + ctrl.ip
+        logging.info('[Testing] Build a controller on'
+                     ' {} host.'.format(host))
+        build_check_file = os.path.join(ctrl_base_dir,
+                                        'distribution-karaf-0.4.0-Beryllium'
+                                        '/bin/karaf')
 
-except:
-    logging.error('[Testing] Port {0} is occupied by another '
-                  'process'.format(ctrl.of_port))
+        cmd = ('test {0} && echo "exists"'.format(build_check_file))
+        exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
+                                                           cmd,
+                                                           'Build_controller')
+        if (output is not None):
+            logging.info('[Testing] Controller files have been created')
+        else:
+            raise Exception('[Testing] Fail to build')
 
-if ctrl.need_rebuild:
-    # build a controller
-    ctrl.build()
-    # check the effect of build()
-    host = ctrl.ssh_user + '@' + ctrl.ip
-    logging.info('[Testing] Build a controller on'
-                 ' {} host.'.format(host))
-    build_check_file = os.path.join(ctrl_base_dir,
-                                    'distribution-karaf-0.4.0-Beryllium'
-                                    '/bin/karaf')
+    # path to check the affect of called methods
+    datastore_conf_path = os.path.join(ctrl_base_dir, 'distribution-karaf-0.4.0-'
+                                       'Beryllium/etc')
 
-    cmd = ('test {0} && echo "exists"'.format(build_check_file))
-    exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
-                                                       cmd,
-                                                       'Build_controller')
-    if (output is not None):
-        logging.info('[Testing] Controller files have been created')
-    else:
-        raise Exception('[Testing] Fail to build')
+    if ctrl.persistence_hnd:
+        # disable persistence
+        ctrl.disable_persistence()
 
-# path to check the affect of called methods
-datastore_conf_path = os.path.join(ctrl_base_dir, 'distribution-karaf-0.4.0-'
-                                   'Beryllium/etc')
+        # check the effect of disable_ persistence
+        path_file = os.path.join(datastore_conf_path, 'org.opendaylight.'
+                                 'controller.cluster.datastore.cfg')
+        pattern = 'persistent=false'
 
-if ctrl.persistence_hnd:
-    # disable persistence
-    ctrl.disable_persistence()
+        cmd = ('grep {0} {1}'.format(pattern, path_file))
+        exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
+                                                           cmd,
+                                                           'Check_persistence')
+        if (output is not None):
+            logging.info('[Testing] Persistence is '
+                         'disabled successfully')
+        else:
+            logging.info('[Testing] Persistence is still enabled')
 
-    # check the effect of disable_ persistence
-    path_file = os.path.join(datastore_conf_path, 'org.opendaylight.'
-                             'controller.cluster.datastore.cfg')
-    pattern = 'persistent=false'
-
-    cmd = ('grep {0} {1}'.format(pattern, path_file))
-    exit_status, output = util.netutil.ssh_run_command(ctrl._ssh_conn,
-                                                       cmd,
-                                                       'Check_persistence')
-    if (output is not None):
-        logging.info('[Testing] Persistence is '
-                     'disabled successfully')
-    else:
-        logging.info('[Testing] Persistence is still enabled')
-
-ctrl.generate_xmls()
-
-try:
+    ctrl.generate_xmls()
     # start a controller
     ctrl.check_status()
     for stat_period in test_config['controller_statistics_period_ms']:
