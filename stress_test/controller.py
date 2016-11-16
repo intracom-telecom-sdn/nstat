@@ -92,6 +92,8 @@ class Controller:
         logging.error('Error number:{0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        # Propagate error outside the class to stop execution
+        raise(stress_test.controller_exceptions.CtrlError)
 
     def init_ssh(self):
         """Initializes a new SSH client object, with the controller node and
