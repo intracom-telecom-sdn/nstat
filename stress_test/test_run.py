@@ -161,8 +161,6 @@ class TestRun:
         self.ctrl.build()
         self.ctrl.start()
         of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-        tmp = of.get_oftraf_path()
-        print(tmp)
         of.build()
         of.start()
         exit()

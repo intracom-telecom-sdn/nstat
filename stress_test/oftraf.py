@@ -47,7 +47,7 @@ class Oftraf:
         """
         oftraf_path = str(self.get_oftraf_path)
         print(oftraf_path)
-        build_hnd = str(oftraf_path) + 'build.sh'
+        build_hnd = os.path.join(oftraf_path, 'build.sh')
         logging.info('[Oftraf] Building')
         self.status = 'BUILDING'
         print("FLAG")
