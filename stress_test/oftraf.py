@@ -34,8 +34,10 @@ class Oftraf:
     def get_oftraf_path(self):
         """Returns oftraf base directory path relatively to the project path
         """
+        print('[get_oftraf_path] create path')
         stress_test_base_dir = os.path.abspath(os.path.join(
             os.path.realpath(__file__), os.pardir))
+        print('[get_oftraf_path] create path2222')
         monitors_base_dir = os.path.abspath(os.path.join(stress_test_base_dir,
                                                          os.pardir))
         print("FLAG1111")
@@ -48,10 +50,9 @@ class Oftraf:
     def build(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = str(self.get_oftraf_path)
-        print(oftraf_path)
-        # build_hnd = os.path.join(str(oftraf_path), 'build.sh')
-        build_hnd = '/opt/nstat/monitors/oftraf/build.sh'
+        oftraf_path = str(self.get_oftraf_path())
+        build_hnd = os.path.join(str(oftraf_path), 'build.sh')
+        # build_hnd = '/opt/nstat/monitors/oftraf/build.sh'
         logging.info('[Oftraf] Building')
         self.status = 'BUILDING'
         print("FLAG")
