@@ -183,12 +183,11 @@ class Controller:
                         '[check_other_controller] Another process is '
                         'active on port {0}'.format(self.of_port), 2))
             except stress_test.controller_exceptions.CtrlError as e:
-                if e.err_code != 2:
-                    raise(stress_test.controller_exceptions.CtrlPortConflictError)
+                self._error_handling(e.err_msg, e.err_code)
             except:
-                raise(stress_test.controller_exceptions.CtrlStartError)
+                raise(stress_test.controller_exceptions.CtrlPortConflictError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def restart(self):
         """Restarts the controller
@@ -232,12 +231,11 @@ class Controller:
                         '[start_controller] Fail to start', 2))
                 self.status = 'STARTED'
             except stress_test.controller_exceptions.CtrlError as e:
-                if e.err_code != 2:
-                    raise(stress_test.controller_exceptions.CtrlStartError)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlStartError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def stop(self):
         """Wrapper to the controller stop handler
@@ -261,7 +259,7 @@ class Controller:
             except:
                 raise(stress_test.controller_exceptions.CtrlStopError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def build(self):
         """ Wrapper to the controller build handler
@@ -283,12 +281,11 @@ class Controller:
                                                                'Failure during'
                                                                ' building'), 2)
             except stress_test.controller_exceptions.CtrlError as e:
-                if e.err_code != 2:
-                    raise(stress_test.controller_exceptions.CtrlBuildError)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlBuildError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def wait_until_listens(self, timeout_ms):
         """ Waits for controller to start listening on specified port.
@@ -321,12 +318,11 @@ class Controller:
                     'Controller failed to start within a period of {0} '
                     'minutes'.format(timeout), 2))
             except stress_test.controller_exceptions.CtrlError as e:
-                if e.err_code != 2:
-                    raise(stress_test.controller_exceptions.CtrlReadyStateError)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlReadyStateError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def wait_until_up(self, timeout_ms):
         """ Waits for controller status to become 1 (started).
@@ -351,12 +347,11 @@ class Controller:
                     'after trying for {0} seconds.'.
                     format(float(timeout_ms) / 1000), 2))
             except stress_test.controller_exceptions.CtrlError as e:
-                if e.err_code != 2:
-                    raise(stress_test.controller_exceptions.CtrlReadyStateError)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlReadyStateError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
 
 class ODL(Controller):
@@ -418,7 +413,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLXMLError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def disable_persistence(self):
         """configure controller persistent to false in order not to backup
@@ -434,7 +429,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLDisablePersistenceError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def change_stats(self):
         """Wrapper to the controller statistics handler
@@ -454,7 +449,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLChangeStats)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def flowmods_config(self):
         """configure controller to send flow modifications as a
@@ -472,7 +467,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLFlowModConfError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def get_oper_hosts(self, new_ssh_conn=None):
         """Wrapper to the controller oper_hosts handler
@@ -498,7 +493,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLGetOperHostsError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def get_oper_switches(self, new_ssh_conn=None):
         """Wrapper to the controller oper_switches handler
@@ -524,7 +519,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLGetOperSwitchesError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def get_oper_links(self, new_ssh_conn=None):
         """Wrapper to the controller oper_links handler
@@ -550,7 +545,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLGetOperLinksError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
     def get_oper_flows(self, new_ssh_conn=None):
         """Wrapper to the controller oper_flows handler
@@ -576,7 +571,7 @@ class ODL(Controller):
             except:
                 raise(stress_test.controller_exceptions.ODLGetOperFlowsError)
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
+            self._error_handling(e.err_msg, e.err_code)
 
 
 class ONOS(Controller):
