@@ -151,6 +151,22 @@ class TestRun:
                                            output_dir):
         """
         """
+
+        # ---------------------------------------------DEBUG--------------------------
+        print("CTRL obj CREATED")
+        print(self.ctrl.ip)
+        monitor = stress_test.monitor.Monitor(self.ctrl)
+        print(monitor)
+        self.ctrl.init_ssh()
+        self.ctrl.build()
+        self.ctrl.start()
+        of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+        tmp = of.get_oftraf_path()
+        print(tmp)
+        of.build()
+        of.start()
+        exit()
+# ---------------------------------------------DEBUG--------------------------
 #        try:
         # CONTROLLER preparation
         # ---------------------------------------------------------------
@@ -281,22 +297,6 @@ class TestRun:
                                          output_dir):
         """
         """
-# ---------------------------------------------DEBUG--------------------------
-        print("CTRL obj CREATED")
-        print(self.ctrl.ip)
-        monitor = stress_test.monitor.Monitor(self.ctrl)
-        print(monitor)
-        self.ctrl.init_ssh()
-        self.ctrl.build()
-        self.ctrl.start()
-        of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-        tmp = of.get_oftraf_path()
-        print(tmp)
-        of.build()
-        of.start()
-        exit()
-# ---------------------------------------------DEBUG--------------------------
-
         # CONTROLLER preparation
         # ------------------------------------------------------------------
         self.ctrl.init_ssh()

@@ -27,7 +27,7 @@ class Monitor:
         :type controller: object
         :type sbemu: object
         """
-        print("create an MONITOR object")
+        print("create a MONITOR object")
         self.controller = controller
         self.global_sample_id = 0
         self.repeat_id = 0
