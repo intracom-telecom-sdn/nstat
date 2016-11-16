@@ -38,10 +38,8 @@ class Oftraf:
             os.path.realpath(__file__), os.pardir))
         monitors_base_dir = os.path.abspath(os.path.join(stress_test_base_dir,
                                                          os.pardir))
-        print("FLAG")
         oftraf_path = os.path.sep.join(
             [monitors_base_dir, 'monitors', 'oftraf', ''])
-        print(oftraf_path)
         return str(oftraf_path)
 
     def build(self):
@@ -52,11 +50,19 @@ class Oftraf:
         build_hnd = str(oftraf_path) + 'build.sh'
         logging.info('[Oftraf] Building')
         self.status = 'BUILDING'
+        print("FLAG")
+        print("FLAG")
+        print("FLAG")
+        print(build_hnd)
+        print("FLAG")
+        print("FLAG")
+        print(self._ssh_conn, ' '.join([build_hnd]), '[oftraf.build_handler]')
 
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([build_hnd]),
                                          '[oftraf.build_handler]')[0]
+        print(exit_status)
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[Oftraf] Successful building")
