@@ -27,6 +27,8 @@ class TestRun:
         print(self.ctrl.ip)
         monitor = stress_test.monitor.Monitor(self.ctrl)
         print(monitor)
+        self.ctrl.init_ssh()
+        self.ctrl.build()
         self.ctrl.start()
         exit()
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
