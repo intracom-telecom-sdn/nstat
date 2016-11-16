@@ -23,6 +23,8 @@ class TestRun:
         """
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                           json_conf)
+# ---------------------------------------------DEBUG--------------------------
+
         print("CTRL obj CREATED")
         print(self.ctrl.ip)
         monitor = stress_test.monitor.Monitor(self.ctrl)
@@ -30,7 +32,10 @@ class TestRun:
         self.ctrl.init_ssh()
         self.ctrl.build()
         self.ctrl.start()
+        of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+
         exit()
+# ---------------------------------------------DEBUG--------------------------
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
         if json_conf['sb_emulator_name'] == "MTCBENCH":
@@ -48,6 +53,7 @@ class TestRun:
         #-------------------------------------------------------------------
         self.ctrl.init_ssh()
         self.ctrl.build()
+
 
         # EMULATOR preparation
         #-------------------------------------------------------------------
