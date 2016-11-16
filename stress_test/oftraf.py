@@ -38,8 +38,10 @@ class Oftraf:
             os.path.realpath(__file__), os.pardir))
         monitors_base_dir = os.path.abspath(os.path.join(stress_test_base_dir,
                                                          os.pardir))
+        print("FLAG1111")
         oftraf_path = os.path.sep.join(
             [monitors_base_dir, 'monitors', 'oftraf', ''])
+        print("FLAG1111")
         print(oftraf_path)
         return str(oftraf_path)
 
