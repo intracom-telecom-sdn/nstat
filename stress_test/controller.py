@@ -91,6 +91,7 @@ class Controller:
         logging.error(error_message)
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        raise(stress_test.controller_exceptions.CtrlError)
 
     def init_ssh(self):
         """Initializes a new SSH client object, with the controller node and
@@ -180,11 +181,11 @@ class Controller:
                     '[check_other_controller] Another process is '
                     'active on port {0}'.format(self.of_port), 2))
         except stress_test.controller_exceptions.CtrlError as e:
-            self._error_handling(e.err_msg)
             if e.err_code != 2:
                 raise(stress_test.controller_exceptions.CtrlPortConflictError)
             else:
                 raise(stress_test.controller_exceptions.CtrlPortConflictError)
+            self._error_handling(e.err_msg)
 
     def restart(self):
         """Restarts the controller
