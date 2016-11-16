@@ -84,11 +84,12 @@ class Controller:
             raise NotImplementedError('Not supported yet')
         #   return None
 
-    def _error_handling(self, error_message):
+    def _error_handling(self, error_message, error_num):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
                       format(exc_obj))
         logging.error(error_message)
+        logging.error('Error number:{0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
         raise(stress_test.controller_exceptions.CtrlError)
@@ -173,18 +174,20 @@ class Controller:
             'listening on specified port. Port number: {0}.'.
             format(self.of_port))
         try:
-            # check if any process listens on controller port
-            gpid = util.process.getpid_listeningonport(self.of_port,
-                                                       self._ssh_conn)
-            if gpid != -1:
-                raise(stress_test.controller_exceptions.CtrlPortConflictError(
-                    '[check_other_controller] Another process is '
-                    'active on port {0}'.format(self.of_port), 2))
+            try:
+                # check if any process listens on controller port
+                gpid = util.process.getpid_listeningonport(self.of_port,
+                                                           self._ssh_conn)
+                if gpid != -1:
+                    raise(stress_test.controller_exceptions.CtrlPortConflictError(
+                        '[check_other_controller] Another process is '
+                        'active on port {0}'.format(self.of_port), 2))
+            except stress_test.controller_exceptions.CtrlError as e:
+                if e.err_code != 2:
+                    raise(stress_test.controller_exceptions.CtrlPortConflictError)
+            except:
+                raise(stress_test.controller_exceptions.CtrlStartError)
         except stress_test.controller_exceptions.CtrlError as e:
-            if e.err_code != 2:
-                raise(stress_test.controller_exceptions.CtrlPortConflictError)
-            else:
-                raise(stress_test.controller_exceptions.CtrlPortConflictError)
             self._error_handling(e.err_msg)
 
     def restart(self):
