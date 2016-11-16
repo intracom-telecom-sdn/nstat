@@ -28,7 +28,7 @@ class Oftraf:
             self.interval_ms = test_config['oftraf_test_interval_ms']
         self.rest_server_port = test_config['oftraf_rest_server_port']
         self.rest_server_ip = controller.ip
-
+        self.build_handler = test_config['build.sh']
         self.status = 'UNKNOWN'
         self._ssh_conn = controller.init_ssh()
 
@@ -47,7 +47,8 @@ class Oftraf:
         """ Wrapper to the oftraf monitor build handler
         """
         oftraf_path = self.__get_oftraf_path
-        build_hnd = oftraf_path + 'build.sh'
+        print(oftraf_path)
+        build_hnd = oftraf_path + self.build_handler
         logging.info('[Oftraf] Building')
         self.status = 'BUILDING'
 
