@@ -28,6 +28,7 @@ class Oftraf:
             self.interval_ms = test_config['oftraf_test_interval_ms']
         self.rest_server_port = test_config['oftraf_rest_server_port']
         self.rest_server_ip = controller.ip
+        self.of_port = controller.of_port
         self.status = 'UNKNOWN'
         self._ssh_conn = controller.init_ssh()
 
@@ -87,10 +88,12 @@ class Oftraf:
         start_hnd = oftraf_path + 'start.sh'
         logging.info('[Oftraf] Starting')
         self.status = 'STARTING'
-
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([start_hnd]),
+                                         ' '.join([start_hnd,
+                                                   self.rest_server_ip,
+                                                   str(self.rest_server_port),
+                                                   str(self.of_port)]),
                                          '[oftraf.start_handler]')[0]
         if exit_status == 0:
             self.status = 'STARTED'
