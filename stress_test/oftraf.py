@@ -31,7 +31,7 @@ class Oftraf:
         self.status = 'UNKNOWN'
         self._ssh_conn = controller.init_ssh()
 
-    def __get_oftraf_path(self):
+    def get_oftraf_path(self):
         """Returns oftraf base directory path relatively to the project path
         """
         stress_test_base_dir = os.path.abspath(os.path.join(
@@ -47,7 +47,7 @@ class Oftraf:
     def build(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.__get_oftraf_path
+        oftraf_path = self.get_oftraf_path
         print(oftraf_path)
         build_hnd = oftraf_path + 'build.sh'
         logging.info('[Oftraf] Building')
@@ -67,7 +67,7 @@ class Oftraf:
     def clean(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.__get_oftraf_path
+        oftraf_path = self.get_oftraf_path
         clean_hnd = oftraf_path + 'clean.sh'
         logging.info('[Oftraf] Cleaning')
         self.status = 'CLEANING'
@@ -86,7 +86,7 @@ class Oftraf:
     def start(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.__get_oftraf_path
+        oftraf_path = self.get_oftraf_path
         start_hnd = oftraf_path + 'start.sh'
         logging.info('[Oftraf] Starting')
         self.status = 'STARTING'
@@ -105,7 +105,7 @@ class Oftraf:
     def stop(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.__get_oftraf_path
+        oftraf_path = self.get_oftraf_path
         stop_hnd = oftraf_path + 'stop.sh'
         logging.info('[Oftraf] Starting')
         self.status = 'STOPPING'
