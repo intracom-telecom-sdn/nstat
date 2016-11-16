@@ -23,22 +23,6 @@ class TestRun:
         """
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                           json_conf)
-# ---------------------------------------------DEBUG--------------------------
-
-        print("CTRL obj CREATED")
-        print(self.ctrl.ip)
-        monitor = stress_test.monitor.Monitor(self.ctrl)
-        print(monitor)
-        self.ctrl.init_ssh()
-        self.ctrl.build()
-        self.ctrl.start()
-        of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-        tmp = of.get_oftraf_path()
-        print(tmp)
-        of.build()
-        of.start()
-        exit()
-# ---------------------------------------------DEBUG--------------------------
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
         if json_conf['sb_emulator_name'] == "MTCBENCH":
@@ -297,6 +281,22 @@ class TestRun:
                                          output_dir):
         """
         """
+# ---------------------------------------------DEBUG--------------------------
+        print("CTRL obj CREATED")
+        print(self.ctrl.ip)
+        monitor = stress_test.monitor.Monitor(self.ctrl)
+        print(monitor)
+        self.ctrl.init_ssh()
+        self.ctrl.build()
+        self.ctrl.start()
+        of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+        tmp = of.get_oftraf_path()
+        print(tmp)
+        of.build()
+        of.start()
+        exit()
+# ---------------------------------------------DEBUG--------------------------
+
         # CONTROLLER preparation
         # ------------------------------------------------------------------
         self.ctrl.init_ssh()
