@@ -23,6 +23,8 @@ class TestRun:
         """
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                           json_conf)
+        print("CTRL obj CREATED")
+        print(self.ctrl.ip)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
         if json_conf['sb_emulator_name'] == "MTCBENCH":
