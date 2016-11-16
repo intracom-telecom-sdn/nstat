@@ -84,7 +84,7 @@ class Controller:
             raise NotImplementedError('Not supported yet')
         #   return None
 
-    def _error_handling(self, error_message, error_num):
+    def _error_handling(self, error_message, error_num=1):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
                       format(exc_obj))
