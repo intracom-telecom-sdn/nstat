@@ -91,6 +91,7 @@ class Controller:
         logging.error(error_message)
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        raise(stress_test.controller_exceptions.CtrlError)
 
     def init_ssh(self):
         """Initializes a new SSH client object, with the controller node and
@@ -172,20 +173,19 @@ class Controller:
             'listening on specified port. Port number: {0}.'.
             format(self.of_port))
         try:
-            try:
-                # check if any process listens on controller port
-                gpid = util.process.getpid_listeningonport(self.of_port,
-                                                           self._ssh_conn)
-                if gpid != -1:
-                    raise(stress_test.controller_exceptions.CtrlPortConflictError(
-                        '[check_other_controller] Another process is '
-                        'active on port {0}'.format(self.of_port), 2))
-            except stress_test.controller_exceptions.CtrlError as e:
-                if e.err_code != 2:
-                    raise(stress_test.controller_exceptions.CtrlPortConflictError)
-            except:
-                raise(stress_test.controller_exceptions.CtrlPortConflictError)
+            # check if any process listens on controller port
+            gpid = util.process.getpid_listeningonport(self.of_port,
+                                                       self._ssh_conn)
+            if gpid != -1:
+                raise(stress_test.controller_exceptions.CtrlPortConflictError(
+                    '[check_other_controller] Another process is '
+                    'active on port {0}'.format(self.of_port), 2))
         except stress_test.controller_exceptions.CtrlError as e:
+            if e.err_code != 2:
+                raise(stress_test.controller_exceptions.CtrlPortConflictError)
+            else:
+                raise(stress_test.controller_exceptions.CtrlPortConflictError)
+        except:
             self._error_handling(e.err_msg)
 
     def restart(self):
