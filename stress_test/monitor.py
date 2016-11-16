@@ -27,6 +27,7 @@ class Monitor:
         :type controller: object
         :type sbemu: object
         """
+        print("create an MONITOR object")
         self.controller = controller
         self.global_sample_id = 0
         self.repeat_id = 0
@@ -380,6 +381,7 @@ class Mtcbench(Monitor):
 
 class Multinet(Oftraf_mon):
     def __init__(self, controller, oftraf, emulator):
+        print("create an MULTINET object")
         super(self.__class__, self).__init__(controller, oftraf)
         self.data_queue = gevent.queue.Queue()
 
