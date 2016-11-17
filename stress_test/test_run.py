@@ -30,6 +30,7 @@ class TestRun:
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
         if hasattr(args, 'nb_emu_base_dir'):
+            print('Kostas')
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
 
