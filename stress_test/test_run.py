@@ -36,8 +36,7 @@ class TestRun:
                                                          json_conf,
                                                          self.ctrl,
                                                          self.sb_emu)
-            print(args.nb_emu_base_dir)
-            exit()
+
         # self.test = stress_test.test_type.TestType(self, args)
 
     def sb_active_scalability_cbench_run(self,
@@ -381,14 +380,14 @@ class TestRun:
 
         # TEST run
         # ------------------------------------------------------------------
-        for (nb_generator.total_flows,
-             nb_generator.flow_operations_delay_ms,
-             self.sb_emu.topo_size,
-             nb_generator.flow_workers,
-             multinet.topo_group_size,
-             multinet.topo_group_delay_ms,
-             multinet.topo_hosts_per_switch,
-             multinet.topo_type,
+        for (self.nb_emu.total_flows,
+             self.nb_emu.flow_operations_delay_ms,
+             self.nb_emu.topo_size,
+             self.nb_emu.flow_workers,
+             self.sb_emu.topo_group_size,
+             self.sb_emu.topo_group_delay_ms,
+             self.sb_emu.topo_hosts_per_switch,
+             self.sb_emu.topo_type,
              self.ctrl.stat_period_ms) in \
              itertools.product(json_conf['total_flows'],
                                json_conf['flow_operations_delay_ms'],
