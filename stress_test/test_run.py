@@ -198,11 +198,14 @@ class TestRun:
             if json_conf['sb_emulator_name'] == "MULTINET":
                 print("CTRL obj CREATED")
                 print(self.ctrl.ip)
-                monitor = stress_test.monitor.Monitor(self.ctrl)
                 print("PRINT MONITOR object")
                 of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
                 of.build()
                 of.start()
+                monitor = stress_test.monitor.Multinet(self.ctrl,
+                                                       of,
+                                                       self.sb_emu)
+                print(monitor)
                 exit()
 # ---------------------------------------------DEBUG--------------------------
 
