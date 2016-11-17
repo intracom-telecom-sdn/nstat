@@ -330,10 +330,6 @@ def ssh_connection_open2(ip, ssh_port, username, password):
     :type password: str
     """
     try:
-        print('ssh_connection_open2 [ip]:',ip)
-        print('ssh_connection_open2 [ssh_port]:',ssh_port)
-        print('ssh_connection_open2 [username]:',username)
-        print('ssh_connection_open2 [password]:',password)
         transport_layer = paramiko.Transport((ip, ssh_port))
         transport_layer.connect(username=username,
                                 password=password)
