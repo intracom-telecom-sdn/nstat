@@ -154,22 +154,6 @@ class TestRun:
                                            output_dir):
         """
         """
-
-        # ---------------------------------------------DEBUG--------------------------
-        print("CTRL obj CREATED")
-        print(self.ctrl.ip)
-        monitor = stress_test.monitor.Monitor(self.ctrl)
-        print(monitor)
-        self.ctrl.init_ssh()
-        self.ctrl.build()
-        self.ctrl.start()
-        of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-        tmp = of.get_oftraf_path()
-        print(tmp)
-        of.build()
-        of.start()
-        exit()
-# ---------------------------------------------DEBUG--------------------------
 #        try:
         # CONTROLLER preparation
         # ---------------------------------------------------------------
@@ -215,8 +199,16 @@ class TestRun:
             self.ctrl.start()
 
             if json_conf['sb_emulator_name'] == "MULTINET":
+                print("CTRL obj CREATED")
+                print(self.ctrl.ip)
                 monitor = stress_test.monitor.Monitor(self.ctrl)
                 print("PRINT MONITOR object")
+                of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                of.build()
+                of.start()
+                exit()
+# ---------------------------------------------DEBUG--------------------------
+
                 # oftraf_node = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
                 # mon = stress_test.monitor.Multinet(self.ctrl,
                 #                                   oftraf_node,

@@ -28,6 +28,7 @@ class Oftraf:
             self.interval_ms = test_config['oftraf_test_interval_ms']
         self.rest_server_port = test_config['oftraf_rest_server_port']
         self.rest_server_ip = controller.ip
+        self.of_port = controller.of_port
         self.status = 'UNKNOWN'
         self._ssh_conn = controller.init_ssh()
 
@@ -45,24 +46,15 @@ class Oftraf:
     def build(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = str(self.get_oftraf_path)
-        print(oftraf_path)
-        build_hnd = str(oftraf_path) + 'build.sh'
+        oftraf_path = str(self.get_oftraf_path())
+        build_hnd = os.path.join(str(oftraf_path), 'build.sh')
+        # build_hnd = '/opt/nstat/monitors/oftraf/build.sh'
         logging.info('[Oftraf] Building')
         self.status = 'BUILDING'
-        print("FLAG")
-        print("FLAG")
-        print("FLAG")
-        print(build_hnd)
-        print("FLAG")
-        print("FLAG")
-        print(self._ssh_conn, ' '.join([build_hnd]), '[oftraf.build_handler]')
-
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([build_hnd]),
                                          '[oftraf.build_handler]')[0]
-        print(exit_status)
         if exit_status == 0:
             self.status = 'BUILT'
             logging.info("[Oftraf] Successful building")
@@ -73,7 +65,7 @@ class Oftraf:
     def clean(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.get_oftraf_path
+        oftraf_path = self.get_oftraf_path()
         clean_hnd = oftraf_path + 'clean.sh'
         logging.info('[Oftraf] Cleaning')
         self.status = 'CLEANING'
@@ -92,14 +84,16 @@ class Oftraf:
     def start(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.get_oftraf_path
+        oftraf_path = self.get_oftraf_path()
         start_hnd = oftraf_path + 'start.sh'
         logging.info('[Oftraf] Starting')
         self.status = 'STARTING'
-
         exit_status = \
             util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([start_hnd]),
+                                         ' '.join([start_hnd,
+                                                   self.rest_server_ip,
+                                                   str(self.rest_server_port),
+                                                   str(self.of_port)]),
                                          '[oftraf.start_handler]')[0]
         if exit_status == 0:
             self.status = 'STARTED'
@@ -111,15 +105,19 @@ class Oftraf:
     def stop(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.get_oftraf_path
+        oftraf_path = self.get_oftraf_path()
         stop_hnd = oftraf_path + 'stop.sh'
         logging.info('[Oftraf] Starting')
         self.status = 'STOPPING'
 
         exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([stop_hnd]),
-                                         '[oftraf.stop_handler]')[0]
+            util.netutil.ssh_run_command(
+                self._ssh_conn,
+                ' '.join([stop_hnd,
+                          self.rest_server_ip,
+                          str(self.rest_server_port)]),
+                '[oftraf.stop_handler]')[0]
+
         if exit_status == 0:
             self.status = 'STOPED'
             logging.info("[Oftraf] Successful stopping")
