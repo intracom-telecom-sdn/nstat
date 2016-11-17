@@ -29,16 +29,16 @@ class NBgen:
         """
         self.controller = controller
         self.sbemu = sbemu
-        self.name = test_config['nb_generator_name']
+        self.name = test_config['nb_emulator_name']
         self.base_dir = nb_gen_base_dir
 
-        self.ip = test_config['nb_generator_node_ip']
-        self.ssh_port = test_config['nb_generator_node_ssh_port']
-        self.ssh_user = test_config['nb_generator_node_username']
-        self.ssh_pass = test_config['nb_generator_node_password']
+        self.ip = test_config['nb_emulator_node_ip']
+        self.ssh_port = test_config['nb_emulator_node_ssh_port']
+        self.ssh_user = test_config['nb_emulator_node_username']
+        self.ssh_pass = test_config['nb_emulator_node_password']
 
         self.run_hnd = (self.base_dir +
-                        test_config['nb_generator_run_handler'])
+                        test_config['nb_emulator_run_handler'])
         self.status = 'UNKNOWN'
         self._ssh_conn = None
 
