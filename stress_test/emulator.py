@@ -344,11 +344,9 @@ class Multinet(SBEmu):
         logging.info('[Multinet] Deploy')
         self.status = 'DEPLOYING'
         self.__generate_config(cntrl_of_port, cntrl_ip)
-        print(self.ip,self.ssh_port,
-                                             self.ssh_user,
-                                             self.ssh_pass,
-                                             self.__multinet_config_file_local_path,
-                                             self.__multinet_config_file_remote_path)
+        print(self.ip, self.ssh_port, self.ssh_user,
+              self.ssh_pass, self.__multinet_config_file_local_path,
+              self.__multinet_config_file_remote_path)
 
         util.netutil.ssh_copy_file_to_target(self.ip,
                                              self.ssh_port,
