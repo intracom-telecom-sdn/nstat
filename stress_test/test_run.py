@@ -223,7 +223,7 @@ class TestRun:
                                                        of,
                                                        self.sb_emu)
                 print(monitor)
-                exit()
+#                exit()
 # ---------------------------------------------DEBUG--------------------------
 
                 # oftraf_node = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
