@@ -106,19 +106,14 @@ class Controller:
         try:
             try:
                 if self._ssh_conn is None:
-                    self._ssh_conn = \
-                        util.netutil.ssh_connect_or_return2(self.ip,
-                                                            int(self.ssh_port),
-                                                            self.ssh_user,
-                                                            self.ssh_pass,
-                                                            10)
+                    self._ssh_conn = util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
                 else:
                     # Return a new client ssh object for the controller node
-                    return util.netutil.ssh_connect_or_return2(self.ip,
-                                                               int(self.ssh_port),
-                                                               self.ssh_user,
-                                                               self.ssh_pass,
-                                                               10)
+                    return util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
             except:
                 raise(stress_test.controller_exceptions.CtrlNodeConnectionError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -215,21 +210,21 @@ class Controller:
                 else:
                     cmd = ['export JAVA_OPTS="{0}";'.format(self.java_opts),
                            self.start_hnd]
-
                 if self.check_status() == '0':
-                    util.netutil.ssh_run_command(
+                    exit_status, cmd_output = util.netutil.ssh_run_command(
                         self._ssh_conn, ' '.join(cmd),
-                        '[controller.start_handler]')[0]
+                        '[controller.start_handler]')
                     self.pid = self.wait_until_listens(420000)
                     logging.info('[start_controller] Controller '
                                  'pid: {0}'.format(self.pid))
                     self.wait_until_up(420000)
+                    if exit_status != 0:
+                        raise(stress_test.controller_exceptions.CtrlStartError(
+                            '[start_controller] Fail to start: {0}'.
+                            format(cmd_output), 2))
                 elif self.check_status() == '1':
                     logging.info('[start_controller] Controller already '
                                  'started.')
-                else:
-                    raise(stress_test.controller_exceptions.CtrlStartError(
-                        '[start_controller] Fail to start', 2))
                 self.status = 'STARTED'
             except stress_test.controller_exceptions.CtrlError as e:
                 self.error_handling(e.err_msg, e.err_code)
@@ -246,17 +241,23 @@ class Controller:
             try:
                 self.status = 'STOPPING'
                 if self.check_status() == '1':
-                    logging.info('[Controller] Stopping')
-                    print (self.pid)
-                    util.netutil.ssh_run_command(self._ssh_conn,
-                                                 ' '.join([self.stop_hnd]),
-                                                 '[controller.stop_handler]')[0]
+                    logging.info('[Controller] Stopping. Controller PID: {0}'.
+                                 format(self.pid))
+                    exit_status, cmd_output = util.netutil.ssh_run_command(
+                        self._ssh_conn, ' '.join([self.stop_hnd]),
+                        '[controller.stop_handler]')
                     util.process.wait_until_process_finishes(self.pid,
                                                              self._ssh_conn)
+                    if exit_status != 0:
+                        raise(stress_test.controller_exceptions.CtrlStopError(
+                            '{Controller] Controller failed to stop: {0}'.
+                            format(cmd_output)))
                     self.status = 'STOPPED'
                 else:
                     logging.info('[stop_controller] Controller already '
                                  'stopped.')
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlStopError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -269,18 +270,17 @@ class Controller:
         try:
             try:
                 self.status = 'BUILDING'
-                exit_status = \
-                    util.netutil.ssh_run_command(self._ssh_conn,
-                                                 ' '.join([self.build_hnd]),
-                                                 '[controller.build_handler]')[0]
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.build_hnd]),
+                    '[controller.build_handler]')
                 if exit_status == 0:
                     self.status = 'BUILT'
                     logging.info("[Controller] Successful building")
                 else:
                     self.status = 'NOT_BUILT'
-                    raise(stress_test.controller_exceptions.CtrlBuildError('[Controller] '
-                                                               'Failure during'
-                                                               ' building'), 2)
+                    raise(stress_test.controller_exceptions.CtrlBuildError(
+                        '[Controller] Failure during building: {0}'.
+                        format(cmd_output)), 2)
             except stress_test.controller_exceptions.CtrlError as e:
                 self.error_handling(e.err_msg, e.err_code)
             except:
@@ -290,14 +290,12 @@ class Controller:
 
     def wait_until_listens(self, timeout_ms):
         """ Waits for controller to start listening on specified port.
-
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :raises Exception: If controller fails to start or if another process
         listens on controllers port.
         :rtype int
         :type timeout_ms: int
         """
-
         logging.info('[Controller] Waiting to start listening on a port')
         try:
             try:
@@ -446,7 +444,7 @@ class ODL(Controller):
                 util.netutil.ssh_run_command(self._ssh_conn,
                                              ' '.join([self.persistence_hnd]),
                                              '[controller.change'
-                                             '_persistent_handler]')[0]
+                                             '_persistent_handler]')
             except:
                 raise(stress_test.controller_exceptions.ODLDisablePersistenceError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -463,7 +461,7 @@ class ODL(Controller):
                     self._ssh_conn, ' '.join([self.statistics_hnd,
                                               str(self.stat_period_ms)]),
                     '[controller.statistics_handler]'
-                    ' Changing statistics interval')[0]
+                    ' Changing statistics interval')
                 logging.info(
                     '[Controller] Changed statistics period to {0} ms'.
                     format(self.stat_period_ms))
