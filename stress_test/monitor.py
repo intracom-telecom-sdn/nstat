@@ -381,7 +381,7 @@ class Mtcbench(Monitor):
 
 class Multinet(Oftraf_mon):
     def __init__(self, controller, oftraf, emulator):
-        super(self.__class__, self).__init__(controller, oftraf)
+        super(self.__class__, self).__init__(controller)
         print("create a MULTINET MONITOR object")
         self.emulator = emulator
         self.data_queue = gevent.queue.Queue()
