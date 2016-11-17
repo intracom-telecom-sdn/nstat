@@ -198,7 +198,7 @@ class Multinet(SBEmu):
     def __init__(self, sb_emu_base_dir, test_config):
 
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
-
+        print("BASE DIRECTORY:", self.base_dir)
         self.deploy_hnd = (self.base_dir +
                            test_config['topology_rest_server_boot'])
         self.cleanup_hnd = (self.base_dir +
@@ -250,9 +250,10 @@ class Multinet(SBEmu):
         self.__multinet_config_file_remote_path = os.path.join(self.base_dir,
                                                                "config",
                                                                "config.json")
+        print("MULTINET CONFIG FILE PATH REMOTE:", self.__multinet_config_file_remote_path)
         self.__multinet_config_file_local_path = os.path.join(self.base_dir,
                                                               "config.json")
-
+        print("MULTINET CONFIG FILE PATH LOCAL:", self.__multinet_config_file_local_path)
         self.venv_path = "/opt/venv_multinet"
         self.venv_hnd = self.base_dir + "bin/venv_handler_master.sh"
 
@@ -302,7 +303,7 @@ class Multinet(SBEmu):
         with open(self.__multinet_config_file_local_path,
                   'w') as config_json_file:
             json.dump(config_data, config_json_file)
-
+            print('CONFIG FILE PREPARED')
         if not util.file_ops.file_exists(self.__multinet_config_file_local_path):
             raise Exception('[Multinet] Config local file '
                             'has not been created')
@@ -343,6 +344,8 @@ class Multinet(SBEmu):
         logging.info('[Multinet] Deploy')
         self.status = 'DEPLOYING'
         self.__generate_config(cntrl_of_port, cntrl_ip)
+        print('deploy: __multinet_config_file_local_path', self.__multinet_config_file_local_path)
+        print('deploy: __multinet_config_file_remote_path', self.__multinet_config_file_local_path)
         util.netutil.ssh_copy_file_to_target(self.ip,
                                              self.ssh_port,
                                              self.ssh_user,
