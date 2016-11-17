@@ -315,7 +315,7 @@ class Controller:
 
                 raise (stress_test.controller_exceptions.CtrlReadyStateError(
                     'Controller failed to start within a period of {0} '
-                    'minutes'.format(timeout), 2))
+                    'seconds'.format(float(timeout_ms) / 1000), 2))
             except stress_test.controller_exceptions.CtrlError as e:
                 self.error_handling(e.err_msg, e.err_code)
             except:
