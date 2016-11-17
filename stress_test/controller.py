@@ -218,7 +218,7 @@ class Controller:
                     logging.info('[start_controller] Controller '
                                  'pid: {0}'.format(self.pid))
                     self.wait_until_up(420000)
-                    if exit_status != 0:
+                    if exit_status != 0 or self.pid == -1:
                         raise(stress_test.controller_exceptions.CtrlStartError(
                             '[start_controller] Fail to start: {0}'.
                             format(cmd_output), 2))
