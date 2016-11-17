@@ -83,7 +83,7 @@ class Monitor:
         return system_statistics
 
 
-class Oftraf_mon:
+class Oftraf:
 
     def __init__(self, controller, oftraf):
         print("create an OFTRAF MONITOR object")
@@ -379,12 +379,10 @@ class Mtcbench(Monitor):
         return
 
 
-class Multinet(Monitor, Oftraf_mon):
+class Multinet(Monitor, Oftraf):
     def __init__(self, controller, oftraf, emulator):
         Monitor.__init__(self, controller)
-        Oftraf_mon.__init__(self, controller, oftraf)
-        #super(self.__class__, self).__init__(controller)
-        #super(self.__class__, self).__init__(controller, oftraf)
+        Oftraf.__init__(self, controller, oftraf)
 
         print("create a MULTINET MONITOR object")
         self.emulator = emulator
