@@ -201,7 +201,7 @@ class TestRun:
             if json_conf['sb_emulator_name'] == "MULTINET":
                 print("CTRL obj CREATED")
                 print(self.ctrl.ip)
-                print("Create oftrraf object")
+                print("Create oftraf object")
                 of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
                 of.build()
                 of.start()
