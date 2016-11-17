@@ -56,7 +56,7 @@ for (sb_emu.topo_size,
                             test_config['multinet_topo_group_size'],
                             test_config['multinet_topo_group_delay_ms']):
 
-    sb_emu.deploy('192.168.160.201', 6653)
+    sb_emu.deploy('10.0.1.11', 6653)
     logging.info('[Testing] Generate multinet config file')
 
     sb_emu.init_topos()

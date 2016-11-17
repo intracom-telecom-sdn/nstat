@@ -23,7 +23,7 @@
 "multinet_worker_port_list":[3333,3333],
 
 "sb_emulator_name":"MULTINET",
-"sb_emulator_node_ip":"192.168.160.202",
+"sb_emulator_node_ip":"10.0.1.12",
 "sb_emulator_node_ssh_port":22,
 "sb_emulator_node_username":"jenkins",
 "sb_emulator_node_password":"jenkins",
