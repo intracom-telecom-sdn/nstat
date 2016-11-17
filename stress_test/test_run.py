@@ -29,7 +29,7 @@ class TestRun:
         if json_conf['sb_emulator_name'] == "MTCBENCH":
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
-        if json_conf['nb_emulator_name'] == "NB-GENERATOR":
+        if 'nb_emulator_name' in json_conf:
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
 
