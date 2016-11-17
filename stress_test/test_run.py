@@ -26,9 +26,13 @@ class TestRun:
                                                           json_conf)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
-        if json_conf['sb_emulator_name'] == "MTCBENCH":
-            self.mon = stress_test.monitor.Mtcbench(self.ctrl,
-                                                    self.sb_emu)
+        if 'sb_emulator_name' in json_conf:
+            if json_conf['sb_emulator_name'] == "MTCBENCH":
+                self.mon = stress_test.monitor.Mtcbench(self.ctrl,
+                                                        self.sb_emu)
+            else:
+                pass
+
         if 'nb_emulator_name' in json_conf:
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
@@ -363,9 +367,6 @@ class TestRun:
                                            json_conf,
                                            json_output,
                                            output_dir):
-        pass
-
-
 
         # CONTROLLER preparation
         # ------------------------------------------------------------------
@@ -399,15 +400,14 @@ class TestRun:
                      json_conf['controller_statistics_period_ms']):
             self.ctrl.check_status()
             self.ctrl.start()
-            multinet.deploy(ctrl.ip, ctrl.of_port)
+            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+            self.sb_emu.init_topos()
+            self.sb_emu.start_topos()
 
+            start_rest_request_time = time.time()
 
-
-
+            self.nb_emu.run()
+            self.nb_emu.monitor_threads_run(start_rest_request_time)
+            self.sb_emu.cleanup()
             self.ctrl.stop()
-            #sb_emu.deploy(json_conf['controller_node_ip'],
-            #              json_conf['controller_port'])
-            #sb_emu.init_topos()
-            #sb_emu.start_topos()
-
-        #self.sb_emu.clean()
+            self.ctrl.check_status()
