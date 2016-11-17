@@ -86,7 +86,7 @@ class Monitor:
 class Oftraf_mon(Monitor):
 
     def __init__(self, controller, oftraf):
-        super(self.__class__, self).__init__(controller)
+        super(self.__class__, self).__init__(controller, oftraf)
         print("create an OFTRAF MONITOR object")
         self.oftraf = oftraf
         self.exit_flag = False
@@ -379,10 +379,10 @@ class Mtcbench(Monitor):
         return
 
 
-class Multinet(Oftraf_mon, Monitor):
+class Multinet(Oftraf_mon):
     def __init__(self, controller, oftraf, emulator):
-        print("create an MULTINET object")
-        super(self.__class__, self).__init__(controller)
+        print("create a MULTINET object")
+        super(self.__class__, self).__init__(controller, oftraf)
         self.data_queue = gevent.queue.Queue()
 
     def monitor_run(self, boot_start_time=None):
