@@ -1,10 +1,10 @@
 {
-"nb_generator_name":"nb-generator",
-"nb_generator_run_handler":"./run_handler.py",
-"nb_generator_node_ip":"127.0.0.1",
-"nb_generator_node_ssh_port":"22",
-"nb_generator_node_username":"jenkins",
-"nb_generator_node_password":"jenkins",
+"nb_emulator_name":"NB-GENERATOR",
+"nb_emulator_run_handler":"./run_handler.py",
+"nb_emulator_node_ip":"127.0.0.1",
+"nb_emulator_node_ssh_port":"22",
+"nb_emulator_node_username":"jenkins",
+"nb_emulator_node_password":"jenkins",
 
 "flow_workers":[1],
 "total_flows":[10, 100],

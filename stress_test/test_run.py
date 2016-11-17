@@ -29,16 +29,14 @@ class TestRun:
         if json_conf['sb_emulator_name'] == "MTCBENCH":
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
-#        if hasattr(args, 'nb_emu_base_dir'):
-#            self.mon = stress_test.monitor.Mtcbench(self.ctrl,
-#                                                    self.sb_emu)
-#
-#            self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
-#                                                         json_conf,
-#                                                         self.ctrl,
-#                                                         self.sb_emu)
+        if 'nb_emulator_name' in json_conf:
+            self.mon = stress_test.monitor.Mtcbench(self.ctrl,
+                                                    self.sb_emu)
 
-        # self.test = stress_test.test_type.TestType(self, args)
+            self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
+                                                         json_conf,
+                                                         self.ctrl,
+                                                         self.sb_emu)
 
     def sb_active_scalability_cbench_run(self,
                                          json_conf,
@@ -399,8 +397,13 @@ class TestRun:
                      json_conf['multinet_topo_hosts_per_switch'],
                      json_conf['multinet_topo_type'],
                      json_conf['controller_statistics_period_ms']):
-            self.ctrl.change_stats()
+            self.ctrl.check_status()
             self.ctrl.start()
+            multinet.deploy(ctrl.ip, ctrl.of_port)
+
+
+
+
             self.ctrl.stop()
             #sb_emu.deploy(json_conf['controller_node_ip'],
             #              json_conf['controller_port'])
