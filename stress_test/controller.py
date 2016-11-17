@@ -217,9 +217,9 @@ class Controller:
                            self.start_hnd]
 
                 if self.check_status() == '0':
-                    util.netutil.ssh_run_command(self._ssh_conn,
-                                                 ' '.join(cmd),
-                                                 '[controller.start_handler]')[0]
+                    util.netutil.ssh_run_command(
+                        self._ssh_conn, ' '.join(cmd),
+                        '[controller.start_handler]')[0]
                     self.pid = self.wait_until_listens(420000)
                     logging.info('[start_controller] Controller '
                                  'pid: {0}'.format(self.pid))
@@ -353,6 +353,26 @@ class Controller:
                 raise(stress_test.controller_exceptions.CtrlReadyStateError)
         except stress_test.controller_exceptions.CtrlError as e:
             self.error_handling(e.err_msg, e.err_code)
+
+    def __del__(self):
+        """Method called when object is destroyed"""
+        try:
+            logging.info('Run controller stop.')
+            self.stop()
+        except:
+            pass
+
+        try:
+            logging.info('Run controller cleanup.')
+            self.cleanup()
+        except:
+            pass
+
+        try:
+            logging.info('Close controller node ssh connection.')
+            self._ssh_conn.close()
+        except:
+            pass
 
 
 class ODL(Controller):

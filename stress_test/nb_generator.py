@@ -111,7 +111,7 @@ class NBgen:
                               self.flows_per_request,
                               self.log_level))
                 logging.debug('Generator handler command:{0}.'.format(cmd))
-                exit_status, output = \
+                exit_status, cmd_output = \
                     util.netutil.ssh_run_command(self._ssh_conn,
                                                  cmd,
                                                  '[NB_generator_run_handler]')
@@ -121,8 +121,9 @@ class NBgen:
                 else:
                     self.status = 'FAILED'
                     raise(stress_test.nb_generator_exceptions.NBGenRunError(
-                        '[NB_generator] Failure during running', 2))
-                return output
+                        '[NB_generator] Failure during running. {0}'.
+                        format(cmd_output), 2))
+                return cmd_output
             except stress_test.nb_generator_exceptions.NBGenError as e:
                 self.error_handling(e.err_msg, e.err_code)
             except:
@@ -328,3 +329,11 @@ class NBgen:
                 raise(stress_test.nb_generator_exceptions.NBGenMonitorRunError)
         except stress_test.nb_generator_exceptions.NBGenError as e:
             self.error_handling(e.err_msg, e.err_code)
+
+    def __del__(self):
+        """Method called when object is destroyed"""
+        try:
+            logging.info('Closing NB-Generator ssh connection.')
+            self._ssh_conn.close()
+        except:
+            pass
