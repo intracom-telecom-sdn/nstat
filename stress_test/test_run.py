@@ -207,7 +207,8 @@ class TestRun:
                 of.start()
                 print("Oftraf STARTED object")
                 print("Create Multinet object")
-                monitor = stress_test.monitor.Oftraf_mon(self.ctrl, of)
+                monitor = stress_test.monitor.Multinet(self.ctrl, of,
+                                                       self.sb_emu)
                 print(monitor)
                 exit()
 # ---------------------------------------------DEBUG--------------------------

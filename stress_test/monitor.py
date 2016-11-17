@@ -379,7 +379,7 @@ class Mtcbench(Monitor):
         return
 
 
-class Multinet(Oftraf_mon):
+class Multinet(Oftraf_mon, Monitor):
     def __init__(self, controller, oftraf, emulator):
         print("create an MULTINET object")
         super(self.__class__, self).__init__(controller, oftraf)
