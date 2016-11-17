@@ -19,7 +19,6 @@ import sys
 import util.file_ops
 import util.netutil
 import util.process
-import queue
 
 
 
