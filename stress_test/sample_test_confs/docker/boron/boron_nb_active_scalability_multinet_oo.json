@@ -15,7 +15,7 @@
 "sb_emulator_node_username":"root",
 "sb_emulator_node_password":"root123",
 
-"nb_generator_name":"nb-generator",
+"nb_generator_name":"NB-GENERATOR",
 "nb_generator_node_ip":"10.0.1.12",
 "nb_generator_node_ssh_port":"22",
 "nb_generator_node_username":"root",
