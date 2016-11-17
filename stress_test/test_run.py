@@ -29,15 +29,14 @@ class TestRun:
         if json_conf['sb_emulator_name'] == "MTCBENCH":
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
-        if hasattr(args, 'nb_emu_base_dir'):
-            print('Kostas')
-            self.mon = stress_test.monitor.Mtcbench(self.ctrl,
-                                                    self.sb_emu)
-
-            self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
-                                                         json_conf,
-                                                         self.ctrl,
-                                                         self.sb_emu)
+#        if hasattr(args, 'nb_emu_base_dir'):
+#            self.mon = stress_test.monitor.Mtcbench(self.ctrl,
+#                                                    self.sb_emu)
+#
+#            self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
+#                                                         json_conf,
+#                                                         self.ctrl,
+#                                                         self.sb_emu)
 
         # self.test = stress_test.test_type.TestType(self, args)
 
