@@ -10,6 +10,7 @@ import common
 import stress_test.controller
 import stress_test.emulator
 import stress_test.monitor
+import stress_test.nb_generator
 import stress_test.oftraf
 # import stress_test.test_type
 import sys
@@ -382,28 +383,28 @@ class TestRun:
         # ------------------------------------------------------------------
         for (self.nb_emu.total_flows,
              self.nb_emu.flow_operations_delay_ms,
-             self.nb_emu.topo_size,
+             self.sb_emu.topo_size,
              self.nb_emu.flow_workers,
              self.sb_emu.topo_group_size,
              self.sb_emu.topo_group_delay_ms,
              self.sb_emu.topo_hosts_per_switch,
              self.sb_emu.topo_type,
              self.ctrl.stat_period_ms) in \
-             itertools.product(json_conf['total_flows'],
-                               json_conf['flow_operations_delay_ms'],
-                               json_conf['multinet_topo_size'],
-                               json_conf['flow_workers'],
-                               json_conf['multinet_topo_group_size'],
-                               json_conf['multinet_topo_group_delay_ms'],
-                               json_conf['multinet_topo_hosts_per_switch'],
-                               json_conf['multinet_topo_type'],
-                               json_conf['controller_statistics_period_ms']):
+                 itertools.product(json_conf['total_flows'],
+                     json_conf['flow_operations_delay_ms'],
+                     json_conf['multinet_topo_size'],
+                     json_conf['flow_workers'],
+                     json_conf['multinet_topo_group_size'],
+                     json_conf['multinet_topo_group_delay_ms'],
+                     json_conf['multinet_topo_hosts_per_switch'],
+                     json_conf['multinet_topo_type'],
+                     json_conf['controller_statistics_period_ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
+            self.ctrl.stop()
+            #sb_emu.deploy(json_conf['controller_node_ip'],
+            #              json_conf['controller_port'])
+            #sb_emu.init_topos()
+            #sb_emu.start_topos()
 
-            sb_emu.deploy(json_conf['controller_node_ip'],
-                          json_conf['controller_port'])
-            sb_emu.init_topos()
-            sb_emu.start_topos()
-
-        self.sb_emu.clean()
+        #self.sb_emu.clean()
