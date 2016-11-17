@@ -28,9 +28,16 @@ class TestRun:
         if json_conf['sb_emulator_name'] == "MTCBENCH":
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
-        if json_conf['sb_emulator_name'] == "MTCBENCH":
+        if hasattr(args, 'nb_emu_base_dir'):
             self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                     self.sb_emu)
+
+            self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
+                                                         json_conf,
+                                                         self.ctrl,
+                                                         self.sb_emu)
+            print(args.nb_emu_base_dir)
+            exit()
         # self.test = stress_test.test_type.TestType(self, args)
 
     def sb_active_scalability_cbench_run(self,
@@ -363,17 +370,17 @@ class TestRun:
 
 
         # CONTROLLER preparation
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         self.ctrl.init_ssh()
         self.ctrl.build()
 
         # EMULATOR preparation
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         self.sb_emu.init_ssh()
         self.sb_emu.build()
 
         # TEST run
-        #-------------------------------------------------------------------
+        # ------------------------------------------------------------------
         for (nb_generator.total_flows,
              nb_generator.flow_operations_delay_ms,
              self.sb_emu.topo_size,
