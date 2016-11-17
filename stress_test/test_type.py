@@ -8,8 +8,6 @@
 
 import json
 import logging
-import os
-import time
 import stress_test.controller
 import stress_test.emulator
 import stress_test.nb_generator
@@ -21,7 +19,6 @@ import util.netutil
 import util.process
 
 
-
 class TestType:
 
     def __init__(self, args):
@@ -30,7 +27,6 @@ class TestType:
         """
         self.nstat_test_type = args.test_type
 
-
     def load_test_conf(self, args):
         """ Loading test configuration for NSTAT experiment. Parsing
         configuration options from JSON input file
@@ -38,12 +34,12 @@ class TestType:
         :param args: ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
-        :returns: test_config:
-        :rtype: test_config:  python object resulting from a deserialized file
+        :returns: json_conf:
+        :rtype: json_conf:  python object resulting from a deserialized file
         like object containing a json document
         :type args: ArgumentParser object
         """
-        json_conf = {}
+
         with open(args.json_config) as conf_file:
             json_conf = json.load(conf_file)
         return json_conf
@@ -59,13 +55,13 @@ class TestType:
         logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
         if args.logging_level == 'INFO':
             logging.basicConfig(level=logging.INFO, stream=sys.stdout,
-                            format=logging_format)
+                                format=logging_format)
         elif args.logging_level == 'ERROR':
             logging.basicConfig(level=logging.ERROR, stream=sys.stdout,
-                            format=logging_format)
+                                format=logging_format)
         else:
             logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
-                            format=logging_format)
+                                format=logging_format)
 
         if args.log_file:
             open(args.log_file, 'a').close()
@@ -78,14 +74,13 @@ class TestType:
             else:
                 file_logging_handler.setLevel(level=logging.DEBUG)
 
-
     def test_selector(self, args):
         """
         """
         self.set_test_log_level(args)
         json_conf = self.load_test_conf(args)
         nstat_test_type_run = args.test_type + '_' + \
-                              json_conf['sb_emulator_name'].lower()
+            json_conf['sb_emulator_name'].lower()
 
         # Create instance of TestRun and initialize controller
         nstat_test_run = stress_test.test_run.TestRun(args, json_conf)
@@ -101,7 +96,6 @@ class TestType:
                     args.json_output,
                     args.output_dir)
 
-        # sb_active_stability_mtcbench
         elif nstat_test_type_run == 'sb_active_stability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test:{0}'.
@@ -115,7 +109,6 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                #oftraf_path = get_oftraf_path()
                 nstat_test_run.sb_active_scalability_multinet_run(
                     json_conf,
                     args.json_output,
@@ -160,4 +153,3 @@ class TestType:
         else:
             logging.error('[nstat_orchestrator] not valid test configuration')
             exit(0)
-
