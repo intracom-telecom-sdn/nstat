@@ -92,7 +92,7 @@ class Oftraf:
         self.exit_flag = False
         self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
 
-    def monitor_thread(self):
+    def of_monitor_thread(self):
         """Function executed inside a thread and returns the output in json
         format, of openflow packets counts
         """
@@ -121,11 +121,11 @@ class Oftraf:
         finally:
             return
 
-    def monitor_run(self):
+    def of_monitor_run(self):
 
         # Parallel section
         self.exit_flag = False
-        monitor_thread = gevent.spawn(self.monitor_thread())
+        monitor_thread = gevent.spawn(self.of_monitor_thread())
         gevent.sleep(0)
         res = self.results_queue.get(block=True)
         self.results_queue.task_done()
@@ -523,7 +523,7 @@ class Multinet(Monitor, Oftraf):
         """ Function executed by multinet thread.
             It calls monitor_thread() method of Oftraf Class
         """
-        self.oftraf.monitor_run()
+        self.of_monitor_run()
         results = self.monitor_results_active()
         traffic_gen_ms = float(self.emulator.traffic_gen_duration_ms) / 1000
         results['of_out_bytes_per_sec'] = \
