@@ -127,7 +127,8 @@ class Oftraf:
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread())
         gevent.sleep(0)
-        res = self.results_queue.get(block=True)
+        # res = self.results_queue.get(block=True)
+        res = self.results_queue.get()
         self.results_queue.task_done()
         self.exit_flag = True
         gevent.joinall([monitor_thread])
