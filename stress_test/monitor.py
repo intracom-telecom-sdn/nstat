@@ -172,7 +172,7 @@ class Mtcbench(Monitor):
         results['test_repeats'] = self.test_repeats
         results['controller_node_ip'] = self.controller.ip
         results['controller_port'] = \
-            str(self.controller.port)
+            str(self.controller.of_port)
         results['cbench_mode'] = self.emulator.mode
         results['cbench_ms_per_test'] = \
             self.emulator.ms_per_test
@@ -198,7 +198,7 @@ class Mtcbench(Monitor):
         results['cbench_delay_before_traffic_ms'] = \
             self.emulator.delay_before_traffic_ms
         results['controller_node_ip'] = self.controller.ip
-        results['controller_port'] = str(self.controller.port)
+        results['controller_port'] = str(self.controller.of_port)
         results['cbench_mode'] = self.emulator.mode
         results['cbench_ms_per_test'] = self.emulator.ms_per_test
         results['cbench_internal_repeats'] = \
@@ -421,13 +421,13 @@ class Multinet(Monitor, Oftraf):
         results['multinet_worker_topo_size'] = self.emulator.topo_size
         results['multinet_topology_type'] = self.emulator.topo_type
         results['multinet_hosts_per_switch'] = \
-            self.emulator.topohosts_per_switch
-        results['multinet_group_size'] = self.emulator.topogroup_size
-        results['multinet_group_delay_ms'] = self.emulator.topogroup_delay_ms
+            self.emulator.topo_hosts_per_switch
+        results['multinet_group_size'] = self.emulator.topo_group_size
+        results['multinet_group_delay_ms'] = self.emulator.topo_group_delay_ms
         results['controller_statistics_period_ms'] = \
             self.controller.stat_period_ms
         results['controller_node_ip'] = self.controller.ip
-        results['controller_port'] = str(self.controller.port)
+        results['controller_port'] = str(self.controller.of_port)
         results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
         results['traffic_generation_duration_ms'] = \
             self.emulator.traffic_gen_duration_ms
@@ -448,7 +448,7 @@ class Multinet(Monitor, Oftraf):
             results['controller_statistics_period_ms'] = \
                 self.controller.stat_period_ms
             results['controller_node_ip'] = self.controller.ip
-            results['controller_port'] = str(self.controller.port)
+            results['controller_port'] = str(self.controller.of_port)
             return results
 
     def monitor_thread_idle(self, boot_start_time):
