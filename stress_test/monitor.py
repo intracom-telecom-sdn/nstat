@@ -90,7 +90,7 @@ class Oftraf:
         self.oftraf = oftraf
         self.controller = controller
         self.exit_flag = False
-        self.results_queue = gevent.queue.JoinableQueue(maxsize=1)
+        self.results_queue = gevent.queue.Queue(maxsize=1)
 
     def of_monitor_thread(self):
         """Function executed inside a thread and returns the output in json
@@ -101,7 +101,7 @@ class Oftraf:
                 oftraf_interval_sec = self.oftraf.oftraf_interval_ms / 1000
                 logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'
                              .format(oftraf_interval_sec))
-                time.sleep(oftraf_interval_sec)
+                gevent.sleep(oftraf_interval_sec)
                 logging.info('[oftraf_monitor_thread] '
                              'get throughput of controller')
                 response_data = \
@@ -121,19 +121,15 @@ class Oftraf:
         finally:
             return
 
-    def of_monitor_run(self):
+    def monitor_run_oftraf(self):
 
         # Parallel section
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread())
-        gevent.sleep(0)
         res = self.results_queue.get(block=True)
-        self.results_queue.task_done()
         self.exit_flag = True
         gevent.joinall([monitor_thread])
-        self.results_queue.join()
         gevent.killall([monitor_thread])
-
         return res
 
 
@@ -523,23 +519,23 @@ class Multinet(Monitor, Oftraf):
         """ Function executed by multinet thread.
             It calls monitor_thread() method of Oftraf Class
         """
-        self.of_monitor_run()
+        oftraf_monitor_results = self.monitor_run_oftraf()
         results = self.monitor_results_active()
         traffic_gen_ms = float(self.emulator.traffic_gen_duration_ms) / 1000
         results['of_out_bytes_per_sec'] = \
-            float(results['of_out_traffic'][1]) / traffic_gen_ms
+            float(oftraf_monitor_results['of_out_traffic'][1]) / traffic_gen_ms
         results['of_in_packets_per_sec'] = \
-            float(results['of_in_traffic'][0]) / traffic_gen_ms
+            float(oftraf_monitor_results['of_in_traffic'][0]) / traffic_gen_ms
         results['of_in_bytes_per_sec'] = \
-            float(results['of_in_traffic'][1]) / traffic_gen_ms
+            float(oftraf_monitor_results['of_in_traffic'][1]) / traffic_gen_ms
         results['tcp_of_out_packets_per_sec'] = \
-            float(results['tcp_of_out_traffic'][0]) / traffic_gen_ms
+            float(oftraf_monitor_results['tcp_of_out_traffic'][0]) / traffic_gen_ms
         results['tcp_of_out_bytes_per_sec'] = \
-            float(results['tcp_of_out_traffic'][1]) / traffic_gen_ms
+            float(oftraf_monitor_results['tcp_of_out_traffic'][1]) / traffic_gen_ms
         results['tcp_of_in_packets_per_sec'] = \
-            float(results['tcp_of_in_traffic'][0]) / traffic_gen_ms
+            float(oftraf_monitor_results['tcp_of_in_traffic'][0]) / traffic_gen_ms
         results['tcp_of_in_bytes_per_sec'] = \
-            float(results['tcp_of_in_traffic'][1]) / traffic_gen_ms
+            float(oftraf_monitor_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
         self.result_queue.put([results])
         return 0
 
