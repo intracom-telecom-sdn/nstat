@@ -523,7 +523,7 @@ class Multinet(Monitor, Oftraf):
         """ Function executed by multinet thread.
             It calls monitor_thread() method of Oftraf Class
         """
-        super(Multinet, self).monitor_thread()
+        Oftraf.monitor_run()
         results = self.monitor_results_active()
         traffic_gen_ms = float(self.emulator.traffic_gen_duration_ms) / 1000
         results['of_out_bytes_per_sec'] = \
