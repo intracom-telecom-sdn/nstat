@@ -117,7 +117,6 @@ class Oftraf(Monitor):
             logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
         finally:
-            self.results_queue.task_done()
             return
 
     def monitor_run(self):
@@ -129,6 +128,7 @@ class Oftraf(Monitor):
         monitor_thread = gevent.spawn(self.monitor_thread())
         gevent.sleep(0)
         res = self.results_queue.get(block=True)
+        self.results_queue.task_done()
         self.exit_flag = True
         gevent.joinall([monitor_thread])
         self.results_queue.join()
@@ -306,7 +306,6 @@ class Mtcbench(Monitor):
                                  'termination string returned. Returning '
                                  'samples and exiting.')
                     self.result_queue.put(test_samples, block=True)
-                    self.result_queue.task_done()
                     return
                 else:
                     # look for lines containing a substring like e.g.
@@ -354,6 +353,7 @@ class Mtcbench(Monitor):
         mtcbench_thread = gevent.spawn(self.mtcbench_thread())
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
+        self.result_queue.task_done()
         self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread, mtcbench_thread])
         self.result_queue.join()
@@ -403,6 +403,7 @@ class Multinet(Oftraf):
 
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
+        self.result_queue.task_done()
         self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread])
         self.result_queue.join()
