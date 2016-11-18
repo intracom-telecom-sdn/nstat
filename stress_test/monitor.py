@@ -119,7 +119,6 @@ class Oftraf:
             logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
         finally:
-            self.results_queue.task_done()
             return
 
     def monitor_run(self):
@@ -129,6 +128,7 @@ class Oftraf:
         monitor_thread = gevent.spawn(self.monitor_thread())
         gevent.sleep(0)
         res = self.results_queue.get(block=True)
+        self.results_queue.task_done()
         self.exit_flag = True
         gevent.joinall([monitor_thread])
         self.results_queue.join()
@@ -305,7 +305,6 @@ class Mtcbench(Monitor):
                                  'termination string returned. Returning '
                                  'samples and exiting.')
                     self.result_queue.put(test_samples, block=True)
-                    self.result_queue.task_done()
                     return
                 else:
                     # look for lines containing a substring like e.g.
@@ -321,7 +320,6 @@ class Mtcbench(Monitor):
                             results['throughput_responses_sec'] = -1
                             test_samples.append(results)
                             self.result_queue.put(test_samples, block=True)
-                            self.result_queue.task_done()
                             return
                         if match is not None:
                             # extract the numeric portion from the above regex
@@ -333,7 +331,6 @@ class Mtcbench(Monitor):
             except queue.Empty as exept:
                 logging.error('[monitor_thread_active] {0}'.format(str(exept)))
                 self.result_queue.put(test_samples, block=True)
-                self.result_queue.task_done()
                 return
 
     def monitor_run(self, boot_start_time=None):
@@ -353,6 +350,7 @@ class Mtcbench(Monitor):
         mtcbench_thread = gevent.spawn(self.mtcbench_thread())
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
+        self.result_queue.task_done()
         self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread, mtcbench_thread])
         self.result_queue.join()
@@ -406,6 +404,7 @@ class Multinet(Monitor, Oftraf):
 
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
+        self.result_queue.task_done()
         self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread])
         self.result_queue.join()
