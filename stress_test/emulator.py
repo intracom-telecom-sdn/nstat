@@ -14,6 +14,7 @@ import os
 import re
 import stress_test.emulator_exceptions
 import sys
+import traceback
 import util.netutil
 import util.file_ops
 
@@ -33,7 +34,7 @@ class SBEmu:
 
         # self.host_spec = test_config['SB-Emulator_node_spec']
         # self.host_ip = test_config['SB-Emulator_host_ip']
-
+        self.traceback_enabled = False
         self.ip = test_config['sb_emulator_node_ip']
         self.ssh_port = test_config['sb_emulator_node_ssh_port']
         self.ssh_user = test_config['sb_emulator_node_username']
@@ -73,6 +74,8 @@ class SBEmu:
         logging.error('Error number: {0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        if self.traceback_enabled:
+            traceback.print_exc()
         raise(stress_test.emulator_exceptions.SBEmuError)
 
     def init_ssh(self):

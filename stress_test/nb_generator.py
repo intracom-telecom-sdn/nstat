@@ -11,6 +11,7 @@ import logging
 import stress_test.nb_generator_exceptions
 import sys
 import time
+import traceback
 import util.netutil
 
 
@@ -33,6 +34,7 @@ class NBgen:
         self.name = test_config['nb_generator_name']
         self.base_dir = nb_gen_base_dir
 
+        self.traceback_enabled = False
         self.ip = test_config['nb_generator_node_ip']
         self.ssh_port = test_config['nb_generator_node_ssh_port']
         self.ssh_user = test_config['nb_generator_node_username']
@@ -71,6 +73,8 @@ class NBgen:
         logging.error('Error number: {0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        if self.traceback_enabled:
+            traceback.print_exc()
         raise(stress_test.nb_generator_exceptions.NBGenError)
 
     def init_ssh(self):

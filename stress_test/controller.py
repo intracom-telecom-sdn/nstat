@@ -31,6 +31,7 @@ class Controller:
         self.name = test_config['controller_name']
         self.base_dir = ctrl_base_dir
 
+        self.traceback_enabled = False
         self.ip = test_config['controller_node_ip']
         self.ssh_port = test_config['controller_node_ssh_port']
         self.ssh_user = test_config['controller_node_username']
@@ -93,7 +94,8 @@ class Controller:
         logging.error('Error number:{0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
-        traceback.print_exc()
+        if self.traceback_enabled:
+            traceback.print_exc()
         # Propagate error outside the class to stop execution
         raise(stress_test.controller_exceptions.CtrlError)
 
