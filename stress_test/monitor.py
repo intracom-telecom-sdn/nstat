@@ -114,7 +114,7 @@ class Oftraf:
                            'of_in_traffic': in_traffic,
                            'tcp_of_out_traffic': tcp_out_traffic,
                            'tcp_of_in_traffic': tcp_in_traffic}
-                self.results_queue.put(results, block=True)
+                self.results_queue.put(results)
         except:
             logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
@@ -304,7 +304,7 @@ class Mtcbench(Monitor):
                     logging.info('[monitor_thread_active] successful '
                                  'termination string returned. Returning '
                                  'samples and exiting.')
-                    self.result_queue.put(test_samples, block=True)
+                    self.result_queue.put(test_samples)
                     return
                 else:
                     # look for lines containing a substring like e.g.
@@ -319,7 +319,7 @@ class Mtcbench(Monitor):
                                          'and exiting.')
                             results['throughput_responses_sec'] = -1
                             test_samples.append(results)
-                            self.result_queue.put(test_samples, block=True)
+                            self.result_queue.put(test_samples)
                             return
                         if match is not None:
                             # extract the numeric portion from the above regex
@@ -330,7 +330,7 @@ class Mtcbench(Monitor):
                         internal_repeat_id += 1
             except queue.Empty as exept:
                 logging.error('[monitor_thread_active] {0}'.format(str(exept)))
-                self.result_queue.put(test_samples, block=True)
+                self.result_queue.put(test_samples)
                 return
 
     def monitor_run(self, boot_start_time=None):
@@ -366,12 +366,12 @@ class Mtcbench(Monitor):
             self.emulator.run(self.controller.ip, self.controller.of_port)
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
-                self.data_queue.put(self.term_success, block=True)
+                self.data_queue.put(self.term_success)
             logging.info('[MTCbench.mtcbench_thread] MTCbench thread ended '
                          'successfully')
         except:
             if self.data_queue is not None:
-                self.data_queue.put(self.term_fail, block=True)
+                self.data_queue.put(self.term_fail)
             logging.error('[MTCbench.mtcbench_thread] Exception: '
                           'MTCbench_thread exited with error.')
         return
