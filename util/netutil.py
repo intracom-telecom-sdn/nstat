@@ -329,15 +329,15 @@ def ssh_connection_open2(ip, ssh_port, username, password):
     :type username: str
     :type password: str
     """
-    # try:
-    transport_layer = paramiko.Transport((ip, ssh_port))
-    transport_layer.connect(username=username,
-                            password=password)
-    sftp = paramiko.SFTPClient.from_transport(transport_layer)
+    try:
+        transport_layer = paramiko.Transport((ip, ssh_port))
+        transport_layer.connect(username=username,
+                                password=password)
+        sftp = paramiko.SFTPClient.from_transport(transport_layer)
 
-    return (sftp, transport_layer)
-    # except:
-    logging.error('[ssh_connection_open] error: check connection object')
+        return (sftp, transport_layer)
+    except:
+        logging.error('[ssh_connection_open] error: check connection object')
 
 
 def ssh_copy_file_to_target(ip, ssh_port, username, password, local_file,
