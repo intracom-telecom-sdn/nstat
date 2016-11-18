@@ -42,10 +42,10 @@ class Monitor:
         system_statistics['total_memory_bytes'] = \
             util.sysstats.sys_total_memory_bytes(self.controller._ssh_conn)
         system_statistics['controller_cwd'] = \
-            util.sysstats.proc_cwd(self.controller.cpid,
+            util.sysstats.proc_cwd(self.controller.pid,
                                    self.controller._ssh_conn)
         system_statistics['controller_java_xopts'] = \
-            util.sysstats.get_java_options(self.controller.cpid,
+            util.sysstats.get_java_options(self.controller.pid,
                                            self.controller._ssh_conn)
         system_statistics['timestamp'] = \
             int(subprocess.check_output('date +%s',
@@ -60,19 +60,19 @@ class Monitor:
         system_statistics['free_memory_bytes'] = \
             util.sysstats.sys_free_memory_bytes(self.controller._ssh_conn)
         system_statistics['controller_cpu_system_time'] = \
-            util.sysstats.proc_cpu_system_time(self.controller.cpid,
+            util.sysstats.proc_cpu_system_time(self.controller.pid,
                                                self.controller._ssh_conn)
         system_statistics['controller_cpu_user_time'] = \
-            util.sysstats.proc_cpu_user_time(self.controller.cpid,
+            util.sysstats.proc_cpu_user_time(self.controller.pid,
                                              self.controller._ssh_conn)
         system_statistics['controller_vm_size'] = \
-            util.sysstats.proc_vm_size(self.controller.cpid,
+            util.sysstats.proc_vm_size(self.controller.pid,
                                        self.controller._ssh_conn)
         system_statistics['controller_num_fds'] = \
-            util.sysstats.proc_num_fds(self.controller.cpid,
+            util.sysstats.proc_num_fds(self.controller.pid,
                                        self.controller._ssh_conn)
         system_statistics['controller_num_threads'] = \
-            util.sysstats.proc_num_threads(self.controller.cpid,
+            util.sysstats.proc_num_threads(self.controller.pid,
                                            self.controller._ssh_conn)
         system_statistics['one_minute_load'] = \
             util.sysstats.sys_load_average(self.controller._ssh_conn)[0]
