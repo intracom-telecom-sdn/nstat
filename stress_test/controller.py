@@ -11,6 +11,7 @@ import os
 import sys
 import stress_test.controller_exceptions
 import time
+import traceback
 import util.file_ops
 import util.netutil
 import util.process
@@ -92,6 +93,7 @@ class Controller:
         logging.error('Error number:{0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        traceback.print_exc()
         # Propagate error outside the class to stop execution
         raise(stress_test.controller_exceptions.CtrlError)
 
