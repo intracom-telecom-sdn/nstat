@@ -122,6 +122,7 @@ class Oftraf:
                        'of_in_traffic': 0,
                        'tcp_of_out_traffic': 0,
                        'tcp_of_in_traffic': 0}
+        print(results)
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
@@ -521,6 +522,7 @@ class Multinet(Monitor, Oftraf):
         oftraf_monitor_results = self.monitor_run_oftraf()
         results = self.monitor_results_active()
         traffic_gen_ms = float(self.emulator.traffic_gen_duration_ms) / 1000
+        print(traffic_gen_ms)
         results['of_out_bytes_per_sec'] = \
             float(oftraf_monitor_results['of_out_traffic'][1]) / traffic_gen_ms
         results['of_in_packets_per_sec'] = \
