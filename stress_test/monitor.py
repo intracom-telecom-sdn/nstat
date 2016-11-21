@@ -396,12 +396,9 @@ class Multinet(Monitor, Oftraf):
                 gevent.spawn(self.monitor_thread_idle(boot_start_time))
             self.emulator.start_topos()
 
-        gevent.sleep(0)
         samples = self.result_queue.get(block=True)
-        self.result_queue.task_done()
         self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread])
-        self.result_queue.join()
         gevent.killall([monitor_thread])
         return self.total_samples
 
@@ -511,7 +508,7 @@ class Multinet(Monitor, Oftraf):
                     results['successful_bootup_time'] = delta_t
                     self.result_queue.put([results])
                     return 0
-            time.sleep(1)
+            gevent.sleep(1)
 
     def monitor_thread_active(self):
         """ Function executed by multinet thread.
