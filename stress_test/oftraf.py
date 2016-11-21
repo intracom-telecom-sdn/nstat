@@ -132,8 +132,8 @@ class Oftraf:
         """
         getheaders = {'Accept': 'application/json'}
         url = \
-            'http://{0}:{1}/get_of_counts'.format(self.oftraf_rest_server.ip,
-                                                  self.oftraf_rest_server.port)
+            'http://{0}:{1}/get_of_counts'.format(self.rest_server.ip,
+                                                  self.rest_server.port)
         s = requests.Session()
         s.trust_env = False
         req = s.get(url, headers=getheaders, stream=False)
