@@ -384,6 +384,7 @@ class Multinet(Monitor, Oftraf):
 
         print("create a MULTINET MONITOR object")
         self.emulator = emulator
+        self.total_samples = []
         self.result_queue = gevent.queue.Queue()
 
     def monitor_run(self, boot_start_time=None):
