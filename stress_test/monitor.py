@@ -130,7 +130,7 @@ class Oftraf:
 
         # Parallel section
         self.exit_flag = False
-        monitor_thread = gevent.spawn(self.of_monitor_thread())
+        monitor_thread = gevent.spawn(self.of_monitor_thread)
         res = self.results_queue.get(block=True)
         gevent.joinall([monitor_thread])
         gevent.killall([monitor_thread])
@@ -342,12 +342,12 @@ class Mtcbench(Monitor):
         if boot_start_time is None:
             logging.info('[MTCbench.monitor_run] active test monitor is '
                          'running')
-            monitor_thread = gevent.spawn(self.monitor_thread_active())
+            monitor_thread = gevent.spawn(self.monitor_thread_active)
         else:
             logging.info('[MTCbench.monitor_run] idle test monitor is running')
             monitor_thread = \
-                gevent.spawn(self.monitor_thread_idle(boot_start_time))
-        mtcbench_thread = gevent.spawn(self.mtcbench_thread())
+                gevent.spawn(self.monitor_thread_idle, boot_start_time)
+        mtcbench_thread = gevent.spawn(self.mtcbench_thread)
         gevent.sleep(0)
         samples = self.result_queue.get(block=True)
         self.result_queue.task_done()
@@ -395,11 +395,11 @@ class Multinet(Monitor, Oftraf):
         if boot_start_time is None:
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
-            monitor_thread = gevent.spawn(self.monitor_thread_active())
+            monitor_thread = gevent.spawn(self.monitor_thread_active)
         else:
             logging.info('[Multinet.monitor_run] Idle test monitor is running')
             monitor_thread = \
-                gevent.spawn(self.monitor_thread_idle(boot_start_time))
+                gevent.spawn(self.monitor_thread_idle,boot_start_time)
             self.emulator.start_topos()
 
         samples = self.result_queue.get(block=True)
