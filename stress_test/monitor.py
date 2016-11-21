@@ -114,6 +114,7 @@ class Oftraf:
                            'of_in_traffic': in_traffic,
                            'tcp_of_out_traffic': tcp_out_traffic,
                            'tcp_of_in_traffic': tcp_in_traffic}
+                self.exit_flag = True
         except:
             logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
@@ -129,7 +130,6 @@ class Oftraf:
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread)
         res = self.results_queue.get(block=True)
-        self.exit_flag = True
         gevent.joinall([monitor_thread])
         gevent.killall([monitor_thread])
         return res
