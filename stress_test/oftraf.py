@@ -26,6 +26,8 @@ class Oftraf:
 
         if 'oftraf_test_interval_ms' in test_config:
             self.interval_ms = test_config['oftraf_test_interval_ms']
+        else:
+            self.interval_ms = 0
         self.rest_server_port = test_config['oftraf_rest_server_port']
         self.rest_server_ip = controller.ip
         self.of_port = controller.of_port
