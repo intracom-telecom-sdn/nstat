@@ -126,7 +126,7 @@ class Oftraf:
         # Parallel section
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread())
-        res = self.results_queue.get()
+        res = self.results_queue.get(block=True)
         gevent.joinall([monitor_thread])
         gevent.killall([monitor_thread])
         return res
