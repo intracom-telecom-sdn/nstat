@@ -98,7 +98,7 @@ class Oftraf:
         """
         #try:
         while self.exit_flag is False:
-            oftraf_interval_sec = self.oftraf.oftraf_interval_ms / 1000
+            oftraf_interval_sec = self.oftraf.interval_ms / 1000
             logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'
                          .format(oftraf_interval_sec))
             gevent.sleep(oftraf_interval_sec)
