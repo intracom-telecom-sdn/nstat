@@ -96,6 +96,10 @@ class Oftraf:
                                                    self.rest_server_ip,
                                                    str(self.rest_server_port),
                                                    str(self.of_port)]),
+                                         lines_queue=None,
+                                         print_flag=True,
+                                         block_flag=True,
+                                         getpty_flag=True,
                                          '[oftraf.start_handler]')[0]
         if exit_status == 0:
             self.status = 'STARTED'
