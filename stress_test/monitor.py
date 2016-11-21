@@ -118,10 +118,10 @@ class Oftraf:
         except:
             logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
-            results = {'of_out_traffic': 0,
-                       'of_in_traffic': 0,
-                       'tcp_of_out_traffic': 0,
-                       'tcp_of_in_traffic': 0}
+            results = {'of_out_traffic': (0, 0),
+                       'of_in_traffic': (0, 0),
+                       'tcp_of_out_traffic': (0, 0),
+                       'tcp_of_in_traffic': (0, 0)}
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
