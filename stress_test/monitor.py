@@ -114,21 +114,22 @@ class Oftraf:
                            'of_in_traffic': in_traffic,
                            'tcp_of_out_traffic': tcp_out_traffic,
                            'tcp_of_in_traffic': tcp_in_traffic}
-                self.results_queue.put(results)
                 self.exit_flag = True
         except:
             logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
+            results = {}
+        self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
 
         # Parallel section
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread())
-#        res = self.results_queue.get()
+        res = self.results_queue.get()
         gevent.joinall([monitor_thread])
         gevent.killall([monitor_thread])
-#        return res
+        return res
 
 
 class Mtcbench(Monitor):
