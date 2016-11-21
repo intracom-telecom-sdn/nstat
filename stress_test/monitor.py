@@ -96,34 +96,31 @@ class Oftraf:
         """Function executed inside a thread and returns the output in json
         format, of openflow packets counts
         """
-        #try:
-        while self.exit_flag is False:
-            oftraf_interval_sec = self.oftraf.interval_ms / 1000
-            logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'
-                         .format(oftraf_interval_sec))
-            gevent.sleep(oftraf_interval_sec)
-            logging.info('[oftraf_monitor_thread] '
-                         'get throughput of controller')
-            response_data = \
-                json.loads(self.oftraf.oftraf_get_of_counts())
-            tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
-            tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
-            out_traffic = tuple(response_data['OF_out_counts'])
-            in_traffic = tuple(response_data['OF_in_counts'])
-            results = {'of_out_traffic': out_traffic,
-                       'of_in_traffic': in_traffic,
-                       'tcp_of_out_traffic': tcp_out_traffic,
-                       'tcp_of_in_traffic': tcp_in_traffic}
-            self.exit_flag = True
-        #except:
-            '''logging.error('[oftraf.monitor_thread] Error monitor thread '
+        try:
+            while self.exit_flag is False:
+                oftraf_interval_sec = self.oftraf.interval_ms / 1000
+                logging.info('[oftraf_monitor_thread] Waiting for {0} seconds.'
+                             .format(oftraf_interval_sec))
+                gevent.sleep(oftraf_interval_sec)
+                logging.info('[oftraf_monitor_thread] '
+                             'get throughput of controller')
+                response_data = \
+                    json.loads(self.oftraf.oftraf_get_of_counts())
+                tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
+                tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
+                out_traffic = tuple(response_data['OF_out_counts'])
+                in_traffic = tuple(response_data['OF_in_counts'])
+                results = {'of_out_traffic': out_traffic,
+                           'of_in_traffic': in_traffic,
+                           'tcp_of_out_traffic': tcp_out_traffic,
+                           'tcp_of_in_traffic': tcp_in_traffic}
+        except:
+            logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
             results = {'of_out_traffic': (0, 0),
                        'of_in_traffic': (0, 0),
                        'tcp_of_out_traffic': (0, 0),
                        'tcp_of_in_traffic': (0, 0)}
-            '''
-        print(results)
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
@@ -132,6 +129,7 @@ class Oftraf:
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread)
         res = self.results_queue.get(block=True)
+        self.exit_flag = True
         gevent.joinall([monitor_thread])
         gevent.killall([monitor_thread])
         return res
