@@ -252,14 +252,13 @@ class TestRun:
 
             results = monitor.monitor_run()
             print(results)
-            '''
+
             # Stop/clean nodes
             # ---------------------------------------------------------
+            self.oftraf.stop()
             self.ctrl.stop()
-            '''
-            self.ctrl.check_status()
-            self.sb_emu.init_topos()
-            # self.oftraf.stop()
+
+            self.sb_emu.stop_topos()
             self.sb_emu.cleanup()
 
             i = i + 1
@@ -292,7 +291,8 @@ class TestRun:
         if self.ctrl.need_cleanup:
             self.ctrl.clean_hnd()
         try:
-            self.sb_emu.cleanup()
+            self.sb_emu.clean()
+            print("FLAG: MULTINET CLEANED")
         except:
             print("FLAG: Error on cleaning")
             pass
