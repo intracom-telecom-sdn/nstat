@@ -255,7 +255,7 @@ class TestRun:
 
             # Stop/clean nodes
             # ---------------------------------------------------------
-            self.oftraf.stop()
+            of.stop()
             self.ctrl.stop()
 
             self.sb_emu.stop_topos()
