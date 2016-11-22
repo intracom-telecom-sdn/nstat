@@ -19,7 +19,7 @@ import time
 
 class TestRun:
 
-    def __init__(self, args, json_conf):
+    def __init__(self, args, json_conf, test_type_run):
         """
         """
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
@@ -41,6 +41,7 @@ class TestRun:
                                                          json_conf,
                                                          self.ctrl,
                                                          self.sb_emu)
+        self.total_results = []
 
     def sb_active_scalability_cbench_run(self,
                                          json_conf,
