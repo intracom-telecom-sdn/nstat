@@ -68,6 +68,9 @@
 "sb_emulator_build_handler":"build.sh",
 "sb_emulator_clean_handler":"clean.sh",
 
+"nb_emulator_build_handler":"build.sh",
+"nb_emulator_clean_handler":"clean.sh",
+
 "multinet_switch_type":"ovsk",
 "multinet_worker_ip_list":["10.0.1.13", "10.0.1.14"],
 "multinet_worker_port_list":[3333, 3333],
