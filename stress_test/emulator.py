@@ -299,7 +299,7 @@ class Multinet(SBEmu):
         with open(self.__multinet_config_file_local_path,
                   'w') as config_json_file:
             json.dump(config_data, config_json_file)
-            print('CONFIG FILE PREPARED')
+
         if not util.file_ops.file_exists(self.__multinet_config_file_local_path):
             raise Exception('[Multinet] Config local file '
                             'has not been created')
