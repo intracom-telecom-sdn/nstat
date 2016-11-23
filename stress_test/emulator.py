@@ -246,7 +246,8 @@ class Multinet(SBEmu):
         self.topo_switch_type = test_config['multinet_switch_type']
         self.workers_ips = test_config['multinet_worker_ip_list']
         self.workers_ports = test_config['multinet_worker_port_list']
-
+        self.__multinet_config_file_local_path = os.path.join(self.base_dir,
+                                                              "config.json")
         self.__multinet_config_file_remote_path = os.path.join(self.base_dir,
                                                                "config",
                                                                "config.json")
