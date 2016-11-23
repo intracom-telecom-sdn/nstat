@@ -64,8 +64,7 @@ class NBgen:
         self.e2e_installation_time = 0.0
         self.discover_flows_on_switches_time = 0.0
 
-        self.venv_hnd = \
-            (self.base_dir + "emulators/nb_generator/venv_handler.sh")
+        self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
 
     def init_ssh(self):
         logging.info(
@@ -78,6 +77,7 @@ class NBgen:
                                                 self.ssh_user,
                                                 self.ssh_pass,
                                                 10)
+
     def build(self):
         """ Wrapper to the NB-Generator build handler
         :raises: Exception if the handler does not exist on the remote host
@@ -138,11 +138,13 @@ class NBgen:
                       self.flows_per_request,
                       self.log_level))
         logging.debug('Generator handler command:{0}.'.format(cmd))
+
         exit_status, output = \
             util.netutil.ssh_run_command(self._ssh_conn,
-                                         cmd,
+                                         ' '.join([self.venv_hnd,
+                                                   self.base_dir,
+                                                   cmd]),
                                          '[NB_generator_run_handler]')
-
 
         if exit_status == 0:
             self.status = 'FINISHED'
