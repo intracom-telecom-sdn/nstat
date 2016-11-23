@@ -83,7 +83,8 @@ class TestType:
             json_conf['sb_emulator_name'].lower()
 
         # Create instance of TestRun and initialize controller
-        nstat_test_run = stress_test.test_run.TestRun(args, json_conf)
+        nstat_test_run = stress_test.test_run.TestRun(args, json_conf,
+                                                      nstat_test_type_run)
 
         # Run the test
         if nstat_test_type_run == 'sb_active_scalability_mtcbench':

@@ -12,6 +12,8 @@ import stress_test.emulator
 import stress_test.monitor
 import stress_test.nb_generator
 import stress_test.oftraf
+import stress_test.report_gen
+import stress_test.report_spec_templates
 # import stress_test.test_type
 import sys
 import time
@@ -19,7 +21,7 @@ import time
 
 class TestRun:
 
-    def __init__(self, args, json_conf):
+    def __init__(self, args, json_conf, test_type_run):
         """
         """
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
@@ -41,6 +43,11 @@ class TestRun:
                                                          json_conf,
                                                          self.ctrl,
                                                          self.sb_emu)
+        self.total_samples = []
+        self.report_spec_templates = stress_test.report_spec_templates.TestReport(
+            test_type_run, json_conf)
+        self.json_conf = json_conf
+        self.args = args
 
     def sb_active_scalability_cbench_run(self,
                                          json_conf,
@@ -79,7 +86,7 @@ class TestRun:
                                               'ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
-            total_samples = self.mon.monitor_run()
+            self.total_samples = self.mon.monitor_run()
             self.ctrl.stop()
 
     def sb_active_stability_cbench_run(self,
@@ -251,7 +258,7 @@ class TestRun:
             self.sb_emu.generate_traffic()
 
             results = monitor.monitor_run()
-            print(results)
+            self.total_samples.append(results)
 
             # Stop/clean nodes
             # ---------------------------------------------------------
@@ -265,7 +272,13 @@ class TestRun:
             print(i)
 
         logging.info('[Testing] All done!')
-
+        report_spec = self.report_spec_templates.sb_active_scalability_multinet(self.total_samples)
+        report_gen = stress_test.report_gen(self.args, self.json_conf,
+                                            self.total_samples, report_spec)
+        report_gen.generate_json_results()
+        report_gen.generate_plots()
+        report_gen.generate_html_report()
+        report_gen.save_controller_log()
 #        except:
         '''logging.error('{0} ::::::: Exception ::::::::'.format(test_type))
         exc_type, exc_obj, exc_tb = sys.exc_info()

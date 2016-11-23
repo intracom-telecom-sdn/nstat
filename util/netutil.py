@@ -79,6 +79,38 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
     ssh_connection_close(sftp, transport_layer)
 
 
+def copy_dir_remote_to_local2(ip, ssh_port, username, password,
+                              remote_path, local_path):
+    """Copy recursively remote directories (Copies all files and other
+    sub-directories).
+
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
+    :param remote_path: full remote path we want to copy
+    :param local_path: full local path we want to copy
+    :type connection: namedtuple<>
+    :type remote_path: str
+    :type local_path: str
+    """
+    (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port,
+                                                   username, password)
+    if not os.path.exists(local_path):
+        os.makedirs(local_path)
+    files = sftp.listdir(path=remote_path)
+
+    for file_item in files:
+        if file_item is not None:
+            remote_filepath = os.path.join(remote_path, file_item)
+            if isdir(remote_filepath, sftp):
+                if not os.path.exists(os.path.join(local_path, file_item)):
+                    os.makedirs(os.path.join(local_path, file_item))
+                copy_dir_remote_to_local2(ip, ssh_port, username, password,
+                                          remote_filepath,
+                                          os.path.join(local_path, file_item))
+            else:
+                sftp.get(remote_filepath, os.path.join(local_path, file_item))
+    ssh_connection_close(sftp, transport_layer)
+
 def create_dir_remote(connection, remote_path):
     """Opens an ssh connection to a remote machine and creates a new directory.
 
