@@ -86,7 +86,7 @@ class TestRun:
                                               'ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
-            self.total_results = self.mon.monitor_run()
+            self.total_samples = self.mon.monitor_run()
             self.ctrl.stop()
 
     def sb_active_stability_cbench_run(self,
@@ -272,7 +272,7 @@ class TestRun:
             print(i)
 
         logging.info('[Testing] All done!')
-        report_spec = self.report_spec_templates.sb_active_scalability_multinet(self.total_results)
+        report_spec = self.report_spec_templates.sb_active_scalability_multinet(self.total_samples)
         report_gen = stress_test.report_gen(self.args, self.json_conf,
                                             self.total_samples, report_spec)
         report_gen.generate_json_results()
