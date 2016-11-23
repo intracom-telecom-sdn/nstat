@@ -37,8 +37,13 @@ class NBgen:
         self.ssh_user = test_config['nb_emulator_node_username']
         self.ssh_pass = test_config['nb_emulator_node_password']
 
+        self.build_hnd = (self.base_dir +
+                          test_config['nb_emulator_build_handler'])
+        self.clean_hnd = (self.base_dir +
+                          test_config['nb_emulator_clean_handler'])
         self.run_hnd = (self.base_dir +
                         test_config['nb_emulator_run_handler'])
+
         self.status = 'UNKNOWN'
         self._ssh_conn = None
 
@@ -73,6 +78,43 @@ class NBgen:
                                                 self.ssh_user,
                                                 self.ssh_pass,
                                                 10)
+    def build(self):
+        """ Wrapper to the NB-Generator build handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
+        """
+        logging.info('[NB_generator] Building')
+        self.status = 'BUILDING'
+
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
+                                                   ' '.join([self.build_hnd]),
+                                                   '[NB_generator.'
+                                                   'build_handler]')[0]
+        if exit_status == 0:
+            self.status = 'BUILT'
+            logging.info("[NB_generator] Successful building")
+        else:
+            self.status = 'NOT_BUILT'
+            raise Exception('[NB_generator] Failure during building')
+
+    def clean(self):
+        """Wrapper to the NB-Generator clean handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
+        """
+        logging.info('[NB_generator] Cleaning')
+        self.status = 'CLEANING'
+
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
+                                                   self.clean_hnd,
+                                                   '[NB_generator.'
+                                                   'clean_handler]')[0]
+        if exit_status == 0:
+            self.status = 'CLEANED'
+            logging.info("[NB_generator] Successful clean")
+        else:
+            self.status = 'NOT_CLEANED'
+            raise Exception('[NB_generator] Failure during cleaning')
 
     def run(self):
         """ Wrapper to the NB-Generator run handler
