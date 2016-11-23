@@ -44,7 +44,7 @@ class TestRun:
                                                          self.ctrl,
                                                          self.sb_emu)
         self.total_samples = []
-        self.report_spec_templates = stress_test.report_spec_templates(
+        self.report_spec_templates = stress_test.report_spec_templates.TestReport(
             test_type_run, json_conf)
         self.json_conf = json_conf
         self.args = args
