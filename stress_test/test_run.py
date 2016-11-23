@@ -195,7 +195,7 @@ class TestRun:
         # ---------------------------------------------------------------
         # self.oftraf.build()
         print("READY for the loop")
-
+        i = 1
         # TEST run
         # ---------------------------------------------------------------
 
@@ -211,7 +211,6 @@ class TestRun:
                 json_conf['multinet_topo_group_size'],
                 json_conf['multinet_topo_group_delay_ms']):
 
-            i = 1
             print("repetition number: {0}".format(i))
             # start a controller
             self.ctrl.check_status()
