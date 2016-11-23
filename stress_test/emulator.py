@@ -250,11 +250,6 @@ class Multinet(SBEmu):
         self.__multinet_config_file_remote_path = os.path.join(self.base_dir,
                                                                "config",
                                                                "config.json")
-        print("MULTINET CONFIG FILE PATH REMOTE:", self.__multinet_config_file_remote_path)
-        self.__multinet_config_file_local_path = os.path.join(self.base_dir,
-                                                              "config.json")
-        print("MULTINET CONFIG FILE PATH LOCAL:", self.__multinet_config_file_local_path)
-        self.venv_path = "/opt/venv_multinet"
         self.venv_hnd = self.base_dir + "bin/venv_handler_master.sh"
 
     def get_topo_bootup_ms(self):
