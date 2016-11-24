@@ -146,13 +146,13 @@ class ReportGen:
         try:
             logging.info('[save_controller_log] collecting logs from '
                          'controller node. Logs path:{0}'.
-                         format(self.test_config_json.controller_logs_dir))
+                         format(self.test_config_json['controller_logs_dir']))
             util.netutil.copy_dir_remote_to_local2(
-                self.test_config_json.controller_node_ip,
-                self.test_config_json.controller_node_ssh_port,
-                self.test_config_json.controller_node_username,
-                self.test_config_json.controller_node_password,
-                self.test_config_json.controller_logs_dir,
+                self.test_config_json['controller_node_ip'],
+                self.test_config_json['controller_node_ssh_port'],
+                self.test_config_json['controller_node_username'],
+                self.test_config_json['controller_node_password'],
+                self.test_config_json['controller_logs_dir'],
                 self.args.output_dir + '/log')
         except:
             logging.error('[save_controller_log] Fail transferring controller'
