@@ -152,8 +152,9 @@ class ReportGen:
                 self.test_config_json['controller_node_ssh_port'],
                 self.test_config_json['controller_node_username'],
                 self.test_config_json['controller_node_password'],
-                self.test_config_json['controller_logs_dir'],
-                self.args.output_dir + '/log')
+                os.path.join(self.args.ctrl_base_dir,
+                             self.test_config_json['controller_logs_dir']),
+                os.path.join(self.args.output_dir, 'log'))
         except:
             logging.error('[save_controller_log] Fail transferring controller'
                           ' logs directory.')

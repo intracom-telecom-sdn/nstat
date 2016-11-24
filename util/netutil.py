@@ -62,6 +62,11 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
     :type local_path: str
     """
     (sftp, transport_layer) = ssh_connection_open(connection)
+    if not isdir(remote_path, sftp):
+        ssh_connection_close(sftp, transport_layer)
+        raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
+                      'not exist.'.format(remote_path)))
+
     if not os.path.exists(local_path):
         os.makedirs(local_path)
     files = sftp.listdir(path=remote_path)
@@ -94,6 +99,11 @@ def copy_dir_remote_to_local2(ip, ssh_port, username, password,
     """
     (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port,
                                                    username, password)
+    if not isdir(remote_path, sftp):
+        ssh_connection_close(sftp, transport_layer)
+        raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
+                      'not exist.'.format(remote_path)))
+
     if not os.path.exists(local_path):
         os.makedirs(local_path)
     files = sftp.listdir(path=remote_path)
@@ -110,6 +120,7 @@ def copy_dir_remote_to_local2(ip, ssh_port, username, password,
             else:
                 sftp.get(remote_filepath, os.path.join(local_path, file_item))
     ssh_connection_close(sftp, transport_layer)
+
 
 def create_dir_remote(connection, remote_path):
     """Opens an ssh connection to a remote machine and creates a new directory.
