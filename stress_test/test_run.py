@@ -422,7 +422,7 @@ class TestRun:
             self.sb_emu.start_topos()
 
             start_rest_request_time = time.time()
-
+            self.nb_emu.build()
             self.nb_emu.run()
             self.nb_emu.monitor_threads_run(start_rest_request_time)
             self.sb_emu.cleanup()

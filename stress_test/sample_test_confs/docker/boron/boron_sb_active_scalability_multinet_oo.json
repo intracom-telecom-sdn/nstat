@@ -48,10 +48,10 @@
 "topology_traffic_gen_handler":"bin/handlers/traffic_gen",
 "topology_get_flows_handler":"./bin/handlers/get_flows",
 
-"multinet_topo_size":[5, 10],
+"multinet_topo_size":[5],
 "multinet_topo_type":["linear"],
 "multinet_topo_hosts_per_switch":[2],
-"multinet_topo_group_size":[1, 2],
+"multinet_topo_group_size":[1],
 "multinet_topo_group_delay_ms":[2000],
 
 "sb_emulator_build_handler":"build.sh",
