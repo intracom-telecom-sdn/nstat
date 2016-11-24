@@ -17,7 +17,6 @@ class ReportGen:
     def __init__(self, args, test_config_json, total_samples, report_spec):
         """
         """
-        self.test_config_file = args.json_output
         self.test_config_json = test_config_json
         self.args = args
         self.report_spec = report_spec

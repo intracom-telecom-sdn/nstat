@@ -45,7 +45,7 @@ class TestRun:
                                                          self.sb_emu)
         self.total_samples = []
         self.report_spec_templates = stress_test.report_spec_templates.TestReport(
-            test_type_run, json_conf)
+            test_type_run, args.json_config)
         self.json_conf = json_conf
         self.args = args
 
@@ -272,7 +272,7 @@ class TestRun:
 
         logging.info('[Testing] All done!')
         report_spec = self.report_spec_templates.sb_active_scalability_multinet(
-            self.total_samples)
+            self.args.json_output)
         report_gen = stress_test.report_gen.ReportGen(
             self.args, self.json_conf, self.total_samples, report_spec)
         report_gen.generate_json_results()

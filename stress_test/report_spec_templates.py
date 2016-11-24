@@ -9,13 +9,13 @@ import stress_test.report_spec
 
 class TestReport:
 
-    def __init__(self, test_type, config_json):
+    def __init__(self, test_type, config_json_file):
         """
         """
         self.test_type = test_type
-        self.config_json = config_json
+        self.config_json_file = config_json_file
 
-    def sb_active_scalability_cbench(self, results_json):
+    def sb_active_scalability_cbench(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
@@ -23,18 +23,18 @@ class TestReport:
         defines the title of the html report.
         :param config_json: This is the filepath to the configuration json
         file.
-        :param results_json: This is the filepath to the results json file.
+        :param results_json_file: This is the filepath to the results json file.
         :returns: A ReportSpec object that holds all the test report
         information and is passed as input to the generate_html() function in
         the html_generation.py, that is responsible for the report generation.
         :rtype: ReportSpec object
         :type: test_type: str
         :type: config_json: str
-        :type: results_json: str
+        :type: results_json_file: str
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            self.config_json, results_json, '{0}'.format(self.test_type),
+            self.config_json_file, results_json_file, '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
                 [('test_repeats', 'Test repeats'),
@@ -77,7 +77,7 @@ class TestReport:
                  ('cbench_delay_before_traffic_ms',
                   'Generator delay before sending traffic in ms'),
                  ('java_opts', 'JVM options')],
-                self.config_json)],
+                self.config_json_file)],
             [stress_test.report_spec.TableSpec(
                 '2d',
                 'Test results',
@@ -117,28 +117,28 @@ class TestReport:
                  ('controller_num_fds', 'Controller num of fds'),
                  ('controller_statistics_period_ms',
                   'Controller statistics period (ms)')],
-                results_json)])
+                results_json_file)])
         return report_spec_obj
 
-    def sb_active_stability_cbench(self, results_json):
+    def sb_active_stability_cbench(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
         :param test_type: describes the type of the specific test. This value
         defines the title of the html report.
         :param config_json: This is the filepath to the configuration json file.
-        :param results_json: This is the filepath to the results json file.
+        :param results_json_file: This is the filepath to the results json file.
         :returns: A ReportSpec object that holds all the test report information
         and is passed as input to the generate_html() function in the
         html_generation.py, that is responsible for the report generation.
         :rtype: ReportSpec object
         :type: test_type: str
         :type: config_json: str
-        :type: results_json: str
+        :type: results_json_file: str
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            self.config_json, results_json, '{0}'.format(self.test_type),
+            self.config_json_file, results_json_file, '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
                 [('test_repeats', 'Test repeats'),
@@ -181,7 +181,7 @@ class TestReport:
                  ('cbench_delay_before_traffic_ms',
                   'Generator delay before sending traffic in ms'),
                  ('java_opts', 'JVM options')
-                 ], self.config_json)],
+                 ], self.config_json_file)],
             [stress_test.report_spec.TableSpec(
                 '2d',
                 'Test results',
@@ -222,28 +222,28 @@ class TestReport:
                  ('controller_num_threads', 'Controller threads'),
                  ('controller_num_fds', 'Controller num of fds'),
                  ('controller_statistics_period_ms',
-                  'Controller statistics period (ms)')], results_json)])
+                  'Controller statistics period (ms)')], results_json_file)])
         return report_spec_obj
 
-    def sb_idle_scalability_cbench(self, results_json):
+    def sb_idle_scalability_cbench(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
         :param test_type: describes the type of the specific test. This value
         defines the title of the html report.
         :param config_json: this is the filepath to the configuration json file.
-        :param results_json: this is the filepath to the results json file.
+        :param results_json_file: this is the filepath to the results json file.
         :returns: A ReportSpec object that holds all the test report information
         and is passed as input to the generate_html() function in the
         html_generation.py, that is responsible for the report generation.
         :rtype: ReportSpec object
         :type: test_type: str
         :type: config_json: str
-        :type: results_json: str
+        :type: results_json_file: str
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            self.config_json, results_json,
+            self.config_json_file, results_json_file,
             '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
@@ -285,7 +285,7 @@ class TestReport:
                  ('cbench_warmup', 'Generator warmup repeats'),
                  ('cbench_delay_before_traffic_ms',
                   'Generator delay before sending traffic in ms'),
-                 ('java_opts', 'JVM options')], self.config_json)],
+                 ('java_opts', 'JVM options')], self.config_json_file)],
             [stress_test.report_spec.TableSpec(
                 '2d',
                 'Test results',
@@ -344,27 +344,27 @@ class TestReport:
                   'Controller num of fds'),
                  ('controller_statistics_period_ms',
                   'Controller statistics period (ms)')],
-                results_json)])
+                results_json_file)])
         return report_spec_obj
 
-    def sb_active_scalability_multinet(self, results_json):
+    def sb_active_scalability_multinet(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
         :param test_type: Describes the type of the specific test. This value
         defines the title of the html report.
         :param config_json: this is the filepath to the configuration json file.
-        :param results_json: this is the filepath to the results json file.
+        :param results_json_file: this is the filepath to the results json file.
         :returns: A ReportSpec object that holds all the test report information
         and is passed as input to the generate_html() function in the
         html_generation.py, that is responsible for the report generation.
         :rtype: ReportSpec object
         :type: test_type: str
         :type: config_json: str
-        :type: results_json: str
+        :type: results_json_file: str
         """
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            self.config_json, results_json,
+            self.config_json_file, results_json_file,
             '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
@@ -400,7 +400,7 @@ class TestReport:
                  ('topology_size', 'Multinet network size per worker'),
                  ('topology_type', 'Multinet topology type'),
                  ('topology_hosts_per_switch', 'Multinet hosts per switch'),
-                 ('java_opts', 'JVM options')], self.config_json)],
+                 ('java_opts', 'JVM options')], self.config_json_file)],
             [stress_test.report_spec.TableSpec(
                 '2d',
                 'Test results',
@@ -444,31 +444,30 @@ class TestReport:
                  ('controller_num_threads', 'Controller threads'),
                  ('controller_num_fds', 'Controller num of fds'),
                  ('controller_statistics_period_ms',
-                  'Controller Statistics Period (ms)')], results_json)])
+                  'Controller Statistics Period (ms)')], results_json_file)])
         return report_spec_obj
 
-    def sb_idle_scalability_multinet(self, test_type, config_json,
-                                     results_json):
+    def sb_idle_scalability_multinet(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
         :param test_type: Describes the type of the specific test. This value
         defines the title of the html report.
         :param config_json: this is the filepath to the configuration json file.
-        :param results_json: this is the filepath to the results json file.
+        :param results_json_file: this is the filepath to the results json file.
         :returns: A ReportSpec object that holds all the test report information
         and is passed as input to the generate_html() function in the
         html_generation.py, that is responsible for the report generation.
         :rtype: ReportSpec object
         :type: test_type: str
         :type: config_json: str
-        :type: results_json: str
+        :type: results_json_file: str
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            config_json,
-            results_json,
-            '{0}'.format(test_type),
+            self.config_json_file,
+            results_json_file,
+            '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d',
                 'Test configuration parameters (detailed)',
@@ -505,7 +504,7 @@ class TestReport:
                  ('topology_size', 'Multinet network size per worker'),
                  ('topology_type', 'Multinet topology type'),
                  ('topology_hosts_per_switch', 'Multinet hosts per switch'),
-                 ('java_opts', 'JVM options')], config_json)],
+                 ('java_opts', 'JVM options')], self.config_json_file)],
             [stress_test.report_spec.TableSpec(
                 '2d', 'Test results',
                 [('global_sample_id', 'Sample ID'),
@@ -539,31 +538,31 @@ class TestReport:
                  ('controller_num_threads', 'Controller threads'),
                  ('controller_num_fds', 'Controller num of fds'),
                  ('controller_statistics_period_ms',
-                  'Controller Statistics Period (ms)')], results_json)])
+                  'Controller Statistics Period (ms)')], results_json_file)])
 
         return report_spec_obj
 
-    def sb_idle_stability_multinet(self, test_type, config_json, results_json):
+    def sb_idle_stability_multinet(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
         :param test_type: Describes the type of the specific test. This value
         defines the title of the html report.
         :param config_json: this is the filepath to the configuration json file.
-        :param results_json: this is the filepath to the results json file.
+        :param results_json_file: this is the filepath to the results json file.
         :returns: A ReportSpec object that holds all the test report information
         and is passed as input to the generate_html() function in the
         html_generation.py, that is responsible for the report generation.
         :rtype: ReportSpec object
         :type: test_type: str
         :type: config_json: str
-        :type: results_json: str
+        :type: results_json_file: str
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            config_json,
-            results_json,
-            '{0}'.format(test_type),
+            self.config_json_file,
+            results_json_file,
+            '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
                 [('test_repeats', 'Test repeats'),
@@ -598,7 +597,7 @@ class TestReport:
                  ('topology_size', 'Per Multinet worker network size'),
                  ('topology_type', 'Multinet topology type'),
                  ('topology_hosts_per_switch', 'Multinet hosts per switch'),
-                 ('java_opts', 'JVM options')], config_json)],
+                 ('java_opts', 'JVM options')], self.config_json_file)],
             [stress_test.report_spec.TableSpec(
                 '2d', 'Test results',
                 [('global_sample_id', 'Sample ID'),
@@ -642,26 +641,26 @@ class TestReport:
                  ('controller_num_threads', 'Controller threads'),
                  ('controller_num_fds', 'Controller num of fds'),
                  ('controller_statistics_period_ms',
-                  'Controller Statistics Period (ms)')], results_json)])
+                  'Controller Statistics Period (ms)')], results_json_file)])
         return report_spec_obj
 
-    def nb_active_scalability_multinet(self, test_type, config_json,
-                                       results_json):
+    def nb_active_scalability_multinet(self, results_json_file):
         """
         Return the report specification for this test
 
         :param test_type: test short description (title)
         :param config_json: JSON config path
-        :param results_json: JSON results path
+        :param results_json_file: JSON results path
         :returns: report specification for this test
         :rtype: ReportSpec
         :type: test_type: str
         :type: config_json: str
-        :type: results_json: str
+        :type: results_json_file: str
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            config_json, results_json, '{0}'.format(test_type),
+            self.config_json_file, results_json_file,
+            '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
                 [('controller_name', 'Controller name'),
@@ -698,7 +697,7 @@ class TestReport:
                  ('flow_operations_delay_ms', 'Delay between flow operations'),
                  ('flow_delete_flag', 'Flow delete flag'),
                  ('flows_per_request', 'Flows per REST request'),
-                 ('java_opts', 'JVM options')], config_json)],
+                 ('java_opts', 'JVM options')], self.config_json_file)],
             [stress_test.report_spec.TableSpec(
                 '2d', 'Test results',
                 [('global_sample_id', 'Sample ID'),
@@ -757,5 +756,5 @@ class TestReport:
                  ('controller_num_threads', 'Controller num of threads'),
                  ('controller_num_fds', 'Controller num of fds'),
                  ('controller_statistics_period_ms',
-                  'Controller statistics period (ms)')], results_json)])
+                  'Controller statistics period (ms)')], results_json_file)])
         return report_spec_obj
