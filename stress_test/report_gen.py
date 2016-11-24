@@ -144,7 +144,9 @@ class ReportGen:
         """
         # Move controller log file if exist inside the test output dir
         try:
-            logging.info('[save_controller_log] collecting logs')
+            logging.info('[save_controller_log] collecting logs from '
+                         'controller node. Logs path:{0}'.
+                         format(self.test_config_json.controller_logs_dir))
             util.netutil.copy_dir_remote_to_local2(
                 self.test_config_json.controller_node_ip,
                 self.test_config_json.controller_node_ssh_port,
