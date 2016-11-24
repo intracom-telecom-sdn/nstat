@@ -256,9 +256,7 @@ class TestRun:
 
             self.sb_emu.generate_traffic()
 
-            results = monitor.monitor_run()
-            self.total_samples.append(results)
-
+            self.total_samples += monitor.monitor_run()
             # Stop/clean nodes
             # ---------------------------------------------------------
             of.stop()
