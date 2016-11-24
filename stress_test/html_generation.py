@@ -7,7 +7,7 @@
 """ HTML generation functions """
 import json
 import optparse
-import report_spec
+import stress_test.report_spec
 import util.html
 
 
@@ -279,7 +279,7 @@ table {
     content = content + generate_table(report_spec.config_tables)
 
     # Inserting plots inside the report page
-    content = content +insert_plots(params['plots'])
+    content = content + insert_plots(params['plots'])
 
     # Generating test results table
     content = content + generate_table(report_spec.results_table)
@@ -288,6 +288,7 @@ table {
     repf = open(report_filename, 'w')
     repf.write(content)
     repf.close()
+
 
 def generate_table(tables_specs):
     """ Gets a dictionary with tables specifications and generates the
@@ -304,13 +305,13 @@ def generate_table(tables_specs):
     for table_specs in tables_specs:
         table_data = json.loads(open(table_specs.source_json).read())
         if table_specs.table_type == '1d':
-            table_html = table_html + \
-                util.html.single_dict_to_html(table_data, 'Parameter', 'Value',
-                    table_specs.title, table_specs.keys)
+            table_html = table_html + util.html.single_dict_to_html(
+                table_data, 'Parameter', 'Value', table_specs.title,
+                table_specs.keys)
         elif table_specs.table_type == '2d':
-            table_html = table_html + \
-                util.html.multi_dict_to_html(table_data, table_specs.title,
-                    table_specs.keys, table_specs.ordering_key)
+            table_html = table_html + util.html.multi_dict_to_html(
+                table_data, table_specs.title, table_specs.keys,
+                table_specs.ordering_key)
         table_html = table_html + '<br>' + '<hr>'
     return table_html
 
@@ -372,22 +373,20 @@ def self_test():
                           action='store', default='report.html',
                           help='name of the filename of html report')
     json_opts = opt_parser.parse_args()[0]
-    report_test = report_spec.ReportSpec(json_opts.PARAMETERS_JSON,
-                      json_opts.RESULTS_JSON, 'test',
-                          [report_spec.TableSpec('1d', 'config',
-                              [('controller_start', 'Controller Start'),
-                               ('controller_stop', 'Controller Stop'),
-                               ('java_opts', 'Java Options')
-                              ],json_opts.PARAMETERS_JSON)
-                           ],
-                           [report_spec.TableSpec('2d', 'results', None,
-                                json_opts.RESULTS_JSON,
-                                'generator_thread_creation_delay_ms')
-                           ]
-                      )
+    report_test = stress_test.report_spec.ReportSpec(
+        json_opts.PARAMETERS_JSON, json_opts.RESULTS_JSON, 'test',
+        [stress_test.report_spec.TableSpec(
+            '1d', 'config',
+            [('controller_start', 'Controller Start'),
+             ('controller_stop', 'Controller Stop'),
+             ('java_opts', 'Java Options')],
+            json_opts.PARAMETERS_JSON)],
+        [stress_test.report_spec.TableSpec(
+            '2d', 'results', None, json_opts.RESULTS_JSON,
+            'generator_thread_creation_delay_ms')]
+        )
     generate_html(report_test, json_opts.report_filename)
 
 # Used for self-testing purposes.
 if __name__ == '__main__':
     self_test()
-

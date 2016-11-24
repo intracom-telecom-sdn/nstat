@@ -14,10 +14,10 @@ import util.plot_json
 
 class ReportGen:
 
-    def __init__(self, args, test_config, total_samples, report_spec):
+    def __init__(self, args, total_samples, report_spec):
         """
         """
-        self.test_config = test_config
+        self.test_config = args.json_output
         self.args = args
         self.report_spec = report_spec
         self.total_samples = total_samples
