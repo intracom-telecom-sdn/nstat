@@ -14,10 +14,11 @@ import util.plot_json
 
 class ReportGen:
 
-    def __init__(self, args, total_samples, report_spec):
+    def __init__(self, args, test_config_json, total_samples, report_spec):
         """
         """
-        self.test_config = args.json_output
+        self.test_config_file = args.json_output
+        self.test_config_json = test_config_json
         self.args = args
         self.report_spec = report_spec
         self.total_samples = total_samples
@@ -81,43 +82,43 @@ class ReportGen:
                 os.makedirs(self.args.output_dir)
 
             logging.info('[nstat_orchestrator] Producing plots')
-            num_plots = len(self.test_config['plots'])
+            num_plots = len(self.test_config_json['plots'])
             for plot_index in list(range(0, num_plots)):
                 try:
                     plot_options = util.plot_utils.PlotOptions()
-                    plot_options.xmin = self.test_config['plots'][plot_index]['x_min']
-                    plot_options.xmax = self.test_config['plots'][plot_index]['x_max']
-                    plot_options.ymin = self.test_config['plots'][plot_index]['y_min']
-                    plot_options.ymax = self.test_config['plots'][plot_index]['y_max']
+                    plot_options.xmin = self.test_config_json['plots'][plot_index]['x_min']
+                    plot_options.xmax = self.test_config_json['plots'][plot_index]['x_max']
+                    plot_options.ymin = self.test_config_json['plots'][plot_index]['y_min']
+                    plot_options.ymax = self.test_config_json['plots'][plot_index]['y_max']
                     plot_options.x_axis_label = \
-                        self.test_config['plots'][plot_index]['x_axis_label']
+                        self.test_config_json['plots'][plot_index]['x_axis_label']
                     plot_options.y_axis_label = \
-                        self.test_config['plots'][plot_index]['y_axis_label']
+                        self.test_config_json['plots'][plot_index]['y_axis_label']
                     plot_options.out_fig = \
-                        self.test_config['plots'][plot_index]['plot_filename'] + '.png'
+                        self.test_config_json['plots'][plot_index]['plot_filename'] + '.png'
                     plot_options.plot_title = \
-                        self.test_config['plots'][plot_index]['plot_title']
+                        self.test_config_json['plots'][plot_index]['plot_title']
                     plot_options.x_axis_fct = \
-                        float(eval(self.test_config['plots'][plot_index]['x_axis_factor']))
+                        float(eval(self.test_config_json['plots'][plot_index]['x_axis_factor']))
                     plot_options.y_axis_fct = \
-                        float(eval(self.test_config['plots'][plot_index]['y_axis_factor']))
-                    if self.test_config['plots'][plot_index]['x_axis_scale'] == 'log':
+                        float(eval(self.test_config_json['plots'][plot_index]['y_axis_factor']))
+                    if self.test_config_json['plots'][plot_index]['x_axis_scale'] == 'log':
                         plot_options.xscale_log = True
                     else:
                         plot_options.xscale_log = False
 
-                    if self.test_config['plots'][plot_index]['y_axis_scale'] == 'log':
+                    if self.test_config_json['plots'][plot_index]['y_axis_scale'] == 'log':
                         plot_options.yscale_log = True
                     else:
                         plot_options.yscale_log = False
                     # Call the util function responsible to generate the plot png
                     util.plot_json.plot_json(
                         self.args.json_output,
-                        self.test_config['plots'][plot_index]['x_axis_key'],
-                        self.test_config['plots'][plot_index]['y_axis_key'],
-                        self.test_config['plots'][plot_index]['z_axis_key'],
-                        self.test_config['plots'][plot_index]['plot_type'],
-                        self.test_config['plots'][plot_index]['plot_subtitle_keys'],
+                        self.test_config_json['plots'][plot_index]['x_axis_key'],
+                        self.test_config_json['plots'][plot_index]['y_axis_key'],
+                        self.test_config_json['plots'][plot_index]['z_axis_key'],
+                        self.test_config_json['plots'][plot_index]['plot_type'],
+                        self.test_config_json['plots'][plot_index]['plot_subtitle_keys'],
                         plot_options)
                     # Move produced plot in output directory
                     logging.info(
@@ -129,7 +130,7 @@ class ReportGen:
                         '[nstat_orchestrator] The plot {0} could not be '
                         'created. Please check configuration. Continuing '
                         'to the next plot.'.
-                        format(self.test_config['plots'][plot_index]['plot_title']))
+                        format(self.test_config_json['plots'][plot_index]['plot_title']))
         else:
             logging.error(
                 '[nstat_orchestrator] No output file {0} found. Finishing.'.
@@ -146,11 +147,11 @@ class ReportGen:
         try:
             logging.info('[save_controller_log] collecting logs')
             util.netutil.copy_dir_remote_to_local2(
-                self.test_config.controller_node_ip,
-                self.test_config.controller_node_ssh_port,
-                self.test_config.controller_node_username,
-                self.test_config.controller_node_password,
-                self.test_config.controller_logs_dir,
+                self.test_config_json.controller_node_ip,
+                self.test_config_json.controller_node_ssh_port,
+                self.test_config_json.controller_node_username,
+                self.test_config_json.controller_node_password,
+                self.test_config_json.controller_logs_dir,
                 self.args.output_dir + '/log')
         except:
             logging.error('[save_controller_log] Fail transferring controller'
