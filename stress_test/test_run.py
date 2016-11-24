@@ -274,7 +274,7 @@ class TestRun:
         report_spec = self.report_spec_templates.sb_active_scalability_multinet(
             self.total_samples)
         report_gen = stress_test.report_gen.ReportGen(
-            self.args, self.json_conf, self.total_samples, report_spec)
+            self.args, self.total_samples, report_spec)
         report_gen.generate_json_results()
         report_gen.generate_plots()
         report_gen.generate_html_report()
