@@ -118,16 +118,11 @@ class Oftraf:
         except:
             logging.error('[oftraf.monitor_thread] Error monitor thread '
                           'failed.')
-<<<<<<< HEAD
             results = {'of_out_traffic': (0, 0),
                        'of_in_traffic': (0, 0),
                        'tcp_of_out_traffic': (0, 0),
                        'tcp_of_in_traffic': (0, 0)}
         self.results_queue.put(results)
-=======
-        finally:
-            return
->>>>>>> refs/heads/develop_monitor_class
 
     def monitor_run_oftraf(self):
 
@@ -135,11 +130,6 @@ class Oftraf:
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread)
         res = self.results_queue.get(block=True)
-<<<<<<< HEAD
-=======
-        self.results_queue.task_done()
-        self.exit_flag = True
->>>>>>> refs/heads/develop_monitor_class
         gevent.joinall([monitor_thread])
         gevent.killall([monitor_thread])
         return res
@@ -312,11 +302,7 @@ class Mtcbench(Monitor):
                     logging.info('[monitor_thread_active] successful '
                                  'termination string returned. Returning '
                                  'samples and exiting.')
-<<<<<<< HEAD
                     self.result_queue.put(test_samples)
-=======
-                    self.result_queue.put(test_samples, block=True)
->>>>>>> refs/heads/develop_monitor_class
                     return
                 else:
                     # look for lines containing a substring like e.g.
