@@ -6,7 +6,7 @@
 
 import itertools
 import logging
-import common
+import stress_test.common
 import stress_test.controller
 import stress_test.emulator
 import stress_test.monitor
@@ -313,7 +313,7 @@ class TestRun:
         #     pass
 
         self.sb_emu.clean()
-        common.close_ssh_connections([self.ctrl._ssh_conn])
+        stress_test.common.close_ssh_connections([self.ctrl._ssh_conn])
 
     def sb_idle_scalability_multinet_run(self,
                                          json_conf,

@@ -140,11 +140,11 @@ class Mtcbench(Monitor):
         super(self.__class__, self).__init__(controller)
 
         self.emulator = emulator
-        self.result_queue = gevent.queue.JoinableQueue()
+        self.result_queue = gevent.queue.Queue()
         self.total_samples = []
         self.term_success = '__successful_termination__'
         self.term_fail = '__failed_termination__'
-        self.data_queue = gevent.queue.Queue()
+        self.data_queue = gevent.queue.JoinableQueue()
 
     def monitor_results_active(self):
         results = self.system_results()
@@ -278,7 +278,7 @@ class Mtcbench(Monitor):
                     results['successful_bootup_time'] = delta_t
                     self.result_queue.put([results])
                     return 0
-            time.sleep(1)
+            gevent.sleep(1)
 
     def monitor_thread_active(self):
         """
@@ -346,12 +346,10 @@ class Mtcbench(Monitor):
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle, boot_start_time)
         mtcbench_thread = gevent.spawn(self.mtcbench_thread)
-        gevent.sleep(0)
-        samples = self.result_queue.get(block=True)
-        self.result_queue.task_done()
-        self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread, mtcbench_thread])
-        self.result_queue.join()
+        self.data_queue.join()
+        samples = self.result_queue.get(block=True)
+        self.total_samples = self.total_samples + samples
         gevent.killall([monitor_thread, mtcbench_thread])
         return self.total_samples
 
@@ -400,10 +398,9 @@ class Multinet(Monitor, Oftraf):
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle,boot_start_time)
             self.emulator.start_topos()
-
-        samples = self.result_queue.get(block=True)
-        self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread])
+        samples = self.result_queue.get()
+        self.total_samples = self.total_samples + samples
         gevent.killall([monitor_thread])
         return self.total_samples
 
