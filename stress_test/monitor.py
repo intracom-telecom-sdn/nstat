@@ -398,6 +398,10 @@ class Multinet(Monitor, Oftraf):
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle,boot_start_time)
             self.emulator.start_topos()
+
+        samples = self.result_queue.get(block=True)
+        self.result_queue.task_done()
+        self.total_samples = self.total_samples + samples
         gevent.joinall([monitor_thread])
         samples = self.result_queue.get()
         self.total_samples = self.total_samples + samples
