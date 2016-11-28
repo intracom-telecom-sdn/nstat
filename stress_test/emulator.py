@@ -420,7 +420,7 @@ class Multinet(SBEmu):
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.deploy_hnd]):
-                    raise(FileNotFoundError(
+                    raise(IOError(
                         '[Multinet] Deploy handler does not exist'))
 
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -459,7 +459,7 @@ class Multinet(SBEmu):
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.get_switches_hnd]):
-                    raise(FileNotFoundError(
+                    raise(IOError(
                         '[Multinet] Get_switches handler does not exist'))
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
@@ -505,7 +505,7 @@ class Multinet(SBEmu):
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.get_flows_hnd]):
-                    raise(FileNotFoundError(
+                    raise(IOError(
                         '[Multinet] Get_flows handler does not exist'))
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
@@ -548,7 +548,7 @@ class Multinet(SBEmu):
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.init_topos_hnd]):
-                    raise(FileNotFoundError(
+                    raise(IOError(
                         '[Multinet] Init_topos handler does not exist'))
 
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -585,7 +585,7 @@ class Multinet(SBEmu):
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.start_topos_hnd]):
-                    raise(FileNotFoundError(
+                    raise(IOError(
                         '[Multinet] Start_topos handler does not exist'))
 
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -621,7 +621,7 @@ class Multinet(SBEmu):
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.stop_topos_hnd]):
-                    raise(FileNotFoundError(
+                    raise(IOError(
                         '[Multinet] Stop_topos handler does not exist'))
 
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -656,7 +656,7 @@ class Multinet(SBEmu):
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.cleanup_hnd]):
-                    raise(FileNotFoundError(
+                    raise(IOError(
                         '[Multinet] Cleanup handler does not exist'))
 
                 exit_status, cmd_output = util.netutil.ssh_run_command(
