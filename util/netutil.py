@@ -62,6 +62,11 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
     :type local_path: str
     """
     (sftp, transport_layer) = ssh_connection_open(connection)
+    if not isdir(remote_path, sftp):
+        ssh_connection_close(sftp, transport_layer)
+        raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
+                      'not exist.'.format(remote_path)))
+
     if not os.path.exists(local_path):
         os.makedirs(local_path)
     files = sftp.listdir(path=remote_path)
@@ -74,6 +79,44 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
                     os.makedirs(os.path.join(local_path, file_item))
                 copy_dir_remote_to_local(connection, remote_filepath,
                                          os.path.join(local_path, file_item))
+            else:
+                sftp.get(remote_filepath, os.path.join(local_path, file_item))
+    ssh_connection_close(sftp, transport_layer)
+
+
+def copy_dir_remote_to_local2(ip, ssh_port, username, password,
+                              remote_path, local_path):
+    """Copy recursively remote directories (Copies all files and other
+    sub-directories).
+
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
+    :param remote_path: full remote path we want to copy
+    :param local_path: full local path we want to copy
+    :type connection: namedtuple<>
+    :type remote_path: str
+    :type local_path: str
+    """
+    (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port,
+                                                   username, password)
+    if not isdir(remote_path, sftp):
+        ssh_connection_close(sftp, transport_layer)
+        raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
+                      'not exist.'.format(remote_path)))
+
+    if not os.path.exists(local_path):
+        os.makedirs(local_path)
+    files = sftp.listdir(path=remote_path)
+
+    for file_item in files:
+        if file_item is not None:
+            remote_filepath = os.path.join(remote_path, file_item)
+            if isdir(remote_filepath, sftp):
+                if not os.path.exists(os.path.join(local_path, file_item)):
+                    os.makedirs(os.path.join(local_path, file_item))
+                copy_dir_remote_to_local2(ip, ssh_port, username, password,
+                                          remote_filepath,
+                                          os.path.join(local_path, file_item))
             else:
                 sftp.get(remote_filepath, os.path.join(local_path, file_item))
     ssh_connection_close(sftp, transport_layer)
@@ -358,7 +401,7 @@ def ssh_copy_file_to_target(ip, ssh_port, username, password, local_file,
     :type local_file: str
     :type remote_file: str
     """
-    (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port, username,
+    (sftp, transport_layer) = ssh_connection_open2(ip, int(ssh_port), username,
                                                    password)
     sftp.put(local_file, remote_file)
     ssh_connection_close(sftp, transport_layer)

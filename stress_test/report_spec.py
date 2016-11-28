@@ -57,7 +57,7 @@ class TableSpec(object):
         :param table_type: A string describing the type of table that
         we want to generate. It can have one of the following values '1d' for a
         one dimensional table with keys and values, or '2d' for a
-        two dimensional table, containing a list of dictionaries. Each 
+        two dimensional table, containing a list of dictionaries. Each
         dictionary contains keys and values of the table fields.
         :param title: The title of the generated table. Put an empty
         string for a table with no title.
@@ -66,7 +66,7 @@ class TableSpec(object):
         the names of the keys that will be printed in the generated html
         report. This parameter also defines the order of the json fields
         inside the generated html table and also which fields will be excluded
-        from the report. For '1d' tables the above operations affects the rows 
+        from the report. For '1d' tables the above operations affects the rows
         and for '2d' tables the operations affects the columns. If the value of
         this parameter is None then the field values of the generated html
         table, will be the same as the ones in json file, with the same

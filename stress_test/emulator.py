@@ -59,9 +59,9 @@ class SBEmu:
         :rtype: object
         """
         name = test_config['sb_emulator_name']
-        if (name == 'mtcbench'):
+        if (name == 'MTCBENCH'):
             return MTCBench(sb_emu_base_dir, test_config)
-        elif (name == 'multinet'):
+        elif (name == 'MULTINET'):
             return Multinet(sb_emu_base_dir, test_config)
         else:
             raise NotImplementedError('Not supported yet')
@@ -129,12 +129,12 @@ class SBEmu:
         except stress_test.emulator_exceptions.SBEmuError as e:
             self.error_handling(e.err_msg, e.err_code)
 
-    def cleanup(self):
-        """Wrapper to the SB-Emulator cleanup handler
+    def clean(self):
+        """Wrapper to the SB-Emulator clean handler
         :raises: Exception if the handler does not exist on the remote host
         :raises: Exception if the exit status of the handler is not 0
         """
-        logging.info('[SB-Emulator] Cleaning up')
+        logging.info('[SB-Emulator] Cleaning')
         self.status = 'CLEANING'
         try:
             try:
@@ -170,7 +170,6 @@ class SBEmu:
         except:
             pass
 
-
 class MTCBench(SBEmu):
 
     def __init__(self, sb_emu_base_dir, test_config):
@@ -197,6 +196,14 @@ class MTCBench(SBEmu):
         self.internal_repeats = test_config['mtcbench_internal_repeats']
 
         self.rebuild = test_config['mtcbench_rebuild']
+
+    def get_topo_bootup_ms(self):
+        topo_bootup_ms = self.threads * self.thread_creation_delay_ms
+        return topo_bootup_ms
+
+    def get_overall_topo_size(self):
+        overall_topo_size = self.threads * self.switches_per_thread
+        return overall_topo_size
 
     def run(self, ctrl_ip, ctrl_sb_port):
         """ Wrapper to the MTCBench SB-Emulator run handler
@@ -243,7 +250,7 @@ class Multinet(SBEmu):
     def __init__(self, sb_emu_base_dir, test_config):
 
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
-
+        print("BASE DIRECTORY:", self.base_dir)
         self.deploy_hnd = (self.base_dir +
                            test_config['topology_rest_server_boot'])
         self.cleanup_hnd = (self.base_dir +
@@ -291,15 +298,21 @@ class Multinet(SBEmu):
         self.topo_switch_type = test_config['multinet_switch_type']
         self.workers_ips = test_config['multinet_worker_ip_list']
         self.workers_ports = test_config['multinet_worker_port_list']
-
+        self.__multinet_config_file_local_path = os.path.join(self.base_dir,
+                                                              "config.json")
         self.__multinet_config_file_remote_path = os.path.join(self.base_dir,
                                                                "config",
                                                                "config.json")
-        self.__multinet_config_file_local_path = os.path.join(self.base_dir,
-                                                              "config.json")
-
-        self.venv_path = "/opt/venv_multinet"
         self.venv_hnd = self.base_dir + "bin/venv_handler_master.sh"
+
+    def get_topo_bootup_ms(self):
+        topo_bootup_ms = \
+            (self.topo_size // self.topo_group_size) * self.topo_group_delay_ms
+        return topo_bootup_ms
+
+    def get_overall_topo_size(self):
+        overall_topo_size = self.topo_size * len(self.workers_ips)
+        return overall_topo_size
 
 
     def __generate_config(self, cntrl_of_port, cntrl_ip):
@@ -396,6 +409,7 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] Deploy')
         self.status = 'DEPLOYING'
+
         try:
             try:
                 self.__generate_config(cntrl_of_port, cntrl_ip)

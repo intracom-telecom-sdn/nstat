@@ -75,10 +75,10 @@ class Controller:
         :rtype: failed_flow_ops int
         """
         name = test_config['controller_name']
-        if (name == 'odl'):
+        if (name == 'ODL'):
             return ODL(ctrl_base_dir, test_config)
 
-        elif name == 'onos':
+        elif name == 'ONOS':
             raise NotImplementedError('ONOS is not supported yet')
         #  return ONOS(ctrl_base_dir, test_config)
 

@@ -31,17 +31,21 @@ class NBgen:
         """
         self.controller = controller
         self.sbemu = sbemu
-        self.name = test_config['nb_generator_name']
+        self.name = test_config['nb_emulator_name']
         self.base_dir = nb_gen_base_dir
-
         self.traceback_enabled = False
-        self.ip = test_config['nb_generator_node_ip']
-        self.ssh_port = test_config['nb_generator_node_ssh_port']
-        self.ssh_user = test_config['nb_generator_node_username']
-        self.ssh_pass = test_config['nb_generator_node_password']
 
+        self.ip = test_config['nb_emulator_node_ip']
+        self.ssh_port = test_config['nb_emulator_node_ssh_port']
+        self.ssh_user = test_config['nb_emulator_node_username']
+        self.ssh_pass = test_config['nb_emulator_node_password']
+        self.build_hnd = (self.base_dir +
+                          test_config['nb_emulator_build_handler'])
+        self.clean_hnd = (self.base_dir +
+                          test_config['nb_emulator_clean_handler'])
         self.run_hnd = (self.base_dir +
-                        test_config['nb_generator_run_handler'])
+                        test_config['nb_emulator_run_handler'])
+
         self.status = 'UNKNOWN'
         self._ssh_conn = None
 
@@ -62,8 +66,7 @@ class NBgen:
         self.e2e_installation_time = 0.0
         self.discover_flows_on_switches_time = 0.0
 
-        self.venv_hnd = \
-            (self.base_dir + "emulators/nb_generator/venv_handler.sh")
+        self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
 
     def error_handling(self, error_message, error_num=1):
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -91,6 +94,44 @@ class NBgen:
         except stress_test.nb_generator_exceptions.NBGenError as e:
             self.error_handling(e.err_msg, e.err_code)
 
+    def build(self):
+        """ Wrapper to the NB-Generator build handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
+        """
+        logging.info('[NB_generator] Building')
+        self.status = 'BUILDING'
+
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
+                                                   ' '.join([self.build_hnd]),
+                                                   '[NB_generator.'
+                                                   'build_handler]')[0]
+        if exit_status == 0:
+            self.status = 'BUILT'
+            logging.info("[NB_generator] Successful building")
+        else:
+            self.status = 'NOT_BUILT'
+            raise Exception('[NB_generator] Failure during building')
+
+    def clean(self):
+        """Wrapper to the NB-Generator clean handler
+        :raises: Exception if the handler does not exist on the remote host
+        :raises: Exception if the exit status of the handler is not 0
+        """
+        logging.info('[NB_generator] Cleaning')
+        self.status = 'CLEANING'
+
+        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
+                                                   self.clean_hnd,
+                                                   '[NB_generator.'
+                                                   'clean_handler]')[0]
+        if exit_status == 0:
+            self.status = 'CLEANED'
+            logging.info("[NB_generator] Successful clean")
+        else:
+            self.status = 'NOT_CLEANED'
+            raise Exception('[NB_generator] Failure during cleaning')
+
     def run(self):
         """ Wrapper to the NB-Generator run handler
         :returns: Returns the combined stdout - stderr of the executed command
@@ -98,6 +139,7 @@ class NBgen:
         """
         logging.info("[NB_generator] Run handler")
         self.status = 'STARTED'
+
         try:
             try:
                 cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} '
@@ -134,6 +176,7 @@ class NBgen:
                 raise(stress_test.nb_generator_exceptions.NBGenRunError)
         except stress_test.nb_generator_exceptions.NBGenError as e:
             self.error_handling(e.err_msg, e.err_code)
+
 
     def __poll_flows_ds(self, t_start):
         """

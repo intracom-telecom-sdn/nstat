@@ -1,7 +1,4 @@
 {
-
-"controller_node_spec":"/nstat/vagrant/node_controller/Vagrantfile",
-"controller_host_ip":"127.0.0.1",
 "controller_node_ip":"127.0.0.1",
 "controller_node_ssh_port":22,
 "controller_node_username":"jenkins",
@@ -28,7 +25,6 @@
 "controller_name":"odl",
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
-"controller_cpu_shares":100,
 
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",
