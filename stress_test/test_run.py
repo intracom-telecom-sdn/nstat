@@ -178,9 +178,20 @@ class TestRun:
         # ---------------------------------------------------------------
         print("STARTING THE TEST")
         self.ctrl.init_ssh()
-        self.ctrl.build()
-        logging.info('[sb_active_scalability_multinet] Controller files '
-                     'have been created')
+
+        if self.ctrl.need_rebuild:
+            # build a controller
+            self.ctrl.build()
+            # check the effect of build()
+            host = self.ctrl.ssh_user + '@' + self.ctrl.ip
+            logging.info('[sb_active_scalability_multinet] Build a controller '
+                         'on {} host.'.format(host))
+
+        if self.ctrl.persistence_hnd:
+            # disable persistence
+            self.ctrl.disable_persistence()
+
+        self.ctrl.generate_xmls()
 
         # EMULATOR preparation
         # ---------------------------------------------------------------
@@ -196,6 +207,8 @@ class TestRun:
         # self.oftraf.build()
         print("READY for the loop")
         i = 1
+        self.ctrl.generate_xmls()
+        self.ctrl.flowmods_config()
         # TEST run
         # ---------------------------------------------------------------
 
