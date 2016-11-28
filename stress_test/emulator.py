@@ -391,7 +391,7 @@ class Multinet(SBEmu):
                         format(multinet_handler_name), 2))
                 else:
                     json_result = regex_result.group(0).replace(
-                        'INFO:root:[{0}] [response data] '
+                        'INFO:root:[{0}][response data] '
                         .format(multinet_handler_name), '')
                 multinet_result = \
                     sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
