@@ -298,6 +298,7 @@ class Mtcbench(Monitor):
             try:
                 # read messages from queue while TERM_SUCCESS has not been sent
                 line = self.data_queue.get(block=True, timeout=10000)
+                self.data_queue.task_done()
                 if line == self.term_success:
                     logging.info('[monitor_thread_active] successful '
                                  'termination string returned. Returning '
@@ -396,7 +397,7 @@ class Multinet(Monitor, Oftraf):
         else:
             logging.info('[Multinet.monitor_run] Idle test monitor is running')
             monitor_thread = \
-                gevent.spawn(self.monitor_thread_idle,boot_start_time)
+                gevent.spawn(self.monitor_thread_idle, boot_start_time)
             self.emulator.start_topos()
 
         samples = self.result_queue.get(block=True)

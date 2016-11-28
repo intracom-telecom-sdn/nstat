@@ -21,7 +21,7 @@ import time
 
 class TestRun:
 
-    def __init__(self, args, json_conf, test_type_run):
+    def __init__(self, args, json_conf, test_type):
         """
         """
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
@@ -45,7 +45,8 @@ class TestRun:
                                                          self.sb_emu)
         self.total_samples = []
         self.report_spec_templates = stress_test.report_spec_templates.TestReport(
-            test_type_run, args.json_config)
+            test_type, args.json_config)
+        self.test_type = test_type
         self.json_conf = json_conf
         self.args = args
 
@@ -115,14 +116,14 @@ class TestRun:
              self.sb_emu.delay_before_traffic_ms,
              self.sb_emu.simulated_hosts,
              self.repeat_id,
-             self.ctrl.stat_period_ms) in \
-                 itertools.product(json_conf['mtcbench_threads'],
-                                   json_conf['mtcbench_switches_per_thread'],
-                                   json_conf['mtcbench_thread_creation_delay_ms'],
-                                   json_conf['mtcbench_delay_before_traffic_ms'],
-                                   json_conf['mtcbench_simulated_hosts'],
-                                   list(range(0, json_conf['test_repeats'])),
-                                   json_conf['controller_statistics_period_ms']):
+             self.ctrl.stat_period_ms
+             ) in itertools.product(json_conf['mtcbench_threads'],
+                                    json_conf['mtcbench_switches_per_thread'],
+                                    json_conf['mtcbench_thread_creation_delay_ms'],
+                                    json_conf['mtcbench_delay_before_traffic_ms'],
+                                    json_conf['mtcbench_simulated_hosts'],
+                                    list(range(0, json_conf['test_repeats'])),
+                                    json_conf['controller_statistics_period_ms']):
             self.ctrl.change_stats()
             self.ctrl.start()
             # total_samples = self.mon.monitor_run()
@@ -144,6 +145,7 @@ class TestRun:
         # ----------------------------------------------------------------
         self.sb_emu.init_ssh()
         self.sb_emu.build()
+        self.ctrl.generate_xmls()
 
         # TEST run
         # ----------------------------------------------------------------
@@ -162,10 +164,27 @@ class TestRun:
                                     json_conf['mtcbench_simulated_hosts'],
                                     json_conf['controller_statistics_'
                                               'period_ms']):
+            logging.info('{0} Changing controller statistics period to {1} ms'.
+                         format(self.test_type, self.ctrl.stat_period_ms))
             self.ctrl.change_stats()
+            logging.info('{0} Starting controller'.format(self.test_type))
             self.ctrl.start()
+            logging.info('{0} Starting MTCbench idle switches topology and '
+                         'monitor thread'.format(self.test_type))
+            topo_start_timestamp = time.time()
+            self.total_samples += self.mon.monitor_run(topo_start_timestamp)
             # total_samples = self.mon.monitor_run()
+            logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
+        logging.info('[Testing] All done!')
+        report_spec = self.report_spec_templates.sb_active_scalability_multinet(
+            self.args.json_output)
+        report_gen = stress_test.report_gen.ReportGen(
+            self.args, json_conf, self.total_samples, report_spec)
+        report_gen.generate_json_results()
+        report_gen.generate_plots()
+        report_gen.generate_html_report()
+        report_gen.save_controller_log()
 
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
@@ -347,11 +366,13 @@ class TestRun:
                                     json_conf['multinet_topo_type'],
                                     json_conf['controller_statistics_'
                                               'period_ms']):
+            self.ctrl.generate_xml()
             self.ctrl.change_stats()
             self.ctrl.start()
 
             self.sb_emu.deploy(json_conf['controller_node_ip'],
                                json_conf['controller_port'])
+
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
             self.ctrl.stop()
