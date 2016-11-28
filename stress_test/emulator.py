@@ -6,10 +6,14 @@
 
 """ SB-Emulator Class- All SB-Emulator-related functionality is here"""
 
+
 import json
 import logging
 import os
 import re
+import stress_test.emulator_exceptions
+import sys
+import traceback
 import util.netutil
 import util.file_ops
 
@@ -29,7 +33,7 @@ class SBEmu:
 
         # self.host_spec = test_config['SB-Emulator_node_spec']
         # self.host_ip = test_config['SB-Emulator_host_ip']
-
+        self.traceback_enabled = False
         self.ip = test_config['sb_emulator_node_ip']
         self.ssh_port = test_config['sb_emulator_node_ssh_port']
         self.ssh_user = test_config['sb_emulator_node_username']
@@ -61,6 +65,18 @@ class SBEmu:
         else:
             raise NotImplementedError('Not supported yet')
 
+    def error_handling(self, error_message, error_num=1):
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        logging.error('{0} :::::::::: Exception :::::::::::'.
+                      format(exc_obj))
+        logging.error(error_message)
+        logging.error('Error number: {0}'.format(error_num))
+        logging.error('{0} - {1} Exception: {2}, {3}'.
+                      format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        if self.traceback_enabled:
+            traceback.print_exc()
+        raise(stress_test.emulator_exceptions.SBEmuError)
+
     def init_ssh(self):
         """Initializes a new SSH client object, with the emulator node and
         stores it to the protected variable _ssh_conn. If a connection already
@@ -69,20 +85,21 @@ class SBEmu:
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-        if self._ssh_conn is None:
-            self._ssh_conn = \
-                util.netutil.ssh_connect_or_return2(self.ip,
-                                                    int(self.ssh_port),
-                                                    self.ssh_user,
-                                                    self.ssh_pass,
-                                                    10)
-        else:
-            # Return a new client ssh object for the emulator node
-            return util.netutil.ssh_connect_or_return2(self.ip,
-                                                       int(self.ssh_port),
-                                                       self.ssh_user,
-                                                       self.ssh_pass,
-                                                       10)
+        try:
+            try:
+                if self._ssh_conn is None:
+                    self._ssh_conn = util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
+                else:
+                    # Return a new client ssh object for the emulator node
+                    return util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
+            except:
+                raise(stress_test.emulator_exceptions.SBEmuNodeConnectionError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def build(self):
         """ Wrapper to the SB-Emulator build handler
@@ -91,17 +108,25 @@ class SBEmu:
         """
         logging.info('[SB-Emulator] Building')
         self.status = 'BUILDING'
-
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.build_hnd]),
-                                                   '[SB-Emulator.'
-                                                   'build_handler]')[0]
-        if exit_status == 0:
-            self.status = 'BUILT'
-            logging.info("[SB-Emulator] Successful building")
-        else:
-            self.status = 'NOT_BUILT'
-            raise Exception('[SB-Emulator] Failure during building')
+        try:
+            try:
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.build_hnd]),
+                    '[SB-Emulator.build_handler]')
+                if exit_status == 0:
+                    self.status = 'BUILT'
+                    logging.info("[SB-Emulator] Successful building")
+                else:
+                    self.status = 'NOT_BUILT'
+                    raise(stress_test.emulator_exceptions.SBEmuBuildError(
+                        '[SB-Emulator] Failure during building: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.SBEmuBuildError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def clean(self):
         """Wrapper to the SB-Emulator clean handler
@@ -110,18 +135,39 @@ class SBEmu:
         """
         logging.info('[SB-Emulator] Cleaning')
         self.status = 'CLEANING'
+        try:
+            try:
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, self.clean_hnd,
+                    '[SB-Emulator.clean_handler]')
+                if exit_status == 0:
+                    self.status = 'CLEANED'
+                    logging.info("[SB-Emulator] Successful cleanup")
+                else:
+                    self.status = 'NOT_CLEANED'
+                    raise(stress_test.emulator_exceptions.SBEmuCleanupError(
+                        '[SB-Emulator] Failure during cleaning: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.SBEmuCleanupError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   self.clean_hnd,
-                                                   '[SB-Emulator.'
-                                                   'clean_handler]')[0]
-        if exit_status == 0:
-            self.status = 'CLEANED'
-            logging.info("[SB-Emulator] Successful clean")
-        else:
-            self.status = 'NOT_CLEANED'
-            raise Exception('[SB-Emulator] Failure during cleaning')
+    def __del__(self):
+        """Method called when object is destroyed"""
+        try:
+            logging.info('Run emulator clean handler.')
+            self.cleanup()
+        except:
+            pass
 
+        try:
+            logging.info('Close emulator node ssh connection.')
+            self._ssh_conn.close()
+        except:
+            pass
 
 class MTCBench(SBEmu):
 
@@ -169,28 +215,33 @@ class MTCBench(SBEmu):
         """
         logging.info('[MTCBench] Starting')
         self.status = 'STARTING'
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.run_hnd,
-                                                   ctrl_ip,
-                                                   str(ctrl_sb_port),
-                                                   str(self.threads),
-                                                   str(self.switches_per_thread),
-                                                   str(self.threads * self.switches_per_thread),
-                                                   str(self.thread_creation_delay_ms),
-                                                   str(self.delay_before_traffic_ms),
-                                                   str(self.ms_per_test),
-                                                   str(self.internal_repeats),
-                                                   str(self.simulated_hosts),
-                                                   str(self.warmup),
-                                                   self.mode]),
-                                         '[MTCBench.run_handler]')[0]
-        if exit_status == 0:
-            self.status = 'STARTED'
-            logging.info("[MTCBench] Successful started")
-        else:
-            self.status = 'NOT_STARTED'
-            raise Exception('[MTCBench] Failure during starting')
+        try:
+            try:
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.run_hnd, ctrl_ip, str(ctrl_sb_port),
+                         str(self.threads), str(self.switches_per_thread),
+                         str(self.threads * self.switches_per_thread),
+                         str(self.thread_creation_delay_ms),
+                         str(self.delay_before_traffic_ms),
+                         str(self.ms_per_test), str(self.internal_repeats),
+                         str(self.simulated_hosts), str(self.warmup),
+                         self.mode]),
+                    '[MTCBench.run_handler]')
+                if exit_status == 0:
+                    self.status = 'STARTED'
+                    logging.info("[MTCBench] Successful started")
+                else:
+                    self.status = 'NOT_STARTED'
+                    raise(stress_test.emulator_exceptions.MTCbenchRunError(
+                        '[MTCBench] Failure during starting: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MTCbenchRunError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
 
 class Multinet(SBEmu):
@@ -262,6 +313,7 @@ class Multinet(SBEmu):
         overall_topo_size = self.topo_size * len(self.workers_ips)
         return overall_topo_size
 
+
     def __generate_config(self, cntrl_of_port, cntrl_ip):
         """
         Generates a new json configuration file for multinet, according to the
@@ -273,36 +325,46 @@ class Multinet(SBEmu):
         :type cntrl_ip: str
         :raises IOError: if it fails to create the configuration JSON file
         """
-        config_data = {}
-        config_data['master_ip'] = self.ip
-        config_data['master_port'] = self.master_rest_port
-        config_data['worker_ip_list'] = self.workers_ips
-        config_data['worker_port_list'] = self.workers_ports
-        config_data['deploy'] = {}
-        config_data['deploy']['multinet_base_dir'] = self.base_dir
-        config_data['deploy']['ssh_port'] = self.ssh_port
-        config_data['deploy']['username'] = self.ssh_user
-        config_data['deploy']['password'] = self.ssh_pass
-        config_data['topo'] = {}
-        config_data['topo']['controller_ip_address'] = cntrl_ip
-        config_data['topo']['controller_of_port'] = cntrl_of_port
-        config_data['topo']['switch_type'] = self.topo_switch_type
-        config_data['topo']['topo_type'] = self.topo_type
-        config_data['topo']['topo_size'] = self.topo_size
-        config_data['topo']['group_size'] = self.topo_group_size
-        config_data['topo']['group_delay'] = self.topo_group_delay_ms
-        config_data['topo']['hosts_per_switch'] = self.topo_hosts_per_switch
-        config_data['topo']['traffic_generation_duration_ms'] = \
-            self.traffic_gen_duration_ms
-        config_data['topo']['interpacket_delay_ms'] = self.interpacket_delay_ms
+        try:
+            try:
+                config_data = {}
+                config_data['master_ip'] = self.ip
+                config_data['master_port'] = self.master_rest_port
+                config_data['worker_ip_list'] = self.workers_ips
+                config_data['worker_port_list'] = self.workers_ports
+                config_data['deploy'] = {}
+                config_data['deploy']['multinet_base_dir'] = self.base_dir
+                config_data['deploy']['ssh_port'] = self.ssh_port
+                config_data['deploy']['username'] = self.ssh_user
+                config_data['deploy']['password'] = self.ssh_pass
+                config_data['topo'] = {}
+                config_data['topo']['controller_ip_address'] = cntrl_ip
+                config_data['topo']['controller_of_port'] = cntrl_of_port
+                config_data['topo']['switch_type'] = self.topo_switch_type
+                config_data['topo']['topo_type'] = self.topo_type
+                config_data['topo']['topo_size'] = self.topo_size
+                config_data['topo']['group_size'] = self.topo_group_size
+                config_data['topo']['group_delay'] = self.topo_group_delay_ms
+                config_data['topo']['hosts_per_switch'] = \
+                    self.topo_hosts_per_switch
+                config_data['topo']['traffic_generation_duration_ms'] = \
+                    self.traffic_gen_duration_ms
+                config_data['topo']['interpacket_delay_ms'] = \
+                    self.interpacket_delay_ms
 
-        with open(self.__multinet_config_file_local_path,
-                  'w') as config_json_file:
-            json.dump(config_data, config_json_file)
-
-        if not util.file_ops.file_exists(self.__multinet_config_file_local_path):
-            raise Exception('[Multinet] Config local file '
-                            'has not been created')
+                with open(self.__multinet_config_file_local_path,
+                          'w') as config_json_file:
+                    json.dump(config_data, config_json_file)
+                if not util.file_ops.file_exists(self.__multinet_config_file_local_path):
+                    raise(stress_test.emulator_exceptions.MultinetConfGenerateError(
+                        '[Multinet] Config local file has not been created',
+                        2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetConfGenerateError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def __parse_output(self, multinet_handler_name, multinet_output):
         """Gets the console output of a multinet handler and extracts the
@@ -318,53 +380,68 @@ class Multinet(SBEmu):
         :type multinet_output: string
         :raises exception: If the result of the parsed multinet output is None
         """
-        regex_result = re.search(r'INFO:root:\[{0}\]\[response data\].*'.
-                                 format(multinet_handler_name),
-                                 multinet_output)
-        if regex_result is None:
-            raise Exception('Failed to get results from {0} multinet handler.'.
-                            format(multinet_handler_name))
-        else:
-            json_result = \
-                regex_result.group(0).replace('INFO:root:[{0}]'
-                                              '[response data] '
-                                              .format(multinet_handler_name),
-                                              '')
-        multinet_result = \
-            sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
-        return multinet_result
+        try:
+            try:
+                regex_result = re.search(
+                    r'INFO:root:\[{0}\]\[response data\].*'.
+                    format(multinet_handler_name), multinet_output)
+                if regex_result is None:
+                    raise(stress_test.emulator_exceptions.MultinetOutputParsingError(
+                        'Failed to get results from {0} multinet handler.'.
+                        format(multinet_handler_name), 2))
+                else:
+                    json_result = regex_result.group(0).replace(
+                        'INFO:root:[{0}] [response data] '
+                        .format(multinet_handler_name), '')
+                multinet_result = \
+                    sum([list(json.loads(v).values())[0] for v in json.loads(json_result)])
+                return multinet_result
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetOutputParsingError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def deploy(self, cntrl_ip, cntrl_of_port):
         """ Wrapper to the Multinet SB-Emulator deploy handler
         """
         logging.info('[Multinet] Deploy')
         self.status = 'DEPLOYING'
-        self.__generate_config(cntrl_of_port, cntrl_ip)
 
-        util.netutil.ssh_copy_file_to_target(self.ip,
-                                             int(self.ssh_port),
-                                             self.ssh_user,
-                                             self.ssh_pass,
-                                             self.__multinet_config_file_local_path,
-                                             self.__multinet_config_file_remote_path)
+        try:
+            try:
+                self.__generate_config(cntrl_of_port, cntrl_ip)
+                util.netutil.ssh_copy_file_to_target(
+                    self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                    self.__multinet_config_file_local_path,
+                    self.__multinet_config_file_remote_path)
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.deploy_hnd]):
-            raise Exception('[Multinet] Deploy handler does not exist')
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.deploy_hnd]):
+                    raise(FileNotFoundError(
+                        '[Multinet] Deploy handler does not exist'))
 
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.deploy_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet.deploy_handler]')[0]
-        if exit_status == 0:
-            self.status = 'DEPLOYED'
-            logging.info("[Multinet] Successful deployed")
-        else:
-            self.status = 'NOT_DEPLOYED'
-            raise Exception('[Multinet] Failure during deploying')
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, self.deploy_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet.deploy_handler]')
+                if exit_status == 0:
+                    self.status = 'DEPLOYED'
+                    logging.info('[Multinet] Successful deployed')
+                else:
+                    self.status = 'NOT_DEPLOYED'
+                    raise(stress_test.emulator_exceptions.MultinetDeployError(
+                        '[Multinet] Failure during deploying: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetDeployError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_switches(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_switches handler
@@ -377,30 +454,40 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING_SWITCHES'
-
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.get_switches_hnd]):
-            raise Exception('[Multinet] Get_switches handler does not exist')
-        if new_ssh_conn is not None:
-            used_ssh_conn = new_ssh_conn
-        else:
-            used_ssh_conn = self._ssh_conn
-        exit_status, output = \
-            util.netutil.ssh_run_command(used_ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.get_switches_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet.get_switches_hnd]')
-        if new_ssh_conn is not None:
-            used_ssh_conn.close()
-        if exit_status == 0:
-            self.status = 'GOT_SWITCHES'
-            logging.info("[Multinet] Successful got switches")
-            return self.__parse_output('get_switches_topology_handler', output)
-        else:
-            self.status = 'NOT_GOT_SWITCHES'
-            raise Exception('[Multinet] Failure during getting switches')
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.get_switches_hnd]):
+                    raise(FileNotFoundError(
+                        '[Multinet] Get_switches handler does not exist'))
+                if new_ssh_conn is not None:
+                    used_ssh_conn = new_ssh_conn
+                else:
+                    used_ssh_conn = self._ssh_conn
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    used_ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, self.get_switches_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet.get_switches_hnd]')
+                if new_ssh_conn is not None:
+                    used_ssh_conn.close()
+                if exit_status == 0:
+                    self.status = 'GOT_SWITCHES'
+                    logging.info("[Multinet] Successful got switches")
+                    return self.__parse_output('get_switches_topology_handler',
+                                               cmd_output)
+                else:
+                    self.status = 'NOT_GOT_SWITCHES'
+                    raise(stress_test.emulator_exceptions.MultinetGetSwitchesError(
+                        '[Multinet] Failure during getting switches: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetGetSwitchesError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_flows(self, new_ssh_conn=None):
         """ Wrapper to the Multinet SB-Emulator get_flows handler
@@ -413,30 +500,41 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] get_flows')
         self.status = 'GETTING_FLOWS'
-
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.get_flows_hnd]):
-            raise Exception('[Multinet] Get_flows handler does not exist')
-        if new_ssh_conn is not None:
-            used_ssh_conn = new_ssh_conn
-        else:
-            used_ssh_conn = self._ssh_conn
-        exit_status, output = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.get_flows_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet. get_flows_hnd]')
-        if new_ssh_conn is not None:
-            used_ssh_conn.close()
-        if exit_status == 0:
-            self.status = 'GOT_FLOWS'
-            logging.info("[Multinet] Successful got flows")
-            return self.__parse_output('get_flows_topology_handler', output)
-        else:
-            self.status = 'NOT_GOT_FLOWS'
-            raise Exception('[Multinet] Failure during getting flows')
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.get_flows_hnd]):
+                    raise(FileNotFoundError(
+                        '[Multinet] Get_flows handler does not exist'))
+                if new_ssh_conn is not None:
+                    used_ssh_conn = new_ssh_conn
+                else:
+                    used_ssh_conn = self._ssh_conn
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir,
+                         self.get_flows_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet. get_flows_hnd]')
+                if new_ssh_conn is not None:
+                    used_ssh_conn.close()
+                if exit_status == 0:
+                    self.status = 'GOT_FLOWS'
+                    logging.info("[Multinet] Successful got flows")
+                    return self.__parse_output('get_flows_topology_handler',
+                                               cmd_output)
+                else:
+                    self.status = 'NOT_GOT_FLOWS'
+                    raise(stress_test.emulator_exceptions.MultinetGetFlowsError(
+                        '[Multinet] Failure during getting flows: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetGetFlowsError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def init_topos(self):
         """ Wrapper to the Multinet SB-Emulator init_topos handler
@@ -445,26 +543,35 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] init_topos')
         self.status = 'INIT_MININET_TOPOS'
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.init_topos_hnd]):
+                    raise(FileNotFoundError(
+                        '[Multinet] Init_topos handler does not exist'))
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.init_topos_hnd]):
-            raise Exception('[Multinet] Init_topos handler does not exist')
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, self.init_topos_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet.init_topos_hnd]')
 
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.init_topos_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet.init_topos_hnd]')[0]
-
-        if exit_status == 0:
-            self.status = 'TOPOS_INITIALIZED'
-            logging.info('[Multinet] Successful initialization '
-                         'of Mininet topos')
-        else:
-            self.status = 'TOPOS_NOT_INITIALIZED'
-            raise Exception('[Multinet] Failure during topos initialization')
+                if exit_status == 0:
+                    self.status = 'TOPOS_INITIALIZED'
+                    logging.info('[Multinet] Successful initialization '
+                                 'of Mininet topos')
+                else:
+                    self.status = 'TOPOS_NOT_INITIALIZED'
+                    raise(stress_test.emulator_exceptions.MultinetInitToposError(
+                        '[Multinet] Failure during topos initialization: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetInitToposError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def start_topos(self):
         """ Wrapper to the Multinet SB-Emulator start_topos handler
@@ -473,24 +580,34 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] start_topos')
         self.status = 'START_MININET_TOPOS'
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.start_topos_hnd]):
+                    raise(FileNotFoundError(
+                        '[Multinet] Start_topos handler does not exist'))
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.start_topos_hnd]):
-            raise Exception('[Multinet] Start_topos handler does not exist')
-
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.start_topos_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet.start_topos_hnd]')[0]
-        if exit_status == 0:
-            self.status = 'TOPOS_STARTED'
-            logging.info('[Multinet] Successful start of Mininet topos')
-        else:
-            self.status = 'TOPOS_NOT_STARTED'
-            raise Exception('[Multinet] Failure during the starting of topos')
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, self.start_topos_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet.start_topos_hnd]')
+                if exit_status == 0:
+                    self.status = 'TOPOS_STARTED'
+                    logging.info('[Multinet] Successful start '
+                                 'of Mininet topos')
+                else:
+                    self.status = 'TOPOS_NOT_STARTED'
+                    raise(stress_test.emulator_exceptions.MultinetStartToposError(
+                        '[Multinet] Failure during the starting of topos: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetStartToposError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def stop_topos(self):
         """ Wrapper to the Multinet SB-Emulator stop_topos handler
@@ -499,24 +616,33 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] stop_topos')
         self.status = 'STOP_MININET_TOPOS'
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.stop_topos_hnd]):
+                    raise(FileNotFoundError(
+                        '[Multinet] Stop_topos handler does not exist'))
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.stop_topos_hnd]):
-            raise Exception('[Multinet] Stop_topos handler does not exist')
-
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.stop_topos_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet.stop_topos_hnd]')[0]
-        if exit_status == 0:
-            self.status = 'TOPOS_STOPPED'
-            logging.info('[Multinet] Successful stop of Mininet topos')
-        else:
-            self.status = 'TOPOS_NOT_STOPPED'
-            raise Exception('[Multinet] Failure during the stopping of topos')
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, self.stop_topos_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet.stop_topos_hnd]')
+                if exit_status == 0:
+                    self.status = 'TOPOS_STOPPED'
+                    logging.info('[Multinet] Successful stop of Mininet topos')
+                else:
+                    self.status = 'TOPOS_NOT_STOPPED'
+                    raise(stress_test.emulator_exceptions.MultinetStopToposError(
+                        '[Multinet] Failure during the stopping of topos'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetStopToposError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def cleanup(self):
         """ Wrapper to the Multinet SB-Emulator cleanup handler
@@ -525,24 +651,34 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] cleanup')
         self.status = 'CLEANUP_MININET'
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.cleanup_hnd]):
+                    raise(FileNotFoundError(
+                        '[Multinet] Cleanup handler does not exist'))
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.cleanup_hnd]):
-            raise Exception('[Multinet] Cleanup handler does not exist')
-
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.cleanup_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet.cleanup_hnd]')[0]
-        if exit_status == 0:
-            self.status = 'TOPOS_CLEANED'
-            logging.info('[Multinet] Successful cleanup of Mininet topos')
-        else:
-            self.status = 'TOPOS_NOT_CLEANED'
-            raise Exception('[Multinet] Failure during the cleanup of topos')
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, self.cleanup_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet.cleanup_hnd]')
+                if exit_status == 0:
+                    self.status = 'TOPOS_CLEANED'
+                    logging.info('[Multinet] Successful cleanup of Mininet '
+                                 'topos')
+                else:
+                    self.status = 'TOPOS_NOT_CLEANED'
+                    raise(stress_test.emulator_exceptions.MultinetCleanupError(
+                        '[Multinet] Failure during the cleanup of topos: {0}'.
+                        format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetCleanupError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def generate_traffic(self):
         """ Wrapper to the Multinet SB-Emulator traffic_gen handler
@@ -551,23 +687,39 @@ class Multinet(SBEmu):
         """
         logging.info('[Multinet] traffic gen')
         self.status = 'CREATE_TRAFFIC'
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.traffic_gen_hnd]):
+                    raise Exception('[Multinet] Traffic_generator handler '
+                                    'does not exist')
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, self.traffic_gen_hnd,
+                         self.__multinet_config_file_remote_path]),
+                    '[Multinet.generate_traffic_hnd]')
+                if exit_status == 0:
+                    self.status = 'TRAFFIC_UP'
+                    logging.info('[Multinet] Successful traffic generation '
+                                 'from switches')
+                else:
+                    self.status = 'TRAFFIC_DOWN'
+                    raise(stress_test.emulator_exceptions.MultinetTraffigGenError(
+                        '[Multinet] Failure during traffic generation '
+                        'from switches: {0}'.format(cmd_output), 2))
+            except stress_test.emulator_exceptions.SBEmuError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.emulator_exceptions.MultinetTraffigGenError)
+        except stress_test.emulator_exceptions.SBEmuError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
-        if not util.netutil.isfile(self.ip, self.ssh_port, self.ssh_user,
-                                   self.ssh_pass, [self.traffic_gen_hnd]):
-            raise Exception('[Multinet] Traffic_generator handler '
-                            'does not exist')
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.venv_hnd,
-                                                   self.base_dir,
-                                                   self.traffic_gen_hnd,
-                                                   self.__multinet_config_file_remote_path]),
-                                         '[Multinet.generate_traffic_hnd]')[0]
-        if exit_status == 0:
-            self.status = 'TRAFFIC_UP'
-            logging.info('[Multinet] Successful traffic generation '
-                         'from switches')
-        else:
-            self.status = 'TRAFFIC_DOWN'
-            raise Exception('[Multinet] Failure during traffic generation '
-                            'from switches')
+    def __del__(self):
+        """Method called when object is destroyed"""
+        try:
+            logging.info('Run Multinet cleanup.')
+            self.cleanup()
+        except:
+            pass
+        super(self.__class__, self).__del__()

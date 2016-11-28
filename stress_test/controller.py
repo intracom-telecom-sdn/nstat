@@ -8,7 +8,10 @@
 
 import logging
 import os
+import sys
+import stress_test.controller_exceptions
 import time
+import traceback
 import util.file_ops
 import util.netutil
 import util.process
@@ -28,6 +31,7 @@ class Controller:
         self.name = test_config['controller_name']
         self.base_dir = ctrl_base_dir
 
+        self.traceback_enabled = False
         self.ip = test_config['controller_node_ip']
         self.ssh_port = test_config['controller_node_ssh_port']
         self.ssh_user = test_config['controller_node_username']
@@ -82,6 +86,19 @@ class Controller:
             raise NotImplementedError('Not supported yet')
         #   return None
 
+    def error_handling(self, error_message, error_num=1):
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        logging.error('{0} :::::::::: Exception :::::::::::'.
+                      format(exc_obj))
+        logging.error(error_message)
+        logging.error('Error number:{0}'.format(error_num))
+        logging.error('{0} - {1} Exception: {2}, {3}'.
+                      format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        if self.traceback_enabled:
+            traceback.print_exc()
+        # Propagate error outside the class to stop execution
+        raise(stress_test.controller_exceptions.CtrlError)
+
     def init_ssh(self):
         """Initializes a new SSH client object, with the controller node and
         stores it to the protected variable _ssh_conn. If a connection already
@@ -90,55 +107,62 @@ class Controller:
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
             format(self.name, self.ip))
-        if self._ssh_conn is None:
-            self._ssh_conn = \
-                util.netutil.ssh_connect_or_return2(self.ip,
-                                                    int(self.ssh_port),
-                                                    self.ssh_user,
-                                                    self.ssh_pass,
-                                                    10)
-        else:
-            # Return a new client ssh object for the controller node
-            return util.netutil.ssh_connect_or_return2(self.ip,
-                                                       int(self.ssh_port),
-                                                       self.ssh_user,
-                                                       self.ssh_pass,
-                                                       10)
+        try:
+            try:
+                if self._ssh_conn is None:
+                    self._ssh_conn = util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
+                else:
+                    # Return a new client ssh object for the controller node
+                    return util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
+            except:
+                raise(stress_test.controller_exceptions.CtrlNodeConnectionError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
         """
-        logging.info('[Controller] Cleaning up')
+        try:
+            try:
+                logging.info('[Controller] Cleaning up')
 
-        self.status = 'CLEANING'
-        util.netutil.ssh_run_command(self._ssh_conn,
-                                     self.clean_hnd,
-                                     '[controller.clean_handler]')[0]
-        self.status = 'CLEANED'
+                self.status = 'CLEANING'
+                util.netutil.ssh_run_command(self._ssh_conn,
+                                             self.clean_hnd,
+                                             '[controller.clean_handler]')[0]
+                self.status = 'CLEANED'
+            except:
+                raise(stress_test.controller_exceptions.CtrlCleanupError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def check_status(self):
         """Wrapper to the controller status handler
         """
         logging.info('[Controller] Checking the status')
-
-        q = queue.Queue()
-        util.netutil.ssh_run_command(self._ssh_conn, self.status_hnd,
-                                     '[controller.status_handler]', q)[0]
-
-        cmd_output = ''
-
-        while not q.empty():
-            cmd_output += str(q.get()) + ' '
-
-        if cmd_output.strip() == '1':
-            logging.info('[Controller] status: Running-'
-                         ' {0}'.format(cmd_output))
-
-        elif cmd_output.strip() == '0':
-            logging.info('[Controller] status: Not'
-                         'Running- {0}'.format(cmd_output))
-
-        return cmd_output.strip()
+        try:
+            try:
+                q = queue.Queue()
+                util.netutil.ssh_run_command(self._ssh_conn, self.status_hnd,
+                                             '[controller.status_handler]', q)[0]
+                cmd_output = ''
+                while not q.empty():
+                    cmd_output += str(q.get()) + ' '
+                if cmd_output.strip() == '1':
+                    logging.info('[Controller] status: Running-'
+                                 ' {0}'.format(cmd_output))
+                elif cmd_output.strip() == '0':
+                    logging.info('[Controller] status: Not'
+                                 'Running- {0}'.format(cmd_output))
+                return cmd_output.strip()
+            except:
+                raise(stress_test.controller_exceptions.CtrlStatusUnknownError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def check_other_controller(self):
         """Checks for processes listening on the specified port
@@ -149,15 +173,21 @@ class Controller:
             '[Controller] Checking if another process is '
             'listening on specified port. Port number: {0}.'.
             format(self.of_port))
-
-        # check if any process listens on controller port
-        gpid = util.process.getpid_listeningonport(self.of_port,
-                                                   self._ssh_conn)
-
-        if gpid != -1:
-            raise Exception('[check_other_controller] Another process is '
-                            'active on port {0}'.
-                            format(self.of_port))
+        try:
+            try:
+                # check if any process listens on controller port
+                gpid = util.process.getpid_listeningonport(self.of_port,
+                                                           self._ssh_conn)
+                if gpid != -1:
+                    raise(stress_test.controller_exceptions.CtrlPortConflictError(
+                        '[check_other_controller] Another process is '
+                        'active on port {0}'.format(self.of_port), 2))
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlPortConflictError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def restart(self):
         """Restarts the controller
@@ -175,92 +205,127 @@ class Controller:
         :raises Exception: When controller fails to start.
         """
         logging.info('[Controller] Starting')
-
-        self.status = 'STARTING'
-        if self._ssh_conn is None:
-            os.environ['JAVA_OPTS'] = self.java_opts
-            cmd = [self.start_hnd]
-        else:
-            cmd = ['export JAVA_OPTS="{0}";'.format(self.java_opts),
-                   self.start_hnd]
-
-        if self.check_status() == '0':
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join(cmd),
-                                         '[controller.start_handler]')[0]
-            self.pid = self.wait_until_listens(420000)
-            logging.info('[start_controller] Controller '
-                         'pid: {0}'.format(self.pid))
-            self.wait_until_up(420000)
-        elif self.check_status() == '1':
-            logging.info('[start_controller] Controller already started.')
-        else:
-            raise Exception('[start_controller] Fail to start')
-        self.status = 'STARTED'
+        try:
+            try:
+                self.status = 'STARTING'
+                if self._ssh_conn is None:
+                    os.environ['JAVA_OPTS'] = self.java_opts
+                    cmd = [self.start_hnd]
+                else:
+                    cmd = ['export JAVA_OPTS="{0}";'.format(self.java_opts),
+                           self.start_hnd]
+                if self.check_status() == '0':
+                    exit_status, cmd_output = util.netutil.ssh_run_command(
+                        self._ssh_conn, ' '.join(cmd),
+                        '[controller.start_handler]')
+                    self.pid = self.wait_until_listens(420000)
+                    logging.info('[start_controller] Controller '
+                                 'pid: {0}'.format(self.pid))
+                    self.wait_until_up(420000)
+                    if exit_status != 0 or self.pid == -1:
+                        raise(stress_test.controller_exceptions.CtrlStartError(
+                            '[start_controller] Fail to start: {0}'.
+                            format(cmd_output), 2))
+                elif self.check_status() == '1':
+                    logging.info('[start_controller] Controller already '
+                                 'started.')
+                self.status = 'STARTED'
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlStartError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def stop(self):
         """Wrapper to the controller stop handler
         """
 
-        self.status = 'STOPPING'
-        if self.check_status() == '1':
-            logging.info('[Controller] Stopping')
-            print (self.pid)
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.stop_hnd]),
-                                         '[controller.stop_handler]')[0]
-            util.process.wait_until_process_finishes(self.pid, self._ssh_conn)
-            self.status = 'STOPPED'
-
-        else:
-            logging.info('[stop_controller] Controller already stopped.')
+        try:
+            try:
+                self.status = 'STOPPING'
+                if self.check_status() == '1':
+                    logging.info('[Controller] Stopping. Controller PID: {0}'.
+                                 format(self.pid))
+                    exit_status, cmd_output = util.netutil.ssh_run_command(
+                        self._ssh_conn, ' '.join([self.stop_hnd]),
+                        '[controller.stop_handler]')
+                    util.process.wait_until_process_finishes(self.pid,
+                                                             self._ssh_conn)
+                    if exit_status != 0:
+                        raise(stress_test.controller_exceptions.CtrlStopError(
+                            '{Controller] Controller failed to stop: {0}'.
+                            format(cmd_output)))
+                    self.status = 'STOPPED'
+                else:
+                    logging.info('[stop_controller] Controller already '
+                                 'stopped.')
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlStopError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def build(self):
         """ Wrapper to the controller build handler
         """
         logging.info('[Controller] Building')
-        self.status = 'BUILDING'
-
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([self.build_hnd]),
-                                         '[controller.build_handler]')[0]
-        if exit_status == 0:
-            self.status = 'BUILT'
-            logging.info("[Controller] Successful building")
-        else:
-            self.status = 'NOT_BUILT'
-            raise Exception('[Controller] Failure during building')
+        try:
+            try:
+                self.status = 'BUILDING'
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.build_hnd]),
+                    '[controller.build_handler]')
+                if exit_status == 0:
+                    self.status = 'BUILT'
+                    logging.info("[Controller] Successful building")
+                else:
+                    self.status = 'NOT_BUILT'
+                    raise(stress_test.controller_exceptions.CtrlBuildError(
+                        '[Controller] Failure during building: {0}'.
+                        format(cmd_output)), 2)
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlBuildError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def wait_until_listens(self, timeout_ms):
         """ Waits for controller to start listening on specified port.
-
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :raises Exception: If controller fails to start or if another process
         listens on controllers port.
         :rtype int
         :type timeout_ms: int
         """
-
         logging.info('[Controller] Waiting to start listening on a port')
+        try:
+            try:
+                timeout = time.time() + (float(timeout_ms) / 1000)
+                while time.time() < timeout:
+                    time.sleep(1)
+                    gpid = util.process.getpid_listeningonport(self.of_port,
+                                                               self._ssh_conn)
+                    logging.info('[Controller] Returned pid listening '
+                                 'on port {0}: {1}'.format(self.of_port, gpid))
+                    if gpid > 0:
+                        return gpid
+                    elif gpid == 0:
+                        raise(stress_test.controller_exceptions.CtrlPortConflictError(
+                            'Another controller seems to have started in the '
+                            'meantime. Exiting...'))
 
-        timeout = time.time() + (float(timeout_ms) / 1000)
-        while time.time() < timeout:
-            time.sleep(1)
-            gpid = util.process.getpid_listeningonport(self.of_port,
-                                                       self._ssh_conn)
-            logging.info('[Controller] Returned pid listening '
-                         'on port {0}: {1}'.format(self.of_port, gpid))
-
-            if gpid > 0:
-                return gpid
-            elif gpid == 0:
-                raise Exception('Another controller seems to '
-                                'have started in the '
-                                'meantime. Exiting...')
-
-        raise Exception('Controller failed to start within a period of {0} '
-                        'minutes'.format(timeout))
+                raise (stress_test.controller_exceptions.CtrlReadyStateError(
+                    'Controller failed to start within a period of {0} '
+                    'seconds'.format(float(timeout_ms) / 1000), 2))
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlReadyStateError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def wait_until_up(self, timeout_ms):
         """ Waits for controller status to become 1 (started).
@@ -272,18 +337,44 @@ class Controller:
         """
 
         logging.info('[Controller] Waiting to be started')
+        try:
+            try:
+                timeout = time.time() + (float(timeout_ms) / 1000)
+                while time.time() < timeout:
+                    time.sleep(1)
+                    if self.check_status() == '1':
+                        logging.info('[Controller] Started')
+                        return
+                raise(stress_test.controller_exceptions.CtrlReadyStateError(
+                    'Controller failed to start. Status check returned 0 '
+                    'after trying for {0} seconds.'.
+                    format(float(timeout_ms) / 1000), 2))
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlReadyStateError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
-        timeout = time.time() + (float(timeout_ms) / 1000)
-        while time.time() < timeout:
-            time.sleep(1)
-            if self.check_status() == '1':
-                logging.info('[Controller] Started')
-                return
+    def __del__(self):
+        """Method called when object is destroyed"""
+        try:
+            logging.info('Run controller stop.')
+            self.stop()
+        except:
+            pass
 
-        raise Exception('Controller failed to start. '
-                        'Status check returned 0 after '
-                        'trying for {0} seconds.'.
-                        format(float(timeout_ms) / 1000))
+        try:
+            logging.info('Run controller cleanup.')
+            self.cleanup()
+        except:
+            pass
+
+        try:
+            logging.info('Close controller node ssh connection.')
+            self._ssh_conn.close()
+        except:
+            pass
 
 
 class ODL(Controller):
@@ -338,132 +429,172 @@ class ODL(Controller):
         """
         logging.info('[Controller] Generating XML files'
                      ' (start and stop the Controller)')
-        self.start()
-        self.stop()
+        try:
+            try:
+                self.start()
+                self.stop()
+            except:
+                raise(stress_test.controller_exceptions.ODLXMLError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def disable_persistence(self):
         """configure controller persistent to false in order not to backup
         datastore on the disk.
         """
         logging.info('[Controller] Disabling persistence')
-
-        util.netutil.ssh_run_command(self._ssh_conn,
-                                     ' '.join([self.persistence_hnd]),
-                                     '[controller.change'
-                                     '_persistent_handler]')[0]
+        try:
+            try:
+                util.netutil.ssh_run_command(self._ssh_conn,
+                                             ' '.join([self.persistence_hnd]),
+                                             '[controller.change'
+                                             '_persistent_handler]')
+            except:
+                raise(stress_test.controller_exceptions.ODLDisablePersistenceError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def change_stats(self):
         """Wrapper to the controller statistics handler
         """
 
         logging.info('[Controller] Changing statistics period')
-
-        util.netutil.ssh_run_command(self._ssh_conn,
-                                     ' '.join([self.statistics_hnd,
-                                               str(self.stat_period_ms)]),
-                                     '[controller.statistics_handler]'
-                                     ' Changing statistics interval')[0]
-        logging.info(
-            '[Controller] Changed statistics period to {0} ms'.
-            format(self.stat_period_ms))
+        try:
+            try:
+                util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.statistics_hnd,
+                                              str(self.stat_period_ms)]),
+                    '[controller.statistics_handler]'
+                    ' Changing statistics interval')
+                logging.info(
+                    '[Controller] Changed statistics period to {0} ms'.
+                    format(self.stat_period_ms))
+            except:
+                raise(stress_test.controller_exceptions.ODLChangeStats)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def flowmods_config(self):
         """configure controller to send flow modifications as a
-        responce to ARP Packet_INs.
+        response to ARP Packet_INs.
         """
         logging.info('[Controller] Configure flow modifications')
-        util.netutil.ssh_run_command(self._ssh_conn,
-                                     ' '.join([self.flowmods_conf_hnd]),
-                                     '[controller.flowmod'
-                                     '_configure_handler]')[0]
-        logging.info('[Controller] Controller is configured to send flow mods')
+        try:
+            try:
+                util.netutil.ssh_run_command(self._ssh_conn,
+                                             ' '.join([self.flowmods_conf_hnd]),
+                                             '[controller.flowmod'
+                                             '_configure_handler]')[0]
+                logging.info('[Controller] Controller is configured to '
+                             'send flow mods')
+            except:
+                raise(stress_test.controller_exceptions.ODLFlowModConfError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_oper_hosts(self, new_ssh_conn=None):
         """Wrapper to the controller oper_hosts handler
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')
-        if new_ssh_conn is not None:
-            used_ssh_conn = new_ssh_conn
-        else:
-            used_ssh_conn = self._ssh_conn
-
-        ret = util.netutil.ssh_run_command(used_ssh_conn,
-                                           ' '.join([self.oper_hosts,
-                                                     str(self.ip),
-                                                     str(self.restconf_port),
-                                                     str(self.restconf_user),
-                                                     str(self.restconf_pass)]),
-                                           '[controller.operational'
-                                           '_hosts_handler]')[1]
-        if new_ssh_conn is not None:
-            used_ssh_conn.close()
-        return int(ret)
+        try:
+            try:
+                if new_ssh_conn is not None:
+                    used_ssh_conn = new_ssh_conn
+                else:
+                    used_ssh_conn = self._ssh_conn
+                ret = util.netutil.ssh_run_command(
+                    used_ssh_conn, ' '.join([self.oper_hosts,
+                                             str(self.ip),
+                                             str(self.restconf_port),
+                                             str(self.restconf_user),
+                                             str(self.restconf_pass)]),
+                    '[controller.operational_hosts_handler]')[1]
+                if new_ssh_conn is not None:
+                    used_ssh_conn.close()
+                return int(ret)
+            except:
+                raise(stress_test.controller_exceptions.ODLGetOperHostsError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_oper_switches(self, new_ssh_conn=None):
         """Wrapper to the controller oper_switches handler
         """
         logging.info('[Controller] Query number of switches '
                      ' registered in ODL operational DS')
-        if new_ssh_conn is not None:
-            used_ssh_conn = new_ssh_conn
-        else:
-            used_ssh_conn = self._ssh_conn
-        ret = util.netutil.ssh_run_command(used_ssh_conn,
-                                           ' '.join([self.oper_switches,
-                                                     str(self.ip),
-                                                     str(self.restconf_port),
-                                                     str(self.restconf_user),
-                                                     str(self.restconf_pass)]),
-                                           '[controller.operational'
-                                           '_switches_handler]')[1]
-        if new_ssh_conn is not None:
-            used_ssh_conn.close()
-        return int(ret)
+        try:
+            try:
+                if new_ssh_conn is not None:
+                    used_ssh_conn = new_ssh_conn
+                else:
+                    used_ssh_conn = self._ssh_conn
+                ret = util.netutil.ssh_run_command(
+                    used_ssh_conn, ' '.join([self.oper_switches,
+                                             str(self.ip),
+                                             str(self.restconf_port),
+                                             str(self.restconf_user),
+                                             str(self.restconf_pass)]),
+                    '[controller.operational switches_handler]')[1]
+                if new_ssh_conn is not None:
+                    used_ssh_conn.close()
+                return int(ret)
+            except:
+                raise(stress_test.controller_exceptions.ODLGetOperSwitchesError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_oper_links(self, new_ssh_conn=None):
         """Wrapper to the controller oper_links handler
         """
         logging.info('[Controller] Query number of links registered in '
                      ' ODL operational DS')
-        if new_ssh_conn is not None:
-            used_ssh_conn = new_ssh_conn
-        else:
-            used_ssh_conn = self._ssh_conn
-        ret = util.netutil.ssh_run_command(used_ssh_conn,
-                                           ' '.join([self.oper_links,
-                                                     str(self.ip),
-                                                     str(self.restconf_port),
-                                                     str(self.restconf_user),
-                                                     str(self.restconf_pass)]),
-                                           '[controller.operational_links'
-                                           '_handler]')[1]
-        if new_ssh_conn is not None:
-            used_ssh_conn.close()
-        return int(ret)
+        try:
+            try:
+                if new_ssh_conn is not None:
+                    used_ssh_conn = new_ssh_conn
+                else:
+                    used_ssh_conn = self._ssh_conn
+                ret = util.netutil.ssh_run_command(
+                    used_ssh_conn, ' '.join([self.oper_links,
+                                             str(self.ip),
+                                             str(self.restconf_port),
+                                             str(self.restconf_user),
+                                             str(self.restconf_pass)]),
+                    '[controller.operational_links_handler]')[1]
+                if new_ssh_conn is not None:
+                    used_ssh_conn.close()
+                return int(ret)
+            except:
+                raise(stress_test.controller_exceptions.ODLGetOperLinksError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def get_oper_flows(self, new_ssh_conn=None):
         """Wrapper to the controller oper_flows handler
         """
         logging.info('[Controller] Query number of flows installed for '
                      'all installed nodes of the topology')
-        if new_ssh_conn is not None:
-            used_ssh_conn = new_ssh_conn
-        else:
-            used_ssh_conn = self._ssh_conn
-
-        ret = \
-            util.netutil.ssh_run_command(used_ssh_conn,
-                                         ' '.join([self.oper_flows,
-                                                   str(self.ip),
-                                                   str(self.restconf_port),
-                                                   str(self.restconf_user),
-                                                   str(self.restconf_pass)]),
-                                         '[controller.operational_'
-                                         'flows_handler]')[1]
-        if new_ssh_conn is not None:
-            used_ssh_conn.close()
-        return int(ret)
+        try:
+            try:
+                if new_ssh_conn is not None:
+                    used_ssh_conn = new_ssh_conn
+                else:
+                    used_ssh_conn = self._ssh_conn
+                ret = util.netutil.ssh_run_command(
+                    used_ssh_conn, ' '.join([self.oper_flows,
+                                             str(self.ip),
+                                             str(self.restconf_port),
+                                             str(self.restconf_user),
+                                             str(self.restconf_pass)]),
+                    '[controller.operational_flows_handler]')[1]
+                if new_ssh_conn is not None:
+                    used_ssh_conn.close()
+                return int(ret)
+            except:
+                raise(stress_test.controller_exceptions.ODLGetOperFlowsError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
 
 class ONOS(Controller):
