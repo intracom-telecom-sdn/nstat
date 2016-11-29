@@ -5,6 +5,7 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 import itertools
+import json
 import logging
 import stress_test.common
 import stress_test.controller
@@ -440,13 +441,44 @@ class TestRun:
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
 
+            monitor = stress_test.monitor.NBgen(self, self.nb_emu)
+
+            # ------------------------------------------------------------------
+            # ------------------------------------------------------------------
+            # ------------------------------------------------------------------
+            initial_topology_flows = self.sb_emu.get_flows()
+            initial_operational_ds_flows =  self.nb_emu.get_operational_ds_flows()
+            if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
+                raise ValueError('Initial installed flows were not equal to 0.')
+
+            add_failed_flows_operations = 0
+            delete_failed_flows_operations = 0
+            result_metrics_add = {}
+            result_metrics_del = {}
             start_rest_request_time = time.time()
 
-            self.nb_emu.run()
-            self.nb_emu.monitor_threads_run(start_rest_request_time)
+            nb_generator_start_json_output = self.nb_emu.run()
+            nb_generator_start_output = json.loads(nb_generator_start_json_output)
+
+
+
+            add_failed_flows_operations = nb_generator_start_output[0]
+            add_controller_time = time.time() - start_rest_request_time
+
+
+            result_metrics_add.update(monitor.monitor_threads_run(start_rest_request_time))
+
+            end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
+            add_switch_time = result_metrics_add['switch_operation_time']
+            add_confirm_time = result_metrics_add['confirm_time']
+
+            # ------------------------------------------------------------------
+            # ------------------------------------------------------------------
+            # ------------------------------------------------------------------
             self.sb_emu.cleanup()
             self.ctrl.stop()
             self.ctrl.check_status()
+
 
         logging.info('[Testing] All done!')
         report_spec = \

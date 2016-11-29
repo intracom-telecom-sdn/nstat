@@ -679,6 +679,11 @@ class NBgen(Monitor):
                     return
             gevent.sleep(1)
 
+    def collect_results(self,):
+        initial_topology_flows
+
+
+
     def monitor_threads_run(self, t_start):
         """
         Monitors operational flows in switches of Multinet until the expected

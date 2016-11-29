@@ -6,6 +6,7 @@
 
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
+import emulators.nb_generator
 import gevent
 import logging
 import stress_test.nb_generator_exceptions
@@ -177,6 +178,18 @@ class NBgen:
         except stress_test.nb_generator_exceptions.NBGenError as e:
             self.error_handling(e.err_msg, e.err_code)
 
+    def get_operational_ds_flows(self):
+        """description """
+        odl_inventory = \
+            emulators.nb_generator.flow_utils.FlowExplorer(self.controller.ip,
+                                                           self.controller.restconf_port,
+                                                           'operational',
+                                                           (self.controller.restconf_user,
+                                                           self.controller.restconf_pass))
+        odl_inventory.get_inventory_flows_stats()
+        logging.debug('Found {0} flows at inventory'.
+                      format(odl_inventory.found_flows))
+        return odl_inventory.found_flows
 
     def __poll_flows_ds(self, t_start):
         """
