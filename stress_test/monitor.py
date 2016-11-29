@@ -144,7 +144,7 @@ class Mtcbench(Monitor):
         self.total_samples = []
         self.term_success = '__successful_termination__'
         self.term_fail = '__failed_termination__'
-        self.data_queue = gevent.queue.JoinableQueue()
+        self.data_queue = gevent.queue.Queue()
 
     def monitor_results_active(self):
         results = self.system_results()
@@ -298,7 +298,6 @@ class Mtcbench(Monitor):
             try:
                 # read messages from queue while TERM_SUCCESS has not been sent
                 line = self.data_queue.get(block=True, timeout=10000)
-                self.data_queue.task_done()
                 if line == self.term_success:
                     logging.info('[monitor_thread_active] successful '
                                  'termination string returned. Returning '
@@ -348,7 +347,6 @@ class Mtcbench(Monitor):
                 gevent.spawn(self.monitor_thread_idle, boot_start_time)
         mtcbench_thread = gevent.spawn(self.mtcbench_thread)
         gevent.joinall([monitor_thread, mtcbench_thread])
-        self.data_queue.join()
         samples = self.result_queue.get()
         self.total_samples = self.total_samples + samples
         gevent.killall([monitor_thread, mtcbench_thread])
@@ -363,14 +361,12 @@ class Mtcbench(Monitor):
             self.emulator.run(self.controller.ip, self.controller.of_port)
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
-                self.data_queue.put(self.term_success)
-                self.data_queue.task_done()
+                self.data_queue.put_nowait(self.term_success)
             logging.info('[MTCbench.mtcbench_thread] MTCbench thread ended '
                          'successfully')
         except:
             if self.data_queue is not None:
-                self.data_queue.put(self.term_fail)
-                self.data_queue.task_done()
+                self.data_queue.put_nowait(self.term_fail)
             logging.error('[MTCbench.mtcbench_thread] Exception: '
                           'MTCbench_thread exited with error.')
         return
