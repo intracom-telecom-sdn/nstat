@@ -203,10 +203,6 @@ class TestRun:
         logging.info('[sb_active_scalability_multinet] Build a controller '
                      'on {} host.'.format(host))
 
-        if self.ctrl.persistence_hnd:
-            # disable persistence
-            self.ctrl.disable_persistence()
-
         self.ctrl.generate_xmls()
 
         # EMULATOR preparation
@@ -246,6 +242,10 @@ class TestRun:
             # start a controller
             self.ctrl.check_status()
             self.ctrl.start()
+
+            # disable persistence
+            if self.ctrl.persistence_hnd:
+                self.ctrl.disable_persistence()
 
             if json_conf['sb_emulator_name'] == "MULTINET":
                 print("CTRL obj CREATED")
