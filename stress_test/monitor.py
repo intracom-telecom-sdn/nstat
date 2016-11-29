@@ -356,7 +356,7 @@ class Mtcbench(Monitor):
         """ Function executed by mtcbench thread.
         """
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
-        gevent.sleep(0)
+        gevent.sleep(1)
         try:
             self.emulator.run(self.controller.ip, self.controller.of_port)
             # mtcbench ended, enqueue termination message
