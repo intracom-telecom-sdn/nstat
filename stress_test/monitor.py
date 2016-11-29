@@ -538,6 +538,7 @@ class Multinet(Monitor, Oftraf):
             float(oftraf_monitor_results['tcp_of_in_traffic'][0]) / traffic_gen_ms
         results['tcp_of_in_bytes_per_sec'] = \
             float(oftraf_monitor_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
+        results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
         self.result_queue.put([results])
         return 0
 
