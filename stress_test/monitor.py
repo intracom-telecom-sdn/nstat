@@ -358,7 +358,8 @@ class Mtcbench(Monitor):
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
         gevent.sleep(1)
         try:
-            self.emulator.run(self.controller.ip, self.controller.of_port)
+            self.emulator.run(self.controller.ip, self.controller.of_port,
+                              self.data_queue)
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
                 self.data_queue.put_nowait(self.term_success)
