@@ -142,7 +142,7 @@ class SBEmu:
                     '[SB-Emulator.clean_handler]')
                 if exit_status == 0:
                     self.status = 'CLEANED'
-                    logging.info("[SB-Emulator] Successful cleanup")
+                    logging.info("[SB-Emulator] Successful clean")
                 else:
                     self.status = 'NOT_CLEANED'
                     raise(stress_test.emulator_exceptions.SBEmuCleanupError(

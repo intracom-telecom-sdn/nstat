@@ -321,30 +321,8 @@ class TestRun:
         '''
 
 #        finally:
-
-        # common.generate_json_results(mon.results, json_output)
-        try:
-            self.ctrl.stop()
-        except:
-            print("FLAG: Error on stopping")
-            # pass
-
-# copy_dir_remote_to_local?
-        if self.ctrl.need_cleanup:
-            self.ctrl.clean_hnd()
-        try:
-            self.sb_emu.clean()
-            print("FLAG: MULTINET CLEANED")
-        except:
-            print("FLAG: Error on cleaning")
-            pass
-        # try:
-        #     self.oftraf.stop()
-        # except:
-        #     pass
-
-        self.sb_emu.clean()
-        stress_test.common.close_ssh_connections([self.ctrl._ssh_conn])
+        del self.ctrl
+        del self.sb_emu
 
     def sb_idle_scalability_multinet_run(self,
                                          json_conf,
