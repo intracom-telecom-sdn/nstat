@@ -253,7 +253,7 @@ class Mtcbench(Monitor):
                 return 0
             else:
                 discovered_switches = self.controller.get_oper_switches()
-
+                print('===[DEBUG] Discovered switches ='+str(discovered_switches))
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
                 if discovered_switches > max_discovered_switches:
