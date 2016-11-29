@@ -482,7 +482,7 @@ class Multinet(Monitor, Oftraf):
                 self.result_queue.put([results])
                 return 0
             else:
-                discovered_switches = self.controller.get_switches()
+                discovered_switches = self.controller.get_oper_switches()
 
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
