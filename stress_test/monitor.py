@@ -356,7 +356,7 @@ class Mtcbench(Monitor):
         """ Function executed by mtcbench thread.
         """
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
-
+        gevent.sleep(0)
         try:
             self.emulator.run(self.controller.ip, self.controller.of_port)
             # mtcbench ended, enqueue termination message
@@ -369,7 +369,7 @@ class Mtcbench(Monitor):
                 self.data_queue.put_nowait(self.term_fail)
             logging.error('[MTCbench.mtcbench_thread] Exception: '
                           'MTCbench_thread exited with error.')
-        return
+        return 0
 
 
 class Multinet(Monitor, Oftraf):
