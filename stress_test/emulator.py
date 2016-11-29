@@ -314,7 +314,6 @@ class Multinet(SBEmu):
         overall_topo_size = self.topo_size * len(self.workers_ips)
         return overall_topo_size
 
-
     def __generate_config(self, cntrl_of_port, cntrl_ip):
         """
         Generates a new json configuration file for multinet, according to the

@@ -185,18 +185,18 @@ class Mtcbench(Monitor):
         self.global_sample_id += 1
         results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
-        results['cbench_switches'] = self.emulator.switches
+        results['cbench_switches'] = self.emulator.get_overall_topo_size()
         results['cbench_threads'] = self.emulator.threads
         results['cbench_switches_per_thread'] = \
             self.emulator.switches_per_thread
         results['cbench_thread_creation_delay_ms'] = \
             self.emulator.thread_creation_delay_ms
         results['controller_statistics_period_ms'] = \
-            self.controller.statistics_period_ms
+            self.controller.stat_period_ms
         results['cbench_delay_before_traffic_ms'] = \
             self.emulator.delay_before_traffic_ms
         results['controller_node_ip'] = self.controller.ip
-        results['controller_port'] = str(self.controller.of_port)
+        results['controller_port'] = self.controller.of_port
         results['cbench_mode'] = self.emulator.mode
         results['cbench_ms_per_test'] = self.emulator.ms_per_test
         results['cbench_internal_repeats'] = \
