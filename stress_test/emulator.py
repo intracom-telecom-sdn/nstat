@@ -290,7 +290,8 @@ class Multinet(SBEmu):
         else:
             self.traffic_gen_duration_ms = 0
         if 'interpacket_delay_ms' in test_config:
-            self.interpacket_delay_ms = test_config['interpacket_delay_ms']
+            self.interpacket_delay_ms = \
+                test_config['multinet_interpacket_delay_ms']
         else:
             self.interpacket_delay_ms = 0
 
