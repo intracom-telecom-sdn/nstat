@@ -204,7 +204,7 @@ class MTCBench(SBEmu):
         overall_topo_size = self.threads * self.switches_per_thread
         return overall_topo_size
 
-    def run(self, ctrl_ip, ctrl_sb_port):
+    def run(self, ctrl_ip, ctrl_sb_port, output_queue=None):
         """ Wrapper to the MTCBench SB-Emulator run handler
         :param ctrl_ip: The ip address of the controller
         :param ctrl_sb_port: the port number of the SouthBound interface of
@@ -227,7 +227,7 @@ class MTCBench(SBEmu):
                          str(self.ms_per_test), str(self.internal_repeats),
                          str(self.simulated_hosts), str(self.warmup),
                          self.mode]),
-                    '[MTCBench.run_handler]')
+                    '[MTCBench.run_handler]', output_queue)
                 if exit_status == 0:
                     self.status = 'STARTED'
                     logging.info("[MTCBench] Successful started")
@@ -292,6 +292,14 @@ class Multinet(SBEmu):
         if 'interpacket_delay_ms' in test_config:
             self.interpacket_delay_ms = \
                 test_config['multinet_interpacket_delay_ms']
+            print('interpacket_delay_ms')
+            print('interpacket_delay_ms')
+            print('interpacket_delay_ms')
+            print(self.interpacket_delay_ms)
+            print('interpacket_delay_ms')
+            print('interpacket_delay_ms')
+            print('interpacket_delay_ms')
+            print('interpacket_delay_ms')
         else:
             self.interpacket_delay_ms = 0
 
@@ -313,7 +321,6 @@ class Multinet(SBEmu):
     def get_overall_topo_size(self):
         overall_topo_size = self.topo_size * len(self.workers_ips)
         return overall_topo_size
-
 
     def __generate_config(self, cntrl_of_port, cntrl_ip):
         """

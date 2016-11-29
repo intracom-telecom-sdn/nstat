@@ -185,18 +185,18 @@ class Mtcbench(Monitor):
         self.global_sample_id += 1
         results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
-        results['cbench_switches'] = self.emulator.switches
+        results['cbench_switches'] = self.emulator.get_overall_topo_size()
         results['cbench_threads'] = self.emulator.threads
         results['cbench_switches_per_thread'] = \
             self.emulator.switches_per_thread
         results['cbench_thread_creation_delay_ms'] = \
             self.emulator.thread_creation_delay_ms
         results['controller_statistics_period_ms'] = \
-            self.controller.statistics_period_ms
+            self.controller.stat_period_ms
         results['cbench_delay_before_traffic_ms'] = \
             self.emulator.delay_before_traffic_ms
         results['controller_node_ip'] = self.controller.ip
-        results['controller_port'] = str(self.controller.of_port)
+        results['controller_port'] = self.controller.of_port
         results['cbench_mode'] = self.emulator.mode
         results['cbench_ms_per_test'] = self.emulator.ms_per_test
         results['cbench_internal_repeats'] = \
@@ -252,8 +252,8 @@ class Mtcbench(Monitor):
                 self.result_queue.put([results])
                 return 0
             else:
-                discovered_switches = self.controller.get_switches()
-
+                discovered_switches = self.controller.get_oper_switches()
+                print('===[DEBUG] Discovered switches ='+str(discovered_switches))
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
                 if discovered_switches > max_discovered_switches:
@@ -356,9 +356,10 @@ class Mtcbench(Monitor):
         """ Function executed by mtcbench thread.
         """
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
-
+        gevent.sleep(1)
         try:
-            self.emulator.run(self.controller.ip, self.controller.of_port)
+            self.emulator.run(self.controller.ip, self.controller.of_port,
+                              self.data_queue)
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
                 self.data_queue.put_nowait(self.term_success)
@@ -369,7 +370,7 @@ class Mtcbench(Monitor):
                 self.data_queue.put_nowait(self.term_fail)
             logging.error('[MTCbench.mtcbench_thread] Exception: '
                           'MTCbench_thread exited with error.')
-        return
+        return 0
 
 
 class Multinet(Monitor, Oftraf):
@@ -482,7 +483,7 @@ class Multinet(Monitor, Oftraf):
                 self.result_queue.put([results])
                 return 0
             else:
-                discovered_switches = self.controller.get_switches()
+                discovered_switches = self.controller.get_oper_switches()
 
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
@@ -534,7 +535,6 @@ class Multinet(Monitor, Oftraf):
             float(oftraf_monitor_results['tcp_of_in_traffic'][0]) / traffic_gen_ms
         results['tcp_of_in_bytes_per_sec'] = \
             float(oftraf_monitor_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
-        results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
         self.result_queue.put([results])
         return 0
 
