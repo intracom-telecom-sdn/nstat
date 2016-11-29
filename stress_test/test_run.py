@@ -234,13 +234,15 @@ class TestRun:
              self.sb_emu.topo_type,
              self.sb_emu.topo_hosts_per_switch,
              self.sb_emu.topo_group_size,
-             self.sb_emu.topo_group_delay_ms
+             self.sb_emu.topo_group_delay_ms,
+             self.ctrl.stat_period_ms
              ) in itertools.product(
                 json_conf['multinet_topo_size'],
                 json_conf['multinet_topo_type'],
                 json_conf['multinet_topo_hosts_per_switch'],
                 json_conf['multinet_topo_group_size'],
-                json_conf['multinet_topo_group_delay_ms']):
+                json_conf['multinet_topo_group_delay_ms'],
+                json_conf['controller_statistics_period_ms']):
 
             print("repetition number: {0}".format(i))
             # start a controller
@@ -297,6 +299,12 @@ class TestRun:
             self.sb_emu.cleanup()
 
             i = i + 1
+            print('ITERATION IS DONE!!!!!!!!!!!!!')
+            print('ITERATION IS DONE!!!!!!!!!!!!!')
+            print('ITERATION IS DONE!!!!!!!!!!!!!')
+            print('ITERATION IS DONE!!!!!!!!!!!!!')
+            print('ITERATION IS DONE!!!!!!!!!!!!!')
+            print('ITERATION IS DONE!!!!!!!!!!!!!')
             print(i)
 
         logging.info('[Testing] All done!')
