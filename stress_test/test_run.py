@@ -442,3 +442,15 @@ class TestRun:
             self.sb_emu.cleanup()
             self.ctrl.stop()
             self.ctrl.check_status()
+
+        logging.info('[Testing] All done!')
+        report_spec = \
+            self.report_spec_templates.sb_active_scalability_multinet(json_output)
+        report_gen = stress_test.report_gen.ReportGen(self.args,
+                                                      json_conf,
+                                                      self.total_samples,
+                                                      report_spec)
+        report_gen.generate_json_results()
+        report_gen.generate_plots()
+        report_gen.generate_html_report()
+        report_gen.save_controller_log()
