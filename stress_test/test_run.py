@@ -157,13 +157,11 @@ class TestRun:
              self.ctrl.stat_period_ms
              ) in itertools.product(json_conf['mtcbench_threads'],
                                     json_conf['mtcbench_switches_per_thread'],
-                                    json_conf['mtcbench_thread_creation_'
-                                              'delay_ms'],
-                                    json_conf['mtcbench_delay_before_'
-                                              'traffic_ms'],
+                                    json_conf['mtcbench_thread_creation_delay_ms'],
+                                    json_conf['mtcbench_delay_before_traffic_ms'],
                                     json_conf['mtcbench_simulated_hosts'],
-                                    json_conf['controller_statistics_'
-                                              'period_ms']):
+                                    json_conf['controller_statistics_period_ms']):
+            print('==============DEBUG:::::: '+str(self.sb_emu.simulated_host))
             logging.info('{0} Changing controller statistics period to {1} ms'.
                          format(self.test_type, self.ctrl.stat_period_ms))
             self.ctrl.change_stats()
