@@ -364,11 +364,13 @@ class Mtcbench(Monitor):
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
                 self.data_queue.put(self.term_success)
+                self.data_queue.task_done()
             logging.info('[MTCbench.mtcbench_thread] MTCbench thread ended '
                          'successfully')
         except:
             if self.data_queue is not None:
                 self.data_queue.put(self.term_fail)
+                self.data_queue.task_done()
             logging.error('[MTCbench.mtcbench_thread] Exception: '
                           'MTCbench_thread exited with error.')
         return
@@ -397,7 +399,7 @@ class Multinet(Monitor, Oftraf):
         else:
             logging.info('[Multinet.monitor_run] Idle test monitor is running')
             monitor_thread = \
-                gevent.spawn(self.monitor_thread_idle,boot_start_time)
+                gevent.spawn(self.monitor_thread_idle, boot_start_time)
             self.emulator.start_topos()
         gevent.joinall([monitor_thread])
         samples = self.result_queue.get()
