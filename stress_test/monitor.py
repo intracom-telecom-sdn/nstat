@@ -251,7 +251,6 @@ class Mtcbench(Monitor):
                 results['discovered_switches_error_code'] = error_code
                 results['successful_bootup_time'] = -1
                 self.result_queue.put([results])
-                new_ssh.close()
                 return 0
             else:
                 discovered_switches = self.controller.get_oper_switches(new_ssh)
@@ -279,7 +278,6 @@ class Mtcbench(Monitor):
                     results['discovered_switches_error_code'] = error_code
                     results['successful_bootup_time'] = delta_t
                     self.result_queue.put([results])
-                    new_ssh.close()
                     return 0
             gevent.sleep(1)
 
@@ -571,7 +569,6 @@ class NBgen(Monitor):
                 self.nbgen.e2e_installation_time = -1.0
                 logging.info('[NB_generator] [Poll_flows thread] End to End '
                              'installation time monitor FAILED')
-                new_ssh.close()
                 return
             else:
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
@@ -591,7 +588,6 @@ class NBgen(Monitor):
                     logging.info('[NB_generator] [Poll_flows thread] '
                                  'End to End installation time is: {0}'
                                  .format(self.nbgen.e2e_installation_time))
-                    new_ssh.close()
                     return
             gevent.sleep(1)
 
@@ -616,7 +612,6 @@ class NBgen(Monitor):
                 self.nbgen.confirm_time = -1.0
                 logging.info('[NB_generator] [Poll_flows_confirm thread] '
                              'Confirmation time monitoring FAILED')
-                new_ssh.close()
                 return
             else:
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
@@ -636,7 +631,6 @@ class NBgen(Monitor):
                     logging.info('[NB_generator] [Poll_flows_confirm thread] '
                                  'Confirmation time is: {0}'
                                  .format(self.nbgen.confirm_time))
-                    new_ssh.close()
                     return
             gevent.sleep(1)
 
@@ -664,7 +658,6 @@ class NBgen(Monitor):
                 self.nbgen.discover_flows_on_switches_time = -1.0
                 logging.info('[NB_generator] [Poll_flows_switches thread] '
                              'Discovering flows on switches FAILED')
-                new_ssh.close()
                 return
             else:
                 discovered_flows = self.sbemu.get_flows(new_ssh)
@@ -685,7 +678,6 @@ class NBgen(Monitor):
                     logging.info('[NB_generator] [Poll_flows_switches thread] '
                                  'Time to discover flows on switches is: {0}'
                                  .format(self.nbgen.discover_flows_on_switches_time))
-                    new_ssh.close()
                     return
             gevent.sleep(1)
 
