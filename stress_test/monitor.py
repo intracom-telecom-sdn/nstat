@@ -359,7 +359,7 @@ class Mtcbench(Monitor):
         gevent.sleep(1)
         try:
             self.emulator.run(self.controller.ip, self.controller.of_port,
-                              self.data_queue)
+                              self.data_queue, False)
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
                 self.data_queue.put_nowait(self.term_success)
