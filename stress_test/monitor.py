@@ -252,7 +252,9 @@ class Mtcbench(Monitor):
                 self.result_queue.put([results])
                 return 0
             else:
-                discovered_switches = self.controller.get_oper_switches()
+                new_ssh = self.controller.init_ssh()
+                discovered_switches = self.controller.get_oper_switches(new_ssh)
+                new_ssh.close()
                 print('===[DEBUG] Discovered switches ='+str(discovered_switches))
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
@@ -571,6 +573,7 @@ class NBgen(Monitor):
             else:
                 new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
+                new_ssh.close()
                 logging.debug('[NB_generator] [Poll_flows_ thread] Found {0}'
                               ' flows at inventory'.
                               format(oper_ds_found_flows))
@@ -614,6 +617,7 @@ class NBgen(Monitor):
             else:
                 new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
+                new_ssh.close()
                 logging.debug('[NB_generator] [Poll_flows_confirm thread] '
                               'Found {0} flows at inventory'
                               .format(oper_ds_found_flows))
@@ -660,6 +664,7 @@ class NBgen(Monitor):
             else:
                 new_ssh = self.sbemu.init_ssh()
                 discovered_flows = self.sbemu.get_flows(new_ssh)
+                new_ssh.close()
                 logging.debug('[NB_generator] [Poll_flows_switches thread] '
                               'Found {0} flows at topology switches'
                               .format(discovered_flows))
