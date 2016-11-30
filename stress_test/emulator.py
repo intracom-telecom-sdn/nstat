@@ -83,7 +83,7 @@ class SBEmu:
         exists it returns a new SSH client object to the emulator node.
         """
         logging.info(
-            '[open_ssh_connection] Initiating SSH session with {0} node.'.
+            '[open_ssh_connection] Initiating SSH session with {0} node on {1} host.'.
             format(self.name, self.ip))
         try:
             try:

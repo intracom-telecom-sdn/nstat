@@ -6,7 +6,7 @@
 
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
-import emulators.nb_generator
+#import emulators.nb_generator
 import gevent
 import logging
 import stress_test.nb_generator_exceptions
@@ -46,6 +46,8 @@ class NBgen:
                           test_config['nb_emulator_clean_handler'])
         self.run_hnd = (self.base_dir +
                         test_config['nb_emulator_run_handler'])
+        self.get_oper_ds_flows_hnd = (self.base_dir +
+                        test_config['nb_emulator_get_oper_ds_handler'])
 
         self.status = 'UNKNOWN'
         self._ssh_conn = None
@@ -69,6 +71,7 @@ class NBgen:
 
         self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
 
+
     def error_handling(self, error_message, error_num=1):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
@@ -83,13 +86,19 @@ class NBgen:
 
     def init_ssh(self):
         logging.info(
-            '[open_ssh_connection] Initiating SSH session with {0} node.'.
+            '[open_ssh_connection] Initiating SSH session with {0} node on {1} host.'.
             format(self.name, self.ip))
         try:
             try:
-                self._ssh_conn = util.netutil.ssh_connect_or_return2(
-                    self.ip, int(self.ssh_port), self.ssh_user, self.ssh_pass,
-                    10)
+                if self._ssh_conn is None:
+                    self._ssh_conn = util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
+                else:
+                    # Return a new client ssh object for the nb-generator node
+                    return util.netutil.ssh_connect_or_return2(
+                        self.ip, int(self.ssh_port), self.ssh_user,
+                        self.ssh_pass, 10)
             except:
                 raise(stress_test.nb_generator_exceptions.NBGenNodeConnectionError)
         except stress_test.nb_generator_exceptions.NBGenError as e:
@@ -132,7 +141,7 @@ class NBgen:
         else:
             self.status = 'NOT_CLEANED'
             raise Exception('[NB_generator] Failure during cleaning')
-
+    '''
     def run(self):
         """ Wrapper to the NB-Generator run handler
         :returns: Returns the combined stdout - stderr of the executed command
@@ -177,7 +186,58 @@ class NBgen:
                 raise(stress_test.nb_generator_exceptions.NBGenRunError)
         except stress_test.nb_generator_exceptions.NBGenError as e:
             self.error_handling(e.err_msg, e.err_code)
+    '''
+    def run(self):
+        """ Wrapper to the NB-Generator run handler
+        :returns: Returns the combined stdout - stderr of the executed command
+        :rtype: str
+        """
+        logging.info("[NB_generator] Run handler")
+        self.status = 'STARTED'
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.run_hnd]):
+                    raise(IOError(
+                        '[NB_generator] Run handler does not exist'))
+                cmd = ('{0} {1} {2} {3} {4} {5} {6} {7} '
+                       '{8} {9} {10}'.
+                       format(self.run_hnd,
+                              self.controller.ip,
+                              self.controller.restconf_port,
+                              self.total_flows,
+                              self.flow_workers,
+                              self.flow_operations_delay_ms,
+                              self.flow_delete_flag,
+                              self.controller.restconf_user,
+                              self.controller.restconf_pass,
+                              self.flows_per_request,
+                              self.log_level))
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join(
+                        [self.venv_hnd, self.base_dir, cmd]),
+                    '[NB_generator] Run handler')
+                if exit_status == 0:
+                    self.status = 'NB_GEN_RUNNING'
+                    logging.info("[NB_generator] up and running")
+                else:
+                    self.status = 'NB_GEN_NOT_RUNNING'
+                    raise(stress_test.nb_generator_exceptions.NBGenRunError(
+                        '[NB_generator] Failure during running. {0}'.
+                        format(cmd_output), 2))
+                return cmd_output
+            except stress_test.nb_generator_exceptions.NBGenError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.nb_generator_exceptions.NBGenRunError)
+        except stress_test.nb_generator_exceptions.NBGenError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
+    def get_operational_ds_flows(self):
+        '''get_oper_ds_flows_hnd'''
+        pass
+'''
     def get_operational_ds_flows(self):
         """description """
         odl_inventory = \
@@ -190,7 +250,7 @@ class NBgen:
         logging.debug('Found {0} flows at inventory'.
                       format(odl_inventory.found_flows))
         return odl_inventory.found_flows
-
+'''
     def __poll_flows_ds(self, t_start):
         """
         Monitors operational DS from the time the transmission starts from NB
