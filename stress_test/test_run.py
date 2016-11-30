@@ -45,8 +45,9 @@ class TestRun:
                                                          self.ctrl,
                                                          self.sb_emu)
         self.total_samples = []
-        self.report_spec_templates = stress_test.report_spec_templates.TestReport(
-            test_type, args.json_config)
+        self.report_spec_templates = \
+            stress_test.report_spec_templates.TestReport(test_type,
+                                                         args.json_config)
         self.test_type = test_type
         self.json_conf = json_conf
         self.args = args
@@ -190,145 +191,117 @@ class TestRun:
                                            output_dir):
         """
         """
-#        try:
-        # CONTROLLER preparation
-        # ---------------------------------------------------------------
-        print("STARTING THE TEST")
-        self.ctrl.init_ssh()
+        try:
+            # CONTROLLER preparation
+            # ---------------------------------------------------------------
+            self.ctrl.init_ssh()
 
-        # build a controller
-        self.ctrl.build()
-            # check the effect of build()
-        host = self.ctrl.ssh_user + '@' + self.ctrl.ip
-        logging.info('[sb_active_scalability_multinet] Build a controller '
-                     'on {} host.'.format(host))
+            # build a controller
+            self.ctrl.build()
+            host = self.ctrl.ssh_user + '@' + self.ctrl.ip
+            logging.info('[sb_active_scalability_multinet] Build a controller '
+                         'on {} host.'.format(host))
 
-        self.ctrl.generate_xmls()
+            self.ctrl.generate_xmls()
 
-        # EMULATOR preparation
-        # ---------------------------------------------------------------
-        self.sb_emu.init_ssh()
-        self.sb_emu.build()
+            # EMULATOR preparation
+            # ---------------------------------------------------------------
+            self.sb_emu.init_ssh()
+            self.sb_emu.build()
 
-        logging.info('[sb_active_scalability_multinet] Build a {0} '
-                     'emulator on {1} host'.format(self.sb_emu.name,
-                                                   self.sb_emu.ip))
+            logging.info('[sb_active_scalability_multinet] Build a {0} '
+                         'emulator on {1} host'.format(self.sb_emu.name,
+                                                       self.sb_emu.ip))
 
-        # Oftraf preparation
-        # ---------------------------------------------------------------
-        # self.oftraf.build()
-        print("READY for the loop")
-        i = 1
-        self.ctrl.generate_xmls()
-        self.ctrl.flowmods_config()
-        # TEST run
-        # ---------------------------------------------------------------
+            self.ctrl.generate_xmls()
+            self.ctrl.flowmods_config()
+            # TEST run
+            # ---------------------------------------------------------------
 
-        for (self.sb_emu.topo_size,
-             self.sb_emu.topo_type,
-             self.sb_emu.topo_hosts_per_switch,
-             self.sb_emu.topo_group_size,
-             self.sb_emu.topo_group_delay_ms,
-             self.ctrl.stat_period_ms
-             ) in itertools.product(
-                json_conf['multinet_topo_size'],
-                json_conf['multinet_topo_type'],
-                json_conf['multinet_topo_hosts_per_switch'],
-                json_conf['multinet_topo_group_size'],
-                json_conf['multinet_topo_group_delay_ms'],
-                json_conf['controller_statistics_period_ms']):
+            for (self.sb_emu.topo_size,
+                 self.sb_emu.topo_type,
+                 self.sb_emu.topo_hosts_per_switch,
+                 self.sb_emu.topo_group_size,
+                 self.sb_emu.topo_group_delay_ms,
+                 self.ctrl.stat_period_ms
+                 ) in itertools.product(
+                    json_conf['multinet_topo_size'],
+                    json_conf['multinet_topo_type'],
+                    json_conf['multinet_topo_hosts_per_switch'],
+                    json_conf['multinet_topo_group_size'],
+                    json_conf['multinet_topo_group_delay_ms'],
+                    json_conf['controller_statistics_period_ms']):
 
-            print("repetition number: {0}".format(i))
-            # start a controller
-            self.ctrl.check_status()
-            self.ctrl.start()
+                # start a controller
+                self.ctrl.check_status()
+                self.ctrl.start()
 
-            # disable persistence
-            if self.ctrl.persistence_hnd:
-                self.ctrl.disable_persistence()
+                # disable persistence
+                if self.ctrl.persistence_hnd:
+                    self.ctrl.disable_persistence()
 
-            if json_conf['sb_emulator_name'] == "MULTINET":
-                print("CTRL obj CREATED")
-                print(self.ctrl.ip)
-                print("Create oftraf object")
-                of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-                of.build()
-                of.start()
-                print("Oftraf STARTED object")
-                print("Create Multinet object")
-                monitor = stress_test.monitor.Multinet(self.ctrl,
-                                                       of,
-                                                       self.sb_emu)
-                print(monitor)
-#                exit()
-# ---------------------------------------------DEBUG--------------------------
+                if json_conf['sb_emulator_name'] == "MULTINET":
+                    print(self.ctrl.ip)
+                    of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                    of.build()
+                    of.start()
 
-                # oftraf_node = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-                # mon = stress_test.monitor.Multinet(self.ctrl,
-                #                                   oftraf_node,
-                #                                   self.sb_emu)
-            else:
-                raise NotImplementedError('Not supported yet')
+                    monitor = stress_test.monitor.Multinet(self.ctrl,
+                                                           of,
+                                                           self.sb_emu)
+                    print(monitor)
 
-            # self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-            # self.oftraf.start()
+                else:
+                    raise NotImplementedError('Not supported yet')
 
-            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
-            logging.info('[sb_active_scalability_multinet] '
-                         'Generate multinet config file')
+                self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+                logging.info('[sb_active_scalability_multinet] '
+                             'Generate multinet config file')
 
-            self.sb_emu.init_topos()
-            self.sb_emu.start_topos()
-            time.sleep(10)
-            logging.info("The whole number of switches are: {0}"
-                         .format(self.sb_emu.get_switches()))
-            logging.info("The whole number of flows are: {0}"
-                         .format(self.sb_emu.get_flows()))
+                self.sb_emu.init_topos()
+                self.sb_emu.start_topos()
+                time.sleep(10)
+                logging.info("The whole number of switches are: {0}"
+                             .format(self.sb_emu.get_switches()))
+                logging.info("The whole number of flows are: {0}"
+                             .format(self.sb_emu.get_flows()))
 
-            self.sb_emu.generate_traffic()
+                self.sb_emu.generate_traffic()
 
-            self.total_samples += monitor.monitor_run()
-            # Stop/clean nodes
-            # ---------------------------------------------------------
-            of.stop()
-            self.ctrl.stop()
+                self.total_samples += monitor.monitor_run()
 
-            self.sb_emu.stop_topos()
-            self.sb_emu.cleanup()
+                # Stop/clean nodes
+                # ---------------------------------------------------------
+                of.stop()
+                self.ctrl.stop()
 
-            i = i + 1
-            print('ITERATION IS DONE!!!!!!!!!!!!!')
-            print('ITERATION IS DONE!!!!!!!!!!!!!')
-            print('ITERATION IS DONE!!!!!!!!!!!!!')
-            print('ITERATION IS DONE!!!!!!!!!!!!!')
-            print('ITERATION IS DONE!!!!!!!!!!!!!')
-            print('ITERATION IS DONE!!!!!!!!!!!!!')
-            print(i)
+                self.sb_emu.stop_topos()
+                self.sb_emu.cleanup()
 
-        logging.info('[Testing] All done!')
-        report_spec = self.report_spec_templates.sb_active_scalability_multinet(
-            self.args.json_output)
-        report_gen = stress_test.report_gen.ReportGen(
-            self.args, self.json_conf, self.total_samples, report_spec)
-        report_gen.generate_json_results()
-        report_gen.generate_plots()
-        report_gen.generate_html_report()
-        report_gen.save_controller_log()
-#        except:
-        '''logging.error('{0} ::::::: Exception ::::::::'.format(test_type))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        logging.error('{0} Exception: {1}, {2}'.
-                      format(test_type, exc_type, exc_tb.tb_lineno))
+            logging.info('[Testing] All done!')
+            report_spec = \
+                self.report_spec_templates.sb_active_scalability_multinet(
+                    self.args.json_output)
+            report_gen = stress_test.report_gen.ReportGen(
+                self.args, self.json_conf, self.total_samples, report_spec)
+            report_gen.generate_json_results()
+            report_gen.generate_plots()
+            report_gen.generate_html_report()
+            report_gen.save_controller_log()
+        except:
+            logging.error('{0} ::::::: Exception ::::::::'.
+                          format(self.test_type))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            logging.error('{0} Exception: {1}, {2}'.
+                          format(self.test_type, exc_type, exc_tb.tb_lineno))
+            errors = str(exc_obj).rstrip().split('\n')
+            for error in errors:
+                logging.error('{0} {1}'.format(self.test_type, error))
+            logging.exception('')
 
-        errors = str(exc_obj).rstrip().split('\n')
-        for error in errors:
-            logging.error('{0} {1}'.format(test_type, error))
-        logging.exception('')
-        '''
-
-#        finally:
-        del self.ctrl
-        del self.sb_emu
+        finally:
+            del self.ctrl
+            del self.sb_emu
 
     def sb_idle_scalability_multinet_run(self,
                                          json_conf,
