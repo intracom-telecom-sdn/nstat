@@ -540,8 +540,8 @@ class Multinet(Monitor, Oftraf):
 
 
 class NBgen(Monitor):
-    def __init__(self, nbgen, sbemu):
-        super(self.__class__, self).__init__()
+    def __init__(self, controller, nbgen, sbemu):
+        Monitor.__init__(self, controller)
         self.nbgen = nbgen
         self.sbemu = sbemu
 
