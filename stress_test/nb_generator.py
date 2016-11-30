@@ -237,7 +237,7 @@ class NBgen:
     def get_operational_ds_flows(self):
         '''get_oper_ds_flows_hnd'''
         pass
-'''
+    '''
     def get_operational_ds_flows(self):
         """description """
         odl_inventory = \
@@ -250,7 +250,7 @@ class NBgen:
         logging.debug('Found {0} flows at inventory'.
                       format(odl_inventory.found_flows))
         return odl_inventory.found_flows
-'''
+    '''
     def __poll_flows_ds(self, t_start):
         """
         Monitors operational DS from the time the transmission starts from NB
