@@ -441,7 +441,7 @@ class TestRun:
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
 
-            monitor = stress_test.monitor.NBgen(self.nb_emu)
+            monitor = stress_test.monitor.NBgen(self.ctrl, self.nb_emu, self.sb_emu)
 
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------

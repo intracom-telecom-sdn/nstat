@@ -540,9 +540,10 @@ class Multinet(Monitor, Oftraf):
 
 
 class NBgen(Monitor):
-    def __init__(self, nbgen):
+    def __init__(self, nbgen, sbemu):
         super(self.__class__, self).__init__()
         self.nbgen = nbgen
+        self.sbemu = sbemu
 
     def __poll_flows_ds(self, t_start):
         """
