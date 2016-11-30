@@ -342,25 +342,25 @@ class Mtcbench(Monitor):
             logging.info('[MTCbench.monitor_run] active test monitor is '
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active)
+            self.mtcbench_thread()
         else:
             logging.info('[MTCbench.monitor_run] idle test monitor is running')
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle, boot_start_time)
-        mtcbench_thread = gevent.spawn(self.mtcbench_thread)
-        gevent.joinall([monitor_thread, mtcbench_thread])
+            self.mtcbench_thread()
+        gevent.joinall([monitor_thread])
         samples = self.result_queue.get()
         self.total_samples = self.total_samples + samples
-        gevent.killall([monitor_thread, mtcbench_thread])
+        gevent.killall([monitor_thread])
         return self.total_samples
 
     def mtcbench_thread(self):
         """ Function executed by mtcbench thread.
         """
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
-        gevent.sleep(1)
         try:
             self.emulator.run(self.controller.ip, self.controller.of_port,
-                              self.data_queue, False, getpty_flag=True)
+                              self.data_queue, False)
             # mtcbench ended, enqueue termination message
             if self.data_queue is not None:
                 self.data_queue.put_nowait(self.term_success)
