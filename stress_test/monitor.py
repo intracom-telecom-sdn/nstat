@@ -234,7 +234,6 @@ class Mtcbench(Monitor):
         t_discovery_start = time.time()
         error_code = 0
         max_discovered_switches = 0
-        new_ssh = self.controller.init_ssh()
 
         while True:
             if (time.time() - t_discovery_start) > discovery_deadline:
@@ -253,6 +252,7 @@ class Mtcbench(Monitor):
                 self.result_queue.put([results])
                 return 0
             else:
+                new_ssh = self.controller.init_ssh()
                 discovered_switches = self.controller.get_oper_switches(new_ssh)
                 print('===[DEBUG] Discovered switches ='+str(discovered_switches))
                 if discovered_switches == -1:
@@ -559,7 +559,7 @@ class NBgen(Monitor):
         """
         t_discovery_start = time.time()
         previous_discovered_flows = 0
-        new_ssh = self.controller.init_ssh()
+
         while True:
             if (time.time() - t_discovery_start) > \
                     self.nbgen.flows_ds_discovery_deadline:
@@ -571,6 +571,7 @@ class NBgen(Monitor):
                              'installation time monitor FAILED')
                 return
             else:
+                new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
                 logging.debug('[NB_generator] [Poll_flows_ thread] Found {0}'
                               ' flows at inventory'.
@@ -602,7 +603,7 @@ class NBgen(Monitor):
         t_start = time.time()
         t_discovery_start = time.time()
         previous_discovered_flows = 0
-        new_ssh = self.controller.init_ssh()
+
         while True:
             if (time.time() - t_discovery_start) > \
                     self.nbgen.flows_ds_discovery_deadline:
@@ -614,6 +615,7 @@ class NBgen(Monitor):
                              'Confirmation time monitoring FAILED')
                 return
             else:
+                new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
                 logging.debug('[NB_generator] [Poll_flows_confirm thread] '
                               'Found {0} flows at inventory'
@@ -648,7 +650,7 @@ class NBgen(Monitor):
         """
         t_discovery_start = time.time()
         previous_discovered_flows = 0
-        new_ssh = self.sbemu.init_ssh()
+
         while True:
             if (time.time() - t_discovery_start) > \
                     self.nbgen.flows_ds_discovery_deadline:
@@ -660,6 +662,7 @@ class NBgen(Monitor):
                              'Discovering flows on switches FAILED')
                 return
             else:
+                new_ssh = self.sbemu.init_ssh()
                 discovered_flows = self.sbemu.get_flows(new_ssh)
                 logging.debug('[NB_generator] [Poll_flows_switches thread] '
                               'Found {0} flows at topology switches'
