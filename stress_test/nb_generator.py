@@ -207,7 +207,7 @@ class NBgen:
                                                    self.base_dir,
                                                    self.run_hnd,
                                                    self.controller.ip,
-                                                   self.controller.restconf_port,
+                                                   str(self.controller.restconf_port),
                                                    self.total_flows,
                                                    self.flow_workers,
                                                    self.flow_operations_delay_ms,
