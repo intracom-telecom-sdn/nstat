@@ -59,14 +59,15 @@ class TestRun:
         """
         """
         # CONTROLLER preparation
-        # -------------------------------------------------------------------
+        # ------------------------------------------------------------------
         self.ctrl.init_ssh()
         self.ctrl.build()
 
         # EMULATOR preparation
-        # -------------------------------------------------------------------
+        # ----------------------------------------------------------------
         self.sb_emu.init_ssh()
         self.sb_emu.build()
+        self.ctrl.generate_xmls()
 
         # TEST run
         # -------------------------------------------------------------------
@@ -87,10 +88,20 @@ class TestRun:
                                     list(range(0, json_conf['test_repeats'])),
                                     json_conf['controller_statistics_period_'
                                               'ms']):
+            logging.info('{0} Changing controller statistics period to {1} ms'.
+                         format(self.test_type, self.ctrl.stat_period_ms))
             self.ctrl.change_stats()
+            logging.info('{0} Starting controller'.format(self.test_type))
             self.ctrl.start()
-            self.total_samples = self.mon.monitor_run()
+            logging.info('{0} Starting MTCbench active switches topology and '
+                         'monitor thread'.format(self.test_type))
+            self.total_samples += self.mon.monitor_run()
+            # total_samples = self.mon.monitor_run()
+            logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
+        logging.info('[Testing] All done!')
+        logging.info('[{0}] Generating results report.'.format(self.test_type))
+        self.results_report(json_conf)
 
     def sb_active_stability_cbench_run(self,
                                        json_conf,
@@ -130,6 +141,8 @@ class TestRun:
             self.ctrl.start()
             # total_samples = self.mon.monitor_run()
             self.ctrl.stop()
+        logging.info('[{0}] Generating results report.'.format(self.test_type))
+        self.results_report(json_conf)
 
     def sb_idle_scalability_cbench_run(self,
                                        json_conf,
@@ -176,14 +189,9 @@ class TestRun:
             logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
         logging.info('[Testing] All done!')
-        report_spec = self.report_spec_templates.sb_active_scalability_multinet(
-            self.args.json_output)
-        report_gen = stress_test.report_gen.ReportGen(
-            self.args, json_conf, self.total_samples, report_spec)
-        report_gen.generate_json_results()
-        report_gen.generate_plots()
-        report_gen.generate_html_report()
-        report_gen.save_controller_log()
+        logging.info('[{0}] Generating results report.'.format(self.test_type))
+        self.results_report(json_conf)
+
 
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
@@ -279,15 +287,6 @@ class TestRun:
                 self.sb_emu.cleanup()
 
             logging.info('[Testing] All done!')
-            report_spec = \
-                self.report_spec_templates.sb_active_scalability_multinet(
-                    self.args.json_output)
-            report_gen = stress_test.report_gen.ReportGen(
-                self.args, self.json_conf, self.total_samples, report_spec)
-            report_gen.generate_json_results()
-            report_gen.generate_plots()
-            report_gen.generate_html_report()
-            report_gen.save_controller_log()
         except:
             logging.error('{0} ::::::: Exception ::::::::'.
                           format(self.test_type))
@@ -300,6 +299,13 @@ class TestRun:
             logging.exception('')
 
         finally:
+
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                self.results_report(json_conf)
+            except:
+                logging.error('[{0}] Fail to generate report.')
             del self.ctrl
             del self.sb_emu
 
@@ -345,6 +351,8 @@ class TestRun:
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
             self.ctrl.stop()
+        logging.info('[{0}] Generating results report.'.format(self.test_type))
+        self.results_report(json_conf)
 
     def sb_idle_stability_multinet_run(self,
                                        json_conf,
@@ -463,16 +471,17 @@ class TestRun:
             self.sb_emu.cleanup()
             self.ctrl.stop()
             self.ctrl.check_status()
-
-
         logging.info('[Testing] All done!')
-        report_spec = \
-            self.report_spec_templates.sb_active_scalability_multinet(json_output)
-        report_gen = stress_test.report_gen.ReportGen(self.args,
-                                                      json_conf,
-                                                      self.total_samples,
-                                                      report_spec)
+        logging.info('[{0}] Generating results report.'.format(self.test_type))
+        self.results_report(json_conf)
+
+    def results_report(self, json_conf):
+        report_spec = self.report_spec_templates.sb_active_scalability_multinet(
+            self.args.json_output)
+        report_gen = stress_test.report_gen.ReportGen(
+            self.args, json_conf, self.total_samples, report_spec)
         report_gen.generate_json_results()
         report_gen.generate_plots()
         report_gen.generate_html_report()
         report_gen.save_controller_log()
+        del report_gen
