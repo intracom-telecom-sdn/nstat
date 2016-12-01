@@ -49,6 +49,11 @@ class ReportGen:
                     logging.info(
                         '[generate_json_results] Results written to {0}.'.
                         format(self.args.json_output))
+                logging.info(
+                    '[generate_json_results] copy {0} to {1}.'.
+                    format(self.args.json_output, self.args.output_dir))
+                if os.path.isfile(self.args.json_output):
+                    shutil.copy(self.args.json_output, self.args.output_dir)
             else:
                 logging.error(
                     '[generate_json_results] results parameter was empty.'
@@ -175,3 +180,9 @@ class ReportGen:
         stress_test.html_generation.generate_html(self.report_spec,
                                                   self.args.html_report)
         shutil.move(self.args.html_report, self.args.output_dir)
+
+    def __del__(self):
+        if os.path.dirname(self.args.json_output) != self.args.output_dir:
+            logging.info('[report_gen] Reporting cleanup actions.')
+            if os.path.isfile(self.args.json_output):
+                os.remove(self.args.json_output)

@@ -6,7 +6,7 @@
 
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
-#import emulators.nb_generator
+# import emulators.nb_generator
 import gevent
 import logging
 import stress_test.nb_generator_exceptions
@@ -46,8 +46,8 @@ class NBgen:
                           test_config['nb_emulator_clean_handler'])
         self.run_hnd = (self.base_dir +
                         test_config['nb_emulator_run_handler'])
-        self.get_oper_ds_flows_hnd = (self.base_dir +
-                        test_config['nb_emulator_get_oper_ds_handler'])
+        self.get_oper_ds_flows_hnd = (
+            self.base_dir + test_config['nb_emulator_get_oper_ds_handler'])
 
         self.status = 'UNKNOWN'
         self._ssh_conn = None
@@ -71,7 +71,6 @@ class NBgen:
 
         self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
 
-
     def error_handling(self, error_message, error_num=1):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
@@ -86,8 +85,8 @@ class NBgen:
 
     def init_ssh(self):
         logging.info(
-            '[open_ssh_connection] Initiating SSH session with {0} node on {1} host.'.
-            format(self.name, self.ip))
+            '[open_ssh_connection] Initiating SSH session with {0} node on '
+            '{1} host.'.format(self.name, self.ip))
         try:
             try:
                 if self._ssh_conn is None:
