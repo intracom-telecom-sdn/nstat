@@ -14,6 +14,8 @@ import queue
 import subprocess
 import time
 import util.sysstats
+from gevent import monkey
+monkey.patch_all()
 
 
 class Monitor:
