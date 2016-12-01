@@ -471,7 +471,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel.exec_command(command_to_run)
 
     if not block_flag:
-        return 0
+        return (0, '')
 
     channel_output = ''
     while not channel.exit_status_ready():

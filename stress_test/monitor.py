@@ -345,9 +345,9 @@ class Mtcbench(Monitor):
             monitor_thread = gevent.spawn(self.monitor_thread_active)
         else:
             logging.info('[MTCbench.monitor_run] idle test monitor is running')
+            self.mtcbench_thread(False)
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle, boot_start_time)
-            self.mtcbench_thread(False)
         gevent.joinall([monitor_thread])
         samples = self.result_queue.get()
         self.total_samples = self.total_samples + samples
