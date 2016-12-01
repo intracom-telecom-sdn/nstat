@@ -214,7 +214,7 @@ class NBgen:
                               self.controller.restconf_pass,
                               self.flows_per_request,
                               self.log_level))
-                print(cmd)
+                print([self.venv_hnd, self.base_dir, cmd])
 
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
