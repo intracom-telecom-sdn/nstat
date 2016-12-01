@@ -202,7 +202,7 @@ class NBgen:
                     raise(IOError(
                         '[NB_generator] Run handler does not exist'))
                 cmd = ('{0} {1} {2} {3} {4} {5} {6} {7} '
-                       '{8} {9} {10}'.
+                       '{8} {9} {10}.'.
                        format(self.run_hnd,
                               self.controller.ip,
                               self.controller.restconf_port,
