@@ -200,25 +200,27 @@ class NBgen:
                                            [self.run_hnd]):
                     raise(IOError(
                         '[NB_generator] Run handler does not exist'))
-                cmd = ('{0} {1} {2} {3} {4} {5} {6} {7} '
-                       '{8} {9} {10}'.
-                       format(self.run_hnd,
-                              self.controller.ip,
-                              self.controller.restconf_port,
-                              self.total_flows,
-                              self.flow_workers,
-                              self.flow_operations_delay_ms,
-                              self.flow_delete_flag,
-                              self.controller.restconf_user,
-                              self.controller.restconf_pass,
-                              self.flows_per_request,
-                              self.log_level))
-                print(cmd)
+                exit_status, cmd_output = \
+                    util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([str(self.venv_hnd),
+                                                   str(self.base_dir),
+                                                   str(self.run_hnd),
+                                                   str(self.controller.ip),
+                                                   str(self.controller.restconf_port),
+                                                   str(self.total_flows),
+                                                   str(self.flow_workers),
+                                                   str(self.flow_operations_delay_ms),
+                                                   str(self.flow_delete_flag),
+                                                   str(self.controller.restconf_user),
+                                                   str(self.controller.restconf_pass),
+                                                   str(self.flows_per_request),
+                                                   str(self.log_level)]),
+                                                 '[oftraf.start_handler]',
+                                                 lines_queue=None,
+                                                 print_flag=True,
+                                                 block_flag=True,
+                                                 getpty_flag=True)
 
-                exit_status, cmd_output = util.netutil.ssh_run_command(
-                    self._ssh_conn, ' '.join(
-                        [self.venv_hnd, self.base_dir, cmd]),
-                    '[NB_generator] Run handler')
                 if exit_status == 0:
                     self.status = 'NB_GEN_RUNNING'
                     logging.info("[NB_generator] up and running")
