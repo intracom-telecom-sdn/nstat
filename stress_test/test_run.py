@@ -57,6 +57,13 @@ class TestRun:
                                          json_output,
                                          output_dir):
         """
+        Runs the SouthBound scalability test with active MT-Cbench switches
+        :param json_conf: JSON configuration dictionary
+        :param json_output: JSON output file (results)
+        :param output_dir: directory to store output files
+        :type json_conf: str
+        :type json_output: str
+        :type output_dir: str
         """
         # CONTROLLER preparation
         # ------------------------------------------------------------------
@@ -108,6 +115,13 @@ class TestRun:
                                        json_output,
                                        output_dir):
         """
+        Runs the SouthBound stability test with active MT-Cbench switches
+        :param json_conf: JSON configuration dictionary
+        :param json_output: JSON output file (results)
+        :param output_dir: directory to store output files
+        :type json_conf: str
+        :type json_output: str
+        :type output_dir: str
         """
 
         # CONTROLLER preparation
@@ -149,6 +163,13 @@ class TestRun:
                                        json_output,
                                        output_dir):
         """
+        Runs the SouthBound scalability test with idle MT-Cbench switches
+        :param json_conf: JSON configuration dictionary
+        :param json_output: JSON output file (results)
+        :param output_dir: directory to store output files
+        :type json_conf: str
+        :type json_output: str
+        :type output_dir: str
         """
 
         # CONTROLLER preparation
@@ -192,12 +213,18 @@ class TestRun:
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         self.results_report(json_conf)
 
-
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
                                            json_output,
                                            output_dir):
         """
+        Runs the SouthBound scalability test with active Multinet switches
+        :param json_conf: JSON configuration dictionary
+        :param json_output: JSON output file (results)
+        :param output_dir: directory to store output files
+        :type json_conf: str
+        :type json_output: str
+        :type output_dir: str
         """
         try:
             # CONTROLLER preparation
@@ -314,7 +341,15 @@ class TestRun:
                                          json_output,
                                          output_dir):
         """
+        Runs the SouthBound scalability test with idle Multinet switches
+        :param json_conf: JSON configuration dictionary
+        :param json_output: JSON output file (results)
+        :param output_dir: directory to store output files
+        :type json_conf: str
+        :type json_output: str
+        :type output_dir: str
         """
+
         # CONTROLLER preparation
         # ------------------------------------------------------------------
         self.ctrl.init_ssh()
@@ -359,6 +394,13 @@ class TestRun:
                                        json_output,
                                        output_dir):
         """
+        Runs the SouthBound stability test with idle Multinet switches
+        :param json_conf: JSON configuration dictionary
+        :param json_output: JSON output file (results)
+        :param output_dir: directory to store output files
+        :type json_conf: str
+        :type json_output: str
+        :type output_dir: str
         """
 
         # CONTROLLER preparation
@@ -380,6 +422,15 @@ class TestRun:
                                            json_conf,
                                            json_output,
                                            output_dir):
+        """
+        Runs the NorthBound scalability test with idle Multinet switches
+        :param json_conf: JSON configuration dictionary
+        :param json_output: JSON output file (results)
+        :param output_dir: directory to store output files
+        :type json_conf: str
+        :type json_output: str
+        :type output_dir: str
+        """
 
         # CONTROLLER preparation
         # ------------------------------------------------------------------
@@ -408,14 +459,14 @@ class TestRun:
              self.sb_emu.topo_type,
              self.ctrl.stat_period_ms) in \
                  itertools.product(json_conf['total_flows'],
-                     json_conf['flow_operations_delay_ms'],
-                     json_conf['multinet_topo_size'],
-                     json_conf['flow_workers'],
-                     json_conf['multinet_topo_group_size'],
-                     json_conf['multinet_topo_group_delay_ms'],
-                     json_conf['multinet_topo_hosts_per_switch'],
-                     json_conf['multinet_topo_type'],
-                     json_conf['controller_statistics_period_ms']):
+                                   json_conf['flow_operations_delay_ms'],
+                                   json_conf['multinet_topo_size'],
+                                   json_conf['flow_workers'],
+                                   json_conf['multinet_topo_group_size'],
+                                   json_conf['multinet_topo_group_delay_ms'],
+                                   json_conf['multinet_topo_hosts_per_switch'],
+                                   json_conf['multinet_topo_type'],
+                                   json_conf['controller_statistics_period_ms']):
             self.ctrl.check_status()
             self.ctrl.start()
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
@@ -440,7 +491,7 @@ class TestRun:
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------
             initial_topology_flows = self.sb_emu.get_flows()
-            initial_operational_ds_flows =  self.nb_emu.get_operational_ds_flows()
+            initial_operational_ds_flows = self.nb_emu.get_operational_ds_flows()
             if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
                 raise ValueError('Initial installed flows were not equal to 0.')
 
