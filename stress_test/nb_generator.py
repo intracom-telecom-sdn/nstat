@@ -234,11 +234,7 @@ class NBgen:
                                                    str(self.controller.restconf_pass),
                                                    str(self.flows_per_request),
                                                    str(self.log_level)]),
-                                                 '[NB_generator_handler]',
-                                                 lines_queue=None,
-                                                 print_flag=True,
-                                                 block_flag=True,
-                                                 getpty_flag=True)
+                                                 '[NB_generator_handler]')
                 print('************************************************')
                 print(exit_status)
                 if exit_status == 0:
