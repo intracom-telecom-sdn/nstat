@@ -201,6 +201,15 @@ class NBgen:
                     raise(IOError(
                         '[NB_generator] get_oper_ds_flows handler does '
                         'not exist'))
+
+                    print(str(self.venv_hnd),
+                          str(self.base_dir),
+                          str(self.get_oper_ds_flows_hnd),
+                          str(self.controller.ip),
+                          str(self.controller.restconf_port),
+                          str(self.controller.restconf_user),
+                          str(self.controller.restconf_pass))
+
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(self._ssh_conn,
                                                  ' '.join([str(self.venv_hnd),
@@ -212,6 +221,10 @@ class NBgen:
                                                  str(self.controller.restconf_pass)]),
                                                  '[NB_generator] '
                                                  'get_oper_ds_flows handler]')
+                print("************************************************")
+                print(cmd_output)
+                print("************************************************")
+                print("************************************************")
                 if exit_status == 0:
                     logging.info("[NB_generator] up and running")
                 else:
