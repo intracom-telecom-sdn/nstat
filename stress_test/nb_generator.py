@@ -193,9 +193,6 @@ class NBgen:
         :rtype: str
         """
         logging.info("[NB_generator] get_oper_ds_flows handler")
-
-
-
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
@@ -204,38 +201,15 @@ class NBgen:
                     raise(IOError(
                         '[NB_generator] get_oper_ds_flows handler does '
                         'not exist'))
-                ret = util.netutil.ssh_run_command(
-                    used_ssh_conn, ' '.join([self.oper_flows,
-                                             str(self.ip),
-                                             str(self.restconf_port),
-                                             str(self.restconf_user),
-                                             str(self.restconf_pass)]),
-                    '[controller.operational_flows_handler]')[1]
-
-                return int(ret)
-            except:
-                raise(stress_test.controller_exceptions.ODLGetOperFlowsError)
-        except stress_test.controller_exceptions.CtrlError as e:
-            self.error_handling(e.err_msg, e.err_code)
-
-
-        try:
-            try:
-                if not util.netutil.isfile(self.ip, self.ssh_port,
-                                           self.ssh_user, self.ssh_pass,
-                                           [self.run_hnd]):
-                    raise(IOError(
-                        '[NB_generator] get_oper_ds_flows handler does '
-                        'not exist'))
-                exit_status, ret = \
+                exit_status, cmd_output = \
                     util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([str(self.venv_hnd),
-                                                   str(self.base_dir),
-                                                   str(self.get_oper_ds_flows()),
-                                                   str(self.controller.ip),
-                                                   str(self.controller.restconf_port),
-                                                   str(self.controller.restconf_user),
-                                                   str(self.controller.restconf_pass)]),
+                                                 ' '.join([str(self.venv_hnd),
+                                                 str(self.base_dir),
+                                                 str(self.get_oper_ds_flows_hnd),
+                                                 str(self.controller.ip),
+                                                 str(self.controller.restconf_port),
+                                                 str(self.controller.restconf_user),
+                                                 str(self.controller.restconf_pass)]),
                                                  '[NB_generator] '
                                                  'get_oper_ds_flows handler]')
                 if exit_status == 0:
@@ -245,7 +219,7 @@ class NBgen:
                         '[NB_generator] Failure during getting the flows from'
                         'operational DS . {0}'.
                         format(cmd_output), 2))
-                return int(ret)
+                return int(cmd_output)
             except stress_test.nb_generator_exceptions.NBGenError as e:
                 self.error_handling(e.err_msg, e.err_code)
             except:
