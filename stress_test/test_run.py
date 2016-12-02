@@ -487,11 +487,12 @@ class TestRun:
             print('===========================================================')
             initial_topology_flows = self.sb_emu.get_flows()
             initial_operational_ds_flows = self.nb_emu.get_oper_ds_flows()
+            logging.info("initial_operational_ds_flows: {0}".
+                         format(initial_operational_ds_flows))
             print('===========================================================')
             print('===========================================================')
             print('===========================================================')
             print('===========================================================')
-            print(initial_operational_ds_flows)
             exit()
             if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
                 raise ValueError('Initial installed flows were not equal to 0.')
