@@ -75,7 +75,7 @@ class TestRun:
         self.sb_emu.init_ssh()
         self.sb_emu.build()
         self.ctrl.generate_xmls()
-
+        global_sample_id = 0
         # TEST run
         # -------------------------------------------------------------------
         for (self.sb_emu.threads,
@@ -83,7 +83,7 @@ class TestRun:
              self.sb_emu.thread_creation_delay_ms,
              self.sb_emu.delay_before_traffic_ms,
              self.sb_emu.simulated_hosts,
-             self.repeat_id,
+             repeat_id,
              self.ctrl.stat_period_ms
              ) in itertools.product(json_conf['mtcbench_threads'],
                                     json_conf['mtcbench_switches_per_thread'],
@@ -95,6 +95,9 @@ class TestRun:
                                     list(range(0, json_conf['test_repeats'])),
                                     json_conf['controller_statistics_period_'
                                               'ms']):
+            self.mon.global_sample_id = global_sample_id
+            self.mon.repeat_id = repeat_id
+            self.mon.test_repeats = json_conf['test_repeats']
             logging.info('{0} Changing controller statistics period to {1} ms'.
                          format(self.test_type, self.ctrl.stat_period_ms))
             self.ctrl.change_stats()
@@ -106,6 +109,7 @@ class TestRun:
             # total_samples = self.mon.monitor_run()
             logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
+            global_sample_id += 1
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         self.results_report(json_conf)
@@ -142,7 +146,7 @@ class TestRun:
              self.sb_emu.thread_creation_delay_ms,
              self.sb_emu.delay_before_traffic_ms,
              self.sb_emu.simulated_hosts,
-             self.repeat_id,
+             repeat_id,
              self.ctrl.stat_period_ms
              ) in itertools.product(json_conf['mtcbench_threads'],
                                     json_conf['mtcbench_switches_per_thread'],
@@ -182,7 +186,7 @@ class TestRun:
         self.sb_emu.init_ssh()
         self.sb_emu.build()
         self.ctrl.generate_xmls()
-
+        global_sample_id = 0
         # TEST run
         # ----------------------------------------------------------------
         for (self.sb_emu.threads,
@@ -197,6 +201,7 @@ class TestRun:
                                     json_conf['mtcbench_delay_before_traffic_ms'],
                                     json_conf['mtcbench_simulated_hosts'],
                                     json_conf['controller_statistics_period_ms']):
+            self.mon.global_sample_id = global_sample_id
             logging.info('{0} Changing controller statistics period to {1} ms'.
                          format(self.test_type, self.ctrl.stat_period_ms))
             self.ctrl.change_stats()
@@ -209,6 +214,7 @@ class TestRun:
             # total_samples = self.mon.monitor_run()
             logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
+            global_sample_id += 1
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         self.results_report(json_conf)
@@ -252,7 +258,12 @@ class TestRun:
             self.ctrl.flowmods_config()
             # TEST run
             # ---------------------------------------------------------------
-
+            of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+            monitor = stress_test.monitor.Multinet(self.ctrl,
+                                                   of,
+                                                   self.sb_emu)
+            of.build()
+            global_sample_id = 0
             for (self.sb_emu.topo_size,
                  self.sb_emu.topo_type,
                  self.sb_emu.topo_hosts_per_switch,
@@ -266,7 +277,7 @@ class TestRun:
                     json_conf['multinet_topo_group_size'],
                     json_conf['multinet_topo_group_delay_ms'],
                     json_conf['controller_statistics_period_ms']):
-
+                monitor.global_sample_id = global_sample_id
                 # start a controller
                 self.ctrl.check_status()
                 self.ctrl.start()
@@ -275,24 +286,10 @@ class TestRun:
                 if self.ctrl.persistence_hnd:
                     self.ctrl.disable_persistence()
 
-                if json_conf['sb_emulator_name'] == "MULTINET":
-                    print(self.ctrl.ip)
-                    of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-                    of.build()
-                    of.start()
-
-                    monitor = stress_test.monitor.Multinet(self.ctrl,
-                                                           of,
-                                                           self.sb_emu)
-                    print(monitor)
-
-                else:
-                    raise NotImplementedError('Not supported yet')
-
+                of.start()
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 logging.info('[sb_active_scalability_multinet] '
                              'Generate multinet config file')
-
                 self.sb_emu.init_topos()
                 self.sb_emu.start_topos()
                 time.sleep(10)
@@ -312,6 +309,7 @@ class TestRun:
 
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
+                global_sample_id += 1
 
             logging.info('[Testing] All done!')
         except:
@@ -326,7 +324,10 @@ class TestRun:
             logging.exception('')
 
         finally:
-
+            try:
+                of.clean()
+            except:
+                pass
             try:
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
