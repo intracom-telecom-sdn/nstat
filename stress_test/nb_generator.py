@@ -236,7 +236,6 @@ class NBgen:
                                            str(self.log_level)]),
                                          '[NB_generator_handler]')
         print('************************************************')
-        print(exit_status)
         if exit_status == 0:
             self.status = 'NB_GEN_RUNNING'
             logging.info("[NB_generator] up and running")
