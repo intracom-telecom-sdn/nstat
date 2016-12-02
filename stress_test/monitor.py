@@ -341,8 +341,8 @@ class Mtcbench(Monitor):
         if boot_start_time is None:
             logging.info('[MTCbench.monitor_run] active test monitor is '
                          'running')
-            self.mtcbench_thread()
             monitor_thread = gevent.spawn(self.monitor_thread_active)
+            self.mtcbench_thread()
         else:
             logging.info('[MTCbench.monitor_run] idle test monitor is running')
             self.mtcbench_thread(False)
