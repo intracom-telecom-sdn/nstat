@@ -219,7 +219,7 @@ class NBgen:
                         '[NB_generator] Failure during getting the flows from'
                         'operational DS . {0}'.
                         format(cmd_output), 2))
-                return int(cmd_output)
+                return cmd_output
             except stress_test.nb_generator_exceptions.NBGenError as e:
                 self.error_handling(e.err_msg, e.err_code)
             except:
