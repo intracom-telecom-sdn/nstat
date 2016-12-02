@@ -170,7 +170,7 @@ class NBgen:
                                                    str(self.controller.restconf_pass),
                                                    str(self.flows_per_request),
                                                    str(self.log_level)]),
-                                                 '[NB_generator_handler]')
+                                                 '[NB_generator] run_handler]')
                 if exit_status == 0:
                     self.status = 'NB_GEN_RUNNING'
                     logging.info("[NB_generator] up and running")
@@ -188,13 +188,70 @@ class NBgen:
             self.error_handling(e.err_msg, e.err_code)
 
     def get_oper_ds_flows(self):
-        '''get_oper_ds_flows_hnd'''
-        pass
+        """ Wrapper to the NB-Generator get operational DS flows handler
+        :returns: Returns the combined stdout - stderr of the executed command
+        :rtype: str
+        """
+        logging.info("[NB_generator] get_oper_ds_flows handler")
 
-        ip = sys.argv[1]
-        restconf_port = sys.argv[2]
-        restconf_user = sys.argv[3]
-        restconf_pass = sys.argv[4]
+
+
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.run_hnd]):
+                    raise(IOError(
+                        '[NB_generator] get_oper_ds_flows handler does '
+                        'not exist'))
+                ret = util.netutil.ssh_run_command(
+                    used_ssh_conn, ' '.join([self.oper_flows,
+                                             str(self.ip),
+                                             str(self.restconf_port),
+                                             str(self.restconf_user),
+                                             str(self.restconf_pass)]),
+                    '[controller.operational_flows_handler]')[1]
+
+                return int(ret)
+            except:
+                raise(stress_test.controller_exceptions.ODLGetOperFlowsError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self.error_handling(e.err_msg, e.err_code)
+
+
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.run_hnd]):
+                    raise(IOError(
+                        '[NB_generator] get_oper_ds_flows handler does '
+                        'not exist'))
+                exit_status, ret = \
+                    util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([str(self.venv_hnd),
+                                                   str(self.base_dir),
+                                                   str(self.get_oper_ds_flows()),
+                                                   str(self.controller.ip),
+                                                   str(self.controller.restconf_port),
+                                                   str(self.controller.restconf_user),
+                                                   str(self.controller.restconf_pass)]),
+                                                 '[NB_generator] '
+                                                 'get_oper_ds_flows handler]')
+                if exit_status == 0:
+                    logging.info("[NB_generator] up and running")
+                else:
+                    raise(stress_test.nb_generator_exceptions.NBGenRunError(
+                        '[NB_generator] Failure during getting the flows from'
+                        'operational DS . {0}'.
+                        format(cmd_output), 2))
+                return int(ret)
+            except stress_test.nb_generator_exceptions.NBGenError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.nb_generator_exceptions.NBGenRunError)
+        except stress_test.nb_generator_exceptions.NBGenError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
 
     def __poll_flows_ds(self, t_start):
