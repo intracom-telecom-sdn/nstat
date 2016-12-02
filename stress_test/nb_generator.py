@@ -193,65 +193,65 @@ class NBgen:
         """
         logging.info("[NB_generator] Run handler")
         self.status = 'STARTED'
-        try:
-            try:
-                if not util.netutil.isfile(self.ip, self.ssh_port,
-                                           self.ssh_user, self.ssh_pass,
-                                           [self.run_hnd]):
-                    raise(IOError(
-                        '[NB_generator] Run handler does not exist'))
-                print('************************************************')
-                print('************************************************')
-                print('************************************************')
-                print('************************************************')
+        # try:
+        #    try:
+        if not util.netutil.isfile(self.ip, self.ssh_port,
+                                   self.ssh_user, self.ssh_pass,
+                                   [self.run_hnd]):
+            raise(IOError(
+                '[NB_generator] Run handler does not exist'))
+        print('************************************************')
+        print('************************************************')
+        print('************************************************')
+        print('************************************************')
 
-                print('************************************************')
-                print(' '.join([str(self.venv_hnd),
-                                                   str(self.base_dir),
-                                                   str(self.run_hnd),
-                                                   str(self.controller.ip),
-                                                   str(self.controller.restconf_port),
-                                                   str(self.total_flows),
-                                                   str(self.flow_workers),
-                                                   str(self.flow_operations_delay_ms),
-                                                   str(self.flow_delete_flag),
-                                                   str(self.controller.restconf_user),
-                                                   str(self.controller.restconf_pass),
-                                                   str(self.flows_per_request),
-                                                   str(self.log_level)]))
-                exit_status, cmd_output = \
-                    util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([str(self.venv_hnd),
-                                                   str(self.base_dir),
-                                                   str(self.run_hnd),
-                                                   str(self.controller.ip),
-                                                   str(self.controller.restconf_port),
-                                                   str(self.total_flows),
-                                                   str(self.flow_workers),
-                                                   str(self.flow_operations_delay_ms),
-                                                   str(self.flow_delete_flag),
-                                                   str(self.controller.restconf_user),
-                                                   str(self.controller.restconf_pass),
-                                                   str(self.flows_per_request),
-                                                   str(self.log_level)]),
-                                                 '[NB_generator_handler]')
-                print('************************************************')
-                print(exit_status)
-                if exit_status == 0:
-                    self.status = 'NB_GEN_RUNNING'
-                    logging.info("[NB_generator] up and running")
-                else:
-                    self.status = 'NB_GEN_NOT_RUNNING'
-                    raise(stress_test.nb_generator_exceptions.NBGenRunError(
-                        '[NB_generator] Failure during running. {0}'.
-                        format(cmd_output), 2))
-                return cmd_output
-            except stress_test.nb_generator_exceptions.NBGenError as e:
-                self.error_handling(e.err_msg, e.err_code)
-            except:
-                raise(stress_test.nb_generator_exceptions.NBGenRunError)
-        except stress_test.nb_generator_exceptions.NBGenError as e:
-            self.error_handling(e.err_msg, e.err_code)
+        print('************************************************')
+        print(' '.join([str(self.venv_hnd),
+                                           str(self.base_dir),
+                                           str(self.run_hnd),
+                                           str(self.controller.ip),
+                                           str(self.controller.restconf_port),
+                                           str(self.total_flows),
+                                           str(self.flow_workers),
+                                           str(self.flow_operations_delay_ms),
+                                           str(self.flow_delete_flag),
+                                           str(self.controller.restconf_user),
+                                           str(self.controller.restconf_pass),
+                                           str(self.flows_per_request),
+                                           str(self.log_level)]))
+        exit_status, cmd_output = \
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                 ' '.join([str(self.venv_hnd),
+                                           str(self.base_dir),
+                                           str(self.run_hnd),
+                                           str(self.controller.ip),
+                                           str(self.controller.restconf_port),
+                                           str(self.total_flows),
+                                           str(self.flow_workers),
+                                           str(self.flow_operations_delay_ms),
+                                           str(self.flow_delete_flag),
+                                           str(self.controller.restconf_user),
+                                           str(self.controller.restconf_pass),
+                                           str(self.flows_per_request),
+                                           str(self.log_level)]),
+                                         '[NB_generator_handler]')
+        print('************************************************')
+        print(exit_status)
+        if exit_status == 0:
+            self.status = 'NB_GEN_RUNNING'
+            logging.info("[NB_generator] up and running")
+        else:
+            self.status = 'NB_GEN_NOT_RUNNING'
+            raise(stress_test.nb_generator_exceptions.NBGenRunError(
+                '[NB_generator] Failure during running. {0}'.
+                format(cmd_output), 2))
+        return cmd_output
+            # except stress_test.nb_generator_exceptions.NBGenError as e:
+            #    self.error_handling(e.err_msg, e.err_code)
+            # except:
+            #    raise(stress_test.nb_generator_exceptions.NBGenRunError)
+        # except stress_test.nb_generator_exceptions.NBGenError as e:
+        #    self.error_handling(e.err_msg, e.err_code)
 
     def get_operational_ds_flows(self):
         '''get_oper_ds_flows_hnd'''
