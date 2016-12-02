@@ -7,6 +7,7 @@
 import itertools
 import json
 import logging
+import shutil
 import stress_test.common
 import stress_test.controller
 import stress_test.emulator
@@ -534,8 +535,17 @@ class TestRun:
             self.args.json_output)
         report_gen = stress_test.report_gen.ReportGen(
             self.args, json_conf, self.total_samples, report_spec)
-        report_gen.generate_json_results()
-        report_gen.generate_plots()
-        report_gen.generate_html_report()
-        report_gen.save_controller_log()
-        del report_gen
+        try:
+            report_gen.generate_json_results()
+            report_gen.generate_plots()
+            report_gen.generate_html_report()
+            report_gen.save_controller_log()
+            shutil.copy(self.args.json_config, self.args.output_dir)
+        except:
+            logging.error('[results_report] Failure during results generation.'
+                          ' Check if older results are present and clean them '
+                          'or if you have write permissions o the result '
+                          'destination folder.')
+        finally:
+            del report_spec
+            del report_gen
