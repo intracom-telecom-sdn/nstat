@@ -157,7 +157,7 @@ class Mtcbench(Monitor):
         results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
         results['cbench_switches'] = \
-            self.emulator.switches
+            self.emulator.get_overall_topo_size()
         results['cbench_threads'] = \
             self.emulator.cbench_threads
         results['cbench_switches_per_thread'] = \
