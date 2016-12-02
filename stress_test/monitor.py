@@ -6,6 +6,7 @@
 
 """ Controller Class- All controller-related functionality is here"""
 
+import gevent
 import gevent.queue
 import json
 import logging
@@ -338,20 +339,24 @@ class Mtcbench(Monitor):
                      ' monitor and MTCbench threads.')
         # Consumer - producer threads (mtcbench_thread is the producer,
         # monitor_thread is the consumer)
+        threads = []
         if boot_start_time is None:
             logging.info('[MTCbench.monitor_run] active test monitor is '
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active)
-            self.mtcbench_thread()
+            threads.append(monitor_thread)
+            mtcbench_thread = gevent.spawn(self.mtcbench_thread())
+            threads.append(mtcbench_thread)
         else:
             logging.info('[MTCbench.monitor_run] idle test monitor is running')
             self.mtcbench_thread(False)
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle, boot_start_time)
-        gevent.joinall([monitor_thread])
+            threads.append(monitor_thread)
+        gevent.joinall(threads)
         samples = self.result_queue.get()
         self.total_samples = self.total_samples + samples
-        gevent.killall([monitor_thread])
+        gevent.killall(threads)
         return self.total_samples
 
     def mtcbench_thread(self, block_flag=True):
