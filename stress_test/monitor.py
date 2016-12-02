@@ -32,6 +32,7 @@ class Monitor:
         self.controller = controller
         self.global_sample_id = 0
         self.repeat_id = 0
+        self.test_repeats = 0
 
     def system_results(self):
         """ Collect runtime statistics
@@ -151,7 +152,6 @@ class Mtcbench(Monitor):
         results = self.system_results()
         results['global_sample_id'] = \
             self.global_sample_id
-        self.global_sample_id += 1
         results['repeat_id'] = self.repeat_id
 
         results['cbench_simulated_hosts'] = \
@@ -159,7 +159,7 @@ class Mtcbench(Monitor):
         results['cbench_switches'] = \
             self.emulator.get_overall_topo_size()
         results['cbench_threads'] = \
-            self.emulator.cbench_threads
+            self.emulator.threads
         results['cbench_switches_per_thread'] = \
             self.emulator.switches_per_thread
         results['cbench_thread_creation_delay_ms'] = \
@@ -183,7 +183,6 @@ class Mtcbench(Monitor):
     def monitor_results_idle(self):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
-        self.global_sample_id += 1
         results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
         results['cbench_switches'] = self.emulator.get_overall_topo_size()
@@ -413,7 +412,6 @@ class Multinet(Monitor, Oftraf):
     def monitor_results_active(self):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
-        self.global_sample_id += 1
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
             self.emulator.topo_size * len(self.emulator.workers_ips)
@@ -435,7 +433,6 @@ class Multinet(Monitor, Oftraf):
     def monitor_results_idle(self):
             results = self.system_results()
             results['global_sample_id'] = self.global_sample_id
-            self.global_sample_id += 1
             results['multinet_workers'] = len(self.emulator.workers_ips)
             results['multinet_worker_topo_size'] = self.emulator.topo_size
             results['multinet_topology_type'] = self.emulator.topo_type
