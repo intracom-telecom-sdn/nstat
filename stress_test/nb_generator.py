@@ -140,52 +140,7 @@ class NBgen:
         else:
             self.status = 'NOT_CLEANED'
             raise Exception('[NB_generator] Failure during cleaning')
-    '''
-    def run(self):
-        """ Wrapper to the NB-Generator run handler
-        :returns: Returns the combined stdout - stderr of the executed command
-        :rtype: str
-        """
-        logging.info("[NB_generator] Run handler")
-        self.status = 'STARTED'
 
-        try:
-            try:
-                cmd = ('cd {0}; python3.4 {1} {2} {3} {4} {5} {6} {7} {8} '
-                       '{9} {10} {11}'.
-                       format(self.base_dir,
-                              self.run_hnd,
-                              self.controller.ip,
-                              self.controller.restconf_port,
-                              self.total_flows,
-                              self.flow_workers,
-                              self.flow_operations_delay_ms,
-                              self.flow_delete_flag,
-                              self.controller.restconf_user,
-                              self.controller.restconf_pass,
-                              self.flows_per_request,
-                              self.log_level))
-                logging.debug('Generator handler command:{0}.'.format(cmd))
-                exit_status, cmd_output = \
-                    util.netutil.ssh_run_command(self._ssh_conn,
-                                                 cmd,
-                                                 '[NB_generator_run_handler]')
-                if exit_status == 0:
-                    self.status = 'FINISHED'
-                    logging.info("[NB_generator] Successful ran")
-                else:
-                    self.status = 'FAILED'
-                    raise(stress_test.nb_generator_exceptions.NBGenRunError(
-                        '[NB_generator] Failure during running. {0}'.
-                        format(cmd_output), 2))
-                return cmd_output
-            except stress_test.nb_generator_exceptions.NBGenError as e:
-                self.error_handling(e.err_msg, e.err_code)
-            except:
-                raise(stress_test.nb_generator_exceptions.NBGenRunError)
-        except stress_test.nb_generator_exceptions.NBGenError as e:
-            self.error_handling(e.err_msg, e.err_code)
-    '''
     def run(self):
         """ Wrapper to the NB-Generator run handler
         :returns: Returns the combined stdout - stderr of the executed command
@@ -200,25 +155,6 @@ class NBgen:
                                            [self.run_hnd]):
                     raise(IOError(
                         '[NB_generator] Run handler does not exist'))
-                print('************************************************')
-                print('************************************************')
-                print('************************************************')
-                print('************************************************')
-
-                print('************************************************')
-                print(' '.join([str(self.venv_hnd),
-                                                   str(self.base_dir),
-                                                   str(self.run_hnd),
-                                                   str(self.controller.ip),
-                                                   str(self.controller.restconf_port),
-                                                   str(self.total_flows),
-                                                   str(self.flow_workers),
-                                                   str(self.flow_operations_delay_ms),
-                                                   str(self.flow_delete_flag),
-                                                   str(self.controller.restconf_user),
-                                                   str(self.controller.restconf_pass),
-                                                   str(self.flows_per_request),
-                                                   str(self.log_level)]))
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(self._ssh_conn,
                                          ' '.join([str(self.venv_hnd),
@@ -235,8 +171,6 @@ class NBgen:
                                                    str(self.flows_per_request),
                                                    str(self.log_level)]),
                                                  '[NB_generator_handler]')
-                print('************************************************')
-                print(exit_status)
                 if exit_status == 0:
                     self.status = 'NB_GEN_RUNNING'
                     logging.info("[NB_generator] up and running")
@@ -253,23 +187,16 @@ class NBgen:
         except stress_test.nb_generator_exceptions.NBGenError as e:
             self.error_handling(e.err_msg, e.err_code)
 
-    def get_operational_ds_flows(self):
+    def get_oper_ds_flows(self):
         '''get_oper_ds_flows_hnd'''
         pass
-    '''
-    def get_operational_ds_flows(self):
-        """description """
-        odl_inventory = \
-            emulators.nb_generator.flow_utils.FlowExplorer(self.controller.ip,
-                                                           self.controller.restconf_port,
-                                                           'operational',
-                                                           (self.controller.restconf_user,
-                                                           self.controller.restconf_pass))
-        odl_inventory.get_inventory_flows_stats()
-        logging.debug('Found {0} flows at inventory'.
-                      format(odl_inventory.found_flows))
-        return odl_inventory.found_flows
-    '''
+
+        ip = sys.argv[1]
+        restconf_port = sys.argv[2]
+        restconf_user = sys.argv[3]
+        restconf_pass = sys.argv[4]
+
+
     def __poll_flows_ds(self, t_start):
         """
         Monitors operational DS from the time the transmission starts from NB
