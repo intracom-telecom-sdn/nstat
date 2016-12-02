@@ -472,26 +472,26 @@ class TestRun:
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            print('Running NB handler')
             self.nb_emu.run()
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            exit()
-            monitor = stress_test.monitor.NBgen(self.ctrl,
-                                                self.nb_emu,
-                                                self.sb_emu)
+            #monitor = stress_test.monitor.NBgen(self.ctrl,
+            #                                    self.nb_emu,
+            #                                    self.sb_emu)
 
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------
+            print('===========================================================')
+            print('===========================================================')
+            print('===========================================================')
+            print('===========================================================')
             initial_topology_flows = self.sb_emu.get_flows()
-            initial_operational_ds_flows = self.nb_emu.get_operational_ds_flows()
+            initial_operational_ds_flows = self.nb_emu.get_oper_ds_flows()
+            print('===========================================================')
+            print('===========================================================')
+            print('===========================================================')
+            print('===========================================================')
+            print(initial_operational_ds_flows)
+            exit()
             if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
                 raise ValueError('Initial installed flows were not equal to 0.')
 
@@ -502,6 +502,7 @@ class TestRun:
             start_rest_request_time = time.time()
 
             nb_generator_start_json_output = self.nb_emu.run()
+
             nb_generator_start_output = json.loads(nb_generator_start_json_output)
 
 
