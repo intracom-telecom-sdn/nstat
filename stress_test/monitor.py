@@ -317,6 +317,9 @@ class Mtcbench(Monitor):
                                          'string returning gathered samples '
                                          'and exiting.')
                             results['throughput_responses_sec'] = -1
+                            results['internal_repeat_id'] = internal_repeat_id
+                            results['global_sample_id'] = self.global_sample_id
+                            results['test_repeats'] = self.test_repeats
                             test_samples.append(results)
                             self.result_queue.put(test_samples)
                             return
@@ -325,8 +328,11 @@ class Mtcbench(Monitor):
                             results['throughput_responses_sec'] = \
                                 float(match.group(1)) * 1000.0
                         results['internal_repeat_id'] = internal_repeat_id
+                        results['global_sample_id'] = self.global_sample_id
+                        results['test_repeats'] = self.test_repeats
                         test_samples.append(results)
                         internal_repeat_id += 1
+                        self.global_sample_id += 1
             except queue.Empty as exept:
                 logging.error('[monitor_thread_active] {0}'.format(str(exept)))
                 self.result_queue.put(test_samples)

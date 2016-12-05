@@ -110,7 +110,7 @@ class TestRun:
             # total_samples = self.mon.monitor_run()
             logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
-            global_sample_id += 1
+            global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         self.results_report(json_conf)
