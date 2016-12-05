@@ -528,7 +528,7 @@ class TestRun:
             self.sb_emu.cleanup()
             self.ctrl.stop()
             self.ctrl.check_status()
-            ''''
+            '''
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         self.results_report(json_conf)
