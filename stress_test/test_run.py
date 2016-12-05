@@ -495,6 +495,7 @@ class TestRun:
             print('===========================================================')
             print('===========================================================')
             exit()
+            '''
             if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
                 raise ValueError('Initial installed flows were not equal to 0.')
 
@@ -526,6 +527,7 @@ class TestRun:
             self.sb_emu.cleanup()
             self.ctrl.stop()
             self.ctrl.check_status()
+            ''''
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         self.results_report(json_conf)
