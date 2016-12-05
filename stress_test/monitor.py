@@ -143,7 +143,6 @@ class Mtcbench(Monitor):
 
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
-        self.total_samples = []
         self.term_success = '__successful_termination__'
         self.term_fail = '__failed_termination__'
         self.data_queue = gevent.queue.Queue()
@@ -152,6 +151,7 @@ class Mtcbench(Monitor):
         results = self.system_results()
         results['global_sample_id'] = \
             self.global_sample_id
+        self.global_sample_id += 1
         results['repeat_id'] = self.repeat_id
 
         results['cbench_simulated_hosts'] = \
@@ -183,6 +183,7 @@ class Mtcbench(Monitor):
     def monitor_results_idle(self):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
         results['cbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
         results['cbench_switches'] = self.emulator.get_overall_topo_size()
@@ -318,8 +319,6 @@ class Mtcbench(Monitor):
                                          'and exiting.')
                             results['throughput_responses_sec'] = -1
                             results['internal_repeat_id'] = internal_repeat_id
-                            results['global_sample_id'] = self.global_sample_id
-                            results['test_repeats'] = self.test_repeats
                             test_samples.append(results)
                             self.result_queue.put(test_samples)
                             return
@@ -328,11 +327,8 @@ class Mtcbench(Monitor):
                             results['throughput_responses_sec'] = \
                                 float(match.group(1)) * 1000.0
                         results['internal_repeat_id'] = internal_repeat_id
-                        results['global_sample_id'] = self.global_sample_id
-                        results['test_repeats'] = self.test_repeats
                         test_samples.append(results)
                         internal_repeat_id += 1
-                        self.global_sample_id += 1
             except queue.Empty as exept:
                 logging.error('[monitor_thread_active] {0}'.format(str(exept)))
                 self.result_queue.put(test_samples)
@@ -360,9 +356,8 @@ class Mtcbench(Monitor):
             threads.append(monitor_thread)
         gevent.joinall(threads)
         samples = self.result_queue.get()
-        self.total_samples = self.total_samples + samples
         gevent.killall(threads)
-        return self.total_samples
+        return samples
 
     def mtcbench_thread(self, block_flag=True):
         """ Function executed by mtcbench thread.
@@ -391,7 +386,6 @@ class Multinet(Monitor, Oftraf):
 
         print("create a MULTINET MONITOR object")
         self.emulator = emulator
-        self.total_samples = []
         self.result_queue = gevent.queue.Queue()
 
     def monitor_run(self, boot_start_time=None):
@@ -411,13 +405,13 @@ class Multinet(Monitor, Oftraf):
             self.emulator.start_topos()
         gevent.joinall([monitor_thread])
         samples = self.result_queue.get()
-        self.total_samples = self.total_samples + samples
         gevent.killall([monitor_thread])
-        return self.total_samples
+        return samples
 
     def monitor_results_active(self):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
             self.emulator.topo_size * len(self.emulator.workers_ips)
@@ -437,21 +431,22 @@ class Multinet(Monitor, Oftraf):
         return results
 
     def monitor_results_idle(self):
-            results = self.system_results()
-            results['global_sample_id'] = self.global_sample_id
-            results['multinet_workers'] = len(self.emulator.workers_ips)
-            results['multinet_worker_topo_size'] = self.emulator.topo_size
-            results['multinet_topology_type'] = self.emulator.topo_type
-            results['multinet_hosts_per_switch'] = \
-                self.emulator.topo_hosts_per_switch
-            results['multinet_group_size'] = self.emulator.topo_group_size
-            results['multinet_group_delay_ms'] = \
-                self.emulator.topo_group_delay_ms
-            results['controller_statistics_period_ms'] = \
-                self.controller.stat_period_ms
-            results['controller_node_ip'] = self.controller.ip
-            results['controller_port'] = str(self.controller.of_port)
-            return results
+        results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
+        results['multinet_workers'] = len(self.emulator.workers_ips)
+        results['multinet_worker_topo_size'] = self.emulator.topo_size
+        results['multinet_topology_type'] = self.emulator.topo_type
+        results['multinet_hosts_per_switch'] = \
+            self.emulator.topo_hosts_per_switch
+        results['multinet_group_size'] = self.emulator.topo_group_size
+        results['multinet_group_delay_ms'] = \
+            self.emulator.topo_group_delay_ms
+        results['controller_statistics_period_ms'] = \
+            self.controller.stat_period_ms
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = str(self.controller.of_port)
+        return results
 
     def monitor_thread_idle(self, boot_start_time):
         """
