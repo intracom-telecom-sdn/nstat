@@ -186,7 +186,6 @@ class NBgen:
                                                    str(self.flows_per_request),
                                                    str(self.log_level)]),
                                                  '[NB_generator] run_handler]')
-                print(exit_status, cmd_output)
                 if exit_status == 0:
                     self.status = 'NB_GEN_RUNNING'
                     logging.info("[NB_generator] up and running")
@@ -195,9 +194,7 @@ class NBgen:
                     raise(stress_test.nb_generator_exceptions.NBGenRunError(
                         '[NB_generator] Failure during running. {0}'.
                         format(cmd_output), 2))
-                print("cmd_output")
-                print("cmd_output")
-                print("cmd_output")
+                print("cmd_output:")
                 a = type(cmd_output)
                 print(cmd_output)
                 print(a)

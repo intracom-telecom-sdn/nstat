@@ -501,19 +501,10 @@ class TestRun:
                     logging.info("The whole number of flows are: {0}"
                                  .format(self.sb_emu.get_flows()))
 
-                    print('==================================================')
-                    print('==================================================')
-                    print('==================================================')
-                    print('==================================================')
                     initial_topo_flows = self.sb_emu.get_flows()
                     initial_oper_ds_flows = self.ctrl.get_oper_flows()
                     logging.info("initial_operational_ds_flows: {0}".
                                  format(initial_oper_ds_flows))
-                    print('==================================================')
-                    print('==================================================')
-                    print('==================================================')
-                    print('==================================================')
-
                     if (initial_oper_ds_flows != 0 or initial_topo_flows != 0):
                         raise ValueError('Initial installed flows '
                                          'were not equal to 0.')
@@ -525,6 +516,7 @@ class TestRun:
                     start_rest_request_time = time.time()
 
                     nb_gen_start_json_output = self.nb_emu.run()
+                    print(nb_gen_start_json_output)
 
                     nb_gen_start_output = json.loads(nb_gen_start_json_output)
                     exit()
