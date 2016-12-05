@@ -78,7 +78,7 @@
 
 
 "flow_workers":[5],
-"total_flows":[50],
+"total_flows":[1000],
 "flow_operations_delay_ms":[2],
 "flow_delete_flag":false,
 "flows_per_request":10,
