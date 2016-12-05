@@ -509,7 +509,7 @@ class TestRun:
                     print('==================================================')
                     print('==================================================')
                     initial_topo_flows = self.sb_emu.get_flows()
-                    initial_oper_ds_flows = self.controller.get_oper_flows()
+                    initial_oper_ds_flows = self.ctrl.get_oper_flows()
                     logging.info("initial_operational_ds_flows: {0}".
                                  format(initial_oper_ds_flows))
                     print('==================================================')
