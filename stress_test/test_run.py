@@ -88,14 +88,11 @@ class TestRun:
              self.ctrl.stat_period_ms
              ) in itertools.product(json_conf['mtcbench_threads'],
                                     json_conf['mtcbench_switches_per_thread'],
-                                    json_conf['mtcbench_thread_creation_'
-                                              'delay_ms'],
-                                    json_conf['mtcbench_delay_before_traffic'
-                                              '_ms'],
+                                    json_conf['mtcbench_thread_creation_delay_ms'],
+                                    json_conf['mtcbench_delay_before_traffic_ms'],
                                     json_conf['mtcbench_simulated_hosts'],
                                     list(range(0, json_conf['test_repeats'])),
-                                    json_conf['controller_statistics_period_'
-                                              'ms']):
+                                    json_conf['controller_statistics_period_ms']):
             self.mon.global_sample_id = global_sample_id
             self.mon.repeat_id = repeat_id
             self.mon.test_repeats = json_conf['test_repeats']
@@ -110,7 +107,7 @@ class TestRun:
             # total_samples = self.mon.monitor_run()
             logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
-            global_sample_id += 1
+            global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         self.results_report(json_conf)
