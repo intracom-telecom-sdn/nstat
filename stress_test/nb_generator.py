@@ -179,6 +179,12 @@ class NBgen:
                     raise(stress_test.nb_generator_exceptions.NBGenRunError(
                         '[NB_generator] Failure during running. {0}'.
                         format(cmd_output), 2))
+                print("cmd_output:")
+                print("cmd_output:")
+                print("cmd_output:")
+                a = type(cmd_output)
+                print(cmd_output)
+                print(a)
                 return cmd_output
             except stress_test.nb_generator_exceptions.NBGenError as e:
                 self.error_handling(e.err_msg, e.err_code)
