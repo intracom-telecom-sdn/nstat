@@ -243,8 +243,9 @@ class TestRun:
             host = self.ctrl.ssh_user + '@' + self.ctrl.ip
             logging.info('[sb_active_scalability_multinet] Build a controller '
                          'on {} host.'.format(host))
-
             self.ctrl.generate_xmls()
+            self.ctrl.flowmods_config()
+
 
             # EMULATOR preparation
             # ---------------------------------------------------------------
@@ -255,8 +256,6 @@ class TestRun:
                          'emulator on {1} host'.format(self.sb_emu.name,
                                                        self.sb_emu.ip))
 
-            self.ctrl.generate_xmls()
-            self.ctrl.flowmods_config()
             # TEST run
             # ---------------------------------------------------------------
             of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
@@ -434,103 +433,148 @@ class TestRun:
         :type output_dir: str
         """
 
-        # CONTROLLER preparation
-        # ------------------------------------------------------------------
-        self.ctrl.init_ssh()
-        self.ctrl.build()
 
-        # SB EMULATOR preparation
-        # ------------------------------------------------------------------
-        self.sb_emu.init_ssh()
-        self.sb_emu.build()
+        try:
+            # CONTROLLER preparation
+            # ---------------------------------------------------------------
+            self.ctrl.init_ssh()
 
-        # NB EMULATOR preparation
-        # ------------------------------------------------------------------
-        self.nb_emu.init_ssh()
-        self.nb_emu.build()
-
-        # TEST run
-        # ------------------------------------------------------------------
-        for (self.nb_emu.total_flows,
-             self.nb_emu.flow_operations_delay_ms,
-             self.sb_emu.topo_size,
-             self.nb_emu.flow_workers,
-             self.sb_emu.topo_group_size,
-             self.sb_emu.topo_group_delay_ms,
-             self.sb_emu.topo_hosts_per_switch,
-             self.sb_emu.topo_type,
-             self.ctrl.stat_period_ms) in \
-                 itertools.product(json_conf['total_flows'],
-                                   json_conf['flow_operations_delay_ms'],
-                                   json_conf['multinet_topo_size'],
-                                   json_conf['flow_workers'],
-                                   json_conf['multinet_topo_group_size'],
-                                   json_conf['multinet_topo_group_delay_ms'],
-                                   json_conf['multinet_topo_hosts_per_switch'],
-                                   json_conf['multinet_topo_type'],
-                                   json_conf['controller_statistics_period_ms']):
-            self.ctrl.check_status()
-            self.ctrl.start()
-            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
-            self.sb_emu.init_topos()
-            self.sb_emu.start_topos()
-            self.nb_emu.run()
-            #monitor = stress_test.monitor.NBgen(self.ctrl,
-            #                                    self.nb_emu,
-            #                                    self.sb_emu)
-
-            # ------------------------------------------------------------------
-            # ------------------------------------------------------------------
-            # ------------------------------------------------------------------
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            initial_topology_flows = self.sb_emu.get_flows()
-            initial_operational_ds_flows = self.nb_emu.get_oper_ds_flows()
-            logging.info("initial_operational_ds_flows: {0}".
-                         format(initial_operational_ds_flows))
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            print('===========================================================')
-            exit()
-            '''
-            if (initial_operational_ds_flows != 0 or initial_topology_flows != 0):
-                raise ValueError('Initial installed flows were not equal to 0.')
-
-            add_failed_flows_operations = 0
-            delete_failed_flows_operations = 0
-            result_metrics_add = {}
-            result_metrics_del = {}
-            start_rest_request_time = time.time()
-
-            nb_generator_start_json_output = self.nb_emu.run()
-
-            nb_generator_start_output = json.loads(nb_generator_start_json_output)
+            # build a controller
+            self.ctrl.build()
+            host = self.ctrl.ssh_user + '@' + self.ctrl.ip
+            logging.info('[sb_active_scalability_multinet] Build a controller '
+                         'on {} host.'.format(host))
+            self.ctrl.generate_xmls()
+            self.ctrl.flowmods_config()
 
 
+            # EMULATOR preparation
+            # ---------------------------------------------------------------
+            self.sb_emu.init_ssh()
+            self.sb_emu.build()
 
-            add_failed_flows_operations = nb_generator_start_output[0]
-            add_controller_time = time.time() - start_rest_request_time
+            logging.info('[sb_active_scalability_multinet] Build a {0} '
+                         'emulator on {1} host'.format(self.sb_emu.name,
+                                                       self.sb_emu.ip))
+            # NB EMULATOR preparation
+            # --------------------------------------------------------------
+            self.nb_emu.init_ssh()
+            self.nb_emu.build()
+
+            # TEST run
+            # ---------------------------------------------------------------
+            # monitor = stress_test.monitor.NB....(self.ctrl,
+            #                                       of,
+            #                                       self.sb_emu)
+            global_sample_id = 0
+            for (self.nb_emu.total_flows,
+                 self.nb_emu.flow_operations_delay_ms,
+                 self.sb_emu.topo_size,
+                 self.nb_emu.flow_workers,
+                 self.sb_emu.topo_group_size,
+                 self.sb_emu.topo_group_delay_ms,
+                 self.sb_emu.topo_hosts_per_switch,
+                 self.sb_emu.topo_type,
+                 self.ctrl.stat_period_ms
+                 ) in itertools.product(
+                     json_conf['total_flows'],
+                     json_conf['flow_operations_delay_ms'],
+                     json_conf['multinet_topo_size'],
+                     json_conf['flow_workers'],
+                     json_conf['multinet_topo_group_size'],
+                     json_conf['multinet_topo_group_delay_ms'],
+                     json_conf['multinet_topo_hosts_per_switch'],
+                     json_conf['multinet_topo_type'],
+                     json_conf['controller_statistics_period_ms']):
+                    # monitor.global_sample_id = global_sample_id
+                    # start a controller
+                    self.ctrl.check_status()
+                    self.ctrl.start()
+                    # disable persistence
+                    if self.ctrl.persistence_hnd:
+                        self.ctrl.disable_persistence()
+                    self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+                    logging.info('[sb_active_scalability_multinet] '
+                                 'Generate multinet config file')
+                    self.sb_emu.init_topos()
+                    self.sb_emu.start_topos()
+                    time.sleep(10)
+                    logging.info("The whole number of switches are: {0}"
+                                 .format(self.sb_emu.get_switches()))
+                    logging.info("The whole number of flows are: {0}"
+                                 .format(self.sb_emu.get_flows()))
+
+                    print('==================================================')
+                    print('==================================================')
+                    print('==================================================')
+                    print('==================================================')
+                    initial_topo_flows = self.sb_emu.get_flows()
+                    initial_oper_ds_flows = self.ctrl.get_oper_flows()
+                    logging.info("initial_operational_ds_flows: {0}".
+                                 format(initial_oper_ds_flows))
+                    print('==================================================')
+                    print('==================================================')
+                    print('==================================================')
+                    print('==================================================')
+
+                    if (initial_oper_ds_flows != 0 or initial_topo_flows != 0):
+                        raise ValueError('Initial installed flows '
+                                         'were not equal to 0.')
+
+                    add_failed_flows_oper = 0
+                    del_failed_flows_oper = 0
+                    result_metrics_add = {}
+                    result_metrics_del = {}
+                    start_rest_request_time = time.time()
+
+                    nb_gen_start_json_output = self.nb_emu.run()
+
+                    nb_gen_start_output = json.loads(nb_gen_start_json_output)
+                    exit()
 
 
-            result_metrics_add.update(monitor.monitor_threads_run(start_rest_request_time))
+                    add_failed_flows_operations = nb_gen_start_output[0]
+                    add_controller_time = time.time() - start_rest_request_time
 
-            end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
-            add_switch_time = result_metrics_add['switch_operation_time']
-            add_confirm_time = result_metrics_add['confirm_time']
-            exit()
-            # ------------------------------------------------------------------
-            # ------------------------------------------------------------------
-            # ------------------------------------------------------------------
-            self.sb_emu.cleanup()
-            self.ctrl.stop()
-            self.ctrl.check_status()
-            ''''
-        logging.info('[Testing] All done!')
-        logging.info('[{0}] Generating results report.'.format(self.test_type))
-        self.results_report(json_conf)
+                    result_metrics_add.update(monitor.monitor_threads_run(start_rest_request_time))
+
+                    end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
+                    add_switch_time = result_metrics_add['switch_operation_time']
+                    add_confirm_time = result_metrics_add['confirm_time']
+                    # -----------------------------------------------------------------
+                    # -----------------------------------------------------------------
+                    # -----------------------------------------------------------------
+                    # self.total_samples += monitor.monitor_run()
+                    # Stop/clean nodes
+                    # ---------------------------------------------------------
+                    self.ctrl.stop()
+
+                    self.sb_emu.stop_topos()
+                    self.sb_emu.cleanup()
+                    global_sample_id += 1
+
+            logging.info('[Testing] All done!')
+
+        except:
+            logging.error('{0} ::::::: Exception ::::::::'.
+                          format(self.test_type))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            logging.error('{0} Exception: {1}, {2}'.
+                          format(self.test_type, exc_type, exc_tb.tb_lineno))
+            errors = str(exc_obj).rstrip().split('\n')
+            for error in errors:
+                logging.error('{0} {1}'.format(self.test_type, error))
+            logging.exception('')
+
+        finally:
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                self.results_report(json_conf)
+            except:
+                logging.error('[{0}] Fail to generate report.')
+            del self.ctrl
+            del self.sb_emu
 
     def results_report(self, json_conf):
         report_spec = self.report_spec_templates.sb_active_scalability_multinet(
