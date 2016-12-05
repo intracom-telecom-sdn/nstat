@@ -222,7 +222,10 @@ class NBgen:
                                                  '[NB_generator] '
                                                  'get_oper_ds_flows handler]')
                 print("************************************************")
+                print("cmd_output:")
                 print(cmd_output)
+                print("exit_status:")
+                print(exit_status)
                 print("************************************************")
                 print("************************************************")
                 if exit_status == 0:
@@ -239,7 +242,6 @@ class NBgen:
                 raise(stress_test.nb_generator_exceptions.NBGenRunError)
         except stress_test.nb_generator_exceptions.NBGenError as e:
             self.error_handling(e.err_msg, e.err_code)
-
 
     def __poll_flows_ds(self, t_start):
         """

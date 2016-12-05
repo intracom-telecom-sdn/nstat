@@ -519,7 +519,7 @@ class TestRun:
             end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
             add_switch_time = result_metrics_add['switch_operation_time']
             add_confirm_time = result_metrics_add['confirm_time']
-
+            exit()
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------
