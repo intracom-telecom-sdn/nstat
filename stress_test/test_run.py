@@ -475,10 +475,11 @@ class TestRun:
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
             self.nb_emu.run()
+            self.sb_emu.generate_traffic()
+
             #monitor = stress_test.monitor.NBgen(self.ctrl,
             #                                    self.nb_emu,
             #                                    self.sb_emu)
-
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------
             # ------------------------------------------------------------------
