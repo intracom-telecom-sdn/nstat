@@ -53,7 +53,7 @@ class TestRun:
         self.json_conf = json_conf
         self.args = args
 
-    def sb_active_scalability_cbench_run(self,
+    def sb_active_mtcbench_run(self,
                                          json_conf,
                                          json_output,
                                          output_dir):
