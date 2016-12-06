@@ -34,7 +34,7 @@ class NBgen:
         self.sbemu = sbemu
         self.name = test_config['nb_emulator_name']
         self.base_dir = nb_gen_base_dir
-        self.traceback_enabled = False
+        self.traceback_enabled = True
 
         self.ip = test_config['nb_emulator_node_ip']
         self.ssh_port = test_config['nb_emulator_node_ssh_port']
@@ -197,7 +197,7 @@ class NBgen:
                                   str(self.flow_delete_flag),
                                   str(self.controller.restconf_user),
                                   str(self.controller.restconf_pass),
-                                  int(self.flows_per_request),
+                                  str(self.flows_per_request),
                                   str(self.log_level)]))
 
                 exit_status, cmd_output = \
@@ -213,7 +213,7 @@ class NBgen:
                                   str(self.flow_delete_flag),
                                   str(self.controller.restconf_user),
                                   str(self.controller.restconf_pass),
-                                  int(self.flows_per_request),
+                                  str(self.flows_per_request),
                                   str(self.log_level)]),
                         '[NB_generator] run_handler]')
 
