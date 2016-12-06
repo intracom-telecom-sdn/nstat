@@ -187,35 +187,41 @@ class NBgen:
                                                    str(self.log_level)]),
                                                  '[NB_generator] run_handler]')
                 '''
-                print(' '.join(["python3.4",
-                                  str(self.run_hnd),
-                                  str(self.controller.ip),
-                                  str(self.controller.restconf_port),
-                                  str(self.total_flows),
-                                  str(self.flow_workers),
-                                  str(self.flow_operations_delay_ms),
-                                  str(self.flow_delete_flag),
-                                  str(self.controller.restconf_user),
-                                  str(self.controller.restconf_pass),
-                                  str(self.flows_per_request),
-                                  str(self.log_level)]))
+
+                cmd = ('source /opt/venv_nb_generator/bin/activate; '
+                       'python3.4 nb_gen.py --controller-ip=\'{0}\' '
+                       '--controller-port=\'{1}\' '
+                       '--number-of-flows=\'{2}\' '
+                       '--number-of-workers=\'{3}\' '
+                       '--operation-delay=\'{4}\' '
+                       '--restconf-user=\'{5}\' '
+                       '--restconf-password=\'{6}\' '
+                       '--fpr={7} '
+                       '--logging-level=\'{8}\' '
+                       ' --delete-flows')
+
+                cmd = cmd.format(self.controller.ip,
+                                 self.controller.restconf_port,
+                                 self.flow_workers,
+                                 self.flow_workers,
+                                 self.flow_operations_delay_ms,
+                                 self.flow_delete_flag,
+                                 self.controller.restconf_user,
+                                 self.controller.restconf_pass,
+                                 self.flows_per_request,
+                                 self.log_level)
+
+                print(cmd)
 
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
-                        ' '.join(["python3.4",
-                                  str(self.run_hnd),
-                                  str(self.controller.ip),
-                                  str(self.controller.restconf_port),
-                                  str(self.total_flows),
-                                  str(self.flow_workers),
-                                  str(self.flow_operations_delay_ms),
-                                  str(self.flow_delete_flag),
-                                  str(self.controller.restconf_user),
-                                  str(self.controller.restconf_pass),
-                                  str(self.flows_per_request),
-                                  str(self.log_level)]),
+                        cmd,
                         '[NB_generator] run_handler]')
+                print("EXIT STATUS:")
+                print(str(exit_status))
+                print("CMD OUTPUT")
+                print(str(cmd_output))
 
                 if exit_status == 0:
                     self.status = 'NB_GEN_RUNNING'
