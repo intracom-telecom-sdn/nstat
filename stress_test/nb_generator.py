@@ -189,7 +189,7 @@ class NBgen:
                 '''
 
                 cmd = ('source /opt/venv_nb_generator/bin/activate; '
-                       'python3.4 nb_gen.py --controller-ip=\'{0}\' '
+                       'python3.4 /opt/nstat/emulators/nb_generator/nb_gen.py --controller-ip=\'{0}\' '
                        '--controller-port=\'{1}\' '
                        '--number-of-flows=\'{2}\' '
                        '--number-of-workers=\'{3}\' '
