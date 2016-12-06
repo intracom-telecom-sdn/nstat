@@ -200,7 +200,7 @@ class NBgen:
                                   str(self.flow_delete_flag),
                                   str(self.controller.restconf_user),
                                   str(self.controller.restconf_pass),
-                                  str(self.flows_per_request),
+                                  int(self.flows_per_request),
                                   str(self.log_level)]),
                         '[NB_generator] run_handler]')
 
