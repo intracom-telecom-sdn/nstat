@@ -197,15 +197,13 @@ class NBgen:
                        '--restconf-user=\'{5}\' '
                        '--restconf-password=\'{6}\' '
                        '--fpr={7} '
-                       '--logging-level=\'{8}\' '
-                       ' --delete-flows')
+                       '--logging-level=\'{8}\'')
 
                 cmd = cmd.format(self.controller.ip,
                                  self.controller.restconf_port,
                                  self.flow_workers,
                                  self.flow_workers,
                                  self.flow_operations_delay_ms,
-                                 self.flow_delete_flag,
                                  self.controller.restconf_user,
                                  self.controller.restconf_pass,
                                  self.flows_per_request,
