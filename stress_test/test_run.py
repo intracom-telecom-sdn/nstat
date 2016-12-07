@@ -105,7 +105,6 @@ class TestRun:
             logging.info('{0} Starting MTCbench active switches topology and '
                          'monitor thread'.format(self.test_type))
             self.total_samples += self.mon.monitor_run()
-            # total_samples = self.mon.monitor_run()
             logging.info('{0} Stopping controller'.format(self.test_type))
             self.ctrl.stop()
             global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
@@ -402,11 +401,10 @@ class TestRun:
             # build a controller
             self.ctrl.build()
             host = self.ctrl.ssh_user + '@' + self.ctrl.ip
-            logging.info('[sb_active_scalability_multinet] Build a controller '
+            logging.info('[nb_active_scalability_multinet] Build a controller '
                          'on {} host.'.format(host))
             self.ctrl.generate_xmls()
             self.ctrl.flowmods_config()
-
 
             # EMULATOR preparation
             # ---------------------------------------------------------------
@@ -427,6 +425,9 @@ class TestRun:
             #                                       of,
             #                                       self.sb_emu)
             global_sample_id = 0
+            flow_delete_flag = json_conf['flow_delete_flag']
+            flows_per_request = json_conf['flows_per_request']
+
             for (self.nb_emu.total_flows,
                  self.nb_emu.flow_operations_delay_ms,
                  self.sb_emu.topo_size,
@@ -446,66 +447,82 @@ class TestRun:
                      json_conf['multinet_topo_hosts_per_switch'],
                      json_conf['multinet_topo_type'],
                      json_conf['controller_statistics_period_ms']):
-                    # monitor.global_sample_id = global_sample_id
-                    # start a controller
-                    self.ctrl.check_status()
-                    self.ctrl.start()
-                    # disable persistence
-                    if self.ctrl.persistence_hnd:
-                        self.ctrl.disable_persistence()
-                    self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
-                    logging.info('[sb_active_scalability_multinet] '
-                                 'Generate multinet config file')
-                    self.sb_emu.init_topos()
-                    self.sb_emu.start_topos()
-                    time.sleep(10)
-                    logging.info("The whole number of switches are: {0}"
-                                 .format(self.sb_emu.get_switches()))
-                    logging.info("The whole number of flows are: {0}"
-                                 .format(self.sb_emu.get_flows()))
 
-                    initial_topo_flows = self.sb_emu.get_flows()
-                    initial_oper_ds_flows = self.ctrl.get_oper_flows()
-                    logging.info("initial_operational_ds_flows: {0}".
-                                 format(initial_oper_ds_flows))
-                    if (initial_oper_ds_flows != 0 or initial_topo_flows != 0):
-                        raise ValueError('Initial installed flows '
-                                         'were not equal to 0.')
+                self.mon.global_sample_id = global_sample_id
 
-                    add_failed_flows_oper = 0
-                    del_failed_flows_oper = 0
-                    result_metrics_add = {}
-                    result_metrics_del = {}
+                # start a controller
+                self.ctrl.check_status()
+                self.ctrl.start()
+                # disable persistence
+                if self.ctrl.persistence_hnd:
+                    self.ctrl.disable_persistence()
+                self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+                logging.info('[sb_active_scalability_multinet] '
+                             'Generate multinet config file')
+                self.sb_emu.init_topos()
+                self.sb_emu.start_topos()
+                time.sleep(10)
+                logging.info("The whole number of switches are: {0}"
+                             .format(self.sb_emu.get_switches()))
+                logging.info("The whole number of flows are: {0}"
+                             .format(self.sb_emu.get_flows()))
+
+                initial_topo_flows = self.sb_emu.get_flows()
+                initial_oper_ds_flows = self.ctrl.get_oper_flows()
+                logging.info("initial_operational_ds_flows: {0}".
+                             format(initial_oper_ds_flows))
+                if (initial_oper_ds_flows != 0 or initial_topo_flows != 0):
+                    raise ValueError('Initial installed flows '
+                                     'were not equal to 0.')
+
+                add_failed_flows_oper = 0
+                del_failed_flows_oper = 0
+                result_metrics_add = {}
+                result_metrics_del = {}
+                start_rest_request_time = time.time()
+
+                nb_gen_start_json_output = self.nb_emu.run()
+                nb_gen_start_output = json.loads(nb_gen_start_json_output)
+
+                add_failed_flows_oper = nb_gen_start_output[0]
+                add_controller_time = time.time() - start_rest_request_time
+
+                result_metrics_add.update(
+                        self.mon.monitor_threads_run(start_rest_request_time))
+
+                end_to_end_installation_time = \
+                    result_metrics_add['end_to_end_flows_operation_time']
+                add_switch_time = result_metrics_add['switch_operation_time']
+                add_confirm_time = result_metrics_add['confirm_time']
+
+                # start northbound generator flow_delete_flag SET
+                if flow_delete_flag:
                     start_rest_request_time = time.time()
-
                     nb_gen_start_json_output = self.nb_emu.run()
                     nb_gen_start_output = json.loads(nb_gen_start_json_output)
 
-                    add_failed_flows_operations = nb_gen_start_output[0]
-                    add_controller_time = time.time() - start_rest_request_time
+                    del_failed_flows_oper = nb_gen_start_output[0]
+                    del_controller_time = time.time() - start_rest_request_time
 
-                    print("add_failed_flows_operations:")
-                    print(add_failed_flows_operations)
-                    print("add_controller_time:")
-                    print(add_controller_time)
+                    result_metrics_del.update(
+                        self.mon.monitor_threads_run(start_rest_request_time))
 
-                    '''
-                    result_metrics_add.update(monitor.monitor_threads_run(start_rest_request_time))
+                    end_to_end_del_time = \
+                        result_metrics_del['end_to_end_flows_operation_time']
+                    del_switch_time = \
+                        result_metrics_del['switch_operation_time']
+                    del_confirm_time = result_metrics_del['confirm_time']
 
-                    end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
-                    add_switch_time = result_metrics_add['switch_operation_time']
-                    add_confirm_time = result_metrics_add['confirm_time']
+                total_failed_flows_operations = \
+                    add_failed_flows_oper + del_failed_flows_oper
 
-
-                    # self.total_samples += monitor.monitor_run()
-                    # Stop/clean nodes
-                    # ---------------------------------------------------------
-                    '''
-                    self.ctrl.stop()
-                    self.sb_emu.stop_topos()
-                    self.sb_emu.cleanup()
-                    global_sample_id += 1
-
+                # Stop/clean nodes
+                # ---------------------------------------------------------
+                self.ctrl.stop()
+                self.sb_emu.stop_topos()
+                self.sb_emu.cleanup()
+                global_sample_id = \
+                    self.total_samples[-1]['global_sample_id'] + 1
             logging.info('[Testing] All done!')
 
         except:
