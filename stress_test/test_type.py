@@ -8,15 +8,8 @@
 
 import json
 import logging
-import stress_test.controller
-import stress_test.emulator
-import stress_test.nb_generator
-import stress_test.test_type
 import stress_test.test_run
 import sys
-import util.file_ops
-import util.netutil
-import util.process
 
 
 class TestType:
@@ -92,7 +85,7 @@ class TestType:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
 
-                nstat_test_run.sb_active_scalability_cbench_run(
+                nstat_test_run.sb_active_mtcbench_run(
                     json_conf,
                     args.json_output,
                     args.output_dir)
@@ -101,7 +94,7 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test:{0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.sb_active_stability_cbench_run(
+                nstat_test_run.sb_active_mtcbench_run(
                     json_conf,
                     args.json_output,
                     args.output_dir)
