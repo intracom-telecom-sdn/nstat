@@ -525,28 +525,26 @@ class TestRun:
                     start_rest_request_time = time.time()
 
                     nb_gen_start_json_output = self.nb_emu.run()
+                    print("nb_gen_start_json_output:")
                     print(nb_gen_start_json_output)
 
                     nb_gen_start_output = json.loads(nb_gen_start_json_output)
-                    exit()
-
 
                     add_failed_flows_operations = nb_gen_start_output[0]
                     add_controller_time = time.time() - start_rest_request_time
-
+                    '''
                     result_metrics_add.update(monitor.monitor_threads_run(start_rest_request_time))
 
                     end_to_end_installation_time = result_metrics_add['end_to_end_flows_operation_time']
                     add_switch_time = result_metrics_add['switch_operation_time']
                     add_confirm_time = result_metrics_add['confirm_time']
-                    # -----------------------------------------------------------------
-                    # -----------------------------------------------------------------
-                    # -----------------------------------------------------------------
+
+
                     # self.total_samples += monitor.monitor_run()
                     # Stop/clean nodes
                     # ---------------------------------------------------------
+                    '''
                     self.ctrl.stop()
-
                     self.sb_emu.stop_topos()
                     self.sb_emu.cleanup()
                     global_sample_id += 1
