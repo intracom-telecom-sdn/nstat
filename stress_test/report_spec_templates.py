@@ -541,7 +541,6 @@ class TestReport:
                  ('controller_num_fds', 'Controller num of fds'),
                  ('controller_statistics_period_ms',
                   'Controller Statistics Period (ms)')], results_json_file)])
-
         return report_spec_obj
 
     def sb_idle_stability_multinet(self, results_json_file):
