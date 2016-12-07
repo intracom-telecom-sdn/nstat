@@ -544,10 +544,11 @@ class Multinet(Monitor, Oftraf):
 
 
 class NBgen(Monitor):
-    def __init__(self, controller, nbgen, sbemu):
+    def __init__(self, controller, nbgen, sbemu, test):
         Monitor.__init__(self, controller)
         self.nbgen = nbgen
         self.sbemu = sbemu
+        self.test = test
 
     def __poll_flows_ds(self, t_start):
         """
@@ -712,24 +713,103 @@ class NBgen(Monitor):
                      .format(flow_measurement_latency_interval,
                              discovered_flows))
 
-    def monitor_results_active(self):
+    def monitor_results(self):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
-        results['multinet_workers'] = len(self.emulator.workers_ips)
+        results['multinet_workers'] = len(self.sbemu.workers_ips)
         results['multinet_size'] = \
-            self.emulator.topo_size * len(self.emulator.workers_ips)
-        results['multinet_worker_topo_size'] = self.emulator.topo_size
-        results['multinet_topology_type'] = self.emulator.topo_type
+            self.sbemu.topo_size * len(self.sbemu.workers_ips)
+        results['multinet_worker_topo_size'] = self.sbemu.topo_size
+        results['multinet_topology_type'] = self.sbemu.topo_type
         results['multinet_hosts_per_switch'] = \
-            self.emulator.topo_hosts_per_switch
-        results['multinet_group_size'] = self.emulator.topo_group_size
-        results['multinet_group_delay_ms'] = self.emulator.topo_group_delay_ms
+            self.sbemu.topo_hosts_per_switch
+        results['multinet_group_size'] = self.sbemu.topo_group_size
+        results['multinet_group_delay_ms'] = self.sbemu.topo_group_delay_ms
         results['controller_statistics_period_ms'] = \
             self.controller.stat_period_ms
         results['controller_node_ip'] = self.controller.ip
         results['controller_port'] = str(self.controller.of_port)
-        results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
+        results['interpacket_delay_ms'] = self.sbemu.interpacket_delay_ms
         results['traffic_generation_duration_ms'] = \
-            self.emulator.traffic_gen_duration_ms
+            self.sbemu.traffic_gen_duration_ms
+        results['flow_operation_delay_ms'] = \
+            self.nbgen.flow_operations_delay_ms
+        results['flow_workers'] = \
+            self.nbgen.flow_workers
+
+        # Flow scalability tests metrics
+        # ------------------------------------------------------------------
+        # Add controller time: Time for all ADD REST requests to be sent
+        #                      and their response to be received
+        results['add_controller_time'] = self.test.add_controller_time
+        results['add_controller_rate'] = \
+            float(self.nbgen.total_flows) / self.test.add_controller_time
+
+        # End-to-end-installation-time:
+
+        results['end_to_end_installation_time'] = \
+            self.test.end_to_end_installation_time
+        if self.test.end_to_end_installation_time != -1:
+            results['end_to_end_installation_rate'] = \
+                float(self.nbgen.total_flows) / self.test.end_to_end_installation_time
+        else:
+            results['end_to_end_installation_rate'] = -1
+
+        # Add switch time: Time from the FIRST REST request until ALL flows
+        #                  are present in the network
+        results['add_switch_time'] = self.test.add_switch_time
+        if self.test.add_switch_time != -1:
+            results['add_switch_rate'] = \
+                float(self.nbgen.total_flows) / self.test.add_switch_time
+        else:
+            results['add_switch_rate'] = -1
+
+        # Add confirm time: The time period started after the last flow was
+        #                   configured, until we receive confirmation
+        #                   all flows are added.
+
+        results['add_confirm_time'] = self.test.add_confirm_time
+        if add_confirm_time != -1:
+            results['add_confirm_rate'] = \
+                float(self.nbgen.total_flows) / self.test.add_confirm_time
+        else:
+            results['add_confirm_rate'] = -1
+
+        # Remove controller time: Time for all delete REST
+        #                          requests to be sent and their response to
+        #                          be received
+
+        # Remove switch time: Time from the first delete REST
+        #                     request until all flows are removed from the
+        #                     network.
+
+        # Remove confirm time: Time period started after the last
+        #                      flow was unconfigured until we receive
+        #                      confirmation all flows are removed.
+
+            if self.test.flow_delete_flag:
+                results['remove_controller_time'] = \
+                    self.test.remove_controller_time
+                results['remove_controller_rate'] = \
+                    float(self.nbgen.total_flows) / self.test.remove_controller_time
+
+                results['end_to_end_remove_time'] = self.test.end_to_end_remove_time
+                results['end_to_end_remove_rate'] = \
+                    float(self.nbgen.total_flows) / self.test.end_to_end_remove_time
+
+                results['remove_switch_time'] = self.test.remove_switch_time
+                results['remove_switch_rate'] = \
+                    float(self.nbgen.total_flows) / self.test.remove_switch_time
+
+                results['remove_confirm_time'] = self.test.remove_confirm_time
+                results['remove_confirm_rate'] = \
+                    float(self.nbgen.total_flows) / self.test.remove_confirm_time
+
+            results['total_failed_flows_operations'] = \
+                self.test.total_failed_flows_operations
+
+            results['flow_delete_flag'] = str(self.test.flow_delete_flag)
+            results.append(results)
+
         return results
