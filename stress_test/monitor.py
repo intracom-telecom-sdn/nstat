@@ -687,10 +687,6 @@ class NBgen(Monitor):
                     return
             gevent.sleep(1)
 
-
-#    def collect_results(self,):
-#        initial_topology_flows
-
     def monitor_threads_run(self, t_start):
         """
         Monitors operational flows in switches of Multinet until the expected
@@ -715,3 +711,25 @@ class NBgen(Monitor):
                      'interval: {0} sec. | Discovered flows: {1}'
                      .format(flow_measurement_latency_interval,
                              discovered_flows))
+
+    def monitor_results_active(self):
+        results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
+        results['multinet_workers'] = len(self.emulator.workers_ips)
+        results['multinet_size'] = \
+            self.emulator.topo_size * len(self.emulator.workers_ips)
+        results['multinet_worker_topo_size'] = self.emulator.topo_size
+        results['multinet_topology_type'] = self.emulator.topo_type
+        results['multinet_hosts_per_switch'] = \
+            self.emulator.topo_hosts_per_switch
+        results['multinet_group_size'] = self.emulator.topo_group_size
+        results['multinet_group_delay_ms'] = self.emulator.topo_group_delay_ms
+        results['controller_statistics_period_ms'] = \
+            self.controller.stat_period_ms
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = str(self.controller.of_port)
+        results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
+        results['traffic_generation_duration_ms'] = \
+            self.emulator.traffic_gen_duration_ms
+        return results
