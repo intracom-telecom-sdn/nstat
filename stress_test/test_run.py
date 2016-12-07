@@ -566,9 +566,13 @@ class TestRun:
             try:
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
-                self.results_report(json_conf)
+                report_spec = \
+                    self.test_report_template.sb_idle_scalability_multinet(
+                        self.args.json_output)
+                self.results_report(report_spec, json_conf)
             except:
                 logging.error('[{0}] Fail to generate report.')
+
             del self.ctrl
             del self.sb_emu
 
