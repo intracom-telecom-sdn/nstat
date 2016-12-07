@@ -46,7 +46,7 @@ class TestRun:
                                                          self.ctrl,
                                                          self.sb_emu)
         self.total_samples = []
-        self.report_spec_templates = \
+        self.test_report_template = \
             stress_test.report_spec_templates.TestReport(test_type,
                                                          args.json_config)
         self.test_type = test_type
@@ -110,7 +110,9 @@ class TestRun:
             global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
-        self.results_report(json_conf)
+        report_spec = self.test_report_template.sb_active_scalability_multinet(
+            self.args.json_output)
+        self.results_report(report_spec, json_conf)
 
     def sb_active_stability_cbench_run(self,
                                        json_conf,
@@ -158,7 +160,10 @@ class TestRun:
             # total_samples = self.mon.monitor_run()
             self.ctrl.stop()
         logging.info('[{0}] Generating results report.'.format(self.test_type))
-        self.results_report(json_conf)
+        report_spec = self.test_report_template.sb_active_stability_multinet(
+            self.args.json_output)
+        self.results_report(report_spec, json_conf)
+
 
     def sb_idle_scalability_cbench_run(self,
                                        json_conf,
@@ -215,7 +220,9 @@ class TestRun:
             global_sample_id += 1
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
-        self.results_report(json_conf)
+        report_spec = self.test_report_template.sb_idle_scalability_cbench(
+            self.args.json_output)
+        self.results_report(report_spec, json_conf)
 
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
@@ -385,7 +392,9 @@ class TestRun:
             self.sb_emu.start_topos()
             self.ctrl.stop()
         logging.info('[{0}] Generating results report.'.format(self.test_type))
-        self.results_report(json_conf)
+        report_spec = self.test_report_template.sb_idle_scalability_multinet(
+            self.args.json_output)
+        self.results_report(report_spec, json_conf)
 
     def sb_idle_stability_multinet_run(self,
                                        json_conf,
@@ -565,9 +574,7 @@ class TestRun:
             del self.ctrl
             del self.sb_emu
 
-    def results_report(self, json_conf):
-        report_spec = self.report_spec_templates.sb_active_scalability_multinet(
-            self.args.json_output)
+    def results_report(self, report_spec, json_conf):
         report_gen = stress_test.report_gen.ReportGen(
             self.args, json_conf, self.total_samples, report_spec)
         try:
