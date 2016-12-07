@@ -34,7 +34,8 @@ class TestReport:
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            self.config_json_file, results_json_file, '{0}'.format(self.test_type),
+            self.config_json_file, results_json_file,
+            '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
                 [('test_repeats', 'Test repeats'),
@@ -138,7 +139,8 @@ class TestReport:
         """
 
         report_spec_obj = stress_test.report_spec.ReportSpec(
-            self.config_json_file, results_json_file, '{0}'.format(self.test_type),
+            self.config_json_file, results_json_file,
+            '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
                 [('test_repeats', 'Test repeats'),
