@@ -111,10 +111,10 @@ class TestRun:
         logging.info('[Testing] All done!')
         logging.info('[{0}] Generating results report.'.format(self.test_type))
         if self.test_type == 'sb_active_scalability_mtcbench':
-            report_spec = self.test_report_template.sb_active_scalability_multinet(
+            report_spec = self.test_report_template.sb_active_scalability_mtcbench(
                 self.args.json_output)
         if self.test_type == 'sb_active_stability_mtcbench':
-            report_spec = self.test_report_template.sb_active_stability_multinet(
+            report_spec = self.test_report_template.sb_active_stability_mtcbench(
                 self.args.json_output)
         self.results_report(report_spec, json_conf)
 

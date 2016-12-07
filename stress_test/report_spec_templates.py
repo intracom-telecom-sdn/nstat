@@ -15,7 +15,7 @@ class TestReport:
         self.test_type = test_type
         self.config_json_file = config_json_file
 
-    def sb_active_scalability_cbench(self, results_json_file):
+    def sb_active_scalability_mtcbench(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
@@ -120,7 +120,7 @@ class TestReport:
                 results_json_file)])
         return report_spec_obj
 
-    def sb_active_stability_cbench(self, results_json_file):
+    def sb_active_stability_mtcbench(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
@@ -225,7 +225,7 @@ class TestReport:
                   'Controller statistics period (ms)')], results_json_file)])
         return report_spec_obj
 
-    def sb_idle_scalability_cbench(self, results_json_file):
+    def sb_idle_scalability_mtcbench(self, results_json_file):
         """It returns all the information that is needed for the generation of the
         report for the specific test.
 
