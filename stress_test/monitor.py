@@ -770,7 +770,7 @@ class NBgen(Monitor):
         #                   all flows are added.
 
         results['add_confirm_time'] = self.test.add_confirm_time
-        if add_confirm_time != -1:
+        if self.test.add_confirm_time != -1:
             results['add_confirm_rate'] = \
                 float(self.nbgen.total_flows) / self.test.add_confirm_time
         else:

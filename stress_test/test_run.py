@@ -553,20 +553,20 @@ class TestRun:
                     nb_gen_start_json_output = self.nb_emu.run()
                     nb_gen_start_output = json.loads(nb_gen_start_json_output)
 
-                    del_failed_flows_oper = nb_gen_start_output[0]
-                    del_controller_time = time.time() - start_rest_request_time
+                    remove_failed_flows_oper = nb_gen_start_output[0]
+                    remove_controller_time = time.time() - start_rest_request_time
 
-                    result_metrics_del.update(
+                    result_metrics_remove.update(
                         self.mon.monitor_threads_run(start_rest_request_time))
 
-                    end_to_end_del_time = \
-                        result_metrics_del['end_to_end_flows_operation_time']
-                    del_switch_time = \
-                        result_metrics_del['switch_operation_time']
-                    del_confirm_time = result_metrics_del['confirm_time']
+                    end_to_end_remove_time = \
+                        result_metrics_remove['end_to_end_flows_operation_time']
+                    remove_switch_time = \
+                        result_metrics_remove['switch_operation_time']
+                    remove_confirm_time = result_metrics_remove['confirm_time']
 
                 total_failed_flows_operations = \
-                    add_failed_flows_oper + del_failed_flows_oper
+                    add_failed_flows_oper + remove_failed_flows_oper
 
                 # Stop/clean nodes
                 # ---------------------------------------------------------
