@@ -30,21 +30,26 @@ class TestRun:
                                                           json_conf)
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
-        if 'sb_emulator_name' in json_conf:
+
+        self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
+                                                     json_conf,
+                                                     self.ctrl,
+                                                     self.sb_emu)
+        if 'nb_emulator_name' in json_conf:
+            if json_conf['nb_emulator_name'] == "NB-GENERATOR":
+                self.mon = stress_test.monitor.NBgen(self.ctrl,
+                                                     self.nb_emu,
+                                                     self.sb_emu)
+        elif 'sb_emulator_name' in json_conf:
             if json_conf['sb_emulator_name'] == "MTCBENCH":
                 self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                         self.sb_emu)
-            else:
-                pass
+            elif json_conf['sb_emulator_name'] == "MULTINET":
+                self.mon = stress_test.monitor.Mtcbench(self.ctrl,
+                                                        self.sb_emu)
+        else:
+            pass
 
-        if 'nb_emulator_name' in json_conf:
-            self.mon = stress_test.monitor.Mtcbench(self.ctrl,
-                                                    self.sb_emu)
-
-            self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
-                                                         json_conf,
-                                                         self.ctrl,
-                                                         self.sb_emu)
         self.total_samples = []
         self.test_report_template = \
             stress_test.report_spec_templates.TestReport(test_type,
@@ -53,10 +58,7 @@ class TestRun:
         self.json_conf = json_conf
         self.args = args
 
-    def sb_active_mtcbench_run(self,
-                                         json_conf,
-                                         json_output,
-                                         output_dir):
+    def sb_active_mtcbench_run(self, json_conf, json_output, output_dir):
         """
         Runs the SouthBound scalability test with active MT-Cbench switches
         :param json_conf: JSON configuration dictionary
@@ -580,8 +582,10 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to generate report.')
 
+            del self.nb_emu
             del self.ctrl
             del self.sb_emu
+
 
     def results_report(self, report_spec, json_conf):
         report_gen = stress_test.report_gen.ReportGen(
