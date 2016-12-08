@@ -11,6 +11,9 @@ interface) """
 import logging
 import os
 import requests
+import stress_test.oftraf_exceptions
+import sys
+import traceback
 import util.netutil
 
 
@@ -33,6 +36,20 @@ class Oftraf:
         self.of_port = controller.of_port
         self.status = 'UNKNOWN'
         self._ssh_conn = controller.init_ssh()
+        self.traceback_enabled = False
+
+    def error_handling(self, error_message, error_num=1):
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        logging.error('{0} :::::::::: Exception :::::::::::'.
+                      format(exc_obj))
+        logging.error(error_message)
+        logging.error('Error number:{0}'.format(error_num))
+        logging.error('{0} - {1} Exception: {2}, {3}'.
+                      format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        if self.traceback_enabled:
+            traceback.print_exc()
+        # Propagate error outside the class to stop execution
+        raise(stress_test.controller_exceptions.CtrlError)
 
     def get_oftraf_path(self):
         """Returns oftraf base directory path relatively to the project path
@@ -48,97 +65,146 @@ class Oftraf:
     def build(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = str(self.get_oftraf_path())
-        build_hnd = os.path.join(str(oftraf_path), 'build.sh')
-        # build_hnd = '/opt/nstat/monitors/oftraf/build.sh'
-        logging.info('[Oftraf] Building')
-        self.status = 'BUILDING'
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([build_hnd]),
-                                         '[oftraf.build_handler]')[0]
-        if exit_status == 0:
-            self.status = 'BUILT'
-            logging.info("[Oftraf] Successful building")
-        else:
-            self.status = 'NOT_BUILT'
-            raise Exception('[Oftraf] Failure during building')
+        try:
+            try:
+                oftraf_path = str(self.get_oftraf_path())
+                build_hnd = os.path.join(str(oftraf_path), 'build.sh')
+                logging.info('[Oftraf] Building')
+                self.status = 'BUILDING'
+                exit_status, cmd_output = \
+                    util.netutil.ssh_run_command(self._ssh_conn,
+                                                 ' '.join([build_hnd]),
+                                                 '[oftraf.build_handler]')
+                if exit_status == 0:
+                    self.status = 'BUILT'
+                    logging.info("[Oftraf] Successful building")
+                else:
+                    self.status = 'NOT_BUILT'
+                    raise(stress_test.oftraf_exceptions.OftrafBuildError(
+                        'Build process exited with non zero exit code. '
+                        'Command-line output: {0} \n Exit status code: {1}'.
+                        format(cmd_output, exit_status), 2))
+            except stress_test.oftraf_exceptions.OftrafError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.oftraf_exceptions.OftrafBuildError)
+        except stress_test.oftraf_exceptions.OftrafError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def clean(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.get_oftraf_path()
-        clean_hnd = oftraf_path + 'clean.sh'
-        logging.info('[Oftraf] Cleaning')
-        self.status = 'CLEANING'
+        try:
+            try:
+                oftraf_path = self.get_oftraf_path()
+                clean_hnd = oftraf_path + 'clean.sh'
+                logging.info('[Oftraf] Cleaning')
+                self.status = 'CLEANING'
 
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([clean_hnd]),
-                                         '[oftraf.clean_handler]')[0]
-        if exit_status == 0:
-            self.status = 'CLEANED'
-            logging.info("[Oftraf] Successful cleaning")
-        else:
-            self.status = 'NOT CLEANED'
-            raise Exception('[Oftraf] Failure during cleaning')
+                exit_status, cmd_output = \
+                    util.netutil.ssh_run_command(self._ssh_conn,
+                                                 ' '.join([clean_hnd]),
+                                                 '[oftraf.clean_handler]')
+                if exit_status == 0:
+                    self.status = 'CLEANED'
+                    logging.info("[Oftraf] Successful cleaning")
+                else:
+                    self.status = 'NOT CLEANED'
+                    raise(stress_test.oftraf_exceptions.OftrafCleanError(
+                        'clean process exited with non zero exit code. '
+                        'Command-line output: {0} \n Exit status code: {1}'.
+                        format(cmd_output, exit_status), 2))
+            except stress_test.oftraf_exceptions.OftrafError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.oftraf_exceptions.OftrafCleanError)
+        except stress_test.oftraf_exceptions.OftrafError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def start(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.get_oftraf_path()
-        start_hnd = oftraf_path + 'start.sh'
-        logging.info('[Oftraf] Starting')
-        self.status = 'STARTING'
-        exit_status = \
-            util.netutil.ssh_run_command(self._ssh_conn,
-                                         ' '.join([start_hnd,
-                                                   self.rest_server_ip,
-                                                   str(self.rest_server_port),
-                                                   str(self.of_port)]),
-                                         '[oftraf.start_handler]',
-                                         lines_queue=None,
-                                         print_flag=True,
-                                         block_flag=True,
-                                         getpty_flag=True)[0]
-        if exit_status == 0:
-            self.status = 'STARTED'
-            logging.info("[Oftraf] Successful starting")
-        else:
-            self.status = 'NOT STARTED'
-            raise Exception('[Oftraf] Failure during starting')
+        try:
+            try:
+                oftraf_path = self.get_oftraf_path()
+                start_hnd = oftraf_path + 'start.sh'
+                logging.info('[Oftraf] Starting')
+                self.status = 'STARTING'
+                exit_status, cmd_output = \
+                    util.netutil.ssh_run_command(
+                        self._ssh_conn, ' '.join([start_hnd,
+                                                  self.rest_server_ip,
+                                                  str(self.rest_server_port),
+                                                  str(self.of_port)]),
+                        '[oftraf.start_handler]',
+                        lines_queue=None, print_flag=True, block_flag=True,
+                        getpty_flag=True)
+                if exit_status == 0:
+                    self.status = 'STARTED'
+                    logging.info("[Oftraf] Successful starting")
+                else:
+                    self.status = 'NOT STARTED'
+                    raise(stress_test.oftraf_exceptions.OftrafStartError(
+                        'Start process exited with non zero exit code. '
+                        'Command-line output: {0} \n Exit status code: {1}'.
+                        format(cmd_output, exit_status), 2))
+            except stress_test.oftraf_exceptions.OftrafError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.oftraf_exceptions.OftrafStartError)
+        except stress_test.oftraf_exceptions.OftrafError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def stop(self):
         """ Wrapper to the oftraf monitor build handler
         """
-        oftraf_path = self.get_oftraf_path()
-        stop_hnd = oftraf_path + 'stop.sh'
-        logging.info('[Oftraf] Starting')
-        self.status = 'STOPPING'
-
-        exit_status = \
-            util.netutil.ssh_run_command(
-                self._ssh_conn,
-                ' '.join([stop_hnd,
-                          self.rest_server_ip,
-                          str(self.rest_server_port)]),
-                '[oftraf.stop_handler]')[0]
-
-        if exit_status == 0:
-            self.status = 'STOPED'
-            logging.info("[Oftraf] Successful stopping")
-        else:
-            self.status = 'NOT STOPPED'
-            raise Exception('[Oftraf] Failure during stopping')
+        try:
+            try:
+                oftraf_path = self.get_oftraf_path()
+                stop_hnd = oftraf_path + 'stop.sh'
+                logging.info('[Oftraf] Starting')
+                self.status = 'STOPPING'
+                exit_status, cmd_output = \
+                    util.netutil.ssh_run_command(
+                        self._ssh_conn,
+                        ' '.join([stop_hnd,
+                                  self.rest_server_ip,
+                                  str(self.rest_server_port)]),
+                        '[oftraf.stop_handler]')
+                if exit_status == 0:
+                    self.status = 'STOPED'
+                    logging.info("[Oftraf] Successful stopping")
+                else:
+                    self.status = 'NOT STOPPED'
+                    raise(stress_test.oftraf_exceptions.OftrafStopError(
+                        'Stop process exited with non zero exit code. '
+                        'Command-line output: {0} \n Exit status code: {1}'.
+                        format(cmd_output, exit_status), 2))
+            except stress_test.oftraf_exceptions.OftrafError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.oftraf_exceptions.OftrafStopError)
+        except stress_test.oftraf_exceptions.OftrafError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def oftraf_get_of_counts(self):
         """Gets the openFlow packets counts, measured by oftraf
         """
-        getheaders = {'Accept': 'application/json'}
-        url = \
-            'http://{0}:{1}/get_of_counts'.format(self.rest_server_ip,
-                                                  self.rest_server_port)
-        s = requests.Session()
-        s.trust_env = False
-        req = s.get(url, headers=getheaders, stream=False)
-        return req.content.decode('utf-8')
+        try:
+            try:
+                getheaders = {'Accept': 'application/json'}
+                url = \
+                    'http://{0}:{1}/get_of_counts'.format(
+                        self.rest_server_ip, self.rest_server_port)
+                s = requests.Session()
+                s.trust_env = False
+                req = s.get(url, headers=getheaders, stream=False)
+                return req.content.decode('utf-8')
+            except:
+                raise(stress_test.oftraf_exceptions.OftrafGetResultError(
+                    'Fail getting total number of installed flows \n Oftraf '
+                    'REST request status code: {0} \n Oftraf REST request '
+                    'data: {1}'.format(req.status_code,
+                                       req.content.decode('utf-8'))))
+        except stress_test.oftraf_exceptions.OftrafError as e:
+            self.error_handling(e.err_msg, e.err_code)

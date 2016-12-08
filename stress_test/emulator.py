@@ -169,6 +169,7 @@ class SBEmu:
         except:
             pass
 
+
 class MTCBench(SBEmu):
 
     def __init__(self, sb_emu_base_dir, test_config):
@@ -218,6 +219,15 @@ class MTCBench(SBEmu):
         self.status = 'STARTING'
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.run_hnd]):
+                    raise(IOError(
+                        '[mtcbench] run handler does not exist'))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.run_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
                         [self.run_hnd, ctrl_ip, str(ctrl_sb_port),
@@ -432,7 +442,10 @@ class Multinet(SBEmu):
                                            [self.deploy_hnd]):
                     raise(IOError(
                         '[Multinet] Deploy handler does not exist'))
-
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.deploy_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
                         [self.venv_hnd, self.base_dir, self.deploy_hnd,
@@ -457,7 +470,7 @@ class Multinet(SBEmu):
         """ Wrapper to the Multinet SB-Emulator get_switches handler
         :param new_ssh_conn: an SSH client connection object
         :returns: The per worker number of switches in json string
-        :rtype: str
+        :rtype: strcleanup_hnd
         :type new_ssh_conn: paramiko.SFTPClient
         :raises: Exception if the handler does not exist on the remote host
         :raises: Exception if the exit status of the handler is not 0
@@ -471,6 +484,10 @@ class Multinet(SBEmu):
                                            [self.get_switches_hnd]):
                     raise(IOError(
                         '[Multinet] Get_switches handler does not exist'))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.get_switches_hnd)
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
                 else:
@@ -517,6 +534,10 @@ class Multinet(SBEmu):
                                            [self.get_flows_hnd]):
                     raise(IOError(
                         '[Multinet] Get_flows handler does not exist'))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.get_flows_hnd)
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
                 else:
@@ -560,7 +581,10 @@ class Multinet(SBEmu):
                                            [self.init_topos_hnd]):
                     raise(IOError(
                         '[Multinet] Init_topos handler does not exist'))
-
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.init_topos_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
                         [self.venv_hnd, self.base_dir, self.init_topos_hnd,
@@ -597,7 +621,10 @@ class Multinet(SBEmu):
                                            [self.start_topos_hnd]):
                     raise(IOError(
                         '[Multinet] Start_topos handler does not exist'))
-
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.start_topos_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
                         [self.venv_hnd, self.base_dir, self.start_topos_hnd,
@@ -633,7 +660,10 @@ class Multinet(SBEmu):
                                            [self.stop_topos_hnd]):
                     raise(IOError(
                         '[Multinet] Stop_topos handler does not exist'))
-
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.stop_topos_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
                         [self.venv_hnd, self.base_dir, self.stop_topos_hnd,
@@ -668,7 +698,10 @@ class Multinet(SBEmu):
                                            [self.cleanup_hnd]):
                     raise(IOError(
                         '[Multinet] Cleanup handler does not exist'))
-
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.cleanup_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
                         [self.venv_hnd, self.base_dir, self.cleanup_hnd,
@@ -704,6 +737,10 @@ class Multinet(SBEmu):
                                            [self.traffic_gen_hnd]):
                     raise Exception('[Multinet] Traffic_generator handler '
                                     'does not exist')
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.traffic_gen_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join(
                         [self.venv_hnd, self.base_dir, self.traffic_gen_hnd,

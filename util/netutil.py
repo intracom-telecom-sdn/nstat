@@ -176,6 +176,25 @@ def make_remote_file_executable(connection, remote_file):
     ssh_connection_close(sftp, transport_layer)
 
 
+def make_remote_file_executable2(ip, port, username, password, remote_file):
+    """Makes the remote file executable.
+
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
+    :param remote_file: remote file to make executable
+    :type connection: namedtuple<>
+    :type remote_file: str
+    """
+    (sftp, transport_layer) = ssh_connection_open2(ip, port, username,
+                                                   password)
+    try:
+        sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+    except:
+        raise(IOError('[make_remote_file_executable] Fail to make remote file '
+                      '{0} on {1} node executable.'.format(remote_file, ip)))
+    ssh_connection_close(sftp, transport_layer)
+
+
 def remove_remote_directory(connection, path):
     """Removes recursively remote directories (removes all files and
     other sub-directories).

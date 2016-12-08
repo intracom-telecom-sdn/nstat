@@ -158,51 +158,75 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
+        try:
+            # CONTROLLER preparation
+            # ------------------------------------------------------------------
+            self.ctrl.init_ssh()
+            self.ctrl.build()
 
-        # CONTROLLER preparation
-        # ------------------------------------------------------------------
-        self.ctrl.init_ssh()
-        self.ctrl.build()
-
-        # EMULATOR preparation
-        # ----------------------------------------------------------------
-        self.sb_emu.init_ssh()
-        self.sb_emu.build()
-        self.ctrl.generate_xmls()
-        global_sample_id = 0
-        # TEST run
-        # ----------------------------------------------------------------
-        for (self.sb_emu.threads,
-             self.sb_emu.switches_per_thread,
-             self.sb_emu.thread_creation_delay_ms,
-             self.sb_emu.delay_before_traffic_ms,
-             self.sb_emu.simulated_hosts,
-             self.ctrl.stat_period_ms
-             ) in itertools.product(json_conf['mtcbench_threads'],
-                                    json_conf['mtcbench_switches_per_thread'],
-                                    json_conf['mtcbench_thread_creation_delay_ms'],
-                                    json_conf['mtcbench_delay_before_traffic_ms'],
-                                    json_conf['mtcbench_simulated_hosts'],
-                                    json_conf['controller_statistics_period_ms']):
-            self.mon.global_sample_id = global_sample_id
-            logging.info('{0} Changing controller statistics period to {1} ms'.
-                         format(self.test_type, self.ctrl.stat_period_ms))
-            self.ctrl.change_stats()
-            logging.info('{0} Starting controller'.format(self.test_type))
-            self.ctrl.start()
-            logging.info('{0} Starting MTCbench idle switches topology and '
-                         'monitor thread'.format(self.test_type))
-            topo_start_timestamp = time.time()
-            self.total_samples += self.mon.monitor_run(topo_start_timestamp)
-            # total_samples = self.mon.monitor_run()
-            logging.info('{0} Stopping controller'.format(self.test_type))
-            self.ctrl.stop()
-            global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
-        logging.info('[Testing] All done!')
-        logging.info('[{0}] Generating results report.'.format(self.test_type))
-        report_spec = self.test_report_template.sb_idle_scalability_mtcbench(
-            self.args.json_output)
-        self.results_report(report_spec, json_conf)
+            # EMULATOR preparation
+            # ----------------------------------------------------------------
+            self.sb_emu.init_ssh()
+            self.sb_emu.build()
+            self.ctrl.generate_xmls()
+            global_sample_id = 0
+            # TEST run
+            # ----------------------------------------------------------------
+            for (self.sb_emu.threads,
+                 self.sb_emu.switches_per_thread,
+                 self.sb_emu.thread_creation_delay_ms,
+                 self.sb_emu.delay_before_traffic_ms,
+                 self.sb_emu.simulated_hosts,
+                 self.ctrl.stat_period_ms
+                 ) in itertools.product(json_conf['mtcbench_threads'],
+                                        json_conf['mtcbench_switches_per_thread'],
+                                        json_conf['mtcbench_thread_creation_delay_ms'],
+                                        json_conf['mtcbench_delay_before_traffic_ms'],
+                                        json_conf['mtcbench_simulated_hosts'],
+                                        json_conf['controller_statistics_period_ms']):
+                self.mon.global_sample_id = global_sample_id
+                logging.info('{0} Changing controller statistics period '
+                             'to {1} ms'.
+                             format(self.test_type, self.ctrl.stat_period_ms))
+                self.ctrl.change_stats()
+                logging.info('{0} Starting controller'.format(self.test_type))
+                self.ctrl.start()
+                logging.info('{0} Starting MTCbench idle switches topology and '
+                             'monitor thread'.format(self.test_type))
+                topo_start_timestamp = time.time()
+                self.total_samples += self.mon.monitor_run(
+                    topo_start_timestamp)
+                # total_samples = self.mon.monitor_run()
+                logging.info('{0} Stopping controller'.format(self.test_type))
+                self.ctrl.stop()
+                global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
+            logging.info('[Testing] All done!')
+        except:
+            logging.error('[{0}] Exiting test run'.format(self.test_type))
+        finally:
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = self.test_report_template.sb_idle_scalability_mtcbench(
+                    self.args.json_output)
+                self.results_report(report_spec, json_conf)
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean controller.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to cleanup controller.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean mtcbench.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to clean mtcbench.'.
+                              format(self.test_type))
 
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
