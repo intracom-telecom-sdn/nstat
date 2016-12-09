@@ -546,6 +546,7 @@ class Multinet(Monitor, Oftraf):
 class NBgen(Monitor):
     def __init__(self, controller, nbgen, sbemu, test):
         Monitor.__init__(self, controller)
+        self.nbgen_queue = gevent.queue.Queue()
         self.nbgen = nbgen
         self.sbemu = sbemu
         self.test = test
@@ -571,6 +572,8 @@ class NBgen(Monitor):
                              '{0} seconds passed'
                              .format(self.nbgen.flows_ds_discovery_deadline))
                 self.nbgen.e2e_installation_time = -1.0
+                self.nbgen_queue.put({'end_to_end_flows_operation_time': -1.0},
+                                     block=True)
                 logging.info('[NB_generator] [Poll_flows thread] End to End '
                              'installation time monitor FAILED')
                 return
@@ -590,6 +593,9 @@ class NBgen(Monitor):
                                   .format(self.nbgen.total_flows,
                                           time_interval))
                     self.nbgen.e2e_installation_time = time_interval
+                    self.nbgen_queue.put(
+                        {'end_to_end_flows_operation_time': time_interval},
+                        block=True)
                     logging.info('[NB_generator] [Poll_flows thread] '
                                  'End to End installation time is: {0}'
                                  .format(self.nbgen.e2e_installation_time))
@@ -615,6 +621,7 @@ class NBgen(Monitor):
                              ' Deadline of {0} seconds passed'
                              .format(self.flows_ds_discovery_deadline))
                 self.nbgen.confirm_time = -1.0
+                self.nbgen_queue.put({'confirm_time': -1.0}, block=True)
                 logging.info('[NB_generator] [Poll_flows_confirm thread] '
                              'Confirmation time monitoring FAILED')
                 return
@@ -634,6 +641,8 @@ class NBgen(Monitor):
                                   .format(self.nbgen.total_flows,
                                           time_interval))
                     self.nbgen.confirm_time = time_interval
+                    self.nbgen_queue.put({'confirm_time': time_interval},
+                                         block=True)
                     logging.info('[NB_generator] [Poll_flows_confirm thread] '
                                  'Confirmation time is: {0}'
                                  .format(self.nbgen.confirm_time))
@@ -662,6 +671,8 @@ class NBgen(Monitor):
                              'Deadline of {0} seconds passed'
                              .format(self.flows_ds_discovery_deadline))
                 self.nbgen.discover_flows_on_switches_time = -1.0
+                self.nbgen_queue.put({'switch_operation_time': -1.0},
+                                     block=True)
                 logging.info('[NB_generator] [Poll_flows_switches thread] '
                              'Discovering flows on switches FAILED')
                 return
@@ -682,13 +693,30 @@ class NBgen(Monitor):
                                   .format(self.nbgen.total_flows,
                                           discovered_flows))
                     self.discover_flows_on_switches_time = time_interval
+                    self.nbgen_queue.put(
+                        {'switch_operation_time': time_interval}, block=True)
                     logging.info('[NB_generator] [Poll_flows_switches thread] '
                                  'Time to discover flows on switches is: {0}'
                                  .format(self.nbgen.discover_flows_on_switches_time))
                     return
             gevent.sleep(1)
 
-    def monitor_threads_run(self, t_start):
+    def __controller_time(self, t_start):
+        """
+        Monitors the time for all add REST requests to be sent and their
+        response to be received.
+        :param t_start: timestamp for beginning of discovery
+        :returns: Returns a float number containing the time in which
+        total flows were discovered in Multinet switches. Otherwise containing
+        -1.0 on failure.
+        :rtype: float
+        :type t_start: float
+        """
+        controller_time = time.time() - t_start
+        return controller_time
+
+    def monitor_threads_run(self, t_start, flow_delete_flag,
+                            total_failed_flows):
         """
         Monitors operational flows in switches of Multinet until the expected
         number of flows are found or the deadline is reached.
@@ -706,6 +734,7 @@ class NBgen(Monitor):
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
         time_start = time.time()
+        controller_time = self.__controller_time(t_start)
         discovered_flows = self.sbemu.get_flows()
         flow_measurement_latency_interval = time.time() - time_start
         logging.info('[NB_generator] Flows measurement latency '
@@ -713,7 +742,29 @@ class NBgen(Monitor):
                      .format(flow_measurement_latency_interval,
                              discovered_flows))
 
-    def monitor_results(self):
+        results_thread = {}
+
+        while not self.nbgen_queue.empty():
+            results_thread.update(self.nbgen_queue.get())
+
+        results = self.monitor_results(controller_time,
+                                       results_thread,
+                                       flow_delete_flag,
+                                       total_failed_flows)
+
+        if flow_delete_flag is True:
+            results_remove = \
+                self.monitor_results_delete_flows(self,
+                                                  controller_time,
+                                                  results_thread,
+                                                  results,
+                                                  total_failed_flows)
+            results.update(results_remove)
+        return results
+
+    def monitor_results(self, add_controller_time,
+                        results_thread, total_failed_flows):
+
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
@@ -742,74 +793,75 @@ class NBgen(Monitor):
         # ------------------------------------------------------------------
         # Add controller time: Time for all ADD REST requests to be sent
         #                      and their response to be received
-        results['add_controller_time'] = self.test.add_controller_time
+        results['add_controller_time'] = add_controller_time
         results['add_controller_rate'] = \
-            float(self.nbgen.total_flows) / self.test.add_controller_time
+            float(self.nbgen.total_flows) / add_controller_time
 
         # End-to-end-installation-time:
 
         results['end_to_end_installation_time'] = \
-            self.test.end_to_end_installation_time
-        if self.test.end_to_end_installation_time != -1:
+            results_thread['end_to_end_flows_operation_time']
+        if results_thread['end_to_end_flows_operation_time'] != -1:
             results['end_to_end_installation_rate'] = \
-                float(self.nbgen.total_flows) / self.test.end_to_end_installation_time
+                float(self.nbgen.total_flows) / results_thread['end_to_end_flows_operation_time']
         else:
             results['end_to_end_installation_rate'] = -1
 
         # Add switch time: Time from the FIRST REST request until ALL flows
         #                  are present in the network
-        results['add_switch_time'] = self.test.add_switch_time
-        if self.test.add_switch_time != -1:
+        results['add_switch_time'] = results_thread['switch_operation_time']
+        if results_thread['switch_operation_time'] != -1:
             results['add_switch_rate'] = \
-                float(self.nbgen.total_flows) / self.test.add_switch_time
+                float(self.nbgen.total_flows) / results_thread['switch_operation_time']
         else:
             results['add_switch_rate'] = -1
 
-        # Add confirm time: The time period started after the last flow was
-        #                   configured, until we receive confirmation
-        #                   all flows are added.
-
-        results['add_confirm_time'] = self.test.add_confirm_time
-        if self.test.add_confirm_time != -1:
-            results['add_confirm_rate'] = \
-                float(self.nbgen.total_flows) / self.test.add_confirm_time
+        results['add_confirm_time'] = results_thread['confirm_time']
+        if results_thread['confirm_time'] != -1:
+            results_thread['confirm_time'] = \
+                float(self.nbgen.total_flows) / results_thread['confirm_time']
         else:
             results['add_confirm_rate'] = -1
+
+        results['total_failed_flows_operations'] = total_failed_flows
+        return results
+
+    def monitor_results_delete_flows(self, controller_time,
+                                     total_failed_flows,
+                                     results_thread,
+                                     results):
 
         # Remove controller time: Time for all delete REST
         #                          requests to be sent and their response to
         #                          be received
+        results['remove_controller_time'] = controller_time
+        results['remove_controller_rate'] = \
+            float(self.nbgen.total_flows) / controller_time
+
+        # end_to_end_remove_time: The time period started after the last
+        #                   flow was configured, until we receive confirmation
+        #                   all flows were removed.
+        results['end_to_end_remove_time'] = \
+            results_thread['end_to_end_flows_operation_time']
+        results['end_to_end_remove_rate'] = \
+            float(self.nbgen.total_flows) / results_thread['end_to_end_flows_operation_time']
 
         # Remove switch time: Time from the first delete REST
         #                     request until all flows are removed from the
         #                     network.
+        results['remove_switch_time'] = \
+            results_thread['switch_operation_time']
+        results['remove_switch_rate'] = \
+            float(self.nbgen.total_flows) / results_thread['switch_operation_time']
 
         # Remove confirm time: Time period started after the last
         #                      flow was unconfigured until we receive
         #                      confirmation all flows are removed.
+        results['remove_confirm_time'] = results_thread['confirm_time']
+        results['remove_confirm_rate'] = \
+            float(self.nbgen.total_flows) / results_thread['confirm_time']
 
-            if self.test.flow_delete_flag:
-                results['remove_controller_time'] = \
-                    self.test.remove_controller_time
-                results['remove_controller_rate'] = \
-                    float(self.nbgen.total_flows) / self.test.remove_controller_time
-
-                results['end_to_end_remove_time'] = self.test.end_to_end_remove_time
-                results['end_to_end_remove_rate'] = \
-                    float(self.nbgen.total_flows) / self.test.end_to_end_remove_time
-
-                results['remove_switch_time'] = self.test.remove_switch_time
-                results['remove_switch_rate'] = \
-                    float(self.nbgen.total_flows) / self.test.remove_switch_time
-
-                results['remove_confirm_time'] = self.test.remove_confirm_time
-                results['remove_confirm_rate'] = \
-                    float(self.nbgen.total_flows) / self.test.remove_confirm_time
-
-            results['total_failed_flows_operations'] = \
-                self.test.total_failed_flows_operations
-
-            results['flow_delete_flag'] = str(self.test.flow_delete_flag)
-            results.append(results)
-
+        results['total_failed_flows_operations'] = total_failed_flows
+        results['flow_delete_flag'] = 'False'
+        results.append(results)
         return results

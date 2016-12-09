@@ -17,7 +17,6 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import sys
 import time
-from mininet.moduledeps import OF_KMOD
 
 
 class TestRun:
@@ -435,7 +434,6 @@ class TestRun:
             #                                       self.sb_emu)
             global_sample_id = 0
             flow_delete_flag = json_conf['flow_delete_flag']
-            flows_per_request = json_conf['flows_per_request']
 
             for (self.nb_emu.total_flows,
                  self.nb_emu.flow_operations_delay_ms,
@@ -484,8 +482,8 @@ class TestRun:
                     raise ValueError('Initial installed flows '
                                      'were not equal to 0.')
 
-                add_failed_flows_oper = 0
-                remove_failed_flows_oper = 0
+                add_failed_flows = 0
+                remove_failed_flows = 0
                 result_metrics_add = {}
                 result_metrics_remove = {}
                 start_rest_request_time = time.time()
@@ -493,16 +491,12 @@ class TestRun:
                 nb_gen_start_json_output = self.nb_emu.run()
                 nb_gen_start_output = json.loads(nb_gen_start_json_output)
 
-                add_failed_flows_oper = nb_gen_start_output[0]
-                add_controller_time = time.time() - start_rest_request_time
+                add_failed_flows = nb_gen_start_output[0]
 
                 result_metrics_add.update(
-                        self.mon.monitor_threads_run(start_rest_request_time))
-
-                end_to_end_installation_time = \
-                    result_metrics_add['end_to_end_flows_operation_time']
-                add_switch_time = result_metrics_add['switch_operation_time']
-                add_confirm_time = result_metrics_add['confirm_time']
+                    self.mon.monitor_threads_run(start_rest_request_time,
+                                                 flow_delete_flag,
+                                                 add_failed_flows))
 
                 # start northbound generator flow_delete_flag SET
                 if flow_delete_flag:
@@ -510,21 +504,15 @@ class TestRun:
                     nb_gen_start_json_output = self.nb_emu.run()
                     nb_gen_start_output = json.loads(nb_gen_start_json_output)
 
-                    remove_failed_flows_oper = nb_gen_start_output[0]
-                    remove_controller_time = time.time() - start_rest_request_time
+                    remove_failed_flows = nb_gen_start_output[0]
 
-                    result_metrics_remove.update(
-                        self.mon.monitor_threads_run(start_rest_request_time))
+                    total_failed_flows = \
+                        add_failed_flows + remove_failed_flows
 
-                    end_to_end_remove_time = \
-                        result_metrics_remove['end_to_end_flows_operation_time']
-                    remove_switch_time = \
-                        result_metrics_remove['switch_operation_time']
-                    remove_confirm_time = result_metrics_remove['confirm_time']
-
-                total_failed_flows_operations = \
-                    add_failed_flows_oper + remove_failed_flows_oper
-
+                    result_metrics_remove(
+                        self.mon.monitor_threads_run(start_rest_request_time,
+                                                     flow_delete_flag,
+                                                     total_failed_flows))
                 # Stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
