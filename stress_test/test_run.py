@@ -17,7 +17,6 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import sys
 import time
-from mininet.moduledeps import OF_KMOD
 
 
 class TestRun:
@@ -499,6 +498,7 @@ class TestRun:
                 result_metrics_add.update(
                         self.mon.monitor_threads_run(start_rest_request_time))
 
+                total_failed_flows = add_failed_flows_oper
                 end_to_end_installation_time = \
                     result_metrics_add['end_to_end_flows_operation_time']
                 add_switch_time = result_metrics_add['switch_operation_time']
@@ -513,6 +513,9 @@ class TestRun:
                     remove_failed_flows_oper = nb_gen_start_output[0]
                     remove_controller_time = time.time() - start_rest_request_time
 
+                    total_failed_flows = \
+                        total_failed + remove_failed_flows_oper
+
                     result_metrics_remove.update(
                         self.mon.monitor_threads_run(start_rest_request_time))
 
@@ -521,9 +524,6 @@ class TestRun:
                     remove_switch_time = \
                         result_metrics_remove['switch_operation_time']
                     remove_confirm_time = result_metrics_remove['confirm_time']
-
-                total_failed_flows_operations = \
-                    add_failed_flows_oper + remove_failed_flows_oper
 
                 # Stop/clean nodes
                 # ---------------------------------------------------------
