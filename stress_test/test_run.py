@@ -17,6 +17,7 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import sys
 import time
+from mininet.moduledeps import OF_KMOD
 
 
 class TestRun:
@@ -241,13 +242,13 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
+
         try:
             # CONTROLLER preparation
             # ---------------------------------------------------------------
             self.ctrl.init_ssh()
-
-            # build a controller
             self.ctrl.build()
+
             host = self.ctrl.ssh_user + '@' + self.ctrl.ip
             logging.info('[sb_active_scalability_multinet] Build a controller '
                          'on {} host.'.format(host))
@@ -264,13 +265,16 @@ class TestRun:
                          'emulator on {1} host'.format(self.sb_emu.name,
                                                        self.sb_emu.ip))
 
-            # TEST run
+            # Oftraf preparation
             # ---------------------------------------------------------------
             of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
             monitor = stress_test.monitor.Multinet(self.ctrl,
                                                    of,
                                                    self.sb_emu)
             of.build()
+
+            # TEST run
+            # ---------------------------------------------------------------
             global_sample_id = 0
             for (self.sb_emu.topo_size,
                  self.sb_emu.topo_type,
@@ -333,17 +337,36 @@ class TestRun:
 
         finally:
             try:
-                of.clean()
-            except:
-                pass
-            try:
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
-                self.results_report(json_conf)
+                report_spec = \
+                    self.test_report_template.sb_active_scalability_multinet(
+                        self.args.json_output)
+                self.results_report(report_spec, json_conf)
             except:
-                logging.error('[{0}] Fail to generate report.')
-            del self.ctrl
-            del self.sb_emu
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean Oftraf.'.
+                             format(self.test_type))
+                del of
+            except:
+                logging.error('[{0}] Fail to clean oftraf.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean controller.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to cleanup controller.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean mtcbench.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to clean mtcbench.'.
+                              format(self.test_type))
 
     def sb_idle_scalability_multinet_run(self,
                                          json_conf,
@@ -442,8 +465,6 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
-
-
         try:
             # CONTROLLER preparation
             # ---------------------------------------------------------------
@@ -527,9 +548,9 @@ class TestRun:
                                      'were not equal to 0.')
 
                 add_failed_flows_oper = 0
-                del_failed_flows_oper = 0
+                remove_failed_flows_oper = 0
                 result_metrics_add = {}
-                result_metrics_del = {}
+                result_metrics_remove = {}
                 start_rest_request_time = time.time()
 
                 nb_gen_start_json_output = self.nb_emu.run()
@@ -597,11 +618,27 @@ class TestRun:
                 self.results_report(report_spec, json_conf)
             except:
                 logging.error('[{0}] Fail to generate report.')
-
-            del self.nb_emu
-            del self.ctrl
-            del self.sb_emu
-
+            try:
+                logging.info('[{0}] Clean NB-Generator.'.
+                             format(self.test_type))
+                del self.nb_emu
+            except:
+                logging.error('[{0}] Fail to clean NB-Generator.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean controller.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to cleanup controller.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean mtcbench.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to clean mtcbench.'.
+                              format(self.test_type))
 
     def results_report(self, report_spec, json_conf):
         report_gen = stress_test.report_gen.ReportGen(

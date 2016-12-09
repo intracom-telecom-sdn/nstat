@@ -208,3 +208,23 @@ class Oftraf:
                                        req.content.decode('utf-8'))))
         except stress_test.oftraf_exceptions.OftrafError as e:
             self.error_handling(e.err_msg, e.err_code)
+
+    def __del__(self):
+        """Method called when object is destroyed"""
+        try:
+            logging.info('Run oftraf stop.')
+            self.stop()
+        except:
+            pass
+
+        try:
+            logging.info('Run oftraf cleanup.')
+            self.clean()
+        except:
+            pass
+
+        try:
+            logging.info('Close oftraf node ssh connection.')
+            self._ssh_conn.close()
+        except:
+            pass
