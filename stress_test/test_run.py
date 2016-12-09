@@ -24,47 +24,49 @@ class TestRun:
     def __init__(self, args, json_conf, test_type):
         """
         """
+        # CONTROLLER preparation
+        # ----------------------------------------------------------------------
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                           json_conf)
+        self.ctrl.init_ssh()
+        self.ctrl.build()
+        self.ctrl.generate_xmls()
+
+        # SB EMULATOR preparation
+        # ----------------------------------------------------------------------
         self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
+        self.sb_emu.init_ssh()
+        self.sb_emu.build()
 
-        self.nb_emu = stress_test.nb_generator.NBgen(args.nb_emu_base_dir,
-                                                     json_conf,
-                                                     self.ctrl,
-                                                     self.sb_emu)
+        # NB EMULATOR preparation
+        # ----------------------------------------------------------------------
         if 'nb_emulator_name' in json_conf:
-            if json_conf['nb_emulator_name'] == "NB-GENERATOR":
+                self.nb_emu = stress_test.nb_generator.NBgen(
+                    args.nb_emu_base_dir,
+                    json_conf,
+                    self.ctrl,
+                    self.sb_emu)
+                self.nb_emu.init_ssh()
+                self.nb_emu.build()
+
+        # Monitor object for nb-emulator---------------------------------------
                 self.mon = stress_test.monitor.NBgen(self.ctrl,
                                                      self.nb_emu,
                                                      self.sb_emu)
+
+        # Monitor objects for sb-emulators
         elif 'sb_emulator_name' in json_conf:
             if json_conf['sb_emulator_name'] == "MTCBENCH":
                 self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                         self.sb_emu)
             elif json_conf['sb_emulator_name'] == "MULTINET":
-                self.mon = stress_test.monitor.Mtcbench(self.ctrl,
+                self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                self.mon = stress_test.monitor.Multinet(self.ctrl,
+                                                        self.oftraf,
                                                         self.sb_emu)
         else:
             pass
-
-        # CONTROLLER preparation
-        # ----------------------------------------------------------------------
-        self.ctrl.init_ssh()
-        self.ctrl.build()
-
-        # SB EMULATOR preparation
-        # ----------------------------------------------------------------------
-        self.sb_emu.init_ssh()
-        self.sb_emu.build()
-        self.ctrl.generate_xmls()
-
-        # NB EMULATOR preparation
-        # ----------------------------------------------------------------------
-        if 'nb_emulator_name' in json_conf:
-            if json_conf['nb_emulator_name'] == "NB-GENERATOR":
-                self.nb_emu.init_ssh()
-                self.nb_emu.build()
 
         self.total_samples = []
         self.test_report_template = \
