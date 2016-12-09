@@ -346,11 +346,12 @@ class Mtcbench(Monitor):
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active)
             threads.append(monitor_thread)
-            mtcbench_thread = gevent.spawn(self.mtcbench_thread)
+            mtcbench_thread = gevent.spawn(self.mtcbench_thread(
+                True, self.data_queue))
             threads.append(mtcbench_thread)
         else:
             logging.info('[MTCbench.monitor_run] idle test monitor is running')
-            self.mtcbench_thread(False)
+            self.mtcbench_thread(False, None)
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle, boot_start_time)
             threads.append(monitor_thread)
@@ -359,21 +360,21 @@ class Mtcbench(Monitor):
         gevent.killall(threads)
         return samples
 
-    def mtcbench_thread(self, block_flag=True):
+    def mtcbench_thread(self, block_flag=True, data_queue=None):
         """ Function executed by mtcbench thread.
         """
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
         try:
             self.emulator.run(self.controller.ip, self.controller.of_port,
-                              self.data_queue, False, block_flag)
+                              data_queue, False, block_flag)
             # mtcbench ended, enqueue termination message
-            if self.data_queue is not None:
-                self.data_queue.put_nowait(self.term_success)
+            if data_queue is not None:
+                data_queue.put_nowait(self.term_success)
             logging.info('[MTCbench.mtcbench_thread] MTCbench thread ended '
                          'successfully')
         except:
-            if self.data_queue is not None:
-                self.data_queue.put_nowait(self.term_fail)
+            if data_queue is not None:
+                data_queue.put_nowait(self.term_fail)
             logging.error('[MTCbench.mtcbench_thread] Exception: '
                           'MTCbench_thread exited with error.')
         return 0
