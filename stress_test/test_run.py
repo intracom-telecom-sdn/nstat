@@ -49,6 +49,24 @@ class TestRun:
         else:
             pass
 
+        # CONTROLLER preparation
+        # ----------------------------------------------------------------------
+        self.ctrl.init_ssh()
+        self.ctrl.build()
+
+        # SB EMULATOR preparation
+        # ----------------------------------------------------------------------
+        self.sb_emu.init_ssh()
+        self.sb_emu.build()
+        self.ctrl.generate_xmls()
+
+        # NB EMULATOR preparation
+        # ----------------------------------------------------------------------
+        if 'nb_emulator_name' in json_conf:
+            if json_conf['nb_emulator_name'] == "NB-GENERATOR":
+                self.nb_emu.init_ssh()
+                self.nb_emu.build()
+
         self.total_samples = []
         self.test_report_template = \
             stress_test.report_spec_templates.TestReport(test_type,
@@ -69,16 +87,7 @@ class TestRun:
         :type output_dir: str
         """
         try:
-            # CONTROLLER preparation
-            # ------------------------------------------------------------------
-            self.ctrl.init_ssh()
-            self.ctrl.build()
 
-            # EMULATOR preparation
-            # ----------------------------------------------------------------
-            self.sb_emu.init_ssh()
-            self.sb_emu.build()
-            self.ctrl.generate_xmls()
             global_sample_id = 0
             # TEST run
             # -------------------------------------------------------------------
@@ -160,16 +169,6 @@ class TestRun:
         :type output_dir: str
         """
         try:
-            # CONTROLLER preparation
-            # ------------------------------------------------------------------
-            self.ctrl.init_ssh()
-            self.ctrl.build()
-
-            # EMULATOR preparation
-            # ----------------------------------------------------------------
-            self.sb_emu.init_ssh()
-            self.sb_emu.build()
-            self.ctrl.generate_xmls()
             global_sample_id = 0
             # TEST run
             # ----------------------------------------------------------------
@@ -242,31 +241,14 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
-
         try:
-            # CONTROLLER preparation
-            # ---------------------------------------------------------------
-            self.ctrl.init_ssh()
-            self.ctrl.build()
 
-            host = self.ctrl.ssh_user + '@' + self.ctrl.ip
-            logging.info('[sb_active_scalability_multinet] Build a controller '
-                         'on {} host.'.format(host))
-            self.ctrl.generate_xmls()
+            # Configuring controller for FLOWS_MODS
+            # ------------------------------------------------------------------
             self.ctrl.flowmods_config()
 
-
-            # EMULATOR preparation
-            # ---------------------------------------------------------------
-            self.sb_emu.init_ssh()
-            self.sb_emu.build()
-
-            logging.info('[sb_active_scalability_multinet] Build a {0} '
-                         'emulator on {1} host'.format(self.sb_emu.name,
-                                                       self.sb_emu.ip))
-
-            # Oftraf preparation
-            # ---------------------------------------------------------------
+            # OFTRAF preparation
+            # ------------------------------------------------------------------
             of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
             monitor = stress_test.monitor.Multinet(self.ctrl,
                                                    of,
@@ -381,19 +363,6 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
-
-        # CONTROLLER preparation
-        # ------------------------------------------------------------------
-        self.ctrl.init_ssh()
-        self.ctrl.build()
-
-        # EMULATOR preparation
-        # ------------------------------------------------------------------
-        self.sb_emu.init_ssh()
-        self.sb_emu.build()
-
-        # TEST run
-        # ------------------------------------------------------------------
         for (self.sb_emu.topo_size,
              self.sb_emu.topo_group_size,
              self.sb_emu.topo_group_delay_ms,
@@ -437,16 +406,6 @@ class TestRun:
         :type output_dir: str
         """
 
-        # CONTROLLER preparation
-        # ------------------------------------------------------------------
-        self.ctrl.init_ssh()
-        self.ctrl.build()
-
-        # EMULATOR preparation
-        # ------------------------------------------------------------------
-        self.sb_emu.init_ssh()
-        self.sb_emu.build()
-
         # TEST run
         # ------------------------------------------------------------------
         # for sample_id in list(range(json_conf['number_of_samples'] + 1)):
@@ -466,30 +425,8 @@ class TestRun:
         :type output_dir: str
         """
         try:
-            # CONTROLLER preparation
-            # ---------------------------------------------------------------
-            self.ctrl.init_ssh()
 
-            # build a controller
-            self.ctrl.build()
-            host = self.ctrl.ssh_user + '@' + self.ctrl.ip
-            logging.info('[nb_active_scalability_multinet] Build a controller '
-                         'on {} host.'.format(host))
-            self.ctrl.generate_xmls()
             self.ctrl.flowmods_config()
-
-            # EMULATOR preparation
-            # ---------------------------------------------------------------
-            self.sb_emu.init_ssh()
-            self.sb_emu.build()
-
-            logging.info('[sb_active_scalability_multinet] Build a {0} '
-                         'emulator on {1} host'.format(self.sb_emu.name,
-                                                       self.sb_emu.ip))
-            # NB EMULATOR preparation
-            # --------------------------------------------------------------
-            self.nb_emu.init_ssh()
-            self.nb_emu.build()
 
             # TEST run
             # ---------------------------------------------------------------
