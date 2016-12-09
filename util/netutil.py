@@ -489,13 +489,12 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel.settimeout(channel_timeout)
     if getpty_flag:
         channel.get_pty()
-    if block_flag:
-        channel.exec_command(command_to_run)
-    else:
-        channel.exec_command('{0} {1}'.format('nohup', command_to_run))
+    channel.exec_command(command_to_run)
 
     if not block_flag:
-        # channel.close()
+        # Carefull!! Do not close channel here if it is closed the running
+        # process will be terminated and we do not want this to happen in case
+        # of non blocking execution.
         return (0, '')
 
     channel_output = ''
