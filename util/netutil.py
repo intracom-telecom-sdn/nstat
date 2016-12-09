@@ -495,7 +495,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
         channel.exec_command('{0} {1}'.format('nohup', command_to_run))
 
     if not block_flag:
-        channel.close()
+        # channel.close()
         return (0, '')
 
     channel_output = ''
