@@ -750,7 +750,6 @@ class NBgen(Monitor):
 
         results = self.monitor_results(controller_time,
                                        results_thread,
-                                       flow_delete_flag,
                                        total_failed_flows)
 
         if flow_delete_flag is True:
