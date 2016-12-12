@@ -545,12 +545,12 @@ class Multinet(Monitor, Oftraf):
 
 
 class NBgen(Monitor):
-    def __init__(self, controller, nbgen, sbemu, test):
+    def __init__(self, controller, nbgen, sbemu):
         Monitor.__init__(self, controller)
         self.nbgen_queue = gevent.queue.Queue()
         self.nbgen = nbgen
         self.sbemu = sbemu
-        self.test = test
+        #self.test = test
 
     def __poll_flows_ds(self, t_start):
         """
