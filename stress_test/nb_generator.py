@@ -63,7 +63,7 @@ class NBgen:
         self.total_flows = None
         self.flow_operations_delay_ms = None
         # ---------------------------------------------------------------------
-        self.flows_discovery_deadline = 240
+        self.flows_ds_discovery_deadline = 240
 
         self.confirm_time = 0.0
         self.e2e_installation_time = 0.0
