@@ -381,10 +381,10 @@ class Mtcbench(Monitor):
 
 
 class Multinet(Monitor, Oftraf):
-    def __init__(self, controller, oftraf, emulator):
+    def __init__(self, controller, oftraf, emulator, of=None):
         Monitor.__init__(self, controller)
-        Oftraf.__init__(self, controller, oftraf)
-
+        # Oftraf.__init__(self, controller, oftraf)
+        self.oftraf_node = of
         print("create a MULTINET MONITOR object")
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
@@ -521,7 +521,8 @@ class Multinet(Monitor, Oftraf):
         """ Function executed by multinet thread.
             It calls monitor_thread() method of Oftraf Class
         """
-        oftraf_monitor_results = self.monitor_run_oftraf()
+        oftraf_mon = Oftraf(self.controller, self.oftraf_node)
+        oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
         results = self.monitor_results_active()
         traffic_gen_ms = float(self.emulator.traffic_gen_duration_ms) / 1000
         results['of_out_packets_per_sec'] = \
