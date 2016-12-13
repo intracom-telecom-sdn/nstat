@@ -596,7 +596,6 @@ class TestRun:
                 print(global_sample_id)
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
-                exit()
                 # start northbound generator flow_delete_flag SET
                 if flow_delete_flag:
                     start_rest_request_time = time.time()
