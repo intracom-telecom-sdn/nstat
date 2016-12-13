@@ -238,7 +238,7 @@ class TestRun:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
 
-    def sb_idle_scalability_cbench_run(self,
+    def sb_idle_scalability_mtcbench_run(self,
                                        json_conf,
                                        json_output,
                                        output_dir):
