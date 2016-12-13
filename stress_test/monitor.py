@@ -766,6 +766,7 @@ class NBgen(Monitor):
                 self.monitor_results_delete_flows(self, controller_time,
                                      results_thread,
                                      total_failed_flows)
+            #print(results_remove)
             #results.update(results_remove)
         return results_add, results_remove
 
