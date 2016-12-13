@@ -745,23 +745,29 @@ class NBgen(Monitor):
                              discovered_flows))
 
         results_thread = {}
+        results_add = {}
+        results_remove = {}
 
         while not self.nbgen_queue.empty():
             results_thread.update(self.nbgen_queue.get())
 
-        results = self.monitor_results(controller_time,
+        results_add = self.monitor_results(controller_time,
                                        results_thread,
                                        total_failed_flows)
 
         if flow_delete_flag is True:
-            results_remove = \
-                self.monitor_results_delete_flows(self,
+            '''
+            self.monitor_results_delete_flows(self,
                                                   controller_time,
                                                   results_thread,
-                                                  results,
                                                   total_failed_flows)
-            results.update(results_remove)
-        return results
+            '''
+            results_remove = \
+                self.monitor_results_delete_flows(self, controller_time,
+                                     results_thread,
+                                     total_failed_flows)
+            #results.update(results_remove)
+        return results_add, results_remove
 
     def monitor_results(self, add_controller_time,
                         results_thread, total_failed_flows):
@@ -828,13 +834,13 @@ class NBgen(Monitor):
         return results
 
     def monitor_results_delete_flows(self, controller_time,
-                                     total_failed_flows,
                                      results_thread,
-                                     results):
+                                     total_failed_flows):
 
         # Remove controller time: Time for all delete REST
         #                          requests to be sent and their response to
         #                          be received
+        results = {}
         results['remove_controller_time'] = controller_time
         results['remove_controller_rate'] = \
             float(self.nbgen.total_flows) / controller_time
@@ -864,5 +870,5 @@ class NBgen(Monitor):
 
         results['total_failed_flows_operations'] = total_failed_flows
         results['flow_delete_flag'] = 'False'
-        results.append(results)
+        #results.append(results)
         return results
