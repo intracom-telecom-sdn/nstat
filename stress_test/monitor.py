@@ -381,7 +381,7 @@ class Mtcbench(Monitor):
 
 
 class Multinet(Monitor):
-    def __init__(self, controller, oftraf=None, emulator):
+    def __init__(self, controller, oftraf, emulator):
         Monitor.__init__(self, controller)
         # Oftraf.__init__(self, controller, oftraf)
         self.oftraf_node = oftraf
