@@ -124,7 +124,8 @@ class TestRun:
                 logging.info('[{0}] Stopping controller'.
                              format(self.test_type))
                 self.ctrl.stop()
-                global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
+                global_sample_id = \
+                    self.total_samples[-1]['global_sample_id'] + 1
             logging.info('[Testing] All done!')
         except:
             logging.error('[{0}] Exiting test run'.format(self.test_type))
@@ -132,11 +133,8 @@ class TestRun:
             try:
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
-                if self.test_type == 'sb_active_scalability_mtcbench':
-                    report_spec = self.test_report_template.sb_active_scalability_mtcbench(
-                        self.args.json_output)
-                if self.test_type == 'sb_active_stability_mtcbench':
-                    report_spec = self.test_report_template.sb_active_stability_mtcbench(
+                report_spec = \
+                    self.test_report_template.sb_active_stability_mtcbench(
                         self.args.json_output)
                 self.results_report(report_spec, json_conf)
             except:
@@ -205,7 +203,8 @@ class TestRun:
                 logging.info('[{0}] Stopping controller'.
                              format(self.test_type))
                 self.ctrl.stop()
-                global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
+                global_sample_id = \
+                    self.total_samples[-1]['global_sample_id'] + 1
             logging.info('[Testing] All done!')
         except:
             logging.error('[{0}] Exiting test run'.format(self.test_type))
@@ -213,11 +212,8 @@ class TestRun:
             try:
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
-                if self.test_type == 'sb_active_scalability_mtcbench':
-                    report_spec = self.test_report_template.sb_active_scalability_mtcbench(
-                        self.args.json_output)
-                if self.test_type == 'sb_active_stability_mtcbench':
-                    report_spec = self.test_report_template.sb_active_stability_mtcbench(
+                report_spec = \
+                    self.test_report_template.sb_active_scalability_mtcbench(
                         self.args.json_output)
                 self.results_report(report_spec, json_conf)
             except:
@@ -429,11 +425,11 @@ class TestRun:
                 logging.error('[{0}] Fail to cleanup controller.'.
                               format(self.test_type))
             try:
-                logging.info('[{0}] Clean mtcbench.'.
+                logging.info('[{0}] Clean multinet.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
-                logging.error('[{0}] Fail to clean mtcbench.'.
+                logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
 
     def sb_idle_scalability_multinet_run(self,
