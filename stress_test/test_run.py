@@ -119,7 +119,7 @@ class TestRun:
                 logging.info('[{0}] Starting MTCbench active switches '
                              'topology and monitor thread'.
                              format(self.test_type))
-                self.total_samples += self.mon.monitor_threads_run()
+                self.total_samples += self.mon.monitor_run()
                 logging.info('[{0}] Stopping controller'.
                              format(self.test_type))
                 self.ctrl.stop()
@@ -459,6 +459,7 @@ class TestRun:
 
                 self.mon.global_sample_id = global_sample_id
 
+
                 # start a controller
                 self.ctrl.check_status()
                 self.ctrl.start()
@@ -520,9 +521,19 @@ class TestRun:
                 self.ctrl.stop()
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
-                global_sample_id = \
-                    self.total_samples[-1]['global_sample_id'] + 1
-            logging.info('[Testing] All done!')
+
+                global_sample_id += 1
+                print('-------------------------------------------------------')
+                print('-------------------------------------------------------')
+                print(result_metrics_add)
+                print('-------------------------------------------------------')
+                print('-------------------------------------------------------')
+                print(global_sample_id)
+                print('-------------------------------------------------------')
+                print('-------------------------------------------------------')
+#                global_sample_id = \
+#                    self.total_samples[-1]['global_sample_id'] + 1
+#            logging.info('[Testing] All done!')
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.
