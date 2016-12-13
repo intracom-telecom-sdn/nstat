@@ -61,9 +61,9 @@ class TestRun:
                 self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                         self.sb_emu)
             elif json_conf['sb_emulator_name'] == "MULTINET":
-                self.oftraf = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                self.of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
                 self.mon = stress_test.monitor.Multinet(self.ctrl,
-                                                        self.oftraf,
+                                                        self.of,
                                                         self.sb_emu)
         else:
             pass
@@ -332,11 +332,7 @@ class TestRun:
 
             # OFTRAF preparation
             # ------------------------------------------------------------------
-            of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
-            monitor = stress_test.monitor.Multinet(self.ctrl,
-                                                   of,
-                                                   self.sb_emu)
-            of.build()
+            self.of.build()
 
             # TEST run
             # ---------------------------------------------------------------
@@ -354,7 +350,7 @@ class TestRun:
                     json_conf['multinet_topo_group_size'],
                     json_conf['multinet_topo_group_delay_ms'],
                     json_conf['controller_statistics_period_ms']):
-                monitor.global_sample_id = global_sample_id
+                self.mon.global_sample_id = global_sample_id
                 # start a controller
                 self.ctrl.check_status()
                 self.ctrl.start()
@@ -363,7 +359,7 @@ class TestRun:
                 if self.ctrl.persistence_hnd:
                     self.ctrl.disable_persistence()
 
-                of.start()
+                self.of.start()
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 logging.info('[sb_active_scalability_multinet] '
                              'Generate multinet config file')
@@ -377,11 +373,11 @@ class TestRun:
 
                 self.sb_emu.generate_traffic()
 
-                self.total_samples += monitor.monitor_run()
+                self.total_samples += self.mon.monitor_run()
 
                 # Stop/clean nodes
                 # ---------------------------------------------------------
-                of.stop()
+                self.of.stop()
                 self.ctrl.stop()
 
                 self.sb_emu.stop_topos()
@@ -412,9 +408,16 @@ class TestRun:
                 logging.error('[{0}] Fail to generate test report.'.
                               format(self.test_type))
             try:
+                logging.info('[{0}] Clean Multinet Monitor'.
+                             format(self.test_type))
+                del self.mon
+            except:
+                logging.error('[{0}] Fail to clean Multinet Monitor.'.
+                              format(self.test_type))
+            try:
                 logging.info('[{0}] Clean Oftraf.'.
                              format(self.test_type))
-                del of
+                del self.of
             except:
                 logging.error('[{0}] Fail to clean oftraf.'.
                               format(self.test_type))
