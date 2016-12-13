@@ -119,7 +119,7 @@ class TestRun:
                 logging.info('[{0}] Starting MTCbench active switches '
                              'topology and monitor thread'.
                              format(self.test_type))
-                self.total_samples += self.mon.monitor_run()
+                self.total_samples += self.mon.monitor_threads_run()
                 logging.info('[{0}] Stopping controller'.
                              format(self.test_type))
                 self.ctrl.stop()
