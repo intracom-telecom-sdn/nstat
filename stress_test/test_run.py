@@ -541,6 +541,7 @@ class TestRun:
 
                 self.mon.global_sample_id = global_sample_id
 
+
                 # start a controller
                 self.ctrl.check_status()
                 self.ctrl.start()
@@ -602,9 +603,19 @@ class TestRun:
                 self.ctrl.stop()
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
-                global_sample_id = \
-                    self.total_samples[-1]['global_sample_id'] + 1
-            logging.info('[Testing] All done!')
+
+                global_sample_id += 1
+                print('-------------------------------------------------------')
+                print('-------------------------------------------------------')
+                print(result_metrics_add)
+                print('-------------------------------------------------------')
+                print('-------------------------------------------------------')
+                print(global_sample_id)
+                print('-------------------------------------------------------')
+                print('-------------------------------------------------------')
+#                global_sample_id = \
+#                    self.total_samples[-1]['global_sample_id'] + 1
+#            logging.info('[Testing] All done!')
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.

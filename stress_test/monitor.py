@@ -767,7 +767,7 @@ class NBgen(Monitor):
 
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
-        self.global_sample_id += 1
+        #self.global_sample_id += 1
         results['multinet_workers'] = len(self.sbemu.workers_ips)
         results['multinet_size'] = \
             self.sbemu.topo_size * len(self.sbemu.workers_ips)
