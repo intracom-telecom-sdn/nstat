@@ -607,10 +607,10 @@ class TestRun:
                     total_failed_flows = \
                         add_failed_flows + remove_failed_flows
 
-                    result_metrics_remove(
+                    result_metrics_add, result_metrics_remove = \
                         self.mon.monitor_threads_run(start_rest_request_time,
                                                      flow_delete_flag,
-                                                     total_failed_flows))
+                                                     total_failed_flows)
                 # Stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
