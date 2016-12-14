@@ -80,7 +80,7 @@
 "flow_workers":[5],
 "total_flows":[1000],
 "flow_operations_delay_ms":[2],
-"flow_delete_flag":false,
+"flow_delete_flag":true,
 "flows_per_request":10,
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],

@@ -155,7 +155,19 @@ class NBgen:
                                            [self.run_hnd]):
                     raise(IOError(
                         '[NB_generator] Run handler does not exist'))
-
+                print(' '.join([str(self.venv_hnd),
+                                  str(self.base_dir),
+                                  str(self.run_hnd),
+                                  str(self.controller.ip),
+                                  str(self.controller.restconf_port),
+                                  str(self.total_flows),
+                                  str(self.flow_workers),
+                                  str(self.flow_operations_delay_ms),
+                                  str(self.flow_delete_flag),
+                                  str(self.controller.restconf_user),
+                                  str(self.controller.restconf_pass),
+                                  str(self.flows_per_request),
+                                  str(self.log_level)]))
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
