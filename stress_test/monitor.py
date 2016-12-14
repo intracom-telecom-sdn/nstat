@@ -757,12 +757,13 @@ class NBgen(Monitor):
                                            total_failed_flows)
 
         if flow_delete_flag is True:
+            print("flow_delete_flag is SET to TRUE")
             '''
             self.monitor_results_delete_flows(self,
                                                   controller_time,
                                                   results_thread,
                                                   total_failed_flows)
-            '''
+
             results_remove = \
                 self.monitor_results_delete_flows(self,
                                                   controller_time,
@@ -774,7 +775,8 @@ class NBgen(Monitor):
         print(results_add)
         print("results_remove:")
         print(results_remove)
-        return results_add, results_remove
+        '''
+        return results_add
 
     def monitor_results(self, add_controller_time,
                         results_thread, total_failed_flows):

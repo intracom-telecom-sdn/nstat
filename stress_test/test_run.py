@@ -596,18 +596,22 @@ class TestRun:
                 nb_gen_start_output = json.loads(nb_gen_start_json_output)
 
                 add_failed_flows = nb_gen_start_output[0]
-
+                '''
                 result_metrics_add, result_metrics_remove = \
                     self.mon.monitor_threads_run(start_rest_request_time,
                                                  flow_delete_flag,
                                                  add_failed_flows)
-
+                '''
+                result_metrics_add = \
+                    self.mon.monitor_threads_run(start_rest_request_time,
+                                                 flow_delete_flag,
+                                                 add_failed_flows)
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
                 print(result_metrics_add)
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
-                print(result_metrics_remove)
+                #print(result_metrics_remove)
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
                 print(global_sample_id)
