@@ -734,6 +734,7 @@ class NBgen(Monitor):
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
         monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
+        gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
         time_start = time.time()
         controller_time = self.__controller_time(t_start)
