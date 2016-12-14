@@ -733,7 +733,7 @@ class NBgen(Monitor):
         :type t_start:
         """
         logging.info('[NB_generator] Start polling measurements')
-
+        exit()
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
         monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
