@@ -61,7 +61,10 @@ class TestRun:
                 self.mon = stress_test.monitor.Mtcbench(self.ctrl,
                                                         self.sb_emu)
             elif json_conf['sb_emulator_name'] == "MULTINET":
-                self.of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                if 'oftraf_rest_server_port' in json_conf:
+                    self.of = stress_test.oftraf.Oftraf(self.ctrl, json_conf)
+                else:
+                    self.of = None
                 self.mon = stress_test.monitor.Multinet(self.ctrl,
                                                         self.of,
                                                         self.sb_emu)
