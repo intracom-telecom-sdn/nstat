@@ -445,54 +445,91 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
-        global_sample_id = 0
-        for (self.sb_emu.topo_size,
-             self.sb_emu.topo_group_size,
-             self.sb_emu.topo_group_delay_ms,
-             self.sb_emu.topo_hosts_per_switch,
-             self.sb_emu.topo_type,
-             self.ctrl.stat_period_ms
-             ) in itertools.product(json_conf['multinet_topo_size'],
-                                    json_conf['multinet_topo_group_size'],
-                                    json_conf['multinet_topo_group_delay_ms'],
-                                    json_conf['multinet_topo_hosts_per_'
-                                              'switch'],
-                                    json_conf['multinet_topo_type'],
-                                    json_conf['controller_statistics_'
-                                              'period_ms']):
-            # start a controller
-            self.ctrl.check_status()
-            self.ctrl.start()
-            # disable persistence
-            if self.ctrl.persistence_hnd:
-                self.ctrl.disable_persistence()
+        try:
+            global_sample_id = 0
+            for (self.sb_emu.topo_size,
+                 self.sb_emu.topo_group_size,
+                 self.sb_emu.topo_group_delay_ms,
+                 self.sb_emu.topo_hosts_per_switch,
+                 self.sb_emu.topo_type,
+                 self.ctrl.stat_period_ms
+                 ) in itertools.product(json_conf['multinet_topo_size'],
+                                        json_conf['multinet_topo_group_size'],
+                                        json_conf['multinet_topo_group_'
+                                                  'delay_ms'],
+                                        json_conf['multinet_topo_hosts_per_'
+                                                  'switch'],
+                                        json_conf['multinet_topo_type'],
+                                        json_conf['controller_statistics_'
+                                                  'period_ms']):
+                # start a controller
+                self.ctrl.check_status()
+                self.ctrl.start()
+                # disable persistence
+                if self.ctrl.persistence_hnd:
+                    self.ctrl.disable_persistence()
 
-            # start a Multinet topology
-            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
-            logging.info('[sb_active_scalability_multinet] '
-                         'Generate multinet config file')
-            self.sb_emu.init_topos()
+                # start a Multinet topology
+                self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+                logging.info("{0} Starting Multinet idle switches topology".
+                             format(self.test_type))
+                self.sb_emu.init_topos()
+                topo_start_timestamp = time.time()
 
-            topo_bootup_ms = self.sb_emu.get_topo_bootup_ms()
-            overall_topo_size = self.sb_emu.get_overall_topo_size()
+                self.sb_emu.start_topos()
+                self.total_samples += \
+                    self.mon.monitor_run(topo_start_timestamp)
 
+                self.ctrl.stop()
+                self.sb_emu.stop_topos()
+                self.sb_emu.cleanup()
 
-            self.sb_emu.start_topos()
+                global_sample_id =\
+                    self.total_samples[-1] ['global_sample_id'] +1
 
-
-
-
-
-            self.sb_emu.deploy(json_conf['controller_node_ip'],
-                               json_conf['controller_port'])
-
-            self.sb_emu.init_topos()
-            self.sb_emu.start_topos()
-            self.ctrl.stop()
-        logging.info('[{0}] Generating results report.'.format(self.test_type))
-        report_spec = self.test_report_template.sb_idle_scalability_multinet(
-            self.args.json_output)
-        self.results_report(report_spec, json_conf)
+            logging.info('[Testing] All done!')
+        except:
+            logging.error('{0} ::::::: Exception ::::::::'.
+                          format(self.test_type))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            logging.error('{0} Exception: {1}, {2}'.
+                          format(self.test_type, exc_type, exc_tb.tb_lineno))
+            errors = str(exc_obj).rstrip().split('\n')
+            for error in errors:
+                logging.error('{0} {1}'.format(self.test_type, error))
+            logging.exception('')
+        finally:
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_idle_scalability_multinet(
+                        self.args.json_output)
+                self.results_report(report_spec, json_conf)
+            except:
+                    logging.error('[{0}] Fail to generate test report.'.
+                                  format(self.test_type))
+            try:
+                logging.info('[{0}] Clean Multinet Monitor'.
+                             format(self.test_type))
+                del self.mon
+            except:
+                logging.error('[{0}] Fail to clean Multinet Monitor.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean controller.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to cleanup controller.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean multinet.'.
+                             format(self.test_type))
+                del self.sb_emu
+            except:
+                logging.error('[{0}] Fail to clean multinet.'.
+                              format(self.test_type))
 
     def sb_idle_stability_multinet_run(self,
                                        json_conf,
@@ -596,28 +633,23 @@ class TestRun:
                 nb_gen_start_output = json.loads(nb_gen_start_json_output)
 
                 add_failed_flows = nb_gen_start_output[0]
-                '''
+
                 result_metrics_add, result_metrics_remove = \
                     self.mon.monitor_threads_run(start_rest_request_time,
                                                  flow_delete_flag,
                                                  add_failed_flows)
-                '''
-                result_metrics_add = \
-                    self.mon.monitor_threads_run(start_rest_request_time,
-                                                 flow_delete_flag,
-                                                 add_failed_flows)
+
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
                 print(result_metrics_add)
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
-                #print(result_metrics_remove)
+                print(result_metrics_remove)
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
                 print(global_sample_id)
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
-                exit()
                 # start northbound generator flow_delete_flag SET
                 if flow_delete_flag:
                     start_rest_request_time = time.time()
@@ -629,7 +661,7 @@ class TestRun:
                     print('------------------------------------------------------')
                     print('remove failed flows are:')
                     print(remove_failed_flows)
-
+                    exit()
                     total_failed_flows = \
                         add_failed_flows + remove_failed_flows
 
