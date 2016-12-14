@@ -445,6 +445,7 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
+        global_sample_id = 0
         for (self.sb_emu.topo_size,
              self.sb_emu.topo_group_size,
              self.sb_emu.topo_group_delay_ms,
@@ -459,9 +460,28 @@ class TestRun:
                                     json_conf['multinet_topo_type'],
                                     json_conf['controller_statistics_'
                                               'period_ms']):
-            self.ctrl.generate_xml()
-            self.ctrl.change_stats()
+            # start a controller
+            self.ctrl.check_status()
             self.ctrl.start()
+            # disable persistence
+            if self.ctrl.persistence_hnd:
+                self.ctrl.disable_persistence()
+
+            # start a Multinet topology
+            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+            logging.info('[sb_active_scalability_multinet] '
+                         'Generate multinet config file')
+            self.sb_emu.init_topos()
+
+            topo_bootup_ms = self.sb_emu.get_topo_bootup_ms()
+            overall_topo_size = self.sb_emu.get_overall_topo_size()
+
+
+            self.sb_emu.start_topos()
+
+
+
+
 
             self.sb_emu.deploy(json_conf['controller_node_ip'],
                                json_conf['controller_port'])
@@ -663,6 +683,13 @@ class TestRun:
                 logging.error('[{0}] Fail to clean NB-Generator.'.
                               format(self.test_type))
             try:
+                logging.info('[{0}] Clean NB-Generator Monitor'.
+                             format(self.test_type))
+                del self.mon
+            except:
+                logging.error('[{0}] Fail to clean NB-Generator Monitor.'.
+                              format(self.test_type))
+            try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))
                 del self.ctrl
@@ -670,11 +697,11 @@ class TestRun:
                 logging.error('[{0}] Fail to cleanup controller.'.
                               format(self.test_type))
             try:
-                logging.info('[{0}] Clean mtcbench.'.
+                logging.info('[{0}] Clean multinet.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
-                logging.error('[{0}] Fail to clean mtcbench.'.
+                logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
 
     def results_report(self, report_spec, json_conf):
