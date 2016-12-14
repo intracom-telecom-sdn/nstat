@@ -750,8 +750,9 @@ class NBgen(Monitor):
         results_remove = {}
 
         while not self.nbgen_queue.empty():
+            print(results_thread)
             results_thread.update(self.nbgen_queue.get())
-
+        exit()
         results_add = self.monitor_results(controller_time,
                                            results_thread,
                                            total_failed_flows)
