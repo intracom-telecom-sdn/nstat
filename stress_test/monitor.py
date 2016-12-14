@@ -721,8 +721,8 @@ class NBgen(Monitor):
         controller_time = time.time() - t_start
         return controller_time
 
-    def monitor_threads_run(self, t_start, flow_delete_flag,
-                            total_failed_flows):
+    def monitor_threads_run(self, t_start, total_failed_flows,
+                            flow_delete_flag=False):
         """
         Monitors operational flows in switches of Multinet until the expected
         number of flows are found or the deadline is reached.
