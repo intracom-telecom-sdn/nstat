@@ -488,7 +488,11 @@ class Multinet(Monitor):
                 self.result_queue.put([results])
                 return 0
             else:
-                discovered_switches = self.controller.get_oper_switches()
+                new_ssh = self.controller.init_ssh()
+                discovered_switches = \
+                    self.controller.get_oper_switches(new_ssh)
+                logging.info('Discovered switches: ='
+                             .format(discovered_switches))
 
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
@@ -748,9 +752,8 @@ class NBgen(Monitor):
         results_thread = {}
         results_add = {}
         results_remove = {}
-        exit()
+
         while not self.nbgen_queue.empty():
-            print(results_thread)
             results_thread.update(self.nbgen_queue.get())
 
         results_add = self.monitor_results(controller_time,
@@ -758,13 +761,12 @@ class NBgen(Monitor):
                                            total_failed_flows)
 
         if flow_delete_flag is True:
-            print("flow_delete_flag is SET to TRUE")
             '''
             self.monitor_results_delete_flows(self,
                                                   controller_time,
                                                   results_thread,
                                                   total_failed_flows)
-
+            '''
             results_remove = \
                 self.monitor_results_delete_flows(self,
                                                   controller_time,
@@ -776,8 +778,7 @@ class NBgen(Monitor):
         print(results_add)
         print("results_remove:")
         print(results_remove)
-        '''
-        return results_add
+        return results_add, results_remove
 
     def monitor_results(self, add_controller_time,
                         results_thread, total_failed_flows):
