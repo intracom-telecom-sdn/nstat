@@ -571,7 +571,7 @@ class TestRun:
                 result_metrics_add = {}
                 result_metrics_remove = {}
                 start_rest_request_time = time.time()
-
+                exit()
                 nb_gen_start_json_output = self.nb_emu.run()
                 nb_gen_start_output = json.loads(nb_gen_start_json_output)
 
@@ -602,7 +602,7 @@ class TestRun:
 
                     total_failed_flows = \
                         add_failed_flows + remove_failed_flows
-                    exit()
+
                     result_metrics_add, result_metrics_remove = \
                         self.mon.monitor_threads_run(start_rest_request_time,
                                                      flow_delete_flag,
