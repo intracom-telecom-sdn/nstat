@@ -600,7 +600,6 @@ class TestRun:
 
                 self.mon.global_sample_id = global_sample_id
 
-
                 # start a controller
                 self.ctrl.check_status()
                 self.ctrl.start()
