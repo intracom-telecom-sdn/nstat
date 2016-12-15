@@ -614,7 +614,7 @@ class NBgen(Monitor):
         self.sbemu = sbemu
         #self.test = test
 
-    def __poll_flows_ds(self, t_start):
+    def __poll_flows_ds(self, t_start, expected_flows):
         """
         Monitors operational DS from the time the transmission starts from NB
         towards the controller until the expected number of flows are
@@ -649,7 +649,7 @@ class NBgen(Monitor):
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = oper_ds_found_flows
-                if oper_ds_found_flows == self.nbgen.total_flows:
+                if oper_ds_found_flows == expected_flows:
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
@@ -779,7 +779,7 @@ class NBgen(Monitor):
         return controller_time
 
     def monitor_threads_run(self, t_start, total_failed_flows,
-                            flow_delete_flag=False):
+                            expected_flows):
         """
         Monitors operational flows in switches of Multinet until the expected
         number of flows are found or the deadline is reached.
@@ -798,7 +798,7 @@ class NBgen(Monitor):
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
         gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
         '''
-        monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
+        monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start, expected_flows)
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
         monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
@@ -822,24 +822,6 @@ class NBgen(Monitor):
         results = self.monitor_results(controller_time,
                                        results_thread,
                                        total_failed_flows)
-
-        if flow_delete_flag is True:
-            '''
-            self.monitor_results_delete_flows(self,
-                                                  controller_time,
-                                                  results_thread,
-                                                  total_failed_flows)
-
-            results_remove = \
-                self.monitor_results_delete_flows(self,
-                                                  controller_time,
-                                                  results_thread,
-                                                  total_failed_flows)
-            # print(results_remove)
-            # results.update(results_remove)
-            '''
-        print("results_add")
-        print(results)
         return results
 
     def monitor_results(self, add_controller_time,

@@ -739,6 +739,7 @@ class TestRun:
                 result_metrics_del = {}
 
                 if flow_delete_flag is False:
+                    expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
                     nb_gen_start_json_output_add = self.nb_emu.run()
                     nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
@@ -746,7 +747,8 @@ class TestRun:
 
                     result_metrics_add = \
                         self.mon.monitor_threads_run(start_rest_request_time_add,
-                                                     failed_flows_add)
+                                                     failed_flows_add,
+                                                     expected_flows)
 
                 # start northbound generator flow_delete_flag SET
                 if flow_delete_flag is True:
@@ -758,12 +760,13 @@ class TestRun:
                     failed_flows_add = nb_gen_start_output_add[0]
                     result_metrics_add = \
                         self.mon.monitor_threads_run(start_rest_request_time_add,
-                                                     failed_flows_add)
-                    print(result_metrics_add)
-                    exit()
+                                                     failed_flows_add,
+                                                     expected_flows)
+
                     #Restore constructor value for flow_delete_flag and run the
                     # NB generator
                     self.nb_emu.flow_delete_flag = True
+                    expected_flows = 0
                     start_rest_request_time_del = time.time()
                     nb_gen_start_json_output_del = self.nb_emu.run()
                     nb_gen_start_output_del = json.loads(nb_gen_start_json_output_del)
@@ -771,7 +774,8 @@ class TestRun:
 
                     result_metrics_del = \
                         self.mon.monitor_threads_run(start_rest_request_time_del,
-                                                     failed_flows_del)
+                                                     failed_flows_del,
+                                                     self.nb_emu.flow_delete_flag)
 
 
                     print('------------------------------------------------------')
