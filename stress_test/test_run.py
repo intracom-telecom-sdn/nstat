@@ -731,10 +731,10 @@ class TestRun:
                     raise ValueError('Initial installed flows '
                                      'were not equal to 0.')
 
-                add_failed_flows = 0
-                remove_failed_flows = 0
+                failed_flows_add = 0
+                failed_flows_del = 0
                 result_metrics_add = {}
-                result_metrics_remove = {}
+                result_metrics_del = {}
 
                 if flow_delete_flag is False:
                     start_rest_request_time_add = time.time()
@@ -775,7 +775,7 @@ class TestRun:
                     print('------------------------------------------------------')
                     print('failed flows ADD are:')
                     print(failed_flows_add)
-                    print('failed flows ADD are:')
+                    print('failed flows DELETE are:')
                     print(failed_flows_del)
                     exit()
                     total_failed_flows = \
