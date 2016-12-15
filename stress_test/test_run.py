@@ -735,31 +735,48 @@ class TestRun:
                 remove_failed_flows = 0
                 result_metrics_add = {}
                 result_metrics_remove = {}
-                start_rest_request_time = time.time()
 
-                if flow_delete_flag:
-                    # Forces flow_delete_flag to FALSE and run the generator
-                    self.nb_emu.flow_delete_flag = False
-                    nb_gen_start_json_output = self.nb_emu.run()
-                    nb_gen_start_output = json.loads(nb_gen_start_json_output)
-
-                    add_failed_flows = nb_gen_start_output[0]
+                if flow_delete_flag is False:
+                    start_rest_request_time_add = time.time()
+                    nb_gen_start_json_output_add = self.nb_emu.run()
+                    nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
+                    failed_flows_add = nb_gen_start_output_add[0]
 
                     result_metrics_add = \
-                        self.mon.monitor_threads_run(start_rest_request_time,
-                                                     add_failed_flows)
+                        self.mon.monitor_threads_run(start_rest_request_time_add,
+                                                     failed_flows_add)
 
                 # start northbound generator flow_delete_flag SET
-                if flow_delete_flag is False:
-                    start_rest_request_time = time.time()
-                    nb_gen_start_json_output = self.nb_emu.run()
-                    nb_gen_start_output = json.loads(nb_gen_start_json_output)
+                if flow_delete_flag is True:
+                    # Force flow_delete_flag to FALSE and run the NB generator
+                    self.nb_emu.flow_delete_flag = False
+                    start_rest_request_time_add = time.time()
+                    nb_gen_start_json_output_add = self.nb_emu.run()
+                    nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
+                    failed_flows_add = nb_gen_start_output_add[0]
+                    result_metrics_add = \
+                        self.mon.monitor_threads_run(start_rest_request_time_add,
+                                                     failed_flows_add)
+                    #Restore constructor value for flow_delete_flag and run the
+                    # NB generator
+                    self.nb_emu.flow_delete_flag = True
 
-                    remove_failed_flows = nb_gen_start_output[0]
+                    start_rest_request_time_del = time.time()
+                    nb_gen_start_json_output_del = self.nb_emu.run()
+                    nb_gen_start_output_del = json.loads(nb_gen_start_json_output_del)
+                    failed_flows_del = nb_gen_start_output_del[0]
+
+                    result_metrics_del = \
+                        self.mon.monitor_threads_run(start_rest_request_time_del,
+                                                     failed_flows_del)
+
+
                     print('------------------------------------------------------')
                     print('------------------------------------------------------')
-                    print('remove failed flows are:')
-                    print(remove_failed_flows)
+                    print('failed flows ADD are:')
+                    print(failed_flows_add)
+                    print('failed flows ADD are:')
+                    print(failed_flows_del)
                     exit()
                     total_failed_flows = \
                         add_failed_flows + remove_failed_flows
