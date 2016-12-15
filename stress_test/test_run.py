@@ -563,6 +563,17 @@ class TestRun:
             # TEST run
             # ---------------------------------------------------------------
             total_samples = []
+            global_sample_id = 0
+
+            self.topo_size = json_conf['multinet_topo_size']
+            self.topo_type = json_conf['multinet_topo_type']
+            self.topo_hosts_per_switch = json_conf['multinet_topo_hosts_per_'
+                                                   'switch']
+            self.topo_group_size = json_conf['multinet_topo_group_size']
+            self.topo_group_delay_ms = json_conf['multinet_topo_group_'
+                                                 'delay_ms']
+            self.ctrl.stat_period_ms = json_conf['controller_statistics_'
+                                                 'period_ms']
 
             # disable persistence if needed
             if self.ctrl.persistence_hnd:
@@ -572,7 +583,7 @@ class TestRun:
             self.ctrl.change_stats()
             self.ctrl.start()
 
-                # start a Multinet topology
+            # start a Multinet topology
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
@@ -584,7 +595,7 @@ class TestRun:
 
             self.of.start()
 
-            for sample_id in list(range(json_conf['munber_of_samples'] + 1)):
+            for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
                     self.total_samples += self.mon.monitor_run()
