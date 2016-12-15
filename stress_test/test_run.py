@@ -757,10 +757,11 @@ class TestRun:
                     result_metrics_add = \
                         self.mon.monitor_threads_run(start_rest_request_time_add,
                                                      failed_flows_add)
+                    print(result_metrics_add)
+                    exit()
                     #Restore constructor value for flow_delete_flag and run the
                     # NB generator
                     self.nb_emu.flow_delete_flag = True
-
                     start_rest_request_time_del = time.time()
                     nb_gen_start_json_output_del = self.nb_emu.run()
                     nb_gen_start_output_del = json.loads(nb_gen_start_json_output_del)
