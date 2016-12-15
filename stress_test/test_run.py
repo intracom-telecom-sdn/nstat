@@ -749,18 +749,6 @@ class TestRun:
                         self.mon.monitor_threads_run(start_rest_request_time,
                                                      add_failed_flows)
 
-                    print('------------------------------------------------------')
-                    print('------------------------------------------------------')
-                    print(result_metrics_add)
-                    print('------------------------------------------------------')
-                    print('------------------------------------------------------')
-                    print(result_metrics_remove)
-                    print('------------------------------------------------------')
-                    print('------------------------------------------------------')
-                    print(global_sample_id)
-                    print('------------------------------------------------------')
-                    print('------------------------------------------------------')
-
                 # start northbound generator flow_delete_flag SET
                 if flow_delete_flag is False:
                     start_rest_request_time = time.time()
@@ -776,10 +764,26 @@ class TestRun:
                     total_failed_flows = \
                         add_failed_flows + remove_failed_flows
 
-                    result_metrics_add, result_metrics_remove = \
+                    result_metrics_remove = \
                         self.mon.monitor_threads_run(start_rest_request_time,
                                                      total_failed_flows,
                                                      flow_delete_flag)
+
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_add)
+                '''
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_remove)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(global_sample_id)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                '''
+                exit()
+
                 # Stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
