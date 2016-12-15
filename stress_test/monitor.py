@@ -399,57 +399,25 @@ class Multinet(Monitor):
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active)
-        else:
-            logging.info('[Multinet.monitor_run] Idle test monitor is running')
+        elif self.oftraf_node is None:
+            logging.info('[Multinet.monitor_run] Idle scalability test '
+                         'monitor is running')
             monitor_thread = \
-                gevent.spawn(self.monitor_thread_idle, boot_start_time)
-            self.emulator.start_topos()
+                gevent.spawn(self.monitor_thread_idle_scalability,
+                             boot_start_time)
+        else:
+            logging.info('[Multinet.monitor_run] Idle test stability '
+                         'monitor is running')
+            monitor_thread = \
+                gevent.spawn(self.monitor_thread_idle_stability,
+                             boot_start_time)
+            # self.emulator.start_topos()
         gevent.joinall([monitor_thread])
         samples = self.result_queue.get()
         gevent.killall([monitor_thread])
         return samples
 
-    def monitor_results_active(self):
-        results = self.system_results()
-        results['global_sample_id'] = self.global_sample_id
-        self.global_sample_id += 1
-        results['multinet_workers'] = len(self.emulator.workers_ips)
-        results['multinet_size'] = \
-            self.emulator.topo_size * len(self.emulator.workers_ips)
-        results['multinet_worker_topo_size'] = self.emulator.topo_size
-        results['multinet_topology_type'] = self.emulator.topo_type
-        results['multinet_hosts_per_switch'] = \
-            self.emulator.topo_hosts_per_switch
-        results['multinet_group_size'] = self.emulator.topo_group_size
-        results['multinet_group_delay_ms'] = self.emulator.topo_group_delay_ms
-        results['controller_statistics_period_ms'] = \
-            self.controller.stat_period_ms
-        results['controller_node_ip'] = self.controller.ip
-        results['controller_port'] = str(self.controller.of_port)
-        results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
-        results['traffic_generation_duration_ms'] = \
-            self.emulator.traffic_gen_duration_ms
-        return results
-
-    def monitor_results_idle(self):
-        results = self.system_results()
-        results['global_sample_id'] = self.global_sample_id
-        self.global_sample_id += 1
-        results['multinet_workers'] = len(self.emulator.workers_ips)
-        results['multinet_worker_topo_size'] = self.emulator.topo_size
-        results['multinet_topology_type'] = self.emulator.topo_type
-        results['multinet_hosts_per_switch'] = \
-            self.emulator.topo_hosts_per_switch
-        results['multinet_group_size'] = self.emulator.topo_group_size
-        results['multinet_group_delay_ms'] = \
-            self.emulator.topo_group_delay_ms
-        results['controller_statistics_period_ms'] = \
-            self.controller.stat_period_ms
-        results['controller_node_ip'] = self.controller.ip
-        results['controller_port'] = str(self.controller.of_port)
-        return results
-
-    def monitor_thread_idle(self, boot_start_time):
+    def monitor_thread_idle_scalability(self, boot_start_time):
         """
         This monitor function is used from idle tests.
         Poll operational DS to discover installed switches.
@@ -471,6 +439,22 @@ class Multinet(Monitor):
         max_discovered_switches = 0
 
         while True:
+            results = self.system_results()
+            results['global_sample_id'] = self.global_sample_id
+            self.global_sample_id += 1
+            results['multinet_workers'] = len(self.emulator.workers_ips)
+            results['multinet_worker_topo_size'] = self.emulator.topo_size
+            results['multinet_topology_type'] = self.emulator.topo_type
+            results['multinet_hosts_per_switch'] = \
+                self.emulator.topo_hosts_per_switch
+            results['multinet_group_size'] = self.emulator.topo_group_size
+            results['multinet_group_delay_ms'] = \
+                self.emulator.topo_group_delay_ms
+            results['controller_statistics_period_ms'] = \
+                self.controller.stat_period_ms
+            results['controller_node_ip'] = self.controller.ip
+            results['controller_port'] = str(self.controller.of_port)
+
             if (time.time() - t_discovery_start) > discovery_deadline:
                 error_code = 201
                 logging.info(
@@ -521,13 +505,54 @@ class Multinet(Monitor):
                     return 0
             gevent.sleep(1)
 
+    def monitor_thread_idle_stability(self, boot_start_time):
+        """
+        """
+        oftraf_mon = Oftraf(self.controller, self.oftraf_node)
+        oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
+        results = self.system_results()
+        self.global_sample_id += 1
+        results['multinet_workers'] = len(self.emulator.workers_ips)
+        results['multinet_size'] = \
+            self.emulator.topo_size * len(self.emulator.workers_ips)
+        results['multinet_worker_topo_size'] = self.emulator.topo_size
+        results['multinet_topology_type'] = self.emulator.topo_type
+        results['multinet_hosts_per_switch'] = \
+            self.emulator.topo_hosts_per_switch
+        results['multinet_group_size'] = self.emulator.topo_group_size
+        results['multinet_group_delay_ms'] = self.emulator.topo_group_delay_ms
+        results['controller_statistics_period_ms'] = \
+            self.controller.stat_period_ms
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = str(self.controller.of_port)
+        self.result_queue.put([results])
+        return 0
+
     def monitor_thread_active(self):
         """ Function executed by multinet thread.
             It calls monitor_thread() method of Oftraf Class
         """
         oftraf_mon = Oftraf(self.controller, self.oftraf_node)
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
-        results = self.monitor_results_active()
+        results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
+        self.global_sample_id += 1
+        results['multinet_workers'] = len(self.emulator.workers_ips)
+        results['multinet_size'] = \
+            self.emulator.topo_size * len(self.emulator.workers_ips)
+        results['multinet_worker_topo_size'] = self.emulator.topo_size
+        results['multinet_topology_type'] = self.emulator.topo_type
+        results['multinet_hosts_per_switch'] = \
+            self.emulator.topo_hosts_per_switch
+        results['multinet_group_size'] = self.emulator.topo_group_size
+        results['multinet_group_delay_ms'] = self.emulator.topo_group_delay_ms
+        results['controller_statistics_period_ms'] = \
+            self.controller.stat_period_ms
+        results['controller_node_ip'] = self.controller.ip
+        results['controller_port'] = str(self.controller.of_port)
+        results['interpacket_delay_ms'] = self.emulator.interpacket_delay_ms
+        results['traffic_generation_duration_ms'] = \
+            self.emulator.traffic_gen_duration_ms
         traffic_gen_ms = float(self.emulator.traffic_gen_duration_ms) / 1000
         results['of_out_packets_per_sec'] = \
             float(oftraf_monitor_results['of_out_traffic'][0]) / traffic_gen_ms

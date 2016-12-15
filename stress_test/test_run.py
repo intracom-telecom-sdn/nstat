@@ -466,7 +466,9 @@ class TestRun:
                                         json_conf['controller_statistics_'
                                                   'period_ms']):
                 # start a controller
+                self.mon.global_sample_id = global_sample_id
                 self.ctrl.check_status()
+                self.ctrl.change_stats()
                 self.ctrl.start()
                 # disable persistence
                 if self.ctrl.persistence_hnd:
@@ -488,7 +490,7 @@ class TestRun:
                 self.sb_emu.cleanup()
 
                 global_sample_id =\
-                    self.total_samples[-1] ['global_sample_id'] +1
+                    self.total_samples[-1]['global_sample_id'] + 1
 
             logging.info('[Testing] All done!')
         except:
@@ -548,10 +550,105 @@ class TestRun:
         :type output_dir: str
         """
 
-        # TEST run
-        # ------------------------------------------------------------------
-        # for sample_id in list(range(json_conf['number_of_samples'] + 1)):
-        #    pass
+        try:
+
+            # Configuring controller for FLOWS_MODS
+            # ------------------------------------------------------------------
+            self.ctrl.flowmods_config()
+
+            # OFTRAF preparation
+            # ------------------------------------------------------------------
+            self.of.build()
+
+            # TEST run
+            # ---------------------------------------------------------------
+            total_samples = []
+
+            # disable persistence if needed
+            if self.ctrl.persistence_hnd:
+                self.ctrl.disable_persistence()
+            # start a controller
+            self.ctrl.check_status()
+            self.ctrl.change_stats()
+            self.ctrl.start()
+
+                # start a Multinet topology
+            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+            self.sb_emu.init_topos()
+            self.sb_emu.start_topos()
+            time.sleep(10)
+            logging.info("The whole number of switches are: {0}"
+                         .format(self.sb_emu.get_switches()))
+            logging.info("The whole number of flows are: {0}"
+                         .format(self.sb_emu.get_flows()))
+
+            self.of.start()
+
+            for sample_id in list(range(json_conf['munber_of_samples'] + 1)):
+                if sample_id > 0:
+                    self.mon.global_sample_id = global_sample_id
+                    self.total_samples += self.mon.monitor_run()
+
+            # Stop/clean nodes
+            # ---------------------------------------------------------
+            self.of.stop()
+            self.ctrl.stop()
+
+            self.sb_emu.stop_topos()
+            self.sb_emu.cleanup()
+            global_sample_id += 1
+
+            logging.info('[Testing] All done!')
+        except:
+            logging.error('{0} ::::::: Exception ::::::::'.
+                          format(self.test_type))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            logging.error('{0} Exception: {1}, {2}'.
+                          format(self.test_type, exc_type, exc_tb.tb_lineno))
+            errors = str(exc_obj).rstrip().split('\n')
+            for error in errors:
+                logging.error('{0} {1}'.format(self.test_type, error))
+            logging.exception('')
+
+        finally:
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_active_scalability_multinet(
+                        self.args.json_output)
+                self.results_report(report_spec, json_conf)
+            except:
+                    logging.error('[{0}] Fail to generate test report.'.
+                                  format(self.test_type))
+            try:
+                logging.info('[{0}] Clean Multinet Monitor'.
+                             format(self.test_type))
+                del self.mon
+            except:
+                logging.error('[{0}] Fail to clean Multinet Monitor.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean Oftraf.'.
+                             format(self.test_type))
+                del self.of
+            except:
+                logging.error('[{0}] Fail to clean oftraf.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean controller.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to cleanup controller.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean multinet.'.
+                             format(self.test_type))
+                del self.sb_emu
+            except:
+                logging.error('[{0}] Fail to clean multinet.'.
+                              format(self.test_type))
 
     def nb_active_scalability_multinet_run(self,
                                            json_conf,
