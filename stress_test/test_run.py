@@ -594,11 +594,13 @@ class TestRun:
                          .format(self.sb_emu.get_flows()))
 
             self.of.start()
-
+            reference_results = (0, 0)
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
-                    self.total_samples += self.mon.monitor_run()
+                    results, reference_results = \
+                        self.mon.monitor_run(reference_results, sample_id)
+                    self.total_samples += results
 
             # Stop/clean nodes
             # ---------------------------------------------------------
