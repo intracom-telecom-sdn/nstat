@@ -631,28 +631,32 @@ class TestRun:
                 result_metrics_remove = {}
                 start_rest_request_time = time.time()
 
-                nb_gen_start_json_output = self.nb_emu.run()
-                nb_gen_start_output = json.loads(nb_gen_start_json_output)
-
-                add_failed_flows = nb_gen_start_output[0]
-
-                result_metrics_add, result_metrics_remove = \
-                    self.mon.monitor_threads_run(start_rest_request_time,
-                                                 add_failed_flows)
-
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(result_metrics_add)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(result_metrics_remove)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(global_sample_id)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                # start northbound generator flow_delete_flag SET
                 if flow_delete_flag:
+                    # Forces flow_delete_flag to FALSE and run the generator
+                    self.nb_emu.flow_delete_flag = False
+                    nb_gen_start_json_output = self.nb_emu.run()
+                    nb_gen_start_output = json.loads(nb_gen_start_json_output)
+
+                    add_failed_flows = nb_gen_start_output[0]
+
+                    result_metrics_add = \
+                        self.mon.monitor_threads_run(start_rest_request_time,
+                                                     add_failed_flows)
+
+                    print('------------------------------------------------------')
+                    print('------------------------------------------------------')
+                    print(result_metrics_add)
+                    print('------------------------------------------------------')
+                    print('------------------------------------------------------')
+                    print(result_metrics_remove)
+                    print('------------------------------------------------------')
+                    print('------------------------------------------------------')
+                    print(global_sample_id)
+                    print('------------------------------------------------------')
+                    print('------------------------------------------------------')
+
+                # start northbound generator flow_delete_flag SET
+                if flow_delete_flag is False:
                     start_rest_request_time = time.time()
                     nb_gen_start_json_output = self.nb_emu.run()
                     nb_gen_start_output = json.loads(nb_gen_start_json_output)
