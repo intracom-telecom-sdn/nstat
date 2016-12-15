@@ -680,9 +680,7 @@ class TestRun:
 
             # TEST run
             # ---------------------------------------------------------------
-            # monitor = stress_test.monitor.NB....(self.ctrl,
-            #                                       of,
-            #                                       self.sb_emu)
+
             global_sample_id = 0
             flow_delete_flag = json_conf['flow_delete_flag']
 
