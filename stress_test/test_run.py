@@ -777,28 +777,9 @@ class TestRun:
                     print(failed_flows_add)
                     print('failed flows DELETE are:')
                     print(failed_flows_del)
-                    exit()
-                    total_failed_flows = \
-                        add_failed_flows + remove_failed_flows
 
-                    result_metrics_remove = \
-                        self.mon.monitor_threads_run(start_rest_request_time,
-                                                     total_failed_flows,
-                                                     flow_delete_flag)
+                failed_flows_total = failed_flows_add + failed_flows_del
 
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(result_metrics_add)
-                '''
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(result_metrics_remove)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(global_sample_id)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                '''
                 exit()
 
                 # Stop/clean nodes
@@ -813,7 +794,7 @@ class TestRun:
                 print(result_metrics_add)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
-                print(result_metrics_remove)
+                print(result_metrics_del)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
                 print(global_sample_id)
