@@ -389,13 +389,15 @@ class Multinet(Monitor):
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
 
-    def monitor_run(self, boot_start_time=None):
+    def monitor_run(self, reference_results=None,
+                    sample_id=None,
+                    boot_start_time=None):
 
         logging.info('[Multinet.monitor_run] creating and starting'
                      ' monitoring of Multinet worker events.')
         # Consumer - producer threads (mtcbench_thread is the producer,
         # monitor_thread is the consumer)
-        if boot_start_time is None:
+        if boot_start_time is None and self.oftraf_node is not None:
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active)
@@ -410,12 +412,13 @@ class Multinet(Monitor):
                          'monitor is running')
             monitor_thread = \
                 gevent.spawn(self.monitor_thread_idle_stability,
-                             boot_start_time)
+                             reference_results,
+                             sample_id)
             # self.emulator.start_topos()
         gevent.joinall([monitor_thread])
-        samples = self.result_queue.get()
+        results = self.result_queue.get()
         gevent.killall([monitor_thread])
-        return samples
+        return (results, reference_results)
 
     def monitor_thread_idle_scalability(self, boot_start_time):
         """
@@ -505,7 +508,7 @@ class Multinet(Monitor):
                     return 0
             gevent.sleep(1)
 
-    def monitor_thread_idle_stability(self, boot_start_time):
+    def monitor_thread_idle_stability(self, reference_results, sample_id):
         """
         """
         oftraf_mon = Oftraf(self.controller, self.oftraf_node)
@@ -525,8 +528,37 @@ class Multinet(Monitor):
             self.controller.stat_period_ms
         results['controller_node_ip'] = self.controller.ip
         results['controller_port'] = str(self.controller.of_port)
+
+        traffic_gen_ms = float(self.oftraf_node.interval_ms) / 1000
+        results['of_out_packets_per_sec'] = \
+            (abs(float(oftraf_monitor_results['of_out_traffic'][0])) -
+                (reference_results['of_out_traffic'][0] / traffic_gen_ms))
+        results['of_out_bytes_per_sec'] = \
+            (abs(float(oftraf_monitor_results['of_out_traffic'][1])) -
+                (reference_results['of_out_traffic'][1] / traffic_gen_ms))
+        results['of_in_packets_per_sec'] = \
+            (abs(float(oftraf_monitor_results['of_in_traffic'][0])) -
+                (reference_results['of_in_traffic'][0] / traffic_gen_ms))
+        results['of_in_bytes_per_sec'] = \
+            (abs(float(oftraf_monitor_results['of_in_traffic'][1])) -
+                (reference_results['of_in_traffic'][1] / traffic_gen_ms))
+        results['tcp_of_out_packets_per_sec'] = \
+            (abs(float(oftraf_monitor_results['tcp_of_out_traffic'][0])) -
+                (reference_results['tcp_of_out_traffic'][0] / traffic_gen_ms))
+        results['tcp_of_out_bytes_per_sec'] = \
+            (abs(float(oftraf_monitor_results['tcp_of_out_traffic'][1])) -
+                (reference_results['tcp_of_out_traffic'][1] / traffic_gen_ms))
+        results['tcp_of_in_packets_per_sec'] = \
+            (abs(float(oftraf_monitor_results['tcp_of_in_traffic'][0])) -
+                (reference_results['tcp_of_in_traffic'][0] / traffic_gen_ms))
+        results['tcp_of_in_bytes_per_sec'] = \
+            (abs(float(oftraf_monitor_results['tcp_of_in_traffic'][1])) -
+                (reference_results['tcp_of_in_traffic'][1] / traffic_gen_ms))
+        results['sample_id'] = sample_id
+
+        reference_results = oftraf_monitor_results
         self.result_queue.put([results])
-        return 0
+        return (results, reference_results)
 
     def monitor_thread_active(self):
         """ Function executed by multinet thread.
