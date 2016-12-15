@@ -168,7 +168,7 @@ class NBgen:
                                   str(self.controller.restconf_pass),
                                   str(self.flows_per_request),
                                   str(self.log_level)]))
-                exit()
+
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
