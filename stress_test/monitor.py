@@ -800,11 +800,9 @@ class NBgen(Monitor):
         '''
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
-        #monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
-        gevent.joinall([monitor_ds, monitor_sw])
-        gevent.killall([monitor_ds, monitor_sw])
-        exit()
-
+        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
+        gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
+        gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
         time_start = time.time()
         controller_time = self.__controller_time(t_start)
@@ -816,15 +814,14 @@ class NBgen(Monitor):
                              discovered_flows))
 
         results_thread = {}
-        results_add = {}
-        results_remove = {}
+        results = {}
 
         while not self.nbgen_queue.empty():
             results_thread.update(self.nbgen_queue.get())
 
-        results_add = self.monitor_results(controller_time,
-                                           results_thread,
-                                           total_failed_flows)
+        results = self.monitor_results(controller_time,
+                                       results_thread,
+                                       total_failed_flows)
 
         if flow_delete_flag is True:
             '''
@@ -832,7 +829,7 @@ class NBgen(Monitor):
                                                   controller_time,
                                                   results_thread,
                                                   total_failed_flows)
-            '''
+
             results_remove = \
                 self.monitor_results_delete_flows(self,
                                                   controller_time,
@@ -840,11 +837,10 @@ class NBgen(Monitor):
                                                   total_failed_flows)
             # print(results_remove)
             # results.update(results_remove)
+            '''
         print("results_add")
-        print(results_add)
-        print("results_remove:")
-        print(results_remove)
-        return results_add, results_remove
+        print(results)
+        return results
 
     def monitor_results(self, add_controller_time,
                         results_thread, total_failed_flows):

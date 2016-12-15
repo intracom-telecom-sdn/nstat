@@ -682,9 +682,7 @@ class TestRun:
 
             # TEST run
             # ---------------------------------------------------------------
-            # monitor = stress_test.monitor.NB....(self.ctrl,
-            #                                       of,
-            #                                       self.sb_emu)
+
             global_sample_id = 0
             flow_delete_flag = json_conf['flow_delete_flag']
 
@@ -735,51 +733,57 @@ class TestRun:
                     raise ValueError('Initial installed flows '
                                      'were not equal to 0.')
 
-                add_failed_flows = 0
-                remove_failed_flows = 0
+                failed_flows_add = 0
+                failed_flows_del = 0
                 result_metrics_add = {}
-                result_metrics_remove = {}
-                start_rest_request_time = time.time()
+                result_metrics_del = {}
 
-                nb_gen_start_json_output = self.nb_emu.run()
-                nb_gen_start_output = json.loads(nb_gen_start_json_output)
+                if flow_delete_flag is False:
+                    start_rest_request_time_add = time.time()
+                    nb_gen_start_json_output_add = self.nb_emu.run()
+                    nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
+                    failed_flows_add = nb_gen_start_output_add[0]
 
-                add_failed_flows = nb_gen_start_output[0]
+                    result_metrics_add = \
+                        self.mon.monitor_threads_run(start_rest_request_time_add,
+                                                     failed_flows_add)
 
-                result_metrics_add, result_metrics_remove = \
-                    self.mon.monitor_threads_run(start_rest_request_time,
-                                                 add_failed_flows)
-
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(result_metrics_add)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(result_metrics_remove)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
-                print(global_sample_id)
-                print('------------------------------------------------------')
-                print('------------------------------------------------------')
                 # start northbound generator flow_delete_flag SET
-                if flow_delete_flag:
-                    start_rest_request_time = time.time()
-                    nb_gen_start_json_output = self.nb_emu.run()
-                    nb_gen_start_output = json.loads(nb_gen_start_json_output)
+                if flow_delete_flag is True:
+                    # Force flow_delete_flag to FALSE and run the NB generator
+                    self.nb_emu.flow_delete_flag = False
+                    start_rest_request_time_add = time.time()
+                    nb_gen_start_json_output_add = self.nb_emu.run()
+                    nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
+                    failed_flows_add = nb_gen_start_output_add[0]
+                    result_metrics_add = \
+                        self.mon.monitor_threads_run(start_rest_request_time_add,
+                                                     failed_flows_add)
+                    #Restore constructor value for flow_delete_flag and run the
+                    # NB generator
+                    self.nb_emu.flow_delete_flag = True
 
-                    remove_failed_flows = nb_gen_start_output[0]
+                    start_rest_request_time_del = time.time()
+                    nb_gen_start_json_output_del = self.nb_emu.run()
+                    nb_gen_start_output_del = json.loads(nb_gen_start_json_output_del)
+                    failed_flows_del = nb_gen_start_output_del[0]
+
+                    result_metrics_del = \
+                        self.mon.monitor_threads_run(start_rest_request_time_del,
+                                                     failed_flows_del)
+
+
                     print('------------------------------------------------------')
                     print('------------------------------------------------------')
-                    print('remove failed flows are:')
-                    print(remove_failed_flows)
-                    exit()
-                    total_failed_flows = \
-                        add_failed_flows + remove_failed_flows
+                    print('failed flows ADD are:')
+                    print(failed_flows_add)
+                    print('failed flows DELETE are:')
+                    print(failed_flows_del)
 
-                    result_metrics_add, result_metrics_remove = \
-                        self.mon.monitor_threads_run(start_rest_request_time,
-                                                     total_failed_flows,
-                                                     flow_delete_flag)
+                failed_flows_total = failed_flows_add + failed_flows_del
+
+                exit()
+
                 # Stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
@@ -792,7 +796,7 @@ class TestRun:
                 print(result_metrics_add)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
-                print(result_metrics_remove)
+                print(result_metrics_del)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
                 print(global_sample_id)
