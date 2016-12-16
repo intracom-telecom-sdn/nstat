@@ -784,8 +784,6 @@ class TestRun:
 
                 failed_flows_total = failed_flows_add + failed_flows_del
 
-                exit()
-
                 # Stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
