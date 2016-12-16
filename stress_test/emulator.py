@@ -216,7 +216,7 @@ class MTCBench(SBEmu):
         :type ctrl_sb_port: int
         :raises: Exception if the exit status of the handler is not 0
         """
-        logging.info('[MTCBench] Starting')
+        logging.info('{0} Starting'.format(prefix))
         self.status = 'STARTING'
         try:
             try:
@@ -224,7 +224,7 @@ class MTCBench(SBEmu):
                                            self.ssh_user, self.ssh_pass,
                                            [self.run_hnd]):
                     raise(IOError(
-                        '[mtcbench] run handler does not exist'))
+                        '{0} run handler does not exist'.format(prefix)))
                 else:
                     util.netutil.make_remote_file_executable2(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -243,12 +243,12 @@ class MTCBench(SBEmu):
                     block_flag, getpty_flag)
                 if exit_status == 0:
                     self.status = 'STARTED'
-                    logging.info("[MTCBench] Successful started")
+                    logging.info('{0} Successful started'.format(prefix))
                 else:
                     self.status = 'NOT_STARTED'
                     raise(stress_test.emulator_exceptions.MTCbenchRunError(
-                        '[MTCBench] Failure during starting: {0}'.
-                        format(cmd_output), 2))
+                        '{0} Failure during starting: {1}'.
+                        format(prefix, cmd_output), 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
                 self.error_handling(e.err_msg, e.err_code)
             except:
