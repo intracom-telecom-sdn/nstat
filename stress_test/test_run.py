@@ -551,11 +551,6 @@ class TestRun:
         """
         print("***********START TESTING*************************")
         try:
-
-            # Configuring controller for FLOWS_MODS
-            # ------------------------------------------------------------------
-            self.ctrl.flowmods_config()
-
             # OFTRAF preparation
             # ------------------------------------------------------------------
             self.of.build()
@@ -595,6 +590,10 @@ class TestRun:
 
             self.of.start()
             reference_results = (0, 0)
+            print("***********START FOR LOOP ************************")
+            print("***********START FOR LOOP ************************")
+            print("***********START FOR LOOP ************************")
+
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 print("*************SAMPLE FLAG*****************************")
                 if sample_id > 0:
