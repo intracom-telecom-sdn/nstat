@@ -64,6 +64,8 @@
 "multinet_worker_ip_list":["10.0.1.12", "10.0.1.13"],
 "multinet_worker_port_list":[3333, 3333],
 
+"multinet_traffic_gen_duration_ms": 2000
+
 "oftraf_test_interval_ms":10000,
 "oftraf_rest_server_port":5555,
 
