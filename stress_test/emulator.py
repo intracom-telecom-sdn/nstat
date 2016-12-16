@@ -205,8 +205,9 @@ class MTCBench(SBEmu):
         overall_topo_size = self.threads * self.switches_per_thread
         return overall_topo_size
 
-    def run(self, ctrl_ip, ctrl_sb_port, lines_queue=None, print_flag=True,
-            block_flag=True, getpty_flag=False):
+    def run(self, ctrl_ip, ctrl_sb_port, prefix='[MTCBench.run_handler]',
+            lines_queue=None, print_flag=True, block_flag=True,
+            getpty_flag=False):
         """ Wrapper to the MTCBench SB-Emulator run handler
         :param ctrl_ip: The ip address of the controller
         :param ctrl_sb_port: the port number of the SouthBound interface of
@@ -215,7 +216,7 @@ class MTCBench(SBEmu):
         :type ctrl_sb_port: int
         :raises: Exception if the exit status of the handler is not 0
         """
-        logging.info('[MTCBench] Starting')
+        logging.info('{0} Starting'.format(prefix))
         self.status = 'STARTING'
         try:
             try:
@@ -223,7 +224,7 @@ class MTCBench(SBEmu):
                                            self.ssh_user, self.ssh_pass,
                                            [self.run_hnd]):
                     raise(IOError(
-                        '[mtcbench] run handler does not exist'))
+                        '{0} run handler does not exist'.format(prefix)))
                 else:
                     util.netutil.make_remote_file_executable2(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -238,16 +239,16 @@ class MTCBench(SBEmu):
                          str(self.ms_per_test), str(self.internal_repeats),
                          str(self.simulated_hosts), str(self.warmup),
                          self.mode]),
-                    '[MTCBench.run_handler]', lines_queue, print_flag,
+                    prefix, lines_queue, print_flag,
                     block_flag, getpty_flag)
                 if exit_status == 0:
                     self.status = 'STARTED'
-                    logging.info("[MTCBench] Successful started")
+                    logging.info('{0} Successful started'.format(prefix))
                 else:
                     self.status = 'NOT_STARTED'
                     raise(stress_test.emulator_exceptions.MTCbenchRunError(
-                        '[MTCBench] Failure during starting: {0}'.
-                        format(cmd_output), 2))
+                        '{0} Failure during starting: {1}'.
+                        format(prefix, cmd_output), 2))
             except stress_test.emulator_exceptions.SBEmuError as e:
                 self.error_handling(e.err_msg, e.err_code)
             except:
