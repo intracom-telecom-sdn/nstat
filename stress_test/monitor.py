@@ -255,7 +255,6 @@ class Mtcbench(Monitor):
             else:
                 new_ssh = self.controller.init_ssh()
                 discovered_switches = self.controller.get_oper_switches(new_ssh)
-                print('===[DEBUG] Discovered switches ='+str(discovered_switches))
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
                 if discovered_switches > max_discovered_switches:
@@ -299,7 +298,7 @@ class Mtcbench(Monitor):
         while True:
             try:
                 # read messages from queue while TERM_SUCCESS has not been sent
-                line = self.data_queue.get(block=True, timeout=10000)
+                line = self.data_queue.get(block=True)
                 if line == self.term_success:
                     logging.info('[monitor_thread_active] successful '
                                  'termination string returned. Returning '
