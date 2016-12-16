@@ -549,7 +549,6 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
-        print("***********START TESTING*************************")
         try:
             # OFTRAF preparation
             # ------------------------------------------------------------------
@@ -590,12 +589,8 @@ class TestRun:
 
             self.of.start()
             reference_results = (0, 0)
-            print("***********START FOR LOOP ************************")
-            print("***********START FOR LOOP ************************")
-            print("***********START FOR LOOP ************************")
 
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
-                print("*************SAMPLE FLAG*****************************")
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
                     results, reference_results = \
@@ -628,7 +623,7 @@ class TestRun:
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
                 report_spec = \
-                    self.test_report_template.sb_active_scalability_multinet(
+                    self.test_report_template.sb_idle_stability_multinet(
                         self.args.json_output)
                 self.results_report(report_spec, json_conf)
             except:
