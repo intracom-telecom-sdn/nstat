@@ -560,13 +560,13 @@ class TestRun:
             total_samples = []
             global_sample_id = 0
 
-            self.topo_size = json_conf['multinet_topo_size'][0]
-            self.topo_type = json_conf['multinet_topo_type'][0]
+            self.topo_size = json_conf['multinet_topo_size']
+            self.topo_type = json_conf['multinet_topo_type']
             self.topo_hosts_per_switch = json_conf['multinet_topo_hosts_per_'
-                                                   'switch'][0]
-            self.topo_group_size = json_conf['multinet_topo_group_size'][0]
+                                                   'switch']
+            self.topo_group_size = json_conf['multinet_topo_group_size']
             self.topo_group_delay_ms = json_conf['multinet_topo_group_'
-                                                 'delay_ms'][0]
+                                                 'delay_ms']
             self.ctrl.stat_period_ms = json_conf['controller_statistics_'
                                                  'period_ms']
 
