@@ -205,8 +205,9 @@ class MTCBench(SBEmu):
         overall_topo_size = self.threads * self.switches_per_thread
         return overall_topo_size
 
-    def run(self, ctrl_ip, ctrl_sb_port, lines_queue=None, print_flag=True,
-            block_flag=True, getpty_flag=False):
+    def run(self, ctrl_ip, ctrl_sb_port, prefix='[MTCBench.run_handler]',
+            lines_queue=None, print_flag=True, block_flag=True,
+            getpty_flag=False):
         """ Wrapper to the MTCBench SB-Emulator run handler
         :param ctrl_ip: The ip address of the controller
         :param ctrl_sb_port: the port number of the SouthBound interface of
@@ -238,7 +239,7 @@ class MTCBench(SBEmu):
                          str(self.ms_per_test), str(self.internal_repeats),
                          str(self.simulated_hosts), str(self.warmup),
                          self.mode]),
-                    '[MTCBench.run_handler]', lines_queue, print_flag,
+                    prefix, lines_queue, print_flag,
                     block_flag, getpty_flag)
                 if exit_status == 0:
                     self.status = 'STARTED'

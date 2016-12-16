@@ -366,7 +366,8 @@ class Mtcbench(Monitor):
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
         try:
             self.emulator.run(self.controller.ip, self.controller.of_port,
-                              data_queue, False, block_flag)
+                              '[MTCbench.mtcbench_thread]', data_queue,
+                              False, block_flag, False)
             # mtcbench ended, enqueue termination message
             if data_queue is not None:
                 data_queue.put_nowait(self.term_success)
