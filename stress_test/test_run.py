@@ -549,7 +549,7 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
-
+        print("***********START TESTING*************************")
         try:
 
             # Configuring controller for FLOWS_MODS
