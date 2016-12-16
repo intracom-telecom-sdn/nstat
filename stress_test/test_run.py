@@ -596,6 +596,7 @@ class TestRun:
             self.of.start()
             reference_results = (0, 0)
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
+                print("*************SAMPLE FLAG*****************************")
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
                     results, reference_results = \
