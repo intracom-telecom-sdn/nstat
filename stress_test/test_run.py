@@ -169,74 +169,74 @@ class TestRun:
         :type json_output: str
         :type output_dir: str
         """
-        try:
+        #try:
 
-            global_sample_id = 0
-            # TEST run
-            # -------------------------------------------------------------------
-            for (self.sb_emu.threads,
-                 self.sb_emu.switches_per_thread,
-                 self.sb_emu.thread_creation_delay_ms,
-                 self.sb_emu.delay_before_traffic_ms,
-                 self.sb_emu.simulated_hosts,
-                 repeat_id,
-                 self.ctrl.stat_period_ms
-                 ) in itertools.product(json_conf['mtcbench_threads'],
-                                        json_conf['mtcbench_switches_per_thread'],
-                                        json_conf['mtcbench_thread_creation_delay_ms'],
-                                        json_conf['mtcbench_delay_before_traffic_ms'],
-                                        json_conf['mtcbench_simulated_hosts'],
-                                        list(range(0, json_conf['test_repeats'])),
-                                        json_conf['controller_statistics_period_ms']):
-                self.mon.global_sample_id = global_sample_id
-                self.mon.repeat_id = repeat_id
-                self.mon.test_repeats = json_conf['test_repeats']
-                logging.info('[{0}] Changing controller statistics period to'
-                             ' {1} ms'.format(self.test_type,
-                                              self.ctrl.stat_period_ms))
-                self.ctrl.change_stats()
-                logging.info('[{0}] Starting controller'.
-                             format(self.test_type))
-                self.ctrl.start()
-                logging.info('[{0}] Starting MTCbench active switches '
-                             'topology and monitor thread'.
-                             format(self.test_type))
-                self.total_samples += self.mon.monitor_run()
-                logging.info('[{0}] Stopping controller'.
-                             format(self.test_type))
-                self.ctrl.stop()
-                global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
-            logging.info('[Testing] All done!')
+        global_sample_id = 0
+        # TEST run
+        # -------------------------------------------------------------------
+        for (self.sb_emu.threads,
+             self.sb_emu.switches_per_thread,
+             self.sb_emu.thread_creation_delay_ms,
+             self.sb_emu.delay_before_traffic_ms,
+             self.sb_emu.simulated_hosts,
+             repeat_id,
+             self.ctrl.stat_period_ms
+             ) in itertools.product(json_conf['mtcbench_threads'],
+                                    json_conf['mtcbench_switches_per_thread'],
+                                    json_conf['mtcbench_thread_creation_delay_ms'],
+                                    json_conf['mtcbench_delay_before_traffic_ms'],
+                                    json_conf['mtcbench_simulated_hosts'],
+                                    list(range(0, json_conf['test_repeats'])),
+                                    json_conf['controller_statistics_period_ms']):
+            self.mon.global_sample_id = global_sample_id
+            self.mon.repeat_id = repeat_id
+            self.mon.test_repeats = json_conf['test_repeats']
+            logging.info('[{0}] Changing controller statistics period to'
+                         ' {1} ms'.format(self.test_type,
+                                          self.ctrl.stat_period_ms))
+            self.ctrl.change_stats()
+            logging.info('[{0}] Starting controller'.
+                         format(self.test_type))
+            self.ctrl.start()
+            logging.info('[{0}] Starting MTCbench active switches '
+                         'topology and monitor thread'.
+                         format(self.test_type))
+            self.total_samples += self.mon.monitor_run()
+            logging.info('[{0}] Stopping controller'.
+                         format(self.test_type))
+            self.ctrl.stop()
+            global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
+        logging.info('[Testing] All done!')
+    #except:
+        logging.error('[{0}] Exiting test run'.format(self.test_type))
+    #finally:
+        try:
+            logging.info('[{0}] Generating results report.'.
+                         format(self.test_type))
+            if self.test_type == 'sb_active_scalability_mtcbench':
+                report_spec = self.test_report_template.sb_active_scalability_mtcbench(
+                    self.args.json_output)
+            if self.test_type == 'sb_active_stability_mtcbench':
+                report_spec = self.test_report_template.sb_active_stability_mtcbench(
+                    self.args.json_output)
+            self.results_report(report_spec, json_conf)
         except:
-            logging.error('[{0}] Exiting test run'.format(self.test_type))
-        finally:
-            try:
-                logging.info('[{0}] Generating results report.'.
-                             format(self.test_type))
-                if self.test_type == 'sb_active_scalability_mtcbench':
-                    report_spec = self.test_report_template.sb_active_scalability_mtcbench(
-                        self.args.json_output)
-                if self.test_type == 'sb_active_stability_mtcbench':
-                    report_spec = self.test_report_template.sb_active_stability_mtcbench(
-                        self.args.json_output)
-                self.results_report(report_spec, json_conf)
-            except:
-                logging.error('[{0}] Fail to generate test report.'.
-                              format(self.test_type))
-            try:
-                logging.info('[{0}] Clean controller.'.
-                             format(self.test_type))
-                del self.ctrl
-            except:
-                logging.error('[{0}] Fail to cleanup controller.'.
-                              format(self.test_type))
-            try:
-                logging.info('[{0}] Clean mtcbench.'.
-                             format(self.test_type))
-                del self.ctrl
-            except:
-                logging.error('[{0}] Fail to clean mtcbench.'.
-                              format(self.test_type))
+            logging.error('[{0}] Fail to generate test report.'.
+                          format(self.test_type))
+        try:
+            logging.info('[{0}] Clean controller.'.
+                         format(self.test_type))
+            del self.ctrl
+        except:
+            logging.error('[{0}] Fail to cleanup controller.'.
+                          format(self.test_type))
+        try:
+            logging.info('[{0}] Clean mtcbench.'.
+                         format(self.test_type))
+            del self.ctrl
+        except:
+            logging.error('[{0}] Fail to clean mtcbench.'.
+                          format(self.test_type))
 
     def sb_idle_scalability_mtcbench_run(self,
                                        json_conf,
