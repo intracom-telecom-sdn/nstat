@@ -332,7 +332,7 @@ class Mtcbench(Monitor):
                 logging.error('[monitor_thread_active] {0}'.format(str(exept)))
                 self.result_queue.put(test_samples)
                 return
-            gevent.sleep(1)
+            gevent.sleep(0.5)
 
     def monitor_run(self, boot_start_time=None):
 

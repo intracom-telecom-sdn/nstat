@@ -509,7 +509,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
                 for line in data.splitlines():
                     lines_queue.put(line)
             if type(lines_queue) is type(gevent.queue.Queue()):
-                gevent.sleep(1)
+                gevent.sleep(0.01)
             data = channel.recv(bufferSize).decode('utf-8')
 
     channel_exit_status = channel.recv_exit_status()
