@@ -568,7 +568,7 @@ class TestRun:
             self.topo_group_delay_ms = json_conf['multinet_topo_group_'
                                                  'delay_ms'][0]
             self.ctrl.stat_period_ms = json_conf['controller_statistics_'
-                                                 'period_ms'][0]
+                                                 'period_ms']
 
             # disable persistence if needed
             if self.ctrl.persistence_hnd:
