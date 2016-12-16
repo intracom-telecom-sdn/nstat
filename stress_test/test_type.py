@@ -19,6 +19,8 @@ class TestType:
         """
         """
         self.nstat_test_type = args.test_type
+        print("TEST TYPE:****************************")
+        print(self.nstat_test_type)
 
     def load_test_conf(self, args):
         """ Loading test configuration for NSTAT experiment. Parsing
@@ -75,6 +77,8 @@ class TestType:
         nstat_test_type_run = args.test_type + '_' + \
             json_conf['sb_emulator_name'].lower()
 
+        print("TEST TYPE (nstat_test_type_run):****************************")
+        print(nstat_test_type_run)
         # Create instance of TestRun and initialize controller
         nstat_test_run = stress_test.test_run.TestRun(args, json_conf,
                                                       nstat_test_type_run)
