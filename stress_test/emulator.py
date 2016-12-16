@@ -304,14 +304,6 @@ class Multinet(SBEmu):
         if 'multinet_interpacket_delay_ms' in test_config:
             self.interpacket_delay_ms = \
                 test_config['multinet_interpacket_delay_ms']
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print(self.interpacket_delay_ms)
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
         else:
             self.interpacket_delay_ms = 0
 

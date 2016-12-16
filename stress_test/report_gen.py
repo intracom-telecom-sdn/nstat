@@ -81,11 +81,11 @@ class ReportGen:
 
         if os.path.isfile(self.args.json_output):
             logging.info(
-                '[nstat_orchestrator] Creating output directory of test results.')
+                '[generate_plots] Creating output directory of test results')
             if not os.path.exists(self.args.output_dir):
                 os.makedirs(self.args.output_dir)
 
-            logging.info('[nstat_orchestrator] Producing plots')
+            logging.info('[generate_plots] Producing plots')
             num_plots = len(self.test_config_json['plots'])
             for plot_index in list(range(0, num_plots)):
                 try:
@@ -126,18 +126,18 @@ class ReportGen:
                         plot_options)
                     # Move produced plot in output directory
                     logging.info(
-                        '[nstat_orchestrator] Gathering plot {0} into output '
+                        '[generate_plots] Gathering plot {0} into output '
                         'directory'.format(plot_options.out_fig))
                     shutil.move(plot_options.out_fig, self.args.output_dir)
                 except:
                     logging.error(
-                        '[nstat_orchestrator] The plot {0} could not be '
+                        '[generate_plots] The plot {0} could not be '
                         'created. Please check configuration. Continuing '
                         'to the next plot.'.
                         format(self.test_config_json['plots'][plot_index]['plot_title']))
         else:
             logging.error(
-                '[nstat_orchestrator] No output file {0} found. Finishing.'.
+                '[generate_plots] No output file {0} found. Finishing.'.
                 format(self.args.json_output))
 
     def save_controller_log(self):
