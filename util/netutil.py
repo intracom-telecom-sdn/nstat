@@ -501,7 +501,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     while not channel.exit_status_ready():
         data = ''
         if type(lines_queue) is type(gevent.queue.Queue()):
-            gevent.sleep(0.001)
+            gevent.sleep(1)
         data = channel.recv(bufferSize).decode('utf-8')
         while data is not '':
             channel_output += data
