@@ -483,7 +483,7 @@ class TestRun:
 
                 self.sb_emu.start_topos()
                 self.total_samples += \
-                    self.mon.monitor_run(topo_start_timestamp)
+                    self.mon.monitor_run(boot_start_time=topo_start_timestamp)
 
                 self.ctrl.stop()
                 self.sb_emu.stop_topos()
@@ -594,7 +594,9 @@ class TestRun:
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
                     results, reference_results = \
-                        self.mon.monitor_run(reference_results, sample_id)
+                        self.mon.monitor_run(
+                            reference_results=reference_results,
+                            sample_id=sample_id)
                     self.total_samples += results
 
             # Stop/clean nodes
