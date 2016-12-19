@@ -681,7 +681,7 @@ class NBgen(Monitor):
                     return
             gevent.sleep(1)
 
-    def __poll_flows_ds_confirm(self):
+    def __poll_flows_ds_confirm(self, expected_flows):
         """
         Monitors operational DS until the expected number of flows are found
         or the deadline is reached.
@@ -713,11 +713,11 @@ class NBgen(Monitor):
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = oper_ds_found_flows
-                if oper_ds_found_flows == self.nbgen.total_flows:
+                if oper_ds_found_flows == expected_flows:
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows_confirm thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
-                                  .format(self.nbgen.total_flows,
+                                  .format(expected_flows,
                                           time_interval))
                     self.nbgen.confirm_time = time_interval
                     self.nbgen_queue.put({'confirm_time': time_interval},
@@ -815,9 +815,9 @@ class NBgen(Monitor):
         '''
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start, expected_flows)
         monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start, expected_flows)
-        #monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
-        gevent.joinall([monitor_ds, monitor_sw])
-        gevent.killall([monitor_ds, monitor_sw])
+        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm, expected_flows)
+        gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
+        gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
         time_start = time.time()
         controller_time = self.__controller_time(t_start)
