@@ -581,14 +581,15 @@ class TestRun:
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
-            time.sleep(10)
+
             logging.info("The whole number of switches are: {0}"
                          .format(self.sb_emu.get_switches()))
             logging.info("The whole number of flows are: {0}"
                          .format(self.sb_emu.get_flows()))
 
             self.of.start()
-            exit()
+            time.sleep(600)
+
             reference_results = {'of_out_traffic': (0, 0),
                                  'of_in_traffic': (0, 0),
                                  'tcp_of_out_traffic': (0, 0),
