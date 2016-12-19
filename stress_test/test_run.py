@@ -781,7 +781,12 @@ class TestRun:
                 print(failed_flows_add)
                 print('failed flows DELETE are:')
                 print(failed_flows_del)
-
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_add)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_del)
                 failed_flows_total = failed_flows_add + failed_flows_del
                 exit()
                 # Stop/clean nodes
