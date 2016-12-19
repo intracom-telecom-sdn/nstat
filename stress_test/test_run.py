@@ -588,7 +588,10 @@ class TestRun:
                          .format(self.sb_emu.get_flows()))
 
             self.of.start()
-            reference_results = (0, 0)
+            reference_results = {'of_out_traffic': (0, 0),
+                                 'of_in_traffic': (0, 0),
+                                 'tcp_of_out_traffic': (0, 0),
+                                 'tcp_of_in_traffic': (0, 0)}
 
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
