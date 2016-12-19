@@ -588,6 +588,7 @@ class TestRun:
                          .format(self.sb_emu.get_flows()))
 
             self.of.start()
+            exit()
             reference_results = {'of_out_traffic': (0, 0),
                                  'of_in_traffic': (0, 0),
                                  'tcp_of_out_traffic': (0, 0),
