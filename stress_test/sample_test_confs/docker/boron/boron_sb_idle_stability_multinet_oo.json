@@ -53,7 +53,7 @@
 "multinet_topo_size":125,
 "multinet_topo_type":"linear",
 "multinet_topo_hosts_per_switch":1,
-"multinet_topo_group_size":1,
+"multinet_topo_group_size":50,
 "multinet_topo_group_delay_ms":2000,
 
 
