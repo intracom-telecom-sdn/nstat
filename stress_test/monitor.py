@@ -648,7 +648,7 @@ class NBgen(Monitor):
             else:
                 new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows_ thread] Found {0}'
+                logging.debug('[NB_generator] [Poll_flows thread] Found {0}'
                               ' flows at inventory'.
                               format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
@@ -658,8 +658,7 @@ class NBgen(Monitor):
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
-                                  .format(self.nbgen.total_flows,
-                                          time_interval))
+                                  .format(expected_flows, time_interval))
                     self.nbgen.e2e_installation_time = time_interval
                     self.nbgen_queue.put(
                         {'end_to_end_flows_operation_time': time_interval},
@@ -717,7 +716,7 @@ class NBgen(Monitor):
                     return
             gevent.sleep(1)
 
-    def __poll_flows_switches(self, t_start):
+    def __poll_flows_switches(self, t_start, expected_flows):
         """
         Monitors installed flows into switches of Multinet from the first REST
         request, until the expected number of flows are found or the deadline
@@ -753,13 +752,12 @@ class NBgen(Monitor):
                 if (discovered_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = discovered_flows
-                if discovered_flows == self.nbgen.total_flows:
+                if discovered_flows == expected_flows:
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows_switches thread]'
                                   ' expected flows = {0} \n '
                                   'discovered flows = {1}'
-                                  .format(self.nbgen.total_flows,
-                                          discovered_flows))
+                                  .format(expected_flows, discovered_flows))
                     self.discover_flows_on_switches_time = time_interval
                     self.nbgen_queue.put(
                         {'switch_operation_time': time_interval}, block=True)
@@ -804,10 +802,10 @@ class NBgen(Monitor):
         gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
         '''
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start, expected_flows)
-        #monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
+        monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start, expected_flows)
         #monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
-        gevent.joinall([monitor_ds])
-        gevent.killall([monitor_ds])
+        gevent.joinall([monitor_ds, monitor_sw])
+        gevent.killall([monitor_ds, monitor_sw])
 
         time_start = time.time()
         controller_time = self.__controller_time(t_start)
@@ -876,14 +874,14 @@ class NBgen(Monitor):
 
         # Add switch time: Time from the FIRST REST request until ALL flows
         #                  are present in the network
-        '''
+
         results['add_switch_time'] = results_thread['switch_operation_time']
         if results_thread['switch_operation_time'] != -1:
             results['add_switch_rate'] = \
                 float(self.nbgen.total_flows) / results_thread['switch_operation_time']
         else:
             results['add_switch_rate'] = -1
-
+        ''''
         results['add_confirm_time'] = results_thread['confirm_time']
         if results_thread['confirm_time'] != -1:
             results_thread['confirm_time'] = \
