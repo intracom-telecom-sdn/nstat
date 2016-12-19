@@ -874,6 +874,7 @@ class NBgen(Monitor):
 
         # Add switch time: Time from the FIRST REST request until ALL flows
         #                  are present in the network
+        '''
         results['add_switch_time'] = results_thread['switch_operation_time']
         if results_thread['switch_operation_time'] != -1:
             results['add_switch_rate'] = \
@@ -887,7 +888,7 @@ class NBgen(Monitor):
                 float(self.nbgen.total_flows) / results_thread['confirm_time']
         else:
             results['add_confirm_rate'] = -1
-
+        '''
         results['total_failed_flows_operations'] = total_failed_flows
         return results
 
