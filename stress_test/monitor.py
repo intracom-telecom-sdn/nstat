@@ -564,7 +564,15 @@ class Multinet(Monitor):
                 (reference_results['tcp_of_in_traffic'][1] / traffic_gen_ms))
         results['sample_id'] = sample_id
 
+        self.result_queue.put({"current_sample": results,
+                               "previous_sample": reference_results})
+
         reference_results = oftraf_monitor_results
+        print("**************MONITOR STABILITY******************")
+        print("**************Results******************")
+        print(results)
+        print("**************reference_results******************")
+        print(reference_results)
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
         return
