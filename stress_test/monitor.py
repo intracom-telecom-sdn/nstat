@@ -400,7 +400,7 @@ class Multinet(Monitor):
         # monitor_thread is the consumer)
         print("MONITOR_RUN ARGUMENTS:")
         print(reference_results, sample_id, boot_start_time)
-        if boot_start_time is None and self.sample_id is None:
+        if boot_start_time is None and sample_id is None:
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active)
