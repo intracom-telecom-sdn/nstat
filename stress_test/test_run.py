@@ -773,8 +773,7 @@ class TestRun:
                     result_metrics_del = \
                         self.mon.monitor_threads_run(start_rest_request_time_del,
                                                      failed_flows_del,
-                                                     self.nb_emu.flow_delete_flag)
-
+                                                     expected_flows)
 
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
