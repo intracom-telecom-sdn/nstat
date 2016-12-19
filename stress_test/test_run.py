@@ -751,6 +751,7 @@ class TestRun:
                 if flow_delete_flag is True:
                     # Force flow_delete_flag to FALSE and run the NB generator
                     self.nb_emu.flow_delete_flag = False
+                    expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
                     nb_gen_start_json_output_add = self.nb_emu.run()
                     nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
