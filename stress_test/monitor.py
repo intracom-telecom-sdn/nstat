@@ -794,7 +794,8 @@ class NBgen(Monitor):
         return controller_time
 
     def monitor_threads_run(self, t_start, total_failed_flows,
-                            expected_flows):
+                            expected_flows,
+                            flow_delete_flag):
         """
         Monitors operational flows in switches of Multinet until the expected
         number of flows are found or the deadline is reached.
@@ -826,12 +827,17 @@ class NBgen(Monitor):
         while not self.nbgen_queue.empty():
             results_thread.update(self.nbgen_queue.get())
 
-        results = self.monitor_results(controller_time,
-                                       results_thread,
-                                       total_failed_flows)
+        if flow_delete_flag is False:
+            results = self.monitor_results_add(controller_time,
+                                               results_thread,
+                                               total_failed_flows)
+        else:
+            results = self.monitor_results_del(controller_time,
+                                               results_thread,
+                                               total_failed_flows)
         return results
 
-    def monitor_results(self, add_controller_time,
+    def monitor_results_add(self, add_controller_time,
                         results_thread, total_failed_flows):
 
         results = self.system_results()
@@ -885,25 +891,26 @@ class NBgen(Monitor):
                 float(self.nbgen.total_flows) / results_thread['switch_operation_time']
         else:
             results['add_switch_rate'] = -1
-        ''''
+
         results['add_confirm_time'] = results_thread['confirm_time']
         if results_thread['confirm_time'] != -1:
             results_thread['confirm_time'] = \
                 float(self.nbgen.total_flows) / results_thread['confirm_time']
         else:
             results['add_confirm_rate'] = -1
-        '''
+
         results['total_failed_flows_operations'] = total_failed_flows
         return results
 
-    def monitor_results_delete_flows(self, controller_time,
+    def monitor_results_del(self, controller_time,
                                      results_thread,
                                      total_failed_flows):
 
         # Remove controller time: Time for all delete REST
         #                          requests to be sent and their response to
         #                          be received
-        results = {}
+        #results = {}
+        results = self.system_results()
         results['remove_controller_time'] = controller_time
         results['remove_controller_rate'] = \
             float(self.nbgen.total_flows) / controller_time

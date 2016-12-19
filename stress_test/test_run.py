@@ -750,7 +750,8 @@ class TestRun:
                     result_metrics_add = \
                         self.mon.monitor_threads_run(start_rest_request_time_add,
                                                      failed_flows_add,
-                                                     expected_flows)
+                                                     expected_flows,
+                                                     self.nb_emu.flow_delete_flag)
 
                 # start northbound generator flow_delete_flag SET
                 if flow_delete_flag is True:
@@ -764,9 +765,10 @@ class TestRun:
                     result_metrics_add = \
                         self.mon.monitor_threads_run(start_rest_request_time_add,
                                                      failed_flows_add,
-                                                     expected_flows)
+                                                     expected_flows,
+                                                     self.nb_emu.flow_delete_flag)
 
-                    #Restore constructor value for flow_delete_flag and run the
+                    # Restore constructor value for flow_delete_flag and run the
                     # NB generator
                     self.nb_emu.flow_delete_flag = True
                     expected_flows = 0
@@ -778,7 +780,8 @@ class TestRun:
                     result_metrics_del = \
                         self.mon.monitor_threads_run(start_rest_request_time_del,
                                                      failed_flows_del,
-                                                     expected_flows)
+                                                     expected_flows,
+                                                     self.nb_emu.flow_delete_flag)
 
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
@@ -812,9 +815,6 @@ class TestRun:
                 print(global_sample_id)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
-#                global_sample_id = \
-#                    self.total_samples[-1]['global_sample_id'] + 1
-#            logging.info('[Testing] All done!')
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.
