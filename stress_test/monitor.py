@@ -122,6 +122,7 @@ class Oftraf:
                        'of_in_traffic': (0, 0),
                        'tcp_of_out_traffic': (0, 0),
                        'tcp_of_in_traffic': (0, 0)}
+            exit()
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
