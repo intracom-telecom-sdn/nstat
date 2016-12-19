@@ -483,7 +483,7 @@ class TestRun:
 
                 self.sb_emu.start_topos()
                 self.total_samples += \
-                    self.mon.monitor_run(topo_start_timestamp)
+                    self.mon.monitor_run(boot_start_time=topo_start_timestamp)
 
                 self.ctrl.stop()
                 self.sb_emu.stop_topos()
@@ -577,25 +577,32 @@ class TestRun:
             self.ctrl.change_stats()
             self.ctrl.start()
 
+            self.of.start()
+
             # start a Multinet topology
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
-            time.sleep(10)
+
             logging.info("The whole number of switches are: {0}"
                          .format(self.sb_emu.get_switches()))
             logging.info("The whole number of flows are: {0}"
                          .format(self.sb_emu.get_flows()))
 
-            self.of.start()
-            reference_results = (0, 0)
+            reference_results = {'of_out_traffic': (0, 0),
+                                 'of_in_traffic': (0, 0),
+                                 'tcp_of_out_traffic': (0, 0),
+                                 'tcp_of_in_traffic': (0, 0)}
 
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
+                    print(reference_results)
                     results, reference_results = \
-                        self.mon.monitor_run(reference_results, sample_id)
-                    self.total_samples += results
+                        self.mon.monitor_run(
+                            reference_results=reference_results,
+                            sample_id=sample_id)
+                    self.total_samples += [results]
 
             # Stop/clean nodes
             # ---------------------------------------------------------
@@ -743,12 +750,14 @@ class TestRun:
                     result_metrics_add = \
                         self.mon.monitor_threads_run(start_rest_request_time_add,
                                                      failed_flows_add,
-                                                     expected_flows)
+                                                     expected_flows,
+                                                     self.nb_emu.flow_delete_flag)
 
                 # start northbound generator flow_delete_flag SET
                 if flow_delete_flag is True:
                     # Force flow_delete_flag to FALSE and run the NB generator
                     self.nb_emu.flow_delete_flag = False
+                    expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
                     nb_gen_start_json_output_add = self.nb_emu.run()
                     nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
@@ -756,9 +765,10 @@ class TestRun:
                     result_metrics_add = \
                         self.mon.monitor_threads_run(start_rest_request_time_add,
                                                      failed_flows_add,
-                                                     expected_flows)
+                                                     expected_flows,
+                                                     self.nb_emu.flow_delete_flag)
 
-                    #Restore constructor value for flow_delete_flag and run the
+                    # Restore constructor value for flow_delete_flag and run the
                     # NB generator
                     self.nb_emu.flow_delete_flag = True
                     expected_flows = 0
@@ -770,19 +780,22 @@ class TestRun:
                     result_metrics_del = \
                         self.mon.monitor_threads_run(start_rest_request_time_del,
                                                      failed_flows_del,
+                                                     expected_flows,
                                                      self.nb_emu.flow_delete_flag)
 
-
-                    print('------------------------------------------------------')
-                    print('------------------------------------------------------')
-                    print('failed flows ADD are:')
-                    print(failed_flows_add)
-                    print('failed flows DELETE are:')
-                    print(failed_flows_del)
-
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print('failed flows ADD are:')
+                print(failed_flows_add)
+                print('failed flows DELETE are:')
+                print(failed_flows_del)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_add)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_del)
                 failed_flows_total = failed_flows_add + failed_flows_del
-
-                exit()
 
                 # Stop/clean nodes
                 # ---------------------------------------------------------
@@ -802,9 +815,6 @@ class TestRun:
                 print(global_sample_id)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
-#                global_sample_id = \
-#                    self.total_samples[-1]['global_sample_id'] + 1
-#            logging.info('[Testing] All done!')
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.

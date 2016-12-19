@@ -196,6 +196,8 @@ class Oftraf:
                 url = \
                     'http://{0}:{1}/get_of_counts'.format(
                         self.rest_server_ip, self.rest_server_port)
+                print("OFTRAF REST CALL")
+                print(url)
                 s = requests.Session()
                 s.trust_env = False
                 req = s.get(url, headers=getheaders, stream=False)

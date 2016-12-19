@@ -28,7 +28,6 @@ class Monitor:
         :type controller: object
         :type sbemu: object
         """
-        print("create a MONITOR object")
         self.controller = controller
         self.global_sample_id = 0
         self.repeat_id = 0
@@ -88,7 +87,6 @@ class Monitor:
 class Oftraf:
 
     def __init__(self, controller, oftraf):
-        print("create an OFTRAF MONITOR object")
         self.oftraf = oftraf
         self.controller = controller
         self.exit_flag = False
@@ -140,7 +138,6 @@ class Oftraf:
 class Mtcbench(Monitor):
     def __init__(self, controller, emulator):
         super(self.__class__, self).__init__(controller)
-
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
         self.term_success = '__successful_termination__'
@@ -386,7 +383,6 @@ class Multinet(Monitor):
         Monitor.__init__(self, controller)
         # Oftraf.__init__(self, controller, oftraf)
         self.oftraf_node = oftraf
-        print("create a MULTINET MONITOR object")
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
 
@@ -396,9 +392,7 @@ class Multinet(Monitor):
 
         logging.info('[Multinet.monitor_run] creating and starting'
                      ' monitoring of Multinet worker events.')
-        # Consumer - producer threads (mtcbench_thread is the producer,
-        # monitor_thread is the consumer)
-        if boot_start_time is None and self.oftraf_node is not None:
+        if boot_start_time is None and sample_id is None:
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
             monitor_thread = gevent.spawn(self.monitor_thread_active)
@@ -417,9 +411,10 @@ class Multinet(Monitor):
                              sample_id)
             # self.emulator.start_topos()
         gevent.joinall([monitor_thread])
-        results = self.result_queue.get()
+        total_results = self.result_queue.get()
         gevent.killall([monitor_thread])
-        return (results, reference_results)
+        return (total_results["current_sample"],
+                total_results["previous_sample"])
 
     def monitor_thread_idle_scalability(self, boot_start_time):
         """
@@ -515,6 +510,7 @@ class Multinet(Monitor):
         oftraf_mon = Oftraf(self.controller, self.oftraf_node)
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
         results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
@@ -557,9 +553,13 @@ class Multinet(Monitor):
                 (reference_results['tcp_of_in_traffic'][1] / traffic_gen_ms))
         results['sample_id'] = sample_id
 
+        self.result_queue.put({"current_sample": results,
+                               "previous_sample": reference_results})
+
         reference_results = oftraf_monitor_results
-        self.result_queue.put([results])
-        return (results, reference_results)
+        self.result_queue.put({"current_sample": results,
+                               "previous_sample": reference_results})
+        return
 
     def monitor_thread_active(self):
         """ Function executed by multinet thread.
@@ -644,7 +644,7 @@ class NBgen(Monitor):
             else:
                 new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows_ thread] Found {0}'
+                logging.debug('[NB_generator] [Poll_flows thread] Found {0}'
                               ' flows at inventory'.
                               format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
@@ -654,8 +654,7 @@ class NBgen(Monitor):
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
-                                  .format(self.nbgen.total_flows,
-                                          time_interval))
+                                  .format(expected_flows, time_interval))
                     self.nbgen.e2e_installation_time = time_interval
                     self.nbgen_queue.put(
                         {'end_to_end_flows_operation_time': time_interval},
@@ -666,7 +665,7 @@ class NBgen(Monitor):
                     return
             gevent.sleep(1)
 
-    def __poll_flows_ds_confirm(self):
+    def __poll_flows_ds_confirm(self, expected_flows):
         """
         Monitors operational DS until the expected number of flows are found
         or the deadline is reached.
@@ -698,11 +697,11 @@ class NBgen(Monitor):
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = oper_ds_found_flows
-                if oper_ds_found_flows == self.nbgen.total_flows:
+                if oper_ds_found_flows == expected_flows:
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows_confirm thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
-                                  .format(self.nbgen.total_flows,
+                                  .format(expected_flows,
                                           time_interval))
                     self.nbgen.confirm_time = time_interval
                     self.nbgen_queue.put({'confirm_time': time_interval},
@@ -713,7 +712,7 @@ class NBgen(Monitor):
                     return
             gevent.sleep(1)
 
-    def __poll_flows_switches(self, t_start):
+    def __poll_flows_switches(self, t_start, expected_flows):
         """
         Monitors installed flows into switches of Multinet from the first REST
         request, until the expected number of flows are found or the deadline
@@ -749,13 +748,12 @@ class NBgen(Monitor):
                 if (discovered_flows - previous_discovered_flows) != 0:
                     t_discovery_start = time.time()
                     previous_discovered_flows = discovered_flows
-                if discovered_flows == self.nbgen.total_flows:
+                if discovered_flows == expected_flows:
                     time_interval = time.time() - t_start
                     logging.debug('[NB_generator] [Poll_flows_switches thread]'
                                   ' expected flows = {0} \n '
                                   'discovered flows = {1}'
-                                  .format(self.nbgen.total_flows,
-                                          discovered_flows))
+                                  .format(expected_flows, discovered_flows))
                     self.discover_flows_on_switches_time = time_interval
                     self.nbgen_queue.put(
                         {'switch_operation_time': time_interval}, block=True)
@@ -780,7 +778,8 @@ class NBgen(Monitor):
         return controller_time
 
     def monitor_threads_run(self, t_start, total_failed_flows,
-                            expected_flows):
+                            expected_flows,
+                            flow_delete_flag):
         """
         Monitors operational flows in switches of Multinet until the expected
         number of flows are found or the deadline is reached.
@@ -791,17 +790,9 @@ class NBgen(Monitor):
         :type t_start:
         """
         logging.info('[NB_generator] Start polling measurements')
-
-        '''
-        monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start)
-        monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
-        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
-        gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
-        gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
-        '''
         monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start, expected_flows)
-        monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start)
-        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm)
+        monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start, expected_flows)
+        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm, expected_flows)
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
         gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
@@ -820,12 +811,17 @@ class NBgen(Monitor):
         while not self.nbgen_queue.empty():
             results_thread.update(self.nbgen_queue.get())
 
-        results = self.monitor_results(controller_time,
-                                       results_thread,
-                                       total_failed_flows)
+        if flow_delete_flag is False:
+            results = self.monitor_results_add(controller_time,
+                                               results_thread,
+                                               total_failed_flows)
+        else:
+            results = self.monitor_results_del(controller_time,
+                                               results_thread,
+                                               total_failed_flows)
         return results
 
-    def monitor_results(self, add_controller_time,
+    def monitor_results_add(self, add_controller_time,
                         results_thread, total_failed_flows):
 
         results = self.system_results()
@@ -872,6 +868,7 @@ class NBgen(Monitor):
 
         # Add switch time: Time from the FIRST REST request until ALL flows
         #                  are present in the network
+
         results['add_switch_time'] = results_thread['switch_operation_time']
         if results_thread['switch_operation_time'] != -1:
             results['add_switch_rate'] = \
@@ -889,14 +886,15 @@ class NBgen(Monitor):
         results['total_failed_flows_operations'] = total_failed_flows
         return results
 
-    def monitor_results_delete_flows(self, controller_time,
+    def monitor_results_del(self, controller_time,
                                      results_thread,
                                      total_failed_flows):
 
         # Remove controller time: Time for all delete REST
         #                          requests to be sent and their response to
         #                          be received
-        results = {}
+        #results = {}
+        results = self.system_results()
         results['remove_controller_time'] = controller_time
         results['remove_controller_rate'] = \
             float(self.nbgen.total_flows) / controller_time

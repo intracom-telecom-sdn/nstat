@@ -305,7 +305,6 @@ class Multinet(SBEmu):
         :type test_config: JSON configuration dictionary
         """
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
-        print("BASE DIRECTORY:", self.base_dir)
         self.deploy_hnd = (self.base_dir +
                            test_config['topology_rest_server_boot'])
         self.cleanup_hnd = (self.base_dir +
@@ -348,14 +347,6 @@ class Multinet(SBEmu):
         if 'multinet_interpacket_delay_ms' in test_config:
             self.interpacket_delay_ms = \
                 test_config['multinet_interpacket_delay_ms']
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print(self.interpacket_delay_ms)
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
-            print('interpacket_delay_ms')
         else:
             self.interpacket_delay_ms = 0
 
