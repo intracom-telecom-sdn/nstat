@@ -775,12 +775,12 @@ class TestRun:
                                                      self.nb_emu.flow_delete_flag)
 
 
-                    print('------------------------------------------------------')
-                    print('------------------------------------------------------')
-                    print('failed flows ADD are:')
-                    print(failed_flows_add)
-                    print('failed flows DELETE are:')
-                    print(failed_flows_del)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print('failed flows ADD are:')
+                print(failed_flows_add)
+                print('failed flows DELETE are:')
+                print(failed_flows_del)
 
                 failed_flows_total = failed_flows_add + failed_flows_del
                 exit()
