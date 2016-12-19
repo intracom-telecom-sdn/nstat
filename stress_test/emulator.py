@@ -383,8 +383,8 @@ class Multinet(SBEmu):
         :type cntrl_of_port: int
         :type cntrl_ip: str
         :raises IOError: if it fails to create the configuration JSON file
-        :raises emulator_exceptions.MultinetConfGenerateError: if handler
-        fails to run successfully
+        :raises emulator_exceptions.MultinetConfGenerateError: if json
+        configuration file generation of multinet fails
         :raises emulator_exceptions.SBEmuError: to trigger error_handling
         method
         """
