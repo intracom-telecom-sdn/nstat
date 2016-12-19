@@ -752,6 +752,7 @@ class TestRun:
                 if flow_delete_flag is True:
                     # Force flow_delete_flag to FALSE and run the NB generator
                     self.nb_emu.flow_delete_flag = False
+                    expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
                     nb_gen_start_json_output_add = self.nb_emu.run()
                     nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
@@ -773,18 +774,22 @@ class TestRun:
                     result_metrics_del = \
                         self.mon.monitor_threads_run(start_rest_request_time_del,
                                                      failed_flows_del,
-                                                     self.nb_emu.flow_delete_flag)
+                                                     expected_flows)
 
-
-                    print('------------------------------------------------------')
-                    print('------------------------------------------------------')
-                    print('failed flows ADD are:')
-                    print(failed_flows_add)
-                    print('failed flows DELETE are:')
-                    print(failed_flows_del)
-
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print('failed flows ADD are:')
+                print(failed_flows_add)
+                print('failed flows DELETE are:')
+                print(failed_flows_del)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_add)
+                print('------------------------------------------------------')
+                print('------------------------------------------------------')
+                print(result_metrics_del)
                 failed_flows_total = failed_flows_add + failed_flows_del
-
+                exit()
                 # Stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
