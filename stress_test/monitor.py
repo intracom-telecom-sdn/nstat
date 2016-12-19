@@ -419,9 +419,10 @@ class Multinet(Monitor):
                              sample_id)
             # self.emulator.start_topos()
         gevent.joinall([monitor_thread])
-        results = self.result_queue.get()
+        total_results = self.result_queue.get()
         gevent.killall([monitor_thread])
-        return (results, reference_results)
+        return (total_results["current_sample"],
+                total_results["previous_sample"])
 
     def monitor_thread_idle_scalability(self, boot_start_time):
         """
@@ -560,8 +561,9 @@ class Multinet(Monitor):
         results['sample_id'] = sample_id
 
         reference_results = oftraf_monitor_results
-        self.result_queue.put([results])
-        return (results, reference_results)
+        self.result_queue.put({"current_sample":results,
+                               "previous_sample":reference_results})
+        return
 
     def monitor_thread_active(self):
         """ Function executed by multinet thread.
