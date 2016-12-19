@@ -28,7 +28,6 @@ class Monitor:
         :type controller: object
         :type sbemu: object
         """
-        print("create a MONITOR object")
         self.controller = controller
         self.global_sample_id = 0
         self.repeat_id = 0
@@ -88,7 +87,6 @@ class Monitor:
 class Oftraf:
 
     def __init__(self, controller, oftraf):
-        print("create an OFTRAF MONITOR object")
         self.oftraf = oftraf
         self.controller = controller
         self.exit_flag = False
@@ -140,7 +138,6 @@ class Oftraf:
 class Mtcbench(Monitor):
     def __init__(self, controller, emulator):
         super(self.__class__, self).__init__(controller)
-
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
         self.term_success = '__successful_termination__'
@@ -386,7 +383,6 @@ class Multinet(Monitor):
         Monitor.__init__(self, controller)
         # Oftraf.__init__(self, controller, oftraf)
         self.oftraf_node = oftraf
-        print("create a MULTINET MONITOR object")
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
 
@@ -396,10 +392,6 @@ class Multinet(Monitor):
 
         logging.info('[Multinet.monitor_run] creating and starting'
                      ' monitoring of Multinet worker events.')
-        # Consumer - producer threads (mtcbench_thread is the producer,
-        # monitor_thread is the consumer)
-        print("MONITOR_RUN ARGUMENTS:")
-        print(reference_results, sample_id, boot_start_time)
         if boot_start_time is None and sample_id is None:
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
@@ -420,10 +412,6 @@ class Multinet(Monitor):
             # self.emulator.start_topos()
         gevent.joinall([monitor_thread])
         total_results = self.result_queue.get()
-        print('#######################total_results#################')
-        print('#######################total_results#################')
-        print(total_results)
-
         gevent.killall([monitor_thread])
         return (total_results["current_sample"],
                 total_results["previous_sample"])
@@ -568,11 +556,6 @@ class Multinet(Monitor):
                                "previous_sample": reference_results})
 
         reference_results = oftraf_monitor_results
-        print("**************MONITOR STABILITY******************")
-        print("**************Results******************")
-        print(results)
-        print("**************reference_results******************")
-        print(reference_results)
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
         return
