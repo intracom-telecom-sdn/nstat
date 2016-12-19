@@ -577,6 +577,8 @@ class TestRun:
             self.ctrl.change_stats()
             self.ctrl.start()
 
+            self.of.start()
+
             # start a Multinet topology
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
@@ -586,9 +588,6 @@ class TestRun:
                          .format(self.sb_emu.get_switches()))
             logging.info("The whole number of flows are: {0}"
                          .format(self.sb_emu.get_flows()))
-
-            self.of.start()
-            time.sleep(600)
 
             reference_results = {'of_out_traffic': (0, 0),
                                  'of_in_traffic': (0, 0),
