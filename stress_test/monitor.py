@@ -420,6 +420,10 @@ class Multinet(Monitor):
             # self.emulator.start_topos()
         gevent.joinall([monitor_thread])
         total_results = self.result_queue.get()
+        print('#######################total_results#################')
+        print('#######################total_results#################')
+        print(total_results)
+
         gevent.killall([monitor_thread])
         return (total_results["current_sample"],
                 total_results["previous_sample"])
@@ -561,8 +565,8 @@ class Multinet(Monitor):
         results['sample_id'] = sample_id
 
         reference_results = oftraf_monitor_results
-        self.result_queue.put({"current_sample":results,
-                               "previous_sample":reference_results})
+        self.result_queue.put({"current_sample": results,
+                               "previous_sample": reference_results})
         return
 
     def monitor_thread_active(self):
