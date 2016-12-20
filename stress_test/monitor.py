@@ -106,9 +106,6 @@ class Oftraf:
                              'get throughput of controller')
                 response_data = \
                     json.loads(self.oftraf.oftraf_get_of_counts())
-                print('*******response_data from OFTRAF***************')
-                print('*******response_data from OFTRAF***************')
-                print(response_data)
                 tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
                 tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
                 out_traffic = tuple(response_data['OF_out_counts'])
@@ -129,7 +126,6 @@ class Oftraf:
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
-
         # Parallel section
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread)
@@ -563,19 +559,7 @@ class Multinet(Monitor):
              reference_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
         results['sample_id'] = sample_id
 
-        self.result_queue.put({"current_sample": results,
-                               "previous_sample": reference_results})
-
         reference_results = oftraf_monitor_results
-
-        print('*******RESULTS FROM IDLE STAB MONITOR f************')
-        print('*******RESULTS FROM IDLE STAB MONITOR f************')
-        print(results)
-
-        print('*******reference_results FROM IDLE STAB MONITOR f************')
-        print('*******reference_results FROM IDLE STAB MONITOR f************')
-        print(reference_results)
-
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
         return
@@ -845,7 +829,6 @@ class NBgen(Monitor):
 
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
-        #self.global_sample_id += 1
         results['multinet_workers'] = len(self.sbemu.workers_ips)
         results['multinet_size'] = \
             self.sbemu.topo_size * len(self.sbemu.workers_ips)
@@ -897,12 +880,13 @@ class NBgen(Monitor):
 
         results['add_confirm_time'] = results_thread['confirm_time']
         if results_thread['confirm_time'] != -1:
-            results_thread['confirm_time'] = \
+            results['add_confirm_rate'] = \
                 float(self.nbgen.total_flows) / results_thread['confirm_time']
         else:
             results['add_confirm_rate'] = -1
 
-        results['total_failed_flows_operations'] = total_failed_flows
+        results['total_flows'] = self.nbgen.total_flows
+        results['total_failed_flows_operations_add'] = total_failed_flows
         return results
 
     def monitor_results_del(self, controller_time,
@@ -941,7 +925,7 @@ class NBgen(Monitor):
         results['remove_confirm_rate'] = \
             float(self.nbgen.total_flows) / results_thread['confirm_time']
 
-        results['total_failed_flows_operations'] = total_failed_flows
-        results['flow_delete_flag'] = 'False'
-        #results.append(results)
+        results['total_failed_flows_operations_del'] = total_failed_flows
+        results['flow_delete_flag'] = 'True'
+
         return results

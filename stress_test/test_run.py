@@ -17,6 +17,7 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import sys
 import time
+import util.file_ops
 
 
 class TestRun:
@@ -584,7 +585,6 @@ class TestRun:
 
             self.of.start()
 
-
             logging.info("The whole number of switches are: {0}"
                          .format(self.sb_emu.get_switches()))
             logging.info("The whole number of flows are: {0}"
@@ -598,8 +598,6 @@ class TestRun:
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
-                    print("#####TEST_RUN_reference_results, before monitor###")
-                    print(reference_results)
                     results, reference_results = \
                         self.mon.monitor_run(
                             reference_results=reference_results,
@@ -805,7 +803,7 @@ class TestRun:
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
 
-                global_sample_id += 1
+
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
                 print(result_metrics_add)
@@ -817,6 +815,11 @@ class TestRun:
                 print(global_sample_id)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
+                results = util.file_ops.merge_dict_and_avg(result_metrics_add,
+                                                           result_metrics_del)
+                print(results)
+                global_sample_id = results['global_sample_id'][0] + 1
+                self.total_samples += [results]
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.
