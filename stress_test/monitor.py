@@ -539,28 +539,28 @@ class Multinet(Monitor):
         traffic_gen_ms = float(self.oftraf_node.interval_ms) / 1000
         results['of_out_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_out_traffic'][0])) -
-                (reference_results['of_out_traffic'][0] / traffic_gen_ms))
+             reference_results['of_out_traffic'][0]) / traffic_gen_ms
         results['of_out_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_out_traffic'][1])) -
-                (reference_results['of_out_traffic'][1] / traffic_gen_ms))
+             reference_results['of_out_traffic'][1]) / traffic_gen_ms
         results['of_in_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_in_traffic'][0])) -
-                (reference_results['of_in_traffic'][0] / traffic_gen_ms))
+             reference_results['of_in_traffic'][0]) / traffic_gen_ms
         results['of_in_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_in_traffic'][1])) -
-                (reference_results['of_in_traffic'][1] / traffic_gen_ms))
+             reference_results['of_in_traffic'][1]) / traffic_gen_ms
         results['tcp_of_out_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_out_traffic'][0])) -
-                (reference_results['tcp_of_out_traffic'][0] / traffic_gen_ms))
+             reference_results['tcp_of_out_traffic'][0]) / traffic_gen_ms
         results['tcp_of_out_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_out_traffic'][1])) -
-                (reference_results['tcp_of_out_traffic'][1] / traffic_gen_ms))
+             reference_results['tcp_of_out_traffic'][1]) / traffic_gen_ms
         results['tcp_of_in_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_in_traffic'][0])) -
-                (reference_results['tcp_of_in_traffic'][0] / traffic_gen_ms))
+             reference_results['tcp_of_in_traffic'][0]) / traffic_gen_ms
         results['tcp_of_in_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_in_traffic'][1])) -
-                (reference_results['tcp_of_in_traffic'][1] / traffic_gen_ms))
+             reference_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
         results['sample_id'] = sample_id
 
         self.result_queue.put({"current_sample": results,
