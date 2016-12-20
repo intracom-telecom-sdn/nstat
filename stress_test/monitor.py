@@ -106,9 +106,6 @@ class Oftraf:
                              'get throughput of controller')
                 response_data = \
                     json.loads(self.oftraf.oftraf_get_of_counts())
-                print('*******response_data from OFTRAF***************')
-                print('*******response_data from OFTRAF***************')
-                print(response_data)
                 tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
                 tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
                 out_traffic = tuple(response_data['OF_out_counts'])
@@ -129,7 +126,6 @@ class Oftraf:
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
-
         # Parallel section
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread)
@@ -423,11 +419,6 @@ class Multinet(Monitor):
         elif self.oftraf_node is None:
             return total_results
         else:
-            print("MONITOR RUN: current_sample")
-            print(total_results["current_sample"])
-            print("MONITOR RUN: previous_sample")
-            print(total_results["previous_sample"])
-
             return (total_results["current_sample"],
                     total_results["previous_sample"])
 
@@ -569,20 +560,6 @@ class Multinet(Monitor):
         results['sample_id'] = sample_id
 
         reference_results = oftraf_monitor_results
-
-        self.result_queue.put({"current_sample": results,
-                               "previous_sample": reference_results})
-
-
-
-        print('*******RESULTS FROM IDLE STAB MONITOR f************')
-        print('*******RESULTS FROM IDLE STAB MONITOR f************')
-        print(results)
-
-        print('*******reference_results FROM IDLE STAB MONITOR f************')
-        print('*******reference_results FROM IDLE STAB MONITOR f************')
-        print(reference_results)
-
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
         return

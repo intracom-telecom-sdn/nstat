@@ -585,7 +585,6 @@ class TestRun:
 
             self.of.start()
 
-
             logging.info("The whole number of switches are: {0}"
                          .format(self.sb_emu.get_switches()))
             logging.info("The whole number of flows are: {0}"
@@ -598,19 +597,11 @@ class TestRun:
 
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
-                    print("&&&&&&&&&&&&&&&&&&&&&&&&&& SAMPLE ID&&&&&&&&&&&&&")
-                    print(sample_id)
                     self.mon.global_sample_id = global_sample_id
-                    print("#####TEST_RUN_reference_results, before monitor###")
-                    print(reference_results)
                     results, reference_results = \
                         self.mon.monitor_run(
                             reference_results=reference_results,
                             sample_id=sample_id)
-                    print("#####TEST_RUN_results after monitor###")
-                    print(results)
-                    print("#####TEST_RUN_reference_results after monitor###")
-                    print(reference_results)
                     self.total_samples += [results]
 
             # Stop/clean nodes
