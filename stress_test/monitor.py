@@ -427,6 +427,7 @@ class Multinet(Monitor):
             print(total_results["current_sample"])
             print("MONITOR RUN: previous_sample")
             print(total_results["previous_sample"])
+
             return (total_results["current_sample"],
                     total_results["previous_sample"])
 
@@ -567,10 +568,12 @@ class Multinet(Monitor):
              reference_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
         results['sample_id'] = sample_id
 
+        reference_results = oftraf_monitor_results
+
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
 
-        reference_results = oftraf_monitor_results
+
 
         print('*******RESULTS FROM IDLE STAB MONITOR f************')
         print('*******RESULTS FROM IDLE STAB MONITOR f************')
