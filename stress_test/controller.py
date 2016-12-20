@@ -73,6 +73,8 @@ class Controller:
         controller name
         :returns: a subclass or None
         :rtype: failed_flow_ops int
+        :raises NotImplementedError: in case an invalid controller_name is
+        given in the configuration json file
         """
         name = test_config['controller_name']
         if (name == 'ODL'):
@@ -93,7 +95,8 @@ class Controller:
         subcases of raised errors.
         :type error_message: str
         :type error_num: int
-        :raises: controller_exceptions.CtrlError (controller generic error)
+        :raises controller_exceptions.CtrlError: to terminate execution of
+        test after error handling
         """
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
@@ -111,6 +114,8 @@ class Controller:
         """Initializes a new SSH client object, with the controller node and
         stores it to the protected variable _ssh_conn. If a connection already
         exists it returns a new SSH client object to the controller node.
+        :raises controller_exceptions.CtrlNodeConnectionError: if ssh
+        connection establishment fails
         """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
@@ -133,11 +138,12 @@ class Controller:
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
+        :raises controller_exceptions.CtrlCleanupError: if controller cleanup
+        handler fails
         """
         try:
             try:
                 logging.info('[Controller] Cleaning up')
-
                 self.status = 'CLEANING'
                 util.netutil.ssh_run_command(self._ssh_conn,
                                              self.clean_hnd,
@@ -150,22 +156,31 @@ class Controller:
 
     def check_status(self):
         """Wrapper to the controller status handler
+        :rtype: int
+        :raise controller_exceptions.CtrlStatusUnknownError: if the handler
+        fails to return controller status or fails to execute
         """
         logging.info('[Controller] Checking the status')
         try:
             try:
                 q = queue.Queue()
                 util.netutil.ssh_run_command(self._ssh_conn, self.status_hnd,
-                                             '[controller.status_handler]', q)[0]
+                                             '[controller.status_handler]', q)
                 cmd_output = ''
                 while not q.empty():
                     cmd_output += str(q.get()) + ' '
                 if cmd_output.strip() == '1':
-                    logging.info('[Controller] status: Running-'
+                    logging.info('[controller.status_handler]: Running-'
                                  ' {0}'.format(cmd_output))
                 elif cmd_output.strip() == '0':
-                    logging.info('[Controller] status: Not'
+                    logging.info('[controller.status_handler]: Not'
                                  'Running- {0}'.format(cmd_output))
+                else:
+                    raise(stress_test.controller_exceptions.CtrlStatusUnknownError(
+                        '[controller.status_handler] Error while fetching '
+                        'status of the controller. Invalid value returned.'
+                        '/n Returned status value: {0}'.
+                        format(cmd_output.strip()), 2))
                 return cmd_output.strip()
             except:
                 raise(stress_test.controller_exceptions.CtrlStatusUnknownError)
