@@ -818,7 +818,7 @@ class TestRun:
                 print(global_sample_id)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
-                results = file_ops.merge_dict_and_avg(result_metrics_add,
+                results = util.file_ops.merge_dict_and_avg(result_metrics_add,
                                                       result_metrics_del)
                 print(results)
 
