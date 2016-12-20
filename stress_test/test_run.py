@@ -17,6 +17,7 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import sys
 import time
+import util.file_ops
 
 
 class TestRun:
@@ -811,7 +812,7 @@ class TestRun:
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
 
-                global_sample_id += 1
+
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
                 print(result_metrics_add)
@@ -823,6 +824,12 @@ class TestRun:
                 print(global_sample_id)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
+                results = util.file_ops.merge_dict_and_avg(result_metrics_add,
+                                                           result_metrics_del)
+                print(results)
+                self.total_samples += [results]
+                global_sample_id = \
+                    self.total_samples[-1]['global_sample_id'] + 1
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.
