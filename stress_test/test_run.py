@@ -582,13 +582,15 @@ class TestRun:
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
-            time.sleep(10)
+
+            self.of.start()
+
+
             logging.info("The whole number of switches are: {0}"
                          .format(self.sb_emu.get_switches()))
             logging.info("The whole number of flows are: {0}"
                          .format(self.sb_emu.get_flows()))
 
-            self.of.start()
             reference_results = {'of_out_traffic': (0, 0),
                                  'of_in_traffic': (0, 0),
                                  'tcp_of_out_traffic': (0, 0),
@@ -597,7 +599,8 @@ class TestRun:
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
                     self.mon.global_sample_id = global_sample_id
-
+                    print("#####TEST_RUN_reference_results, before monitor###")
+                    print(reference_results)
                     results, reference_results = \
                         self.mon.monitor_run(
                             reference_results=reference_results,

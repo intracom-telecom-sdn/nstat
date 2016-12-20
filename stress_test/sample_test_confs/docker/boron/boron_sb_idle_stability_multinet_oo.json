@@ -33,7 +33,7 @@
 "controller_cleanup":false,
 "controller_name":"ODL",
 "controller_port":6653,
-"controller_statistics_period_ms":5000,
+"controller_statistics_period_ms":2000,
 
 "controller_restconf_port":8181,
 "controller_restconf_user":"admin",
@@ -53,7 +53,7 @@
 "multinet_topo_size":125,
 "multinet_topo_type":"linear",
 "multinet_topo_hosts_per_switch":1,
-"multinet_topo_group_size":1,
+"multinet_topo_group_size":50,
 "multinet_topo_group_delay_ms":2000,
 
 
@@ -64,9 +64,7 @@
 "multinet_worker_ip_list":["10.0.1.12", "10.0.1.13"],
 "multinet_worker_port_list":[3333, 3333],
 
-"multinet_traffic_gen_duration_ms": 2000,
-
-"oftraf_test_interval_ms":10000,
+"oftraf_test_interval_ms":20000,
 "oftraf_rest_server_port":5555,
 
 "number_of_samples":50,

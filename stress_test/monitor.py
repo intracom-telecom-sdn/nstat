@@ -28,7 +28,6 @@ class Monitor:
         :type controller: object
         :type sbemu: object
         """
-        print("create a MONITOR object")
         self.controller = controller
         self.global_sample_id = 0
         self.repeat_id = 0
@@ -88,7 +87,6 @@ class Monitor:
 class Oftraf:
 
     def __init__(self, controller, oftraf):
-        print("create an OFTRAF MONITOR object")
         self.oftraf = oftraf
         self.controller = controller
         self.exit_flag = False
@@ -108,6 +106,9 @@ class Oftraf:
                              'get throughput of controller')
                 response_data = \
                     json.loads(self.oftraf.oftraf_get_of_counts())
+                print('*******response_data from OFTRAF***************')
+                print('*******response_data from OFTRAF***************')
+                print(response_data)
                 tcp_out_traffic = tuple(response_data['TCP_OF_out_counts'])
                 tcp_in_traffic = tuple(response_data['TCP_OF_in_counts'])
                 out_traffic = tuple(response_data['OF_out_counts'])
@@ -124,6 +125,7 @@ class Oftraf:
                        'of_in_traffic': (0, 0),
                        'tcp_of_out_traffic': (0, 0),
                        'tcp_of_in_traffic': (0, 0)}
+            exit()
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
@@ -140,7 +142,6 @@ class Oftraf:
 class Mtcbench(Monitor):
     def __init__(self, controller, emulator):
         super(self.__class__, self).__init__(controller)
-
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
         self.term_success = '__successful_termination__'
@@ -386,7 +387,6 @@ class Multinet(Monitor):
         Monitor.__init__(self, controller)
         # Oftraf.__init__(self, controller, oftraf)
         self.oftraf_node = oftraf
-        print("create a MULTINET MONITOR object")
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
 
@@ -396,10 +396,6 @@ class Multinet(Monitor):
 
         logging.info('[Multinet.monitor_run] creating and starting'
                      ' monitoring of Multinet worker events.')
-        # Consumer - producer threads (mtcbench_thread is the producer,
-        # monitor_thread is the consumer)
-        print("MONITOR_RUN ARGUMENTS:")
-        print(reference_results, sample_id, boot_start_time)
         if boot_start_time is None and sample_id is None:
             logging.info('[Multinet.monitor_run] Active test monitor is '
                          'running')
@@ -420,13 +416,15 @@ class Multinet(Monitor):
             # self.emulator.start_topos()
         gevent.joinall([monitor_thread])
         total_results = self.result_queue.get()
-        print('#######################total_results#################')
-        print('#######################total_results#################')
-        print(total_results)
-
         gevent.killall([monitor_thread])
-        return (total_results["current_sample"],
-                total_results["previous_sample"])
+
+        if boot_start_time is None and sample_id is None:
+            return total_results
+        elif self.oftraf_node is None:
+            return total_results
+        else:
+            return (total_results["current_sample"],
+                    total_results["previous_sample"])
 
     def monitor_thread_idle_scalability(self, boot_start_time):
         """
@@ -522,6 +520,7 @@ class Multinet(Monitor):
         oftraf_mon = Oftraf(self.controller, self.oftraf_node)
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
         results = self.system_results()
+        results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
@@ -540,39 +539,43 @@ class Multinet(Monitor):
         traffic_gen_ms = float(self.oftraf_node.interval_ms) / 1000
         results['of_out_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_out_traffic'][0])) -
-                (reference_results['of_out_traffic'][0] / traffic_gen_ms))
+             reference_results['of_out_traffic'][0]) / traffic_gen_ms
         results['of_out_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_out_traffic'][1])) -
-                (reference_results['of_out_traffic'][1] / traffic_gen_ms))
+             reference_results['of_out_traffic'][1]) / traffic_gen_ms
         results['of_in_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_in_traffic'][0])) -
-                (reference_results['of_in_traffic'][0] / traffic_gen_ms))
+             reference_results['of_in_traffic'][0]) / traffic_gen_ms
         results['of_in_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['of_in_traffic'][1])) -
-                (reference_results['of_in_traffic'][1] / traffic_gen_ms))
+             reference_results['of_in_traffic'][1]) / traffic_gen_ms
         results['tcp_of_out_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_out_traffic'][0])) -
-                (reference_results['tcp_of_out_traffic'][0] / traffic_gen_ms))
+             reference_results['tcp_of_out_traffic'][0]) / traffic_gen_ms
         results['tcp_of_out_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_out_traffic'][1])) -
-                (reference_results['tcp_of_out_traffic'][1] / traffic_gen_ms))
+             reference_results['tcp_of_out_traffic'][1]) / traffic_gen_ms
         results['tcp_of_in_packets_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_in_traffic'][0])) -
-                (reference_results['tcp_of_in_traffic'][0] / traffic_gen_ms))
+             reference_results['tcp_of_in_traffic'][0]) / traffic_gen_ms
         results['tcp_of_in_bytes_per_sec'] = \
             (abs(float(oftraf_monitor_results['tcp_of_in_traffic'][1])) -
-                (reference_results['tcp_of_in_traffic'][1] / traffic_gen_ms))
+             reference_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
         results['sample_id'] = sample_id
 
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
 
         reference_results = oftraf_monitor_results
-        print("**************MONITOR STABILITY******************")
-        print("**************Results******************")
+
+        print('*******RESULTS FROM IDLE STAB MONITOR f************')
+        print('*******RESULTS FROM IDLE STAB MONITOR f************')
         print(results)
-        print("**************reference_results******************")
+
+        print('*******reference_results FROM IDLE STAB MONITOR f************')
+        print('*******reference_results FROM IDLE STAB MONITOR f************')
         print(reference_results)
+
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
         return
