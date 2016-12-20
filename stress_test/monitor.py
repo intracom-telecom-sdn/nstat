@@ -423,6 +423,10 @@ class Multinet(Monitor):
         elif self.oftraf_node is None:
             return total_results
         else:
+            print("MONITOR RUN: current_sample")
+            print(total_results["current_sample"])
+            print("MONITOR RUN: previous_sample")
+            print(total_results["previous_sample"])
             return (total_results["current_sample"],
                     total_results["previous_sample"])
 
