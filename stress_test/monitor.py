@@ -899,7 +899,7 @@ class NBgen(Monitor):
         else:
             results['add_confirm_rate'] = -1
 
-        results['total_failed_flows_operations'] = total_failed_flows
+        results['total_failed_flows_operations_add'] = total_failed_flows
         return results
 
     def monitor_results_del(self, controller_time,
@@ -938,7 +938,7 @@ class NBgen(Monitor):
         results['remove_confirm_rate'] = \
             float(self.nbgen.total_flows) / results_thread['confirm_time']
 
-        results['total_failed_flows_operations'] = total_failed_flows
+        results['total_failed_flows_operations_del'] = total_failed_flows
         results['flow_delete_flag'] = 'False'
-        #results.append(results)
+
         return results

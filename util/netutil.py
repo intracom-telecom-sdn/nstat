@@ -6,6 +6,7 @@
 
 """ General network utilities """
 
+import collections
 import gevent
 import gevent.queue
 import logging
@@ -515,3 +516,5 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel_exit_status = channel.recv_exit_status()
     channel.close()
     return (channel_exit_status, channel_output)
+
+

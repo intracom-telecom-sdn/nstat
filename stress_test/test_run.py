@@ -17,6 +17,7 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import sys
 import time
+import util.file_ops
 
 
 class TestRun:
@@ -814,6 +815,9 @@ class TestRun:
                 print(global_sample_id)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
+                results = file_ops.merge_dict_and_avg(result_metrics_add,
+                                                      result_metrics_del)
+                print(results)
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.
