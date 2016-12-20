@@ -577,12 +577,13 @@ class TestRun:
             self.ctrl.change_stats()
             self.ctrl.start()
 
-            self.of.start()
-
             # start a Multinet topology
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
+
+            self.of.start()
+
 
             logging.info("The whole number of switches are: {0}"
                          .format(self.sb_emu.get_switches()))
