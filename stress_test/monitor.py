@@ -880,11 +880,12 @@ class NBgen(Monitor):
 
         results['add_confirm_time'] = results_thread['confirm_time']
         if results_thread['confirm_time'] != -1:
-            results_thread['confirm_time'] = \
+            results['add_confirm_rate'] = \
                 float(self.nbgen.total_flows) / results_thread['confirm_time']
         else:
             results['add_confirm_rate'] = -1
 
+        results['total_flows'] = self.nbgen.total_flows
         results['total_failed_flows_operations_add'] = total_failed_flows
         return results
 
@@ -925,6 +926,6 @@ class NBgen(Monitor):
             float(self.nbgen.total_flows) / results_thread['confirm_time']
 
         results['total_failed_flows_operations_del'] = total_failed_flows
-        results['flow_delete_flag'] = 'False'
+        results['flow_delete_flag'] = 'True'
 
         return results
