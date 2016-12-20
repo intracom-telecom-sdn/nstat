@@ -818,9 +818,8 @@ class TestRun:
                 results = util.file_ops.merge_dict_and_avg(result_metrics_add,
                                                            result_metrics_del)
                 print(results)
+                global_sample_id = results['global_sample_id'][0] + 1
                 self.total_samples += [results]
-                global_sample_id = \
-                    self.total_samples[-1]['global_sample_id'] + 1
 
         except:
             logging.error('{0} ::::::: Exception ::::::::'.
