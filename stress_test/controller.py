@@ -156,8 +156,9 @@ class Controller:
 
     def check_status(self):
         """Wrapper to the controller status handler
+        :returns: the status of the controller (running = 1, not running = 0)
         :rtype: int
-        :raise controller_exceptions.CtrlStatusUnknownError: if the handler
+        :raises controller_exceptions.CtrlStatusUnknownError: if the handler
         fails to return controller status or fails to execute
         """
         logging.info('[Controller] Checking the status')
@@ -189,7 +190,8 @@ class Controller:
 
     def check_other_controller(self):
         """Checks for processes listening on the specified port
-        :raises Exception: when another process listens on controller's port.
+        :raises controller_exceptions.CtrlPortConflictError: when another
+        process listens on controller's port.
         """
 
         logging.info(
@@ -214,18 +216,18 @@ class Controller:
 
     def restart(self):
         """Restarts the controller
-        :rtype: int
         """
         logging.info('[Controller] Restarting')
 
         self.status = 'RESTARTING'
         self.stop()
-        self.pid = self.start()
+        self.start()
         self.status = 'RESTARTED'
 
     def start(self):
         """Wrapper to the controller start handler
-        :raises Exception: When controller fails to start.
+        :raises controller_exceptions.CtrlStartError: When controller fails to
+        start.
         """
         logging.info('[Controller] Starting')
         try:
@@ -262,6 +264,8 @@ class Controller:
 
     def stop(self):
         """Wrapper to the controller stop handler
+        :raises controller_exceptions.CtrlStopError: if controller fails to
+        stop successfully
         """
 
         try:
@@ -291,7 +295,8 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def build(self):
-        """ Wrapper to the controller build handler
+        """Wrapper to the controller build handler
+        :raises controller_exceptions.CtrlBuildError: if build process fails
         """
         logging.info('[Controller] Building')
         try:
@@ -316,12 +321,15 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def wait_until_listens(self, timeout_ms):
-        """ Waits for controller to start listening on specified port.
+        """Waits for controller to start listening on specified port.
         :param timeout_ms: milliseconds to wait (in milliseconds).
-        :raises Exception: If controller fails to start or if another process
-        listens on controllers port.
+        :returns: the process ID PID of the controller.
         :rtype int
         :type timeout_ms: int
+        :raises controller_exceptions.CtrlReadyStateError: If controller fails
+        to start
+        :raises controller_exceptions.CtrlPortConflictError: if another process
+        listens on controllers port.
         """
         logging.info('[Controller] Waiting to start listening on a port')
         try:
@@ -351,12 +359,11 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def wait_until_up(self, timeout_ms):
-        """ Waits for controller status to become 1 (started).
-
+        """Waits for controller status to become 1 (started).
         :param timeout_ms: milliseconds to wait (in milliseconds).
-        :raises Exception: If controller fails to start or if another process
-        listens on controllers port.
         :type timeout_ms: int
+        :raises controller_exceptions.CtrlReadyStateError: If controller fails
+        to reach a ready state within a certain period of time.
         """
 
         logging.info('[Controller] Waiting to be started')
@@ -380,7 +387,8 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
-        """Method called when object is destroyed"""
+        """Method called when object is destroyed. Cleanup activities are
+        triggered and open connections closed"""
         try:
             logging.info('Run controller stop.')
             self.stop()
@@ -453,8 +461,10 @@ class ODL(Controller):
                            test_config['controller_oper_flows_handler'])
 
     def generate_xmls(self):
-        """ Starts and then stops the controller to trigger the generation of
+        """Starts and then stops the controller to trigger the generation of
         controller's XML files.
+        :raises controller_exceptions.ODLXMLError: if generation of XML files
+        fails
         """
         logging.info('[Controller] Generating XML files'
                      ' (start and stop the Controller)')
@@ -468,8 +478,10 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def disable_persistence(self):
-        """configure controller persistent to false in order not to backup
+        """Configure controller persistent to false in order not to backup
         datastore on the disk.
+        :raises controller_exceptions.ODLDisablePersistenceError: if disable of
+        persistence fails
         """
         logging.info('[Controller] Disabling persistence')
         try:
@@ -484,7 +496,10 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def change_stats(self):
-        """Wrapper to the controller statistics handler
+        """Wrapper to the controller statistics handler. Changes the value of
+        statistics interval in the configuration files of controller.
+        :raises controller_exceptions.ODLChangeStats: if change of statistics
+        interval fails
         """
         logging.info('[Controller] Changing statistics period')
         try:
@@ -503,8 +518,10 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def flowmods_config(self):
-        """configure controller to send flow modifications as a
+        """Configure controller to send flow modifications as a
         response to ARP Packet_INs.
+        :raises controller_exceptions.ODLFlowModConfError: if configuration
+        actions to respond with flow modifications fail.
         """
         logging.info('[Controller] Configure flow modifications')
         try:
@@ -521,7 +538,7 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_hosts(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_hosts handler
+        """Wrapper to the controller oper_hosts handler. Returns the hosts of the topology
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')

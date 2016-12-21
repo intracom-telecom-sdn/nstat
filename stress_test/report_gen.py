@@ -40,7 +40,6 @@ class ReportGen:
         :type results: <list<dictionary>>
         :type out_json: str
         """
-
         try:
             if len(self.total_samples) > 0:
                 with open(self.args.json_output, 'w') as ojf:
@@ -78,7 +77,6 @@ class ReportGen:
         object containing a json document
         :type report_spec: ReportSpec object
         """
-
         if os.path.isfile(self.args.json_output):
             logging.info(
                 '[generate_plots] Creating output directory of test results')
