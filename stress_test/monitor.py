@@ -849,6 +849,7 @@ class NBgen(Monitor):
             self.nbgen.flow_operations_delay_ms
         results['flow_workers'] = \
             self.nbgen.flow_workers
+        results['controller_restart'] = self.controller.restart
 
         # Flow scalability tests metrics
         # ------------------------------------------------------------------

@@ -452,6 +452,9 @@ class ODL(Controller):
         self.oper_flows = (ctrl_base_dir +
                            test_config['controller_oper_flows_handler'])
 
+        if 'controller_restart' in test_config:
+            self.restart = test_config['controller_restart']
+
     def generate_xmls(self):
         """ Starts and then stops the controller to trigger the generation of
         controller's XML files.

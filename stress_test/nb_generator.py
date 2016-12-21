@@ -56,6 +56,7 @@ class NBgen:
         self.flows_per_request = test_config['flows_per_request']
         self.log_level = log_level
 
+
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.
         # ---------------------------------------------------------------------
