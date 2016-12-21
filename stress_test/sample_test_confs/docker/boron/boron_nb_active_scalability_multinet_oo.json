@@ -153,8 +153,8 @@
     },
     {
         "x_axis_key":"total_flows",
-        "y_axis_key":"delete_flows_time",
-        "z_axis_key":"topology_type",
+        "y_axis_key":"end_to_end_remove_time",
+        "z_axis_key":"multinet_topology_type",
         "x_axis_label":"# Total Deleted Flows",
         "y_axis_label":" Time to delete Flows (sec)",
         "plot_type":"errorbar_connected",

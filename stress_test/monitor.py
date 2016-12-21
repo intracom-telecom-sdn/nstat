@@ -467,7 +467,6 @@ class Multinet(Monitor):
                     'discovered {1} switches.'.format(discovery_deadline,
                                                       discovered_switches))
                 discovery_time = time.time() - t_start - discovery_deadline
-                results = self.monitor_results_idle()
                 results['multinet_size'] = topology_bootup_time_ms
                 results['bootup_time_secs'] = discovery_time
                 results['discovered_switches'] = discovered_switches
@@ -498,7 +497,6 @@ class Multinet(Monitor):
                         '[monitor_thread_idle] {0} switches found in '
                         '{1} seconds'.
                         format(discovered_switches, delta_t))
-                    results = self.monitor_results_idle()
                     results['multinet_size'] = topology_bootup_time_ms
                     results['bootup_time_secs'] = delta_t
                     results['discovered_switches'] = discovered_switches
@@ -851,6 +849,7 @@ class NBgen(Monitor):
             self.nbgen.flow_operations_delay_ms
         results['flow_workers'] = \
             self.nbgen.flow_workers
+        results['controller_restart'] = self.controller.restart
 
         # Flow scalability tests metrics
         # ------------------------------------------------------------------
