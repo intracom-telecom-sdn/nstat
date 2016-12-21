@@ -120,4 +120,8 @@ def merge_dict_and_avg(results_add, results_delete):
                     avg_dict[k] = sum(v)/float(len(v))
         else:
             avg_dict[k] = v
+
+    for i, avg_dict_val in avg_dict.items():
+        if isinstance(avg_dict_val, list):
+            avg_dict[i] = avg_dict_val[0]
     return avg_dict
