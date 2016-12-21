@@ -878,17 +878,19 @@ class TestRun:
     def results_report(self, report_spec, json_conf):
         report_gen = stress_test.report_gen.ReportGen(
             self.args, json_conf, self.total_samples, report_spec)
-        try:
-            report_gen.generate_json_results()
-            report_gen.generate_plots()
-            report_gen.generate_html_report()
-            report_gen.save_controller_log()
-            shutil.copy(self.args.json_config, self.args.output_dir)
+        #try:
+        report_gen.generate_json_results()
+        report_gen.generate_plots()
+        report_gen.generate_html_report()
+        report_gen.save_controller_log()
+        shutil.copy(self.args.json_config, self.args.output_dir)
+        '''
         except:
             logging.error('[results_report] Failure during results generation.'
                           ' Check if older results are present and clean them '
                           'or if you have write permissions o the result '
                           'destination folder.')
-        finally:
-            del report_spec
-            del report_gen
+                          '''
+        #finally:
+        del report_spec
+        del report_gen
