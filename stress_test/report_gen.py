@@ -88,53 +88,55 @@ class ReportGen:
             logging.info('[generate_plots] Producing plots')
             num_plots = len(self.test_config_json['plots'])
             for plot_index in list(range(0, num_plots)):
-                try:
-                    plot_options = util.plot_utils.PlotOptions()
-                    plot_options.xmin = self.test_config_json['plots'][plot_index]['x_min']
-                    plot_options.xmax = self.test_config_json['plots'][plot_index]['x_max']
-                    plot_options.ymin = self.test_config_json['plots'][plot_index]['y_min']
-                    plot_options.ymax = self.test_config_json['plots'][plot_index]['y_max']
-                    plot_options.x_axis_label = \
-                        self.test_config_json['plots'][plot_index]['x_axis_label']
-                    plot_options.y_axis_label = \
-                        self.test_config_json['plots'][plot_index]['y_axis_label']
-                    plot_options.out_fig = \
-                        self.test_config_json['plots'][plot_index]['plot_filename'] + '.png'
-                    plot_options.plot_title = \
-                        self.test_config_json['plots'][plot_index]['plot_title']
-                    plot_options.x_axis_fct = \
-                        float(eval(self.test_config_json['plots'][plot_index]['x_axis_factor']))
-                    plot_options.y_axis_fct = \
-                        float(eval(self.test_config_json['plots'][plot_index]['y_axis_factor']))
-                    if self.test_config_json['plots'][plot_index]['x_axis_scale'] == 'log':
-                        plot_options.xscale_log = True
-                    else:
-                        plot_options.xscale_log = False
+                #try:
+                plot_options = util.plot_utils.PlotOptions()
+                plot_options.xmin = self.test_config_json['plots'][plot_index]['x_min']
+                plot_options.xmax = self.test_config_json['plots'][plot_index]['x_max']
+                plot_options.ymin = self.test_config_json['plots'][plot_index]['y_min']
+                plot_options.ymax = self.test_config_json['plots'][plot_index]['y_max']
+                plot_options.x_axis_label = \
+                    self.test_config_json['plots'][plot_index]['x_axis_label']
+                plot_options.y_axis_label = \
+                    self.test_config_json['plots'][plot_index]['y_axis_label']
+                plot_options.out_fig = \
+                    self.test_config_json['plots'][plot_index]['plot_filename'] + '.png'
+                plot_options.plot_title = \
+                    self.test_config_json['plots'][plot_index]['plot_title']
+                plot_options.x_axis_fct = \
+                    float(eval(self.test_config_json['plots'][plot_index]['x_axis_factor']))
+                plot_options.y_axis_fct = \
+                    float(eval(self.test_config_json['plots'][plot_index]['y_axis_factor']))
+                if self.test_config_json['plots'][plot_index]['x_axis_scale'] == 'log':
+                    plot_options.xscale_log = True
+                else:
+                    plot_options.xscale_log = False
 
-                    if self.test_config_json['plots'][plot_index]['y_axis_scale'] == 'log':
-                        plot_options.yscale_log = True
-                    else:
-                        plot_options.yscale_log = False
-                    # Call the util function responsible to generate the plot png
-                    util.plot_json.plot_json(
-                        self.args.json_output,
-                        self.test_config_json['plots'][plot_index]['x_axis_key'],
-                        self.test_config_json['plots'][plot_index]['y_axis_key'],
-                        self.test_config_json['plots'][plot_index]['z_axis_key'],
-                        self.test_config_json['plots'][plot_index]['plot_type'],
-                        self.test_config_json['plots'][plot_index]['plot_subtitle_keys'],
-                        plot_options)
-                    # Move produced plot in output directory
-                    logging.info(
-                        '[generate_plots] Gathering plot {0} into output '
-                        'directory'.format(plot_options.out_fig))
-                    shutil.move(plot_options.out_fig, self.args.output_dir)
+                if self.test_config_json['plots'][plot_index]['y_axis_scale'] == 'log':
+                    plot_options.yscale_log = True
+                else:
+                    plot_options.yscale_log = False
+                # Call the util function responsible to generate the plot png
+                util.plot_json.plot_json(
+                    self.args.json_output,
+                    self.test_config_json['plots'][plot_index]['x_axis_key'],
+                    self.test_config_json['plots'][plot_index]['y_axis_key'],
+                    self.test_config_json['plots'][plot_index]['z_axis_key'],
+                    self.test_config_json['plots'][plot_index]['plot_type'],
+                    self.test_config_json['plots'][plot_index]['plot_subtitle_keys'],
+                    plot_options)
+                # Move produced plot in output directory
+                logging.info(
+                    '[generate_plots] Gathering plot {0} into output '
+                    'directory'.format(plot_options.out_fig))
+                shutil.move(plot_options.out_fig, self.args.output_dir)
+                '''
                 except:
                     logging.error(
                         '[generate_plots] The plot {0} could not be '
                         'created. Please check configuration. Continuing '
                         'to the next plot.'.
                         format(self.test_config_json['plots'][plot_index]['plot_title']))
+                 '''
         else:
             logging.error(
                 '[generate_plots] No output file {0} found. Finishing.'.
