@@ -72,6 +72,15 @@ class NBgen:
         self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
 
     def error_handling(self, error_message, error_num=1):
+        """Handles custom errors of nb_generator
+        :param error_message: message of the handled error
+        :param error_num: error number of the handled error, used to define
+        subcases of raised errors.
+        :type error_message: str
+        :type error_num: int
+        :raises oftraf_exceptions.NBGenError: to terminate execution of
+        test after error handling
+        """
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
                       format(exc_obj))
@@ -108,38 +117,61 @@ class NBgen:
         :raises: Exception if the handler does not exist on the remote host
         :raises: Exception if the exit status of the handler is not 0
         """
-        logging.info('[NB_generator] Building')
-        self.status = 'BUILDING'
-
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   ' '.join([self.build_hnd]),
-                                                   '[NB_generator.'
-                                                   'build_handler]')[0]
-        if exit_status == 0:
-            self.status = 'BUILT'
-            logging.info("[NB_generator] Successful building")
-        else:
-            self.status = 'NOT_BUILT'
-            raise Exception('[NB_generator] Failure during building')
+        try:
+            try:
+                logging.info('[NB_generator] Building')
+                self.status = 'BUILDING'
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.build_hnd]),
+                    '[NB_generator.build_handler]')
+                if exit_status == 0:
+                    self.status = 'BUILT'
+                    logging.info("[NB_generator] Successful building")
+                else:
+                    self.status = 'NOT_BUILT'
+                    raise(stress_test.nb_generator_exceptions.NBGenBuildError(
+                        '[NB_generator] Failure during running. Build handler '
+                        'exited with no zero exit status. \n '
+                        'Handler output: {0}'.format(cmd_output), 2))
+            except stress_test.nb_generator_exceptions.NBGenError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.nb_generator_exceptions.NBGenBuildError(
+                    '[NB_generator] Build handler was not executed at all. '
+                    'Failure running the handler.'))
+        except stress_test.nb_generator_exceptions.NBGenError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def clean(self):
         """Wrapper to the NB-Generator clean handler
         :raises: Exception if the handler does not exist on the remote host
         :raises: Exception if the exit status of the handler is not 0
         """
-        logging.info('[NB_generator] Cleaning')
-        self.status = 'CLEANING'
+        try:
+            try:
+                logging.info('[NB_generator] Cleaning')
+                self.status = 'CLEANING'
 
-        exit_status = util.netutil.ssh_run_command(self._ssh_conn,
-                                                   self.clean_hnd,
-                                                   '[NB_generator.'
-                                                   'clean_handler]')[0]
-        if exit_status == 0:
-            self.status = 'CLEANED'
-            logging.info("[NB_generator] Successful clean")
-        else:
-            self.status = 'NOT_CLEANED'
-            raise Exception('[NB_generator] Failure during cleaning')
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, self.clean_hnd,
+                    '[NB_generator.clean_handler]')
+                if exit_status == 0:
+                    self.status = 'CLEANED'
+                    logging.info("[NB_generator] Successful clean")
+                else:
+                    self.status = 'NOT_CLEANED'
+                    raise(stress_test.nb_generator_exceptions.NBGenCleanError(
+                        '[NB_generator] Failure during running. Clean handler '
+                        'exited with no zero exit status. \n '
+                        'Handler output: {0}'.format(cmd_output), 2))
+            except stress_test.nb_generator_exceptions.NBGenError as e:
+                self.error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.nb_generator_exceptions.NBGenCleanError(
+                    '[NB_generator] Clean handler was not executed at all. '
+                    'Failure running the handler.'))
+        except stress_test.nb_generator_exceptions.NBGenError as e:
+            self.error_handling(e.err_msg, e.err_code)
 
     def run(self):
         """ Wrapper to the NB-Generator run handler

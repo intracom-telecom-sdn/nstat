@@ -27,6 +27,20 @@ class NBGenNodeConnectionError(NBGenError):
                             format(additional_error_info), err_code)
 
 
+class NBGenBuildError(NBGenError):
+    """NB generator build failure."""
+    def __init__(self, additional_error_info='', err_code=1):
+        NBGenError.__init__(self, 'Fail to build NB generator. {0}'.
+                            format(additional_error_info), err_code)
+
+
+class NBGenCleanError(NBGenError):
+    """NB generator clean failure."""
+    def __init__(self, additional_error_info='', err_code=1):
+        NBGenError.__init__(self, 'Fail to cleaning NB generator. {0}'.
+                            format(additional_error_info), err_code)
+
+
 class NBGenRunError(NBGenError):
     """NB generator run failure."""
     def __init__(self, additional_error_info='', err_code=1):

@@ -538,7 +538,15 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_hosts(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_hosts handler. Returns the hosts of the topology
+        """Wrapper to the controller oper_hosts handler. Makes a REST call to
+        the NB interface of the controller and returns the number of hosts
+        of the topology, recorded in operational datastore of the controller
+        :param new_ssh_conn: an ssh connection client object
+        :returns: number of hosts from controller's operational datastore
+        :type new_ssh_conn: paramiko.SSHClient
+        :rtype: int
+        :raises controller_exceptions.ODLGetOperHostsError: if handler fails to
+        run or return a valid value
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')
@@ -564,7 +572,16 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_switches(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_switches handler
+        """Wrapper to the controller oper_switches handler. Makes a REST call
+        to the NB interface of the controller and returns the number of
+        switches of the topology, recorded in operational datastore of the
+        controller
+        :param new_ssh_conn: an ssh connection client object
+        :returns: number of switches from controller's operational datastore
+        :type new_ssh_conn: paramiko.SSHClient
+        :rtype: int
+        :raises controller_exceptions.ODLGetOperSwitchesError:  if handler
+        fails to run or return a valid value
         """
         logging.info('[Controller] Query number of switches '
                      ' registered in ODL operational DS')
@@ -590,7 +607,16 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_links(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_links handler
+        """Wrapper to the controller oper_links handler. Makes a REST call
+        to the NB interface of the controller and returns the number of
+        links of the topology, recorded in operational datastore of the
+        controller
+        :param new_ssh_conn: an ssh connection client object
+        :returns: number of links from controller's operational datastore
+        :type new_ssh_conn: paramiko.SSHClient
+        :rtype: int
+        :raises controller_exceptions.ODLGetOperLinksError: if handler
+        fails to run or return a valid value
         """
         logging.info('[Controller] Query number of links registered in '
                      ' ODL operational DS')
@@ -616,7 +642,16 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_flows(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_flows handler
+        """Wrapper to the controller oper_flows handler. Makes a REST call
+        to the NB interface of the controller and returns the number of
+        flows of the topology, recorded in operational datastore of the
+        controller
+        :param new_ssh_conn: an ssh connection client object
+        :returns: number of flows from controller's operational datastore
+        :type new_ssh_conn: paramiko.SSHClient
+        :rtype: int
+        :raises controller_exceptions.ODLGetOperFlowsError: if handler
+        fails to run or return a valid value
         """
         logging.info('[Controller] Query number of flows installed for '
                      'all installed nodes of the topology')

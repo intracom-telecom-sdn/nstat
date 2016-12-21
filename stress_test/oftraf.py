@@ -25,8 +25,8 @@ class Oftraf:
         :param controller: object of the Controller class
         :param test_config: JSON input configuration
         :type controller: object
+        :type test_config: parsed json file with test configuration
         """
-
         if 'oftraf_test_interval_ms' in test_config:
             self.interval_ms = test_config['oftraf_test_interval_ms']
         else:
@@ -39,6 +39,15 @@ class Oftraf:
         self.traceback_enabled = False
 
     def error_handling(self, error_message, error_num=1):
+        """Handles custom errors of oftraf
+        :param error_message: message of the handled error
+        :param error_num: error number of the handled error, used to define
+        subcases of raised errors.
+        :type error_message: str
+        :type error_num: int
+        :raises oftraf_exceptions.OftrafError: to terminate execution of
+        test after error handling
+        """
         exc_type, exc_obj, exc_tb = sys.exc_info()
         logging.error('{0} :::::::::: Exception :::::::::::'.
                       format(exc_obj))
@@ -49,10 +58,13 @@ class Oftraf:
         if self.traceback_enabled:
             traceback.print_exc()
         # Propagate error outside the class to stop execution
-        raise(stress_test.controller_exceptions.CtrlError)
+        raise(stress_test.oftraf_exceptions.OftrafError)
 
     def get_oftraf_path(self):
-        """Returns oftraf base directory path relatively to the project path
+        """Returns oftraf base directory path, using as base to the project
+        path
+        :returns: oftraf folder path
+        :rtype: str
         """
         stress_test_base_dir = os.path.abspath(os.path.join(
             os.path.realpath(__file__), os.pardir))
@@ -64,6 +76,7 @@ class Oftraf:
 
     def build(self):
         """ Wrapper to the oftraf monitor build handler
+        :raises oftraf_exceptions.OftrafBuildError: if build process fails
         """
         try:
             try:
@@ -92,7 +105,8 @@ class Oftraf:
             self.error_handling(e.err_msg, e.err_code)
 
     def clean(self):
-        """ Wrapper to the oftraf monitor build handler
+        """ Wrapper to the oftraf monitor clean handler
+        :raises oftraf_exceptions.OftrafCleanError: if clean process fails
         """
         try:
             try:
@@ -122,7 +136,10 @@ class Oftraf:
             self.error_handling(e.err_msg, e.err_code)
 
     def start(self):
-        """ Wrapper to the oftraf monitor build handler
+        """ Wrapper to the oftraf monitor start handler. Initializes the REST
+        interface of oftraf and listen of traffic on controller Southbound
+        interface
+        :raises oftraf_exceptions.OftrafStartError: if start process fails
         """
         try:
             try:
@@ -156,7 +173,8 @@ class Oftraf:
             self.error_handling(e.err_msg, e.err_code)
 
     def stop(self):
-        """ Wrapper to the oftraf monitor build handler
+        """ Wrapper to the oftraf monitor stop handler
+        :raises oftraf_exceptions.OftrafStopError: if stop process fails
         """
         try:
             try:
@@ -188,7 +206,11 @@ class Oftraf:
             self.error_handling(e.err_msg, e.err_code)
 
     def oftraf_get_of_counts(self):
-        """Gets the openFlow packets counts, measured by oftraf
+        """Gets the openFlow packets counts, measured by oftraf. It uses the
+        oftraf rest apy and returns the result as a string in JSON format
+        :returns: oftraf metrics as string in JSON format
+        :rtype: str
+        :raises oftraf_exceptions.OftrafError: if execution of handler fails
         """
         try:
             try:
