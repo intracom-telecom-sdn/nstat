@@ -342,6 +342,7 @@ class TestRun:
                  self.sb_emu.topo_hosts_per_switch,
                  self.sb_emu.topo_group_size,
                  self.sb_emu.topo_group_delay_ms,
+                 repeat_id,
                  self.ctrl.stat_period_ms
                  ) in itertools.product(
                     json_conf['multinet_topo_size'],
@@ -349,8 +350,11 @@ class TestRun:
                     json_conf['multinet_topo_hosts_per_switch'],
                     json_conf['multinet_topo_group_size'],
                     json_conf['multinet_topo_group_delay_ms'],
+                    list(range(0, json_conf['test_repeats'])),
                     json_conf['controller_statistics_period_ms']):
                 self.mon.global_sample_id = global_sample_id
+                self.mon.repeat_id = repeat_id
+                self.mon.test_repeats = json_conf['test_repeats']
                 # start a controller
                 self.ctrl.check_status()
                 self.ctrl.start()
