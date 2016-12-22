@@ -342,7 +342,7 @@ class Controller:
                                                              self._ssh_conn)
                     if exit_status == 0:
                         self.status = 'STOPPED'
-                        logging.info()
+                        logging.info("[Controller.stop] Successful stopped")
                     else:
                         self.status = 'NOT_STOPPED'
                         raise(stress_test.controller_exceptions.CtrlStopError(
