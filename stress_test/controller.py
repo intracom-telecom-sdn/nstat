@@ -112,8 +112,9 @@ class Controller:
 
     def init_ssh(self):
         """Initializes a new SSH client object, with the controller node and
-        stores it to the protected variable _ssh_conn. If a connection already
-        exists it returns a new SSH client object to the controller node.
+        assigns it to the protected attribute _ssh_conn. If a connection
+        already exists it returns a new SSH client object to the controller
+        node.
         :raises controller_exceptions.CtrlNodeConnectionError: if ssh
         connection establishment fails
         """
@@ -138,17 +139,40 @@ class Controller:
 
     def cleanup(self):
         """Wrapper to the controller cleanup handler
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlCleanupError: if controller cleanup
         handler fails
         """
+        logging.info('[Controller] Cleaning up')
+        self.status = 'CLEANING'
         try:
             try:
-                logging.info('[Controller] Cleaning up')
-                self.status = 'CLEANING'
-                util.netutil.ssh_run_command(self._ssh_conn,
-                                             self.clean_hnd,
-                                             '[controller.clean_handler]')[0]
-                self.status = 'CLEANED'
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.clean_hnd]):
+                    self.status = 'NOT_CLEANED'
+                    raise(IOError(
+                        '{0} clean handler does not exist'.
+                        format('[controller.cleanup]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.clean_hnd)
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, self.clean_hnd,
+                    '[controller.clean_handler]')
+                if exit_status == 0:
+                    self.status = 'CLEANED'
+                    logging.info('[controller.clean_handler] controller '
+                                 'successfully cleaned.')
+                else:
+                    self.status = 'NOT_CLEANED'
+                    raise(stress_test.controller_exceptions.CtrlCleanupError(
+                        '[controller.clean_handler] controller cleanup '
+                        'handler exited with non zero exit status. \n '
+                        'Handler output: {0}'.format(cmd_output), exit_status))
+            except stress_test.controller_exceptions.CtrlError as e:
+                self.__error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlCleanupError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -158,23 +182,34 @@ class Controller:
         """Wrapper to the controller status handler
         :returns: the status of the controller (running = 1, not running = 0)
         :rtype: int
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlStatusUnknownError: if the handler
         fails to return controller status or fails to execute
         """
         logging.info('[Controller] Checking the status')
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.status_hnd]):
+                    raise(IOError(
+                        '{0} status handler does not exist'.
+                        format('[controller.status]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.status_hnd)
                 q = queue.Queue()
                 util.netutil.ssh_run_command(self._ssh_conn, self.status_hnd,
-                                             '[controller.status_handler]', q)
+                                             '[controller.status]', q)
                 cmd_output = ''
                 while not q.empty():
                     cmd_output += str(q.get()) + ' '
                 if cmd_output.strip() == '1':
-                    logging.info('[controller.status_handler]: Running-'
+                    logging.info('[controller.status]: Running-'
                                  ' {0}'.format(cmd_output))
                 elif cmd_output.strip() == '0':
-                    logging.info('[controller.status_handler]: Not'
+                    logging.info('[controller.status]: Not'
                                  'Running- {0}'.format(cmd_output))
                 else:
                     raise(stress_test.controller_exceptions.CtrlStatusUnknownError(
@@ -226,13 +261,25 @@ class Controller:
 
     def start(self):
         """Wrapper to the controller start handler
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlStartError: When controller fails to
         start.
         """
-        logging.info('[Controller] Starting')
+        logging.info('[Controller.start] Starting')
+        self.status = 'STARTING'
         try:
             try:
-                self.status = 'STARTING'
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.start_hnd]):
+                    self.status = 'NOT_STARTED'
+                    raise(IOError(
+                        '{0} start handler does not exist'.
+                        format('[controller.stop]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.start_hnd)
                 if self._ssh_conn is None:
                     os.environ['JAVA_OPTS'] = self.java_opts
                     cmd = [self.start_hnd]
@@ -242,17 +289,20 @@ class Controller:
                 if self.check_status() == '0':
                     exit_status, cmd_output = util.netutil.ssh_run_command(
                         self._ssh_conn, ' '.join(cmd),
-                        '[controller.start_handler]')
+                        '[Controller.start]')
                     self.pid = self.wait_until_listens(420000)
-                    logging.info('[start_controller] Controller '
+                    logging.info('[Controller.start] Controller '
                                  'pid: {0}'.format(self.pid))
                     self.wait_until_up(420000)
                     if exit_status != 0 or self.pid == -1:
+                        self.status = 'NOT_STARTED'
                         raise(stress_test.controller_exceptions.CtrlStartError(
-                            '[start_controller] Fail to start: {0}'.
-                            format(cmd_output), 2))
+                            '[Controller.start] Fail to start. Start handler '
+                            'exited with non zero exit status. \n '
+                            'Handler output: {0}'.format(cmd_output),
+                            exit_status))
                 elif self.check_status() == '1':
-                    logging.info('[start_controller] Controller already '
+                    logging.info('[Controller.start] Controller already '
                                  'started.')
                 self.status = 'STARTED'
             except stress_test.controller_exceptions.CtrlError as e:
@@ -264,28 +314,43 @@ class Controller:
 
     def stop(self):
         """Wrapper to the controller stop handler
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlStopError: if controller fails to
         stop successfully
         """
-
+        self.status = 'STOPPING'
         try:
             try:
-                self.status = 'STOPPING'
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.stop_hnd]):
+                    self.status = 'NOT_STOPED'
+                    raise(IOError(
+                        '{0} stop handler does not exist'.
+                        format('[controller.stop]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.stop_hnd)
                 if self.check_status() == '1':
-                    logging.info('[Controller] Stopping. Controller PID: {0}'.
-                                 format(self.pid))
+                    logging.info('[Controller.stop] Stopping. Controller '
+                                 'PID: {0}'.format(self.pid))
                     exit_status, cmd_output = util.netutil.ssh_run_command(
                         self._ssh_conn, ' '.join([self.stop_hnd]),
-                        '[controller.stop_handler]')
+                        '[controller.stop]')
                     util.process.wait_until_process_finishes(self.pid,
                                                              self._ssh_conn)
-                    if exit_status != 0:
+                    if exit_status == 0:
+                        self.status = 'STOPPED'
+                        logging.info()
+                    else:
+                        self.status = 'NOT_STOPPED'
                         raise(stress_test.controller_exceptions.CtrlStopError(
-                            '{Controller] Controller failed to stop: {0}'.
-                            format(cmd_output)))
-                    self.status = 'STOPPED'
+                            '[Controller.stop] Controller failed to stop: {0}'.
+                            format(cmd_output), exit_status))
                 else:
-                    logging.info('[stop_controller] Controller already '
+                    self.status = 'STOPPED'
+                    logging.info('[Controller.stop] Controller already '
                                  'stopped.')
             except stress_test.controller_exceptions.CtrlError as e:
                 self.__error_handling(e.err_msg, e.err_code)
@@ -296,23 +361,37 @@ class Controller:
 
     def build(self):
         """Wrapper to the controller build handler
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlBuildError: if build process fails
         """
         logging.info('[Controller] Building')
+        self.status = 'BUILDING'
         try:
             try:
-                self.status = 'BUILDING'
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.build_hnd]):
+                    self.status = 'NOT_BUILT'
+                    raise(IOError(
+                        '{0} build handler does not exist'.
+                        format('[controller.build]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.build_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join([self.build_hnd]),
-                    '[controller.build_handler]')
+                    '[controller.build]')
                 if exit_status == 0:
                     self.status = 'BUILT'
-                    logging.info("[Controller] Successful building")
+                    logging.info("[Controller.build] Successful building")
                 else:
                     self.status = 'NOT_BUILT'
                     raise(stress_test.controller_exceptions.CtrlBuildError(
-                        '[Controller] Failure during building: {0}'.
-                        format(cmd_output)), 2)
+                        '[Controller.build] Failure during building. Build '
+                        'handler exited with non zero exit status. \n '
+                        'Handler output: {0}'.
+                        format(cmd_output)), exit_status)
             except stress_test.controller_exceptions.CtrlError as e:
                 self.__error_handling(e.err_msg, e.err_code)
             except:
@@ -489,10 +568,20 @@ class ODL(Controller):
         logging.info('[Controller] Disabling persistence')
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.persistence_hnd]):
+                    raise(IOError(
+                        '{0} disable_persistence handler does not exist'.
+                        format('[controller.disable_persistence]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.persistence_hnd)
                 util.netutil.ssh_run_command(self._ssh_conn,
                                              ' '.join([self.persistence_hnd]),
-                                             '[controller.change'
-                                             '_persistent_handler]')
+                                             '[controller.disable_persistence]'
+                                             )
             except:
                 raise(stress_test.controller_exceptions.ODLDisablePersistenceError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -501,12 +590,23 @@ class ODL(Controller):
     def change_stats(self):
         """Wrapper to the controller statistics handler. Changes the value of
         statistics interval in the configuration files of controller.
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.ODLChangeStats: if change of statistics
         interval fails
         """
         logging.info('[Controller] Changing statistics period')
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.statistics_hnd]):
+                    raise(IOError(
+                        '{0} statistics handler does not exist'.
+                        format('[controller.change_stats]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.statistics_hnd)
                 util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join([self.statistics_hnd,
                                               str(self.stat_period_ms)]),
@@ -526,15 +626,25 @@ class ODL(Controller):
         :raises controller_exceptions.ODLFlowModConfError: if configuration
         actions to respond with flow modifications fail.
         """
-        logging.info('[Controller] Configure flow modifications')
+        logging.info('[Controller.flowmods_config] Configure flow '
+                     'modifications')
         try:
             try:
-                util.netutil.ssh_run_command(self._ssh_conn,
-                                             ' '.join([self.flowmods_conf_hnd]),
-                                             '[controller.flowmod'
-                                             '_configure_handler]')[0]
-                logging.info('[Controller] Controller is configured to '
-                             'send flow mods')
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.flowmods_conf_hnd]):
+                    raise(IOError(
+                        '{0} Configure for FlowMods handler does not exist'.
+                        format('[controller.flowmods_config]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.flowmods_conf_hnd)
+                util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.flowmods_conf_hnd]),
+                    '[controller.flowmods_config]')[0]
+                logging.info('[Controller.flowmods_config] Controller is '
+                             'configured to send flow mods')
             except:
                 raise(stress_test.controller_exceptions.ODLFlowModConfError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -548,6 +658,7 @@ class ODL(Controller):
         :returns: number of hosts from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.ODLGetOperHostsError: if handler fails to
         run or return a valid value
         """
@@ -555,6 +666,16 @@ class ODL(Controller):
                      'registered in ODL operational DS')
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.oper_hosts]):
+                    raise(IOError(
+                        '{0} get_oper_hosts handler does not exist'.
+                        format('[controller.get_oper_hosts]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.oper_hosts)
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
                 else:
@@ -565,7 +686,7 @@ class ODL(Controller):
                                              str(self.restconf_port),
                                              str(self.restconf_user),
                                              str(self.restconf_pass)]),
-                    '[controller.operational_hosts_handler]')[1]
+                    '[controller.get_oper_hosts]')[1]
                 if new_ssh_conn is not None:
                     used_ssh_conn.close()
                 return int(ret)
@@ -583,6 +704,7 @@ class ODL(Controller):
         :returns: number of switches from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.ODLGetOperSwitchesError:  if handler
         fails to run or return a valid value
         """
@@ -590,6 +712,16 @@ class ODL(Controller):
                      ' registered in ODL operational DS')
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.oper_switches]):
+                    raise(IOError(
+                        '{0} get_oper_switches handler does not exist'.
+                        format('[controller.get_oper_switches]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.oper_switches)
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
                 else:
@@ -600,7 +732,7 @@ class ODL(Controller):
                                              str(self.restconf_port),
                                              str(self.restconf_user),
                                              str(self.restconf_pass)]),
-                    '[controller.operational switches_handler]')[1]
+                    '[controller.get_oper_switches]')[1]
                 if new_ssh_conn is not None:
                     used_ssh_conn.close()
                 return int(ret)
@@ -618,6 +750,7 @@ class ODL(Controller):
         :returns: number of links from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.ODLGetOperLinksError: if handler
         fails to run or return a valid value
         """
@@ -625,6 +758,16 @@ class ODL(Controller):
                      ' ODL operational DS')
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.oper_links]):
+                    raise(IOError(
+                        '{0} get_oper_links handler does not exist'.
+                        format('[controller.get_oper_links]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.oper_links)
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
                 else:
@@ -635,7 +778,7 @@ class ODL(Controller):
                                              str(self.restconf_port),
                                              str(self.restconf_user),
                                              str(self.restconf_pass)]),
-                    '[controller.operational_links_handler]')[1]
+                    '[controller.get_oper_links]')[1]
                 if new_ssh_conn is not None:
                     used_ssh_conn.close()
                 return int(ret)
@@ -653,6 +796,7 @@ class ODL(Controller):
         :returns: number of flows from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
+        :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.ODLGetOperFlowsError: if handler
         fails to run or return a valid value
         """
@@ -660,6 +804,16 @@ class ODL(Controller):
                      'all installed nodes of the topology')
         try:
             try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.oper_flows]):
+                    raise(IOError(
+                        '{0} get_oper_flows handler does not exist'.
+                        format('[controller.get_oper_links]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.oper_flows)
                 if new_ssh_conn is not None:
                     used_ssh_conn = new_ssh_conn
                 else:

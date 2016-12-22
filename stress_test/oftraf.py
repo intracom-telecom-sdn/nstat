@@ -38,7 +38,7 @@ class Oftraf:
         self._ssh_conn = controller.init_ssh()
         self.traceback_enabled = False
 
-    def error_handling(self, error_message, error_num=1):
+    def __error_handling(self, error_message, error_num=1):
         """Handles custom errors of oftraf
         :param error_message: message of the handled error
         :param error_num: error number of the handled error, used to define
@@ -76,14 +76,26 @@ class Oftraf:
 
     def build(self):
         """ Wrapper to the oftraf monitor build handler
+        :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafBuildError: if build process fails
         """
+        logging.info('[Oftraf] Building')
+        self.status = 'BUILDING'
         try:
             try:
                 oftraf_path = str(self.get_oftraf_path())
                 build_hnd = os.path.join(str(oftraf_path), 'build.sh')
-                logging.info('[Oftraf] Building')
-                self.status = 'BUILDING'
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [build_hnd]):
+                    self.status = 'NOT_BUILT'
+                    raise(IOError(
+                        '{0} build handler does not exist'.
+                        format('[nb_generator.build]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        build_hnd)
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(self._ssh_conn,
                                                  ' '.join([build_hnd]),
@@ -98,23 +110,34 @@ class Oftraf:
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.error_handling(e.err_msg, e.err_code)
+                self.__error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafBuildError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.error_handling(e.err_msg, e.err_code)
+            self.__error_handling(e.err_msg, e.err_code)
 
     def clean(self):
         """ Wrapper to the oftraf monitor clean handler
+        :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafCleanError: if clean process fails
         """
+        logging.info('[Oftraf] Cleaning')
+        self.status = 'CLEANING'
         try:
             try:
                 oftraf_path = self.get_oftraf_path()
                 clean_hnd = oftraf_path + 'clean.sh'
-                logging.info('[Oftraf] Cleaning')
-                self.status = 'CLEANING'
-
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [clean_hnd]):
+                    self.status = 'NOT_CLEANED'
+                    raise(IOError(
+                        '{0} clean handler does not exist'.
+                        format('[nb_generator.build]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        clean_hnd)
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(self._ssh_conn,
                                                  ' '.join([clean_hnd]),
@@ -123,30 +146,42 @@ class Oftraf:
                     self.status = 'CLEANED'
                     logging.info("[Oftraf] Successful cleaning")
                 else:
-                    self.status = 'NOT CLEANED'
+                    self.status = 'NOT_CLEANED'
                     raise(stress_test.oftraf_exceptions.OftrafCleanError(
                         'clean process exited with non zero exit code. '
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.error_handling(e.err_msg, e.err_code)
+                self.__error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafCleanError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.error_handling(e.err_msg, e.err_code)
+            self.__error_handling(e.err_msg, e.err_code)
 
     def start(self):
         """ Wrapper to the oftraf monitor start handler. Initializes the REST
         interface of oftraf and listen of traffic on controller Southbound
         interface
+        :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafStartError: if start process fails
         """
+        logging.info('[Oftraf] Starting')
+        self.status = 'STARTING'
         try:
             try:
                 oftraf_path = self.get_oftraf_path()
                 start_hnd = oftraf_path + 'start.sh'
-                logging.info('[Oftraf] Starting')
-                self.status = 'STARTING'
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [start_hnd]):
+                    self.status = 'NOT_STARTED'
+                    raise(IOError(
+                        '{0} start handler does not exist'.
+                        format('[nb_generator.build]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        start_hnd)
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(
                         self._ssh_conn, ' '.join([start_hnd,
@@ -160,28 +195,40 @@ class Oftraf:
                     self.status = 'STARTED'
                     logging.info("[Oftraf] Successful starting")
                 else:
-                    self.status = 'NOT STARTED'
+                    self.status = 'NOT_STARTED'
                     raise(stress_test.oftraf_exceptions.OftrafStartError(
                         'Start process exited with non zero exit code. '
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.error_handling(e.err_msg, e.err_code)
+                self.__error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafStartError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.error_handling(e.err_msg, e.err_code)
+            self.__error_handling(e.err_msg, e.err_code)
 
     def stop(self):
         """ Wrapper to the oftraf monitor stop handler
+        :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafStopError: if stop process fails
         """
+        logging.info('[Oftraf] Starting')
+        self.status = 'STOPPING'
         try:
             try:
                 oftraf_path = self.get_oftraf_path()
                 stop_hnd = oftraf_path + 'stop.sh'
-                logging.info('[Oftraf] Starting')
-                self.status = 'STOPPING'
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [stop_hnd]):
+                    self.status = 'NOT_STOPPED'
+                    raise(IOError(
+                        '{0} stop handler does not exist'.
+                        format('[nb_generator.build]')))
+                else:
+                    util.netutil.make_remote_file_executable2(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        stop_hnd)
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
@@ -193,21 +240,21 @@ class Oftraf:
                     self.status = 'STOPED'
                     logging.info("[Oftraf] Successful stopping")
                 else:
-                    self.status = 'NOT STOPPED'
+                    self.status = 'NOT_STOPPED'
                     raise(stress_test.oftraf_exceptions.OftrafStopError(
                         'Stop process exited with non zero exit code. '
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.error_handling(e.err_msg, e.err_code)
+                self.__error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafStopError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.error_handling(e.err_msg, e.err_code)
+            self.__error_handling(e.err_msg, e.err_code)
 
     def oftraf_get_of_counts(self):
         """Gets the openFlow packets counts, measured by oftraf. It uses the
-        oftraf rest apy and returns the result as a string in JSON format
+        oftraf REST interface and returns the result as a string in JSON format
         :returns: oftraf metrics as string in JSON format
         :rtype: str
         :raises oftraf_exceptions.OftrafError: if execution of handler fails
@@ -229,7 +276,7 @@ class Oftraf:
                     'data: {1}'.format(req.status_code,
                                        req.content.decode('utf-8'))))
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.error_handling(e.err_msg, e.err_code)
+            self.__error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
         """Method called when object is destroyed"""

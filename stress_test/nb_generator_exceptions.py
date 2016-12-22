@@ -48,6 +48,14 @@ class NBGenRunError(NBGenError):
                             format(additional_error_info), err_code)
 
 
+class NBGenGetOperFlowsError(NBGenError):
+    """NB generator handler of getting operational flows failure."""
+    def __init__(self, additional_error_info='', err_code=1):
+        NBGenError.__init__(self, 'Failure during getting operational '
+                            'flows. {0}'.format(additional_error_info),
+                            err_code)
+
+
 class NBGenPollDSError(NBGenError):
     """NB generator failure during datastore polling."""
     def __init__(self, additional_error_info='', err_code=1):
