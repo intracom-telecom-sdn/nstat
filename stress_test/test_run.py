@@ -837,15 +837,15 @@ class TestRun:
             logging.exception('')
 
         finally:
-            #try:
-            logging.info('[{0}] Generating results report.'.
-                         format(self.test_type))
-            report_spec = \
-                self.test_report_template.nb_active_scalability_multinet(
-                    self.args.json_output)
-            self.results_report(report_spec, json_conf)
-            #except:
-            #    logging.error('[{0}] Fail to generate report.')
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.nb_active_scalability_multinet(
+                        self.args.json_output)
+                self.results_report(report_spec, json_conf)
+            except:
+                logging.error('[{0}] Fail to generate report.')
             try:
                 logging.info('[{0}] Clean NB-Generator.'.
                              format(self.test_type))
