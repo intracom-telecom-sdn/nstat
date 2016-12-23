@@ -9,6 +9,8 @@ import stress_test.html_generation
 import json
 import logging
 import shutil
+import sys
+import traceback
 import util.plot_json
 
 
@@ -21,6 +23,8 @@ class ReportGen:
         self.args = args
         self.report_spec = report_spec
         self.total_samples = total_samples
+        # Defines level of detail of error message  printed
+        self.traceback_enabled = True
         try:
             logging.info('[ReportGen] creating test output directory if not '
                          'present.')
@@ -31,9 +35,27 @@ class ReportGen:
                 '[ReportGen] Fail to create output directory for the report')
             raise(IOError)
 
+    def __error_handling(self, error_message):
+        """Prints a detailed messages traceback of the error in plotting
+        :param error_message: message of the handled error
+        :param error_num: error number of the handled error, used to define
+        subcases of raised errors.
+        :type error_message: str
+        :type error_num: int
+        :raises controller_exceptions.CtrlError: to terminate execution of
+        test after error handling
+        """
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        logging.error('{0} :::::::::: Exception :::::::::::'.
+                      format(exc_obj))
+        logging.error(error_message)
+        logging.error('{0} - {1} Exception: {2}, {3}'.
+                      format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+        if self.traceback_enabled:
+            traceback.print_exc()
+
     def generate_json_results(self):
         """ Creates the result json file and writes test results in it
-
         :param results A list containing the results.
         :param out_json: The file path of json file to be created and write
         results in it
@@ -64,17 +86,16 @@ class ReportGen:
 
     def generate_plots(self):
         """NSTAT post test actions
-
         :param args: argparse.ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
         :param test_config : JSON input configuration
         :param report_spec : A ReportSpec object that holds all the test report
-        information and is passed as input to the generate_html() function in the
-        html_generation.py, that is responsible for the report generation.
+        information and is passed as input to the generate_html() function in
+        the html_generation.py, that is responsible for the report generation.
         :type args: ArgumentParser object
-        :type test_config: python object resulting from a deserialized file like
-        object containing a json document
+        :type test_config: python object resulting from a deserialized file
+        like object containing a json document
         :type report_spec: ReportSpec object
         """
         if os.path.isfile(self.args.json_output):
@@ -170,8 +191,8 @@ class ReportGen:
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
         :param report_spec: A ReportSpec object that holds all the test report
-        information and is passed as input to the generate_html() function in the
-        html_generation.py, that is responsible for the report generation.
+        information and is passed as input to the generate_html() function in
+        the html_generation.py, that is responsible for the report generation.
         :type args: ArgumentParser object
         :type report_spec: ReportSpec object
         """
@@ -180,6 +201,32 @@ class ReportGen:
         stress_test.html_generation.generate_html(self.report_spec,
                                                   self.args.html_report)
         shutil.move(self.args.html_report, self.args.output_dir)
+
+    def results_report(self):
+        """Creates a complete report of the test. This is the main method of
+        this class.
+        """
+        try:
+            self.generate_json_results()
+        except:
+            self.__error_handling('Error in generation of JSON results.')
+        try:
+            self.generate_plots()
+        except:
+            self.__error_handling('Error in generation of plots.')
+        try:
+            self.generate_html_report()
+        except:
+            self.__error_handling('Error in generation of HTML report.')
+        try:
+            self.save_controller_log()
+        except:
+            self.__error_handling('Error in copy of controller log files.')
+        try:
+            shutil.copy(self.args.json_config, self.args.output_dir)
+        except:
+            self.__error_handling('Error in copy of results in results '
+                                  'folder.')
 
     def __del__(self):
         if os.path.dirname(self.args.json_output) != self.args.output_dir:
