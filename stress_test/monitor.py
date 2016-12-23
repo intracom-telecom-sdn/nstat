@@ -253,7 +253,6 @@ class Mtcbench(Monitor):
                 new_ssh = self.controller.init_ssh()
                 discovered_switches = \
                     self.controller.get_oper_switches(new_ssh)
-                new_ssh.close()
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
                 if discovered_switches > max_discovered_switches:
