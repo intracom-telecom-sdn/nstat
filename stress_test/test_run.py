@@ -4,10 +4,12 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
+"""Test run class. Here we define the different type of test run methods for
+each test"""
+
 import itertools
 import json
 import logging
-import shutil
 import stress_test.controller
 import stress_test.emulator
 import stress_test.monitor
@@ -25,7 +27,8 @@ class TestRun:
     def __init__(self, args, json_conf, test_type):
         """
         Initializes the appropriate test component objects according to the
-        test_type in order to prepare the test run object
+        test_type and the test configuration json object, in order to prepare
+        the test for running
         :param args:
         :param json_conf:
         :param test_type:
@@ -416,7 +419,6 @@ class TestRun:
             for error in errors:
                 logging.error('{0} {1}'.format(self.test_type, error))
             logging.exception('')
-
         finally:
             try:
                 logging.info('[{0}] Generating results report.'.

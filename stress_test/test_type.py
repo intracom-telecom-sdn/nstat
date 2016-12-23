@@ -15,7 +15,6 @@ import sys
 class TestType:
 
     def __init__(self, args):
-
         """
         """
         self.nstat_test_type = args.test_type
@@ -23,7 +22,6 @@ class TestType:
     def load_test_conf(self, args):
         """ Loading test configuration for NSTAT experiment. Parsing
         configuration options from JSON input file
-
         :param args: ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
@@ -39,7 +37,6 @@ class TestType:
 
     def set_test_log_level(self, args):
         """Setting log level for NSTAT experiment
-
         :param args: ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
