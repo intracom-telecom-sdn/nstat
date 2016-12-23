@@ -347,7 +347,7 @@ class NBgen:
             try:
                 t_discovery_start = time.time()
                 previous_discovered_flows = 0
-                new_ssh = self.controller.init_ssh()
+
                 while True:
                     if (time.time() - t_discovery_start) > \
                             self.flows_discovery_deadline:
@@ -357,7 +357,7 @@ class NBgen:
                         self.e2e_installation_time = -1.0
                         logging.info('[NB_generator] [Poll_flows thread] End '
                                      'to End installation time monitor FAILED')
-                        new_ssh.close()
+
                         return
                     else:
                         new_ssh = self.controller.init_ssh()
@@ -380,7 +380,7 @@ class NBgen:
                             logging.info('[NB_generator] [Poll_flows thread] '
                                          'End to End installation time is: {0}'
                                          .format(self.e2e_installation_time))
-                            new_ssh.close()
+
                             return
                     gevent.sleep(1)
             except:
@@ -405,7 +405,7 @@ class NBgen:
                 t_start = time.time()
                 t_discovery_start = time.time()
                 previous_discovered_flows = 0
-                new_ssh = self.controller.init_ssh()
+
                 while True:
                     if (time.time() - t_discovery_start) > \
                             self.flows_discovery_deadline:
@@ -417,9 +417,10 @@ class NBgen:
                         logging.info('[NB_generator] '
                                      '[Poll_flows_confirm thread] '
                                      'Confirmation time monitoring FAILED')
-                        new_ssh.close()
+
                         return
                     else:
+                        new_ssh = self.controller.init_ssh()
                         oper_ds_found_flows = \
                             self.controller.get_oper_flows(new_ssh)
                         logging.debug('[NB_generator] '
@@ -440,7 +441,7 @@ class NBgen:
                             logging.info('[NB_generator] [Poll_flows_confirm '
                                          'thread] Confirmation time is: {0}'
                                          .format(self.confirm_time))
-                            new_ssh.close()
+
                             return
                     gevent.sleep(1)
             except:
@@ -468,7 +469,7 @@ class NBgen:
             try:
                 t_discovery_start = time.time()
                 previous_discovered_flows = 0
-                new_ssh = self.sbemu.init_ssh()
+
                 while True:
                     if (time.time() - t_discovery_start) > \
                             self.flows_discovery_deadline:
@@ -480,9 +481,10 @@ class NBgen:
                         logging.info('[NB_generator] '
                                      '[Poll_flows_switches thread] '
                                      'Discovering flows on switches FAILED')
-                        new_ssh.close()
+
                         return
                     else:
+                        new_ssh = self.sbemu.init_ssh()
                         discovered_flows = self.sbemu.get_flows(new_ssh)
                         logging.debug('[NB_generator] '
                                       '[Poll_flows_switches thread] '
@@ -504,7 +506,7 @@ class NBgen:
                                 '[NB_generator] [Poll_flows_switches thread] '
                                 'Time to discover flows on switches is: {0}'.
                                 format(self.discover_flows_on_switches_time))
-                            new_ssh.close()
+
                             return
                     gevent.sleep(1)
             except:
