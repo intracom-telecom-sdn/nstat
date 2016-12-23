@@ -103,25 +103,22 @@ def merge_dict_and_avg(results_add, results_delete):
     dict_merged = collections.defaultdict(list)
     for d in (results_delete, results_add):
         for key, value in d.items():
-            if key == 'controller_java_xopts':
+            if key == 'controller_cwd':
+                dict_merged[key] = value
+            elif key == 'controller_java_xopts':
                 dict_merged[key] = value
             elif key == 'date':
                 dict_merged[key] = value
             else:
                 dict_merged[key].append(value)
-
     avg_dict = {}
     for k, v in dict_merged.items():
-        if len(v) > 1:
+        if isinstance(v, list):
             for i, val in enumerate(v):
                 if isinstance(val, str):
-                    avg_dict[k] = val
+                    avg_dict[k] = v
                 else:
                     avg_dict[k] = sum(v)/float(len(v))
-        else:
+        if isinstance(v, str):
             avg_dict[k] = v
-
-    for i, avg_dict_val in avg_dict.items():
-        if isinstance(avg_dict_val, list):
-            avg_dict[i] = avg_dict_val[0]
     return avg_dict
