@@ -814,7 +814,7 @@ class TestRun:
                                                      failed_flows_del,
                                                      expected_flows,
                                                      self.nb_emu.flow_delete_flag)
-
+                '''
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
                 print('failed flows ADD are:')
@@ -827,6 +827,7 @@ class TestRun:
                 print('------------------------------------------------------')
                 print('------------------------------------------------------')
                 print(result_metrics_del)
+                '''
                 failed_flows_total = failed_flows_add + failed_flows_del
 
                 # Stop/clean nodes
@@ -835,7 +836,7 @@ class TestRun:
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
 
-
+                '''
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
                 print(result_metrics_add)
@@ -847,9 +848,10 @@ class TestRun:
                 print(global_sample_id)
                 print('-------------------------------------------------------')
                 print('-------------------------------------------------------')
+                '''
                 results = util.file_ops.merge_dict_and_avg(result_metrics_add,
                                                            result_metrics_del)
-                print(results)
+                #print(results)
                 global_sample_id = results['global_sample_id'] + 1
                 self.total_samples += [results]
 
