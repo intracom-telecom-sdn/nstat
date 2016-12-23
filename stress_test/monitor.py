@@ -251,7 +251,8 @@ class Mtcbench(Monitor):
                 return 0
             else:
                 new_ssh = self.controller.init_ssh()
-                discovered_switches = self.controller.get_oper_switches(new_ssh)
+                discovered_switches = \
+                    self.controller.get_oper_switches(new_ssh)
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
                 if discovered_switches > max_discovered_switches:
@@ -616,7 +617,6 @@ class NBgen(Monitor):
         self.nbgen_queue = gevent.queue.Queue()
         self.nbgen = nbgen
         self.sbemu = sbemu
-        #self.test = test
 
     def __poll_flows_ds(self, t_start, expected_flows):
         """
@@ -762,7 +762,8 @@ class NBgen(Monitor):
                         {'switch_operation_time': time_interval}, block=True)
                     logging.info('[NB_generator] [Poll_flows_switches thread] '
                                  'Time to discover flows on switches is: {0}'
-                                 .format(self.nbgen.discover_flows_on_switches_time))
+                                 .format(self.nbgen.
+                                         discover_flows_on_switches_time))
                     return
             gevent.sleep(1)
 
@@ -793,9 +794,14 @@ class NBgen(Monitor):
         :type t_start:
         """
         logging.info('[NB_generator] Start polling measurements')
-        monitor_ds = gevent.spawn(self.__poll_flows_ds, t_start, expected_flows)
-        monitor_sw = gevent.spawn(self.__poll_flows_switches, t_start, expected_flows)
-        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm, expected_flows)
+        monitor_ds = gevent.spawn(self.__poll_flows_ds,
+                                  t_start,
+                                  expected_flows)
+        monitor_sw = gevent.spawn(self.__poll_flows_switches,
+                                  t_start,
+                                  expected_flows)
+        monitor_ds_confirm = gevent.spawn(self.__poll_flows_ds_confirm,
+                                          expected_flows)
         gevent.joinall([monitor_ds, monitor_sw, monitor_ds_confirm])
         gevent.killall([monitor_ds, monitor_sw, monitor_ds_confirm])
 
@@ -825,7 +831,7 @@ class NBgen(Monitor):
         return results
 
     def monitor_results_add(self, add_controller_time,
-                        results_thread, total_failed_flows):
+                            results_thread, total_failed_flows):
 
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
@@ -865,17 +871,19 @@ class NBgen(Monitor):
             results_thread['end_to_end_flows_operation_time']
         if results_thread['end_to_end_flows_operation_time'] != -1:
             results['end_to_end_installation_rate'] = \
-                float(self.nbgen.total_flows) / results_thread['end_to_end_flows_operation_time']
+                float(self.nbgen.total_flows) / \
+                results_thread['end_to_end_flows_operation_time']
         else:
             results['end_to_end_installation_rate'] = -1
 
         # Add switch time: Time from the FIRST REST request until ALL flows
-        #                  are present in the network
+        # are present in the network
 
         results['add_switch_time'] = results_thread['switch_operation_time']
         if results_thread['switch_operation_time'] != -1:
             results['add_switch_rate'] = \
-                float(self.nbgen.total_flows) / results_thread['switch_operation_time']
+                float(self.nbgen.total_flows) / \
+                results_thread['switch_operation_time']
         else:
             results['add_switch_rate'] = -1
 
@@ -891,37 +899,38 @@ class NBgen(Monitor):
         return results
 
     def monitor_results_del(self, controller_time,
-                                     results_thread,
-                                     total_failed_flows):
+                            results_thread, total_failed_flows):
 
-        # Remove controller time: Time for all delete REST
-        #                          requests to be sent and their response to
-        #                          be received
-        #results = {}
+        # Remove controller time: Time for all delete REST requests to be sent
+        # and their response to be received
+
         results = self.system_results()
         results['remove_controller_time'] = controller_time
         results['remove_controller_rate'] = \
             float(self.nbgen.total_flows) / controller_time
 
-        # end_to_end_remove_time: The time period started after the last
-        #                   flow was configured, until we receive confirmation
-        #                   all flows were removed.
+        # end_to_end_remove_time: The time period started after the last flow
+        # was configured, until we receive confirmation all flows were removed.
+
         results['end_to_end_remove_time'] = \
             results_thread['end_to_end_flows_operation_time']
         results['end_to_end_remove_rate'] = \
-            float(self.nbgen.total_flows) / results_thread['end_to_end_flows_operation_time']
+            float(self.nbgen.total_flows) / \
+            results_thread['end_to_end_flows_operation_time']
 
-        # Remove switch time: Time from the first delete REST
-        #                     request until all flows are removed from the
-        #                     network.
+        # Remove switch time: Time from the first delete REST request until all
+        # flows are removed from the network.
+
         results['remove_switch_time'] = \
             results_thread['switch_operation_time']
         results['remove_switch_rate'] = \
-            float(self.nbgen.total_flows) / results_thread['switch_operation_time']
+            float(self.nbgen.total_flows) / \
+            results_thread['switch_operation_time']
 
         # Remove confirm time: Time period started after the last
-        #                      flow was unconfigured until we receive
-        #                      confirmation all flows are removed.
+        # flow was unconfigured until we receive confirmation all flows are
+        # removed.
+
         results['remove_confirm_time'] = results_thread['confirm_time']
         results['remove_confirm_rate'] = \
             float(self.nbgen.total_flows) / results_thread['confirm_time']

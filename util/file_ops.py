@@ -121,4 +121,7 @@ def merge_dict_and_avg(results_add, results_delete):
                     avg_dict[k] = sum(v)/float(len(v))
         if isinstance(v, str):
             avg_dict[k] = v
+    avg_dict['total_failed_flows_operations'] = \
+        avg_dict['total_failed_flows_operations_add'] + \
+        avg_dict['total_failed_flows_operations_del']
     return avg_dict
