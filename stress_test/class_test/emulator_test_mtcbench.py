@@ -35,30 +35,33 @@ emulator_base_dir = str(sys.argv[2])
 # create a new MTCBnench Emulator instance, sb_emu
 sb_emu = stress_test.emulator.SBEmu.new(emulator_base_dir,
                                         test_config)
+try:
+    # initialize a connection
+    sb_emu.init_ssh()
 
-# initialize a connection
-sb_emu.init_ssh()
+    # build a MTCBench Emulator
+    if sb_emu.rebuild:
+        sb_emu.build()
+        logging.info('[Testing] Build a {0} emulator on '
+                     '{1} host'.format(sb_emu.name, sb_emu.ip))
 
-# build a MTCBench Emulator
-if sb_emu.rebuild:
-    sb_emu.build()
-    logging.info('[Testing] Build a {0} emulator on '
-                 '{1} host'.format(sb_emu.name, sb_emu.ip))
+    for (sb_emu.simulated_hosts,
+         sb_emu.switches_per_thread,
+         sb_emu.threads,
+         sb_emu.thread_creation_delay_ms,
+         sb_emu.delay_before_traffic_ms
+         ) in itertools.product(test_config['mtcbench_simulated_hosts'],
+                                test_config['mtcbench_switches_per_thread'],
+                                test_config['mtcbench_threads'],
+                                test_config['mtcbench_thread_creation_delay_ms'],
+                                test_config['mtcbench_delay_before_traffic_ms']):
 
-for (sb_emu.simulated_hosts,
-     sb_emu.switches_per_thread,
-     sb_emu.threads,
-     sb_emu.thread_creation_delay_ms,
-     sb_emu.delay_before_traffic_ms
-     ) in itertools.product(test_config['mtcbench_simulated_hosts'],
-                            test_config['mtcbench_switches_per_thread'],
-                            test_config['mtcbench_threads'],
-                            test_config['mtcbench_thread_creation_delay_ms'],
-                            test_config['mtcbench_delay_before_traffic_ms']):
-
-    sb_emu.run('127.0.0.1', 6653)
-    logging.info('[Testing] run MTCBench for '
-                 'thread value {0}'.format(sb_emu.threads))
-
-# sb_emu.run()
-sb_emu.clean()
+        sb_emu.run('127.0.0.1', 6653)
+        logging.info('[Testing] run MTCBench for '
+                     'thread value {0}'.format(sb_emu.threads))
+except:
+    logging.info('[Testing] Error, check the logs')
+finally:
+    # sb_emu.run()
+    del sb_emu
+logging.info('[Testing] All done!')

@@ -6,6 +6,9 @@
 
 """ General network utilities """
 
+import collections
+import gevent
+import gevent.queue
 import logging
 import os
 import paramiko
@@ -62,6 +65,11 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
     :type local_path: str
     """
     (sftp, transport_layer) = ssh_connection_open(connection)
+    if not isdir(remote_path, sftp):
+        ssh_connection_close(sftp, transport_layer)
+        raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
+                      'not exist.'.format(remote_path)))
+
     if not os.path.exists(local_path):
         os.makedirs(local_path)
     files = sftp.listdir(path=remote_path)
@@ -74,6 +82,44 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
                     os.makedirs(os.path.join(local_path, file_item))
                 copy_dir_remote_to_local(connection, remote_filepath,
                                          os.path.join(local_path, file_item))
+            else:
+                sftp.get(remote_filepath, os.path.join(local_path, file_item))
+    ssh_connection_close(sftp, transport_layer)
+
+
+def copy_dir_remote_to_local2(ip, ssh_port, username, password,
+                              remote_path, local_path):
+    """Copy recursively remote directories (Copies all files and other
+    sub-directories).
+
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
+    :param remote_path: full remote path we want to copy
+    :param local_path: full local path we want to copy
+    :type connection: namedtuple<>
+    :type remote_path: str
+    :type local_path: str
+    """
+    (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port,
+                                                   username, password)
+    if not isdir(remote_path, sftp):
+        ssh_connection_close(sftp, transport_layer)
+        raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
+                      'not exist.'.format(remote_path)))
+
+    if not os.path.exists(local_path):
+        os.makedirs(local_path)
+    files = sftp.listdir(path=remote_path)
+
+    for file_item in files:
+        if file_item is not None:
+            remote_filepath = os.path.join(remote_path, file_item)
+            if isdir(remote_filepath, sftp):
+                if not os.path.exists(os.path.join(local_path, file_item)):
+                    os.makedirs(os.path.join(local_path, file_item))
+                copy_dir_remote_to_local2(ip, ssh_port, username, password,
+                                          remote_filepath,
+                                          os.path.join(local_path, file_item))
             else:
                 sftp.get(remote_filepath, os.path.join(local_path, file_item))
     ssh_connection_close(sftp, transport_layer)
@@ -128,6 +174,25 @@ def make_remote_file_executable(connection, remote_file):
     """
     (sftp, transport_layer) = ssh_connection_open(connection)
     sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+    ssh_connection_close(sftp, transport_layer)
+
+
+def make_remote_file_executable2(ip, port, username, password, remote_file):
+    """Makes the remote file executable.
+
+    :param connection: named tuple with connection information: ['name', 'ip',
+    'ssh_port', 'username', 'password']
+    :param remote_file: remote file to make executable
+    :type connection: namedtuple<>
+    :type remote_file: str
+    """
+    (sftp, transport_layer) = ssh_connection_open2(ip, port, username,
+                                                   password)
+    try:
+        sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+    except:
+        raise(IOError('[make_remote_file_executable] Fail to make remote file '
+                      '{0} on {1} node executable.'.format(remote_file, ip)))
     ssh_connection_close(sftp, transport_layer)
 
 
@@ -358,7 +423,7 @@ def ssh_copy_file_to_target(ip, ssh_port, username, password, local_file,
     :type local_file: str
     :type remote_file: str
     """
-    (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port, username,
+    (sftp, transport_layer) = ssh_connection_open2(ip, int(ssh_port), username,
                                                    password)
     sftp.put(local_file, remote_file)
     ssh_connection_close(sftp, transport_layer)
@@ -418,7 +483,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     """
 
     channel = ssh_client.get_transport().open_session()
-    bufferSize = 4*1024
+    bufferSize = 8*1024
     channel_timeout = None
     channel.setblocking(1)
     channel.set_combine_stderr(True)
@@ -428,7 +493,10 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel.exec_command(command_to_run)
 
     if not block_flag:
-        return 0
+        # Carefull!! Do not close channel here if it is closed the running
+        # process will be terminated and we do not want this to happen in case
+        # of non blocking execution.
+        return (0, '')
 
     channel_output = ''
     while not channel.exit_status_ready():
@@ -441,8 +509,12 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
             if lines_queue is not None:
                 for line in data.splitlines():
                     lines_queue.put(line)
+            if type(lines_queue) is type(gevent.queue.Queue()):
+                gevent.sleep(0.01)
             data = channel.recv(bufferSize).decode('utf-8')
 
     channel_exit_status = channel.recv_exit_status()
     channel.close()
     return (channel_exit_status, channel_output)
+
+
