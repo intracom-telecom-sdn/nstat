@@ -86,42 +86,43 @@ class Oftraf:
         """
         logging.info('[Oftraf] Building')
         self.status = 'BUILDING'
-        try:
-            try:
-                oftraf_path = str(self.get_oftraf_path())
-                build_hnd = os.path.join(str(oftraf_path), 'build.sh')
-                if not util.netutil.isfile(self.rest_server_ip,
-                                           self.rest_server_port,
-                                           self.ssh_user,
-                                           self.ssh_pass,
-                                           [build_hnd]):
-                    self.status = 'NOT_BUILT'
-                    raise(IOError(
-                        '{0} build handler does not exist'.
-                        format('[nb_generator.build]')))
-                else:
-                    util.netutil.make_remote_file_executable2(
-                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
-                        build_hnd)
-                exit_status, cmd_output = \
-                    util.netutil.ssh_run_command(self._ssh_conn,
-                                                 ' '.join([build_hnd]),
-                                                 '[oftraf.build_handler]')
-                if exit_status == 0:
-                    self.status = 'BUILT'
-                    logging.info("[Oftraf] Successful building")
-                else:
-                    self.status = 'NOT_BUILT'
-                    raise(stress_test.oftraf_exceptions.OftrafBuildError(
-                        'Build process exited with non zero exit code. '
-                        'Command-line output: {0} \n Exit status code: {1}'.
-                        format(cmd_output, exit_status), 2))
-            except stress_test.oftraf_exceptions.OftrafError as e:
+        # try:
+        #    try:
+        oftraf_path = str(self.get_oftraf_path())
+        build_hnd = os.path.join(str(oftraf_path), 'build.sh')
+        if not util.netutil.isfile(self.rest_server_ip,
+                                   self.rest_server_port,
+                                   self.ssh_user,
+                                   self.ssh_pass,
+                                   [build_hnd]):
+            self.status = 'NOT_BUILT'
+            raise(IOError(
+                '{0} build handler does not exist'.
+                format('[nb_generator.build]')))
+        else:
+            util.netutil.make_remote_file_executable2(
+                self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                build_hnd)
+        exit_status, cmd_output = \
+            util.netutil.ssh_run_command(self._ssh_conn,
+                                         ' '.join([build_hnd]),
+                                         '[oftraf.build_handler]')
+        if exit_status == 0:
+            self.status = 'BUILT'
+            logging.info("[Oftraf] Successful building")
+        else:
+            self.status = 'NOT_BUILT'
+            raise(stress_test.oftraf_exceptions.OftrafBuildError(
+                'Build process exited with non zero exit code. '
+                'Command-line output: {0} \n Exit status code: {1}'.
+                format(cmd_output, exit_status), 2))
+            '''except stress_test.oftraf_exceptions.OftrafError as e:
                 self.__error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafBuildError)
         except stress_test.oftraf_exceptions.OftrafError as e:
             self.__error_handling(e.err_msg, e.err_code)
+        '''
 
     def clean(self):
         """ Wrapper to the oftraf monitor clean handler
