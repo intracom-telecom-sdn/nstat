@@ -575,7 +575,6 @@ class Multinet(Monitor):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
-        results['repeat_id'] = self.repeat_id
         results['test_repeats'] = self.test_repeats
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
