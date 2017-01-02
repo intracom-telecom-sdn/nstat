@@ -33,6 +33,9 @@ class Oftraf:
             self.interval_ms = 0
         self.rest_server_port = test_config['oftraf_rest_server_port']
         self.rest_server_ip = controller.ip
+        self.ssh_user = controller.ssh_user
+        self.ssh_pass = controller.ssh_pass
+
         self.of_port = controller.of_port
         self.status = 'UNKNOWN'
         self._ssh_conn = controller.init_ssh()
@@ -85,8 +88,10 @@ class Oftraf:
             try:
                 oftraf_path = str(self.get_oftraf_path())
                 build_hnd = os.path.join(str(oftraf_path), 'build.sh')
-                if not util.netutil.isfile(self.ip, self.ssh_port,
-                                           self.ssh_user, self.ssh_pass,
+                if not util.netutil.isfile(self.rest_server_ip,
+                                           self.rest_server_port,
+                                           self.ssh_user,
+                                           self.ssh_pass,
                                            [build_hnd]):
                     self.status = 'NOT_BUILT'
                     raise(IOError(
