@@ -198,7 +198,7 @@ class Oftraf:
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(
                         self._ssh_conn, ' '.join([start_hnd,
-                                                  self.rest_server_ip,
+                                                  self.ip,
                                                   str(self.rest_server_port),
                                                   str(self.of_port)]),
                         '[oftraf.start_handler]',
@@ -246,7 +246,7 @@ class Oftraf:
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
                         ' '.join([stop_hnd,
-                                  self.rest_server_ip,
+                                  self.ip,
                                   str(self.rest_server_port)]),
                         '[oftraf.stop_handler]')
                 if exit_status == 0:
@@ -277,7 +277,7 @@ class Oftraf:
                 getheaders = {'Accept': 'application/json'}
                 url = \
                     'http://{0}:{1}/get_of_counts'.format(
-                        self.rest_server_ip, self.rest_server_port)
+                        self.ip, self.rest_server_port)
                 s = requests.Session()
                 s.trust_env = False
                 req = s.get(url, headers=getheaders, stream=False)
