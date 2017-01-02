@@ -32,7 +32,8 @@ class Oftraf:
         else:
             self.interval_ms = 0
         self.rest_server_port = test_config['oftraf_rest_server_port']
-        self.rest_server_ip = controller.ip
+        self.ip = controller.ip
+        self.ssh_port = controller.ssh_port
         self.ssh_user = controller.ssh_user
         self.ssh_pass = controller.ssh_pass
 
@@ -89,13 +90,13 @@ class Oftraf:
         oftraf_path = str(self.get_oftraf_path())
         build_hnd = os.path.join(str(oftraf_path), 'build.sh')
         print("***************OFTRAF CONNECTION************")
-        print(self.rest_server_ip)
-        print(self.rest_server_port)
+        print(self.ip)
+        print(self.ssh_port)
         print(self.ssh_user)
         print(self.ssh_pass)
         print(build_hnd)
-        if not util.netutil.isfile(self.rest_server_ip,
-                                   self.rest_server_port,
+        if not util.netutil.isfile(self.ip,
+                                   self.ssh_port,
                                    self.ssh_user,
                                    self.ssh_pass,
                                    [build_hnd]):
