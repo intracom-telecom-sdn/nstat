@@ -88,6 +88,12 @@ class Oftraf:
         #    try:
         oftraf_path = str(self.get_oftraf_path())
         build_hnd = os.path.join(str(oftraf_path), 'build.sh')
+        print("***************OFTRAF CONNECTION************")
+        print(self.rest_server_ip)
+        print(self.rest_server_port)
+        print(self.ssh_user)
+        print(self.ssh_pass)
+        print(build_hnd)
         if not util.netutil.isfile(self.rest_server_ip,
                                    self.rest_server_port,
                                    self.ssh_user,
