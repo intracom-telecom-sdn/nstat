@@ -254,7 +254,7 @@ def sb_active_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         ctrl_base_dir + conf['controller_clean_handler'],
         ctrl_base_dir + conf['controller_statistics_handler'],
         '',
-        ctrl_base_dir + conf['controller_persistent_handler']
+        ''
         )
     cbench_handlers_set = conf_collections_util.cbench_handlers(
         sb_gen_base_dir + conf['cbench_build_handler'],
@@ -289,7 +289,6 @@ def sb_active_scalability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
             controller_handlers_set.ctrl_stop_handler,
             controller_handlers_set.ctrl_clean_handler,
             controller_handlers_set.ctrl_statistics_handler,
-            controller_handlers_set.ctrl_change_persistent,
             cbench_handlers_set.cbench_build_handler,
             cbench_handlers_set.cbench_run_handler,
             cbench_handlers_set.cbench_clean_handler])

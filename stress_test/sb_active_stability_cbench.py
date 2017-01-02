@@ -246,6 +246,7 @@ def sb_active_stability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
                                    int(conf['cbench_node_ssh_port']),
                                    conf['cbench_node_username'],
                                    conf['cbench_node_password'])
+    """
     controller_handlers_set = conf_collections_util.controller_handlers(
         ctrl_base_dir + conf['controller_build_handler'],
         ctrl_base_dir + conf['controller_start_handler'],
@@ -255,6 +256,17 @@ def sb_active_stability_cbench_run(out_json, ctrl_base_dir, sb_gen_base_dir,
         ctrl_base_dir + conf['controller_statistics_handler'],
         '',
         ctrl_base_dir + conf['controller_persistent_handler']
+        )
+    """
+    controller_handlers_set = conf_collections_util.controller_handlers(
+        ctrl_base_dir + conf['controller_build_handler'],
+        ctrl_base_dir + conf['controller_start_handler'],
+        ctrl_base_dir + conf['controller_status_handler'],
+        ctrl_base_dir + conf['controller_stop_handler'],
+        ctrl_base_dir + conf['controller_clean_handler'],
+        ctrl_base_dir + conf['controller_statistics_handler'],
+        '',
+        ''
         )
     cbench_handlers_set = conf_collections_util.cbench_handlers(
         sb_gen_base_dir + conf['cbench_build_handler'],
