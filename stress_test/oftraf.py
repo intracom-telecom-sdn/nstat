@@ -75,8 +75,6 @@ class Oftraf:
                                                          os.pardir))
         oftraf_path = os.path.sep.join(
             [monitors_base_dir, 'monitors', 'oftraf', ''])
-        print(oftraf_path)
-        exit()
         return str(oftraf_path)
 
     def build(self):
