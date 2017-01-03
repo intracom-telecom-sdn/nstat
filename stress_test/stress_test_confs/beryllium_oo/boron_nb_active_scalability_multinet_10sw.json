@@ -41,7 +41,7 @@
 
 "controller_rebuild":true,
 "controller_cleanup":false,
-"controller_name":"ODL (Beryllium SR0)",
+"controller_name":"ODL",
 "controller_restart":true,
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
@@ -60,10 +60,10 @@
 "topology_get_switches_handler":"bin/handlers/get_switches",
 "topology_get_flows_handler":"bin/handlers/get_flows",
 
-"multinet_topo_size":[2,20,200],
+"multinet_topo_size":[10],
 "multinet_topo_type":["linear"],
 "multinet_topo_hosts_per_switch":[1],
-"multinet_topo_group_size":[2],
+"multinet_topo_group_size":[1],
 "multinet_topo_group_delay_ms":[2000],
 
 "sb_emulator_build_handler":"build.sh",
@@ -77,13 +77,13 @@
 "multinet_worker_port_list":[3333, 3333],
 
 
-"flow_workers":[1],
+"flow_workers":[5],
 "total_flows":[1000, 10000],
-"flow_operations_delay_ms":[10],
-"flow_delete_flag":false,
+"flow_operations_delay_ms":[2],
+"flow_delete_flag":true,
 "flows_per_request":10,
 
-"java_opts":["-Xmx8G","-Xms8G","-XX:+UseG1GC","-XX:MaxPermSize=8G"],
+"java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
 
 
 "plots":[
