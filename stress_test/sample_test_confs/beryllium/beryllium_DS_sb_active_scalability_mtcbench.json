@@ -1,0 +1,196 @@
+{
+
+"nstat_node_ip":"10.0.1.10",
+"nstat_node_ssh_port":22,
+"nstat_node_username":"root",
+"nstat_node_password":"root123",
+
+"sb_emulator_name":"MTCBENCH",
+"sb_emulator_node_ip":"10.0.1.12",
+"sb_emulator_node_ssh_port":22,
+"sb_emulator_node_username":"root",
+"sb_emulator_node_password":"root123",
+
+"controller_node_ip":"10.0.1.11",
+"controller_node_ssh_port":22,
+"controller_node_username":"root",
+"controller_node_password":"root123",
+
+"controller_build_handler":"build.sh",
+"controller_start_handler":"start_droptestDS.sh",
+"controller_stop_handler":"stop.sh",
+"controller_status_handler":"status.sh",
+"controller_clean_handler":"clean.sh",
+"controller_statistics_handler":"change_stats_period.py",
+"controller_persistent_handler":"change_persistence.py",
+"controller_oper_hosts_handler":"get_hosts.py",
+"controller_oper_links_handler":"get_links.py",
+"controller_oper_switches_handler":"get_switches.py",
+"controller_oper_flows_handler":"get_flows.py",
+"controller_flowmods_conf_handler":"flowmods_configure.py",
+
+"controller_logs_dir":"distribution-karaf-0.4.0-Beryllium/data/log/",
+
+"controller_rebuild":true,
+"controller_cleanup":false,
+"controller_name":"ODL",
+"controller_port":6653,
+"controller_statistics_period_ms":[5000],
+
+
+"sb_emulator_build_handler":"build.sh",
+"sb_emulator_clean_handler":"clean.sh",
+"mtcbench_run_handler":"run.sh",
+"mtcbench_cleanup":false,
+
+"mtcbench_simulated_hosts":[100],
+"mtcbench_switches_per_thread":[50],
+"mtcbench_threads":[1,2,4,8],
+"mtcbench_thread_creation_delay_ms":[15000],
+"mtcbench_delay_before_traffic_ms":[15000],
+"mtcbench_mode":"Latency",
+"mtcbench_warmup":0,
+"mtcbench_ms_per_test":20000,
+"mtcbench_internal_repeats":1,
+
+"mtcbench_rebuild":true,
+
+
+"java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
+
+"test_repeats":2,
+
+"plots":[
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"throughput_responses_sec",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"throughput [responses/sec]",
+        "plot_title":"Controller throughput for varying switches (Beryllium SR0)",
+        "plot_type":"errorbar",
+        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_filename":"throughput",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"used_memory_bytes",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"used memory [MBytes]",
+        "plot_type":"errorbar",
+        "plot_title":"controller memory usage for varying switches (Beryllium SR0)",
+        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_filename":"memory_usage",
+        "x_min":null, "x_max":null, "y_min":null, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0/(1024.0**2)",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"controller_vm_size",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"controller virtual memory size [MBytes]",
+        "plot_type":"errorbar",
+        "plot_title":"controller virtual memory size for varying switches (Beryllium SR0)",
+        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_filename":"vm_size",
+        "x_min":null, "x_max":null, "y_min":null, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0/(1024.0**2)",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"controller_num_threads",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"controller threads [N]",
+        "plot_type":"errorbar",
+        "plot_title":"controller number of threads for varying switches (Beryllium SR0)",
+        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_filename":"num_threads",
+        "x_min":null, "x_max":null, "y_min":null, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"controller_cpu_user_time",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"controller CPU user time",
+        "plot_type":"errorbar",
+        "plot_title":"controller CPU user time for varying switches (Beryllium SR0)",
+        "plot_subtitle_keys":["controller_java_xopts", "cbench_ms_per_test"],
+        "plot_filename":"controller_cpu_user_time",
+        "x_min":null, "x_max":null, "y_min":null, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"one_minute_load",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"one minute load",
+        "plot_type":"errorbar",
+        "plot_title":"one minute load (Beryllium SR0)",
+        "plot_subtitle_keys":["controller_java_xopts"],
+        "plot_filename":"one_minute_load",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"five_minute_load",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"five minute load",
+        "plot_type":"errorbar",
+        "plot_title":"five minute load (Beryllium SR0)",
+        "plot_subtitle_keys":["controller_java_xopts"],
+        "plot_filename":"five_minute_load",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    },
+    {
+        "x_axis_key":"cbench_switches",
+        "y_axis_key":"fifteen_minute_load",
+        "z_axis_key":null,
+        "x_axis_label":"number of network switches [N]",
+        "y_axis_label":"fifteen minute load",
+        "plot_type":"errorbar",
+        "plot_title":"fifteen minute load (Beryllium SR0)",
+        "plot_subtitle_keys":["controller_java_xopts"],
+        "plot_filename":"fifteen_minute_load",
+        "x_min":null, "x_max":null, "y_min":0, "y_max":null,
+        "x_axis_factor":"1.0",
+        "y_axis_factor":"1.0",
+        "x_axis_scale": "linear",
+        "y_axis_scale": "linear"
+    }
+
+
+]
+
+}
