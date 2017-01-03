@@ -37,7 +37,6 @@ class Controller:
         self.ssh_user = test_config['controller_node_username']
         self.ssh_pass = test_config['controller_node_password']
 
-        self.need_rebuild = test_config['controller_rebuild']
         self.need_cleanup = test_config['controller_cleanup']
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
