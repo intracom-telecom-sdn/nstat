@@ -30,7 +30,6 @@
 
 "controller_logs_dir":"./distribution-karaf-0.3.3-Lithium-SR3/data/log/",
 
-"controller_rebuild":true,
 "controller_cleanup":false,
 "controller_name":"ODL",
 "controller_port":6653,
@@ -50,9 +49,6 @@
 "mtcbench_warmup":0,
 "mtcbench_ms_per_test":2000,
 "mtcbench_internal_repeats":100,
-
-"mtcbench_rebuild":true,
-
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
 

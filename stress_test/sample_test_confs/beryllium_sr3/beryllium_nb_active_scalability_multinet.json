@@ -39,7 +39,6 @@
 
 "controller_logs_dir":"distribution-karaf-0.4.3-Beryllium-SR3/data/log/",
 
-"controller_rebuild":true,
 "controller_cleanup":false,
 "controller_name":"ODL",
 "controller_restart":true,

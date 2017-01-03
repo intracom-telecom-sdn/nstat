@@ -30,7 +30,6 @@
 
 "controller_logs_dir":"distribution-karaf-0.5.0-Boron/data/log/",
 
-"controller_rebuild":true,
 "controller_cleanup":false,
 "controller_name":"ODL",
 "controller_port":6653,
