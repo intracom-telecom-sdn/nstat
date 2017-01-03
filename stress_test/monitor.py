@@ -521,11 +521,7 @@ class Multinet(Monitor):
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
-        print('*****************global_sample_id******************')
-        print(self.global_sample_id)
         self.global_sample_id += 1
-        print('*****************global_sample_id******************')
-        print(self.global_sample_id)
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
             self.emulator.topo_size * len(self.emulator.workers_ips)
