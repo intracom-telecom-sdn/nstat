@@ -236,8 +236,6 @@ class MTCBench(SBEmu):
         self.ms_per_test = test_config['mtcbench_ms_per_test']
         self.internal_repeats = test_config['mtcbench_internal_repeats']
 
-        self.rebuild = test_config['mtcbench_rebuild']
-
     def get_topo_bootup_ms(self):
         """Returns the total topology bootup time in ms.
         """

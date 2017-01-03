@@ -628,6 +628,8 @@ class TestRun:
                         self.mon.monitor_run(
                             reference_results=reference_results,
                             sample_id=sample_id)
+                    print("************RESULTS**************")
+                    print(results)
                     self.total_samples += [results]
 
             # Stop/clean nodes

@@ -469,7 +469,8 @@ class Multinet(Monitor):
                     'discovered {1} switches.'.format(discovery_deadline,
                                                       discovered_switches))
                 discovery_time = time.time() - t_start - discovery_deadline
-                results['multinet_size'] = topology_bootup_time_ms
+                results['multinet_size'] = \
+                    self.emulator.topo_size * len(self.emulator.workers_ips)
                 results['bootup_time_secs'] = discovery_time
                 results['discovered_switches'] = discovered_switches
                 results['max_discovered_switches'] = max_discovered_switches
@@ -500,7 +501,8 @@ class Multinet(Monitor):
                         '[monitor_thread_idle] {0} switches found in '
                         '{1} seconds'.
                         format(discovered_switches, delta_t))
-                    results['multinet_size'] = topology_bootup_time_ms
+                    results['multinet_size'] = \
+                        self.emulator.topo_size * len(self.emulator.workers_ips)
                     results['bootup_time_secs'] = delta_t
                     results['discovered_switches'] = discovered_switches
                     results['max_discovered_switches'] = \

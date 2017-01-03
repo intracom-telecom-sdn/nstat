@@ -37,7 +37,6 @@ class Controller:
         self.ssh_user = test_config['controller_node_username']
         self.ssh_pass = test_config['controller_node_password']
 
-        self.need_rebuild = test_config['controller_rebuild']
         self.need_cleanup = test_config['controller_cleanup']
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
@@ -538,9 +537,6 @@ class ODL(Controller):
                            test_config['controller_oper_links_handler'])
         self.oper_flows = (ctrl_base_dir +
                            test_config['controller_oper_flows_handler'])
-
-        if 'controller_restart' in test_config:
-            self.restart = test_config['controller_restart']
 
     def generate_xmls(self):
         """Starts and then stops the controller to trigger the generation of
