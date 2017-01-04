@@ -623,12 +623,17 @@ class TestRun:
 
             for sample_id in list(range(json_conf['number_of_samples'] + 1)):
                 if sample_id > 0:
+                    print("global_sample_id at the loop BEGINNING- TEST RUN")
+                    print(global_sample_id)
                     self.mon.global_sample_id = global_sample_id
                     results, reference_results = \
                         self.mon.monitor_run(
                             reference_results=reference_results,
                             sample_id=sample_id)
                     global_sample_id = results['global_sample_id']
+                    print(global_sample_id)
+                    print('global_sample_id at the END ofloop iteration'
+                          '- TEST RUN')
                     self.total_samples += [results]
 
             # Stop/clean nodes
