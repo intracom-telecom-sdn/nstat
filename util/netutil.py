@@ -322,6 +322,7 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
 
         try:
             ssh = paramiko.SSHClient()
+            #ssh.load_system_host_keys()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh",
                                                                "known_hosts")))
@@ -330,6 +331,7 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
                         password=password)
             logging.info('[utils.netutils.ssh_connect_or_return2] '
                          'connected to {0} '.format(ip))
+            print('Connected OK')
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
@@ -518,3 +520,5 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     return (channel_exit_status, channel_output)
 
 
+if __name__ == '__main__':
+    ssh_connect_or_return2('10.0.1.11',22, 'root', 'root123', 10)
