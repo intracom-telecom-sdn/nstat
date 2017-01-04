@@ -475,9 +475,8 @@ class TestRun:
             for error in errors:
                 logging.error('{0} {1}'.format(self.test_type, error))
             logging.exception('')
-        return self.total_samples
 
-        '''finally:
+        finally:
             try:
                 logging.info('[{0}] Clean Multinet Monitor'.
                              format(self.test_type))
@@ -499,7 +498,7 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
-            '''
+        return self.total_samples
 
     def sb_idle_stability_multinet_run(self,
                                        json_conf,
