@@ -12,6 +12,7 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import stress_test.test_run
 import sys
+import time
 
 
 class TestType:
@@ -178,6 +179,9 @@ class TestType:
                     args.json_output,
                     args.output_dir)
             try:
+                print('************self.total_samples**************')
+                print(self.total_samples)
+                time.sleep(1)
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
                 report_spec = \

@@ -225,6 +225,8 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
+            return self.total_samples
+
 
     def sb_idle_scalability_mtcbench_run(self,
                                        json_conf,
@@ -473,6 +475,8 @@ class TestRun:
             for error in errors:
                 logging.error('{0} {1}'.format(self.test_type, error))
             logging.exception('')
+        return self.total_samples
+
         '''finally:
             try:
                 logging.info('[{0}] Clean Multinet Monitor'.
