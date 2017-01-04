@@ -12,7 +12,7 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import stress_test.test_run
 import sys
-
+import time
 
 class TestType:
 
@@ -24,6 +24,10 @@ class TestType:
         self.test_report_template = \
             stress_test.report_spec_templates.TestReport(self.test_type,
                                                          args.json_config)
+        print('***************args.bypass_test***************')
+        print(args.bypass_test)
+        time.sleep(100)
+        exit()
 
     def load_test_conf(self, args):
         """ Loading test configuration for NSTAT experiment. Parsing
