@@ -174,10 +174,11 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.sb_idle_scalability_multinet_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
+                self.total_samples = \
+                    nstat_test_run.sb_idle_scalability_multinet_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
             try:
                 print('************self.total_samples**************')
                 print(self.total_samples)
