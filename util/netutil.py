@@ -331,6 +331,7 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
                         password=password)
             logging.info('[utils.netutils.ssh_connect_or_return2] '
                          'connected to {0} '.format(ip))
+            print('Connected OK')
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
