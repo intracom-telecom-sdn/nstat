@@ -179,21 +179,21 @@ class TestType:
                         json_conf,
                         args.json_output,
                         args.output_dir)
-            try:
-                print('************self.total_samples**************')
-                print(self.total_samples)
-                time.sleep(1)
-                logging.info('[{0}] Generating results report.'.
-                             format(self.test_type))
-                report_spec = \
-                    self.test_report_template.sb_idle_scalability_multinet(
-                        self.args.json_output)
-                report_gen = stress_test.report_gen.ReportGen(
-                    self.args, self.json_conf, report_spec, self.total_samples)
-                report_gen.results_report()
-            except:
-                logging.error('[{0}] Fail to generate test report.'.
-                              format(self.test_type))
+            # try:
+            print('************self.total_samples**************')
+            print(self.total_samples)
+            time.sleep(1)
+            logging.info('[{0}] Generating results report.'.
+                         format(self.test_type))
+            report_spec = \
+                self.test_report_template.sb_idle_scalability_multinet(
+                    self.args.json_output)
+            report_gen = stress_test.report_gen.ReportGen(
+                self.args, self.json_conf, report_spec, self.total_samples)
+            report_gen.results_report()
+            #except:
+            #    logging.error('[{0}] Fail to generate test report.'.
+            #                  format(self.test_type))
 
         elif nstat_test_type_run == 'sb_idle_stability_multinet':
             if not args.bypass_test:
