@@ -628,7 +628,7 @@ class TestRun:
                         self.mon.monitor_run(
                             reference_results=reference_results,
                             sample_id=sample_id)
-                    global_sample_id = results['global_sample_id']
+                    global_sample_id = results['global_sample_id'] + 1
                     self.total_samples += [results]
 
             # Stop/clean nodes

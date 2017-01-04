@@ -521,7 +521,6 @@ class Multinet(Monitor):
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
-        self.global_sample_id += 1
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
             self.emulator.topo_size * len(self.emulator.workers_ips)
@@ -562,7 +561,6 @@ class Multinet(Monitor):
             (abs(float(oftraf_monitor_results['tcp_of_in_traffic'][1])) -
              reference_results['tcp_of_in_traffic'][1]) / traffic_gen_ms
         results['sample_id'] = sample_id
-
         reference_results = oftraf_monitor_results
         self.result_queue.put({"current_sample": results,
                                "previous_sample": reference_results})
