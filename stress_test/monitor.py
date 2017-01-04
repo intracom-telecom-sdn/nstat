@@ -520,8 +520,6 @@ class Multinet(Monitor):
         oftraf_mon = Oftraf(self.controller, self.oftraf_node)
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
         results = self.system_results()
-        print("global_sample_id at the BEGINNING- MONITOR THREAD")
-        print(self.global_sample_id)
         results['global_sample_id'] = self.global_sample_id
         results['multinet_workers'] = len(self.emulator.workers_ips)
         results['multinet_size'] = \
