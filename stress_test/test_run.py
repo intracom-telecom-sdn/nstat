@@ -227,7 +227,6 @@ class TestRun:
                               format(self.test_type))
             return self.total_samples
 
-
     def sb_idle_scalability_mtcbench_run(self,
                                        json_conf,
                                        json_output,
@@ -291,6 +290,7 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
+            return self.total_samples
 
     def sb_active_scalability_multinet_run(self,
                                            json_conf,
@@ -406,6 +406,7 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
+            return self.total_samples
 
     def sb_idle_scalability_multinet_run(self,
                                          json_conf,
@@ -618,6 +619,7 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
+            return self.total_samples
 
     def nb_active_scalability_multinet_run(self,
                                            json_conf,
@@ -790,4 +792,5 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
+            return self.total_samples
 
