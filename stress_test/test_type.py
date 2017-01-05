@@ -8,16 +8,22 @@
 
 import json
 import logging
+import stress_test.report_gen
+import stress_test.report_spec_templates
 import stress_test.test_run
 import sys
-
+import time
 
 class TestType:
 
     def __init__(self, args):
         """
         """
-        self.nstat_test_type = args.test_type
+        self.test_type = args.test_type
+        self.total_samples = None
+        self.test_report_template = \
+            stress_test.report_spec_templates.TestReport(self.test_type,
+                                                         args.json_config)
 
     def load_test_conf(self, args):
         """ Loading test configuration for NSTAT experiment. Parsing
@@ -73,74 +79,163 @@ class TestType:
             json_conf['sb_emulator_name'].lower()
 
         # Create instance of TestRun and initialize controller
-        nstat_test_run = stress_test.test_run.TestRun(args, json_conf,
-                                                      nstat_test_type_run)
+        if not args.bypass_test:
+            nstat_test_run = stress_test.test_run.TestRun(args, json_conf,
+                                                          nstat_test_type_run)
 
         # Run the test
         if nstat_test_type_run == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-
-                nstat_test_run.sb_active_scalability_mtcbench_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
+                self.total_samples = \
+                    nstat_test_run.sb_active_scalability_mtcbench_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_active_scalability_mtcbench(
+                        self.args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    self.args, self.json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
 
         elif nstat_test_type_run == 'sb_active_stability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test:{0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.sb_active_stability_mtcbench_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
+                self.total_samples = \
+                    nstat_test_run.sb_active_stability_mtcbench_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_active_stability_mtcbench(
+                        self.args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    self.args, self.json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
 
         elif nstat_test_type_run == 'sb_active_scalability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.sb_active_scalability_multinet_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
+                self.total_samples = \
+                    nstat_test_run.sb_active_scalability_multinet_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_active_scalability_multinet(
+                        self.args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    self.args, self.json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
 
         elif nstat_test_type_run == 'sb_idle_scalability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.sb_idle_scalability_mtcbench_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
+                self.total_samples = \
+                    nstat_test_run.sb_idle_scalability_mtcbench_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_idle_scalability_mtcbench(
+                        self.args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    self.args, self.json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
 
         elif nstat_test_type_run == 'sb_idle_scalability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.sb_idle_scalability_multinet_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
-
+                self.total_samples = \
+                    nstat_test_run.sb_idle_scalability_multinet_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_idle_scalability_multinet(
+                        args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    args, json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
         elif nstat_test_type_run == 'sb_idle_stability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.sb_idle_stability_multinet_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
+                self.total_samples = \
+                    nstat_test_run.sb_idle_stability_multinet_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.sb_idle_stability_multinet(
+                        self.args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    self.args, self.json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
 
         elif nstat_test_type_run == 'nb_active_scalability_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                nstat_test_run.nb_active_scalability_multinet_run(
-                    json_conf,
-                    args.json_output,
-                    args.output_dir)
-
+                self.total_samples = \
+                    nstat_test_run.nb_active_scalability_multinet_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.nb_active_scalability_multinet_run(
+                        self.args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    self.args, self.json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
         else:
             logging.error('[nstat_orchestrator] not valid test configuration')
             exit(0)

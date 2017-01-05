@@ -16,7 +16,7 @@ import util.plot_json
 
 class ReportGen:
 
-    def __init__(self, args, test_config_json, total_samples, report_spec):
+    def __init__(self, args, test_config_json, report_spec, total_samples):
         """
         """
         self.test_config_json = test_config_json
@@ -206,10 +206,11 @@ class ReportGen:
         """Creates a complete report of the test. This is the main method of
         this class.
         """
-        try:
-            self.generate_json_results()
-        except:
-            self.__error_handling('Error in generation of JSON results.')
+        if self.total_samples is not None:
+            try:
+                self.generate_json_results()
+            except:
+                self.__error_handling('Error in generation of JSON results.')
         try:
             self.generate_plots()
         except:
