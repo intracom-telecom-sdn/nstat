@@ -80,6 +80,8 @@ else
     exit 1
 fi
 
+exec_client_command "feature:install odl-restconf-all"
+echo "odl-restconf-all feature was installed successfully"
 
 exec_client_command "feature:install odl-openflowplugin-app-table-miss-enforcer"
 echo "odl-openflowplugin-app-table-miss-enforcer feature was installed successfully"
