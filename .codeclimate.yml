@@ -3,6 +3,12 @@ languages:
   JavaScript: false
   Python: true
   PHP: false
+engines:
+ radon:
+  enabled: true
+ratings:
+  paths:
+    - "**.py"
 exclude_paths:
 - "docs/*"
 - "jenkins_jobs/*"
