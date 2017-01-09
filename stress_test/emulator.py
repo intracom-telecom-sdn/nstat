@@ -101,12 +101,12 @@ class SBEmu:
         try:
             try:
                 if self._ssh_conn is None:
-                    self._ssh_conn = util.netutil.ssh_connect_or_return2(
+                    self._ssh_conn = util.netutil.ssh_connect_or_return(
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
                 else:
                     # Return a new client ssh object for the emulator node
-                    return util.netutil.ssh_connect_or_return2(
+                    return util.netutil.ssh_connect_or_return(
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
             except:
@@ -131,7 +131,7 @@ class SBEmu:
                         '{0} build handler does not exist'.
                         format('[SB-Emulator.build_handler]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.build_hnd)
                     exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -169,7 +169,7 @@ class SBEmu:
                         '{0} clean handler does not exist'.
                         format('[SB-Emulator.clean_handler]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.clean_hnd)
                     exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -288,7 +288,7 @@ class MTCBench(SBEmu):
                     raise(IOError(
                         '{0} run handler does not exist'.format(prefix)))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.run_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -514,7 +514,7 @@ class Multinet(SBEmu):
                     raise(IOError(
                         '[Multinet] Deploy handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.deploy_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -558,7 +558,7 @@ class Multinet(SBEmu):
                     raise(IOError(
                         '[Multinet] Get_switches handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.get_switches_hnd)
                 if new_ssh_conn is not None:
@@ -610,7 +610,7 @@ class Multinet(SBEmu):
                     raise(IOError(
                         '[Multinet] Get_flows handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.get_flows_hnd)
                 if new_ssh_conn is not None:
@@ -659,7 +659,7 @@ class Multinet(SBEmu):
                     raise(IOError(
                         '[Multinet] Init_topos handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.init_topos_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -700,7 +700,7 @@ class Multinet(SBEmu):
                     raise(IOError(
                         '[Multinet] Start_topos handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.start_topos_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -741,7 +741,7 @@ class Multinet(SBEmu):
                     raise(IOError(
                         '[Multinet] Stop_topos handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.stop_topos_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -781,7 +781,7 @@ class Multinet(SBEmu):
                     raise(IOError(
                         '[Multinet] Cleanup handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.cleanup_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -822,7 +822,7 @@ class Multinet(SBEmu):
                     raise(IOError('[Multinet] Traffic_generator handler '
                                   'does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.traffic_gen_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
