@@ -1,7 +1,6 @@
 #! /usr/bin/env python3.4
 
-"""This handler changes the rate of statistics collection from the topology
-switches
+"""Handler changing the rate of statistics collection from the topology switches
 """
 
 import xml_utils

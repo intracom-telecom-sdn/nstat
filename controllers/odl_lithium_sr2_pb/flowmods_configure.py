@@ -1,6 +1,6 @@
 #! /usr/bin/env python3.4
 
-"""This handler configures the controller to respond with mac-to-mac FlowMods
+"""Handler configuring the controller to respond with mac-to-mac FlowMods
 to PacketINs with ARP payload messages. It also configures the idle and hard
 timeout of these FlowMods to have the minimum value.
 """
@@ -8,8 +8,7 @@ timeout of these FlowMods to have the minimum value.
 import xml_utils
 import os
 
-CONTROLLER_DIR_NAME = 'distribution-karaf-0.2.3-Helium-SR3'
-
+CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.2-Lithium-SR2'
 
 def change_flow_timeouts():
     """ Set the minimum idle and hard flow timeouts in the controller's
@@ -27,7 +26,6 @@ def change_flow_timeouts():
                              '1')
     xml_utils.manipulate_xml(input_file, input_file, string_to_find_2,
                              '1')
-
 
 def change_proactive_flow_mod():
     """ Unset proactive flow mod, in controller's configuration.

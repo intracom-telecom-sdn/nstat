@@ -1,14 +1,12 @@
 #! /usr/bin/env python3.4
 
-"""This handler disables the percistence mode in the configuration of the
-controller.
+"""Handler disabling the percistence mode in the configuration of the controller.
 """
 
 import sys
 import os
 
-CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.2-Lithium-SR2'
-
+CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.3-Lithium-SR3'
 
 def change_persistence():
     """Change the persistence attribute to false. The controller will not
