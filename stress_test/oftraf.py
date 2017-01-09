@@ -99,7 +99,7 @@ class Oftraf:
                         '{0} build handler does not exist'.
                         format('[nb_generator.build]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         build_hnd)
                 exit_status, cmd_output = \
@@ -141,7 +141,7 @@ class Oftraf:
                         '{0} clean handler does not exist'.
                         format('[nb_generator.build]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         clean_hnd)
                 exit_status, cmd_output = \
@@ -185,7 +185,7 @@ class Oftraf:
                         '{0} start handler does not exist'.
                         format('[nb_generator.build]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         start_hnd)
                 exit_status, cmd_output = \
@@ -232,7 +232,7 @@ class Oftraf:
                         '{0} stop handler does not exist'.
                         format('[nb_generator.build]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         stop_hnd)
                 exit_status, cmd_output = \

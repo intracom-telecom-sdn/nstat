@@ -6,7 +6,6 @@
 
 """ General network utilities """
 
-import collections
 import gevent
 import gevent.queue
 import logging
@@ -17,7 +16,8 @@ import time
 import errno
 
 
-def copy_dir_local_to_remote(connection, local_path, remote_path):
+def copy_dir_local_to_remote(ip, ssh_port, username, password,
+                             local_path, remote_path):
     """Copy a local directory on a remote machine.
 
     :param connection: A named tuple with all the connection information.
@@ -34,7 +34,8 @@ def copy_dir_local_to_remote(connection, local_path, remote_path):
 
     if local_path.endswith('/'):
         local_path = local_path[:-1]
-    (sftp, transport_layer) = ssh_connection_open(connection)
+    (sftp, transport_layer) = \
+        ssh_connection_open(ip, int(ssh_port), username, password)
     os.chdir(os.path.split(local_path)[0])
     parent = os.path.split(local_path)[1]
 
@@ -52,7 +53,8 @@ def copy_dir_local_to_remote(connection, local_path, remote_path):
     ssh_connection_close(sftp, transport_layer)
 
 
-def copy_dir_remote_to_local(connection, remote_path, local_path):
+def copy_dir_remote_to_local(ip, ssh_port, username, password,
+                             remote_path, local_path):
     """Copy recursively remote directories (Copies all files and other
     sub-directories).
 
@@ -64,7 +66,8 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
     :type remote_path: str
     :type local_path: str
     """
-    (sftp, transport_layer) = ssh_connection_open(connection)
+    (sftp, transport_layer) = ssh_connection_open(ip, int(ssh_port),
+                                                  username, password)
     if not isdir(remote_path, sftp):
         ssh_connection_close(sftp, transport_layer)
         raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
@@ -80,52 +83,15 @@ def copy_dir_remote_to_local(connection, remote_path, local_path):
             if isdir(remote_filepath, sftp):
                 if not os.path.exists(os.path.join(local_path, file_item)):
                     os.makedirs(os.path.join(local_path, file_item))
-                copy_dir_remote_to_local(connection, remote_filepath,
+                copy_dir_remote_to_local(ip, ssh_port, username, password,
+                                         remote_filepath,
                                          os.path.join(local_path, file_item))
             else:
                 sftp.get(remote_filepath, os.path.join(local_path, file_item))
     ssh_connection_close(sftp, transport_layer)
 
 
-def copy_dir_remote_to_local2(ip, ssh_port, username, password,
-                              remote_path, local_path):
-    """Copy recursively remote directories (Copies all files and other
-    sub-directories).
-
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
-    :param remote_path: full remote path we want to copy
-    :param local_path: full local path we want to copy
-    :type connection: namedtuple<>
-    :type remote_path: str
-    :type local_path: str
-    """
-    (sftp, transport_layer) = ssh_connection_open2(ip, ssh_port,
-                                                   username, password)
-    if not isdir(remote_path, sftp):
-        ssh_connection_close(sftp, transport_layer)
-        raise(IOError('[copy_dir_remote_to_local] The remote path {0} does '
-                      'not exist.'.format(remote_path)))
-
-    if not os.path.exists(local_path):
-        os.makedirs(local_path)
-    files = sftp.listdir(path=remote_path)
-
-    for file_item in files:
-        if file_item is not None:
-            remote_filepath = os.path.join(remote_path, file_item)
-            if isdir(remote_filepath, sftp):
-                if not os.path.exists(os.path.join(local_path, file_item)):
-                    os.makedirs(os.path.join(local_path, file_item))
-                copy_dir_remote_to_local2(ip, ssh_port, username, password,
-                                          remote_filepath,
-                                          os.path.join(local_path, file_item))
-            else:
-                sftp.get(remote_filepath, os.path.join(local_path, file_item))
-    ssh_connection_close(sftp, transport_layer)
-
-
-def create_dir_remote(connection, remote_path):
+def create_dir_remote(ip, ssh_port, username, password, remote_path):
     """Opens an ssh connection to a remote machine and creates a new directory.
 
     :param connection: named tuple with connection information: ['name', 'ip',
@@ -135,7 +101,8 @@ def create_dir_remote(connection, remote_path):
     :type remote_path: str
     """
 
-    (sftp, transport_layer) = ssh_connection_open(connection)
+    (sftp, transport_layer) = \
+        ssh_connection_open(ip, int(ssh_port), username, password)
     try:
         # Test if remote_path exists
         sftp.chdir(remote_path)
@@ -163,7 +130,7 @@ def isdir(path, sftp):
         return False
 
 
-def make_remote_file_executable(connection, remote_file):
+def make_remote_file_executable(ip, port, username, password, remote_file):
     """Makes the remote file executable.
 
     :param connection: named tuple with connection information: ['name', 'ip',
@@ -172,22 +139,8 @@ def make_remote_file_executable(connection, remote_file):
     :type connection: namedtuple<>
     :type remote_file: str
     """
-    (sftp, transport_layer) = ssh_connection_open(connection)
-    sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-    ssh_connection_close(sftp, transport_layer)
-
-
-def make_remote_file_executable2(ip, port, username, password, remote_file):
-    """Makes the remote file executable.
-
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
-    :param remote_file: remote file to make executable
-    :type connection: namedtuple<>
-    :type remote_file: str
-    """
-    (sftp, transport_layer) = ssh_connection_open2(ip, port, username,
-                                                   password)
+    (sftp, transport_layer) = ssh_connection_open(ip, int(port),
+                                                  username, password)
     try:
         sftp.chmod(remote_file, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
     except:
@@ -196,7 +149,7 @@ def make_remote_file_executable2(ip, port, username, password, remote_file):
     ssh_connection_close(sftp, transport_layer)
 
 
-def remove_remote_directory(connection, path):
+def remove_remote_directory(ip, ssh_port, username, password, path):
     """Removes recursively remote directories (removes all files and
     other sub-directories).
 
@@ -207,13 +160,14 @@ def remove_remote_directory(connection, path):
     :type path: str
     """
 
-    (sftp, transport_layer) = ssh_connection_open(connection)
+    (sftp, transport_layer) = \
+        ssh_connection_open(ip, int(ssh_port), username, password)
     files = sftp.listdir(path=path)
 
     for file_item in files:
         filepath = os.path.join(path, file_item)
         if isdir(filepath, sftp):
-            remove_remote_directory(connection, filepath)
+            remove_remote_directory(ip, ssh_port, username, password, filepath)
         else:
             sftp.remove(filepath)
 
@@ -238,7 +192,7 @@ def isfile(ip, port, username, password, file_list):
     :type file_list: list<str>
     """
 
-    sftp = ssh_connection_open2(ip, port, username, password)[0]
+    sftp = ssh_connection_open(ip, int(port), username, password)[0]
     for filename in file_list:
         try:
             sftp.stat(filename)
@@ -250,51 +204,7 @@ def isfile(ip, port, username, password, file_list):
             return True
 
 
-def ssh_connect_or_return(connection, maxretries):
-    """Opens a connection and returns a connection object. If it fails to open
-    a connection after a specified number of tries, it returns -1.
-
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
-    :param maxretries: maximum number of times to connect
-    :returns: an ssh connection handle or -1 on failure
-    :rtype: paramiko.SSHClient (or -1 when failure)
-    :type connection: namedtuple<>
-    :type maxretries: int
-    """
-
-    retries = 1
-
-    while retries <= maxretries:
-        logging.info(
-            '[utils.netutils.ssh_connect_or_return] '
-            'Trying to connect to {0}:{1} ({2}/{3})'.
-            format(connection.ip, connection.ssh_port, retries, maxretries))
-
-        try:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname=connection.ip, port=connection.ssh_port,
-                        username=connection.username,
-                        password=connection.password)
-            logging.info('[utils.netutils.ssh_connect_or_return] '
-                         'connected to {0} '.
-                         format(connection.ip))
-            return ssh
-        except paramiko.AuthenticationException:
-            logging.error(
-                '[utils.netutils.ssh_connect_or_return] authentication '
-                'failed when connecting to {0}'.
-                format(connection.ip))
-
-        retries += 1
-        time.sleep(2)
-    # If we exit while without ssh object been returned, then return -1
-    raise Exception('[netutil] could not connect to {0}.'
-                    'Returning'.format(connection.ip))
-
-
-def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
+def ssh_connect_or_return(ip, ssh_port, username, password, maxretries):
     """Opens a connection and returns a connection object. If it fails to open
     a connection after a specified number of tries, it returns -1.
 
@@ -316,26 +226,25 @@ def ssh_connect_or_return2(ip, ssh_port, username, password, maxretries):
 
     while retries <= maxretries:
         logging.info(
-            '[utils.netutils.ssh_connect_or_return2] Trying to '
+            '[utils.netutils.ssh_connect_or_return] Trying to '
             'connect to {0}:{1} ({2}/{3})'.
             format(ip, ssh_port, retries, maxretries))
 
         try:
             ssh = paramiko.SSHClient()
-            #ssh.load_system_host_keys()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh",
                                                                "known_hosts")))
             ssh.connect(hostname=ip, port=ssh_port,
                         username=username,
                         password=password)
-            logging.info('[utils.netutils.ssh_connect_or_return2] '
+            logging.info('[utils.netutils.ssh_connect_or_return] '
                          'connected to {0} '.format(ip))
             print('Connected OK')
             return ssh
         except paramiko.AuthenticationException:
             logging.error(
-                '[utils.netutils.ssh_connect_or_return2] authentication '
+                '[utils.netutils.ssh_connect_or_return] authentication '
                 'failed when connecting to {0}'.
                 format(ip))
 
@@ -361,28 +270,7 @@ def ssh_connection_close(sftp, transport_layer):
         pass
 
 
-def ssh_connection_open(connection):
-    """ Opens an ssh connection on a remote node
-
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
-    :returns sftp, transport_layer
-    :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
-    :type connection: collections.namedtuple
-    """
-    try:
-        transport_layer = paramiko.Transport((connection.ip,
-                                              connection.ssh_port))
-        transport_layer.connect(username=connection.username,
-                                password=connection.password)
-        sftp = paramiko.SFTPClient.from_transport(transport_layer)
-
-        return (sftp, transport_layer)
-    except:
-        logging.error('[ssh_connection_open] error: check connection object')
-
-
-def ssh_connection_open2(ip, ssh_port, username, password):
+def ssh_connection_open(ip, ssh_port, username, password):
     """ Opens an ssh connection on a remote node
 
     :param ip: ip address of the remote host
@@ -425,13 +313,13 @@ def ssh_copy_file_to_target(ip, ssh_port, username, password, local_file,
     :type local_file: str
     :type remote_file: str
     """
-    (sftp, transport_layer) = ssh_connection_open2(ip, int(ssh_port), username,
-                                                   password)
+    (sftp, transport_layer) = ssh_connection_open(ip, int(ssh_port), username,
+                                                  password)
     sftp.put(local_file, remote_file)
     ssh_connection_close(sftp, transport_layer)
 
 
-def ssh_delete_file_if_exists(connection, remote_file):
+def ssh_delete_file_if_exists(ip, ssh_port, username, password, remote_file):
     """Deletes the file on a remote machine, if exists
 
     :param connection: named tuple with connection information: ['name', 'ip',
@@ -441,7 +329,8 @@ def ssh_delete_file_if_exists(connection, remote_file):
     :type remote_file: str
     """
 
-    (sftp, transport_layer) = ssh_connection_open(connection)
+    (sftp, transport_layer) = \
+        ssh_connection_open(ip, int(ssh_port), username, password)
     try:
         sftp.remove(remote_file)
         logging.info('[delete_file_if_exists]: file {0} removed'.
@@ -518,7 +407,3 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel_exit_status = channel.recv_exit_status()
     channel.close()
     return (channel_exit_status, channel_output)
-
-
-if __name__ == '__main__':
-    ssh_connect_or_return2('10.0.1.11',22, 'root', 'root123', 10)
