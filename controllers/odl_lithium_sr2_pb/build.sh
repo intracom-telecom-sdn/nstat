@@ -16,7 +16,6 @@ cd $SCRIPT_DIR
 ODL_ZIP_FILE="distribution-karaf-0.3.2-Lithium-SR2.zip"
 ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.3.2-Lithium-SR2/"
 
-
 wget -nc "$ODL_NEXUS_LOCATION$ODL_ZIP_FILE" -P /opt/
 if [ $? -ne 0 ]; then
     exit 1

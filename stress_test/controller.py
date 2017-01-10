@@ -123,12 +123,12 @@ class Controller:
         try:
             try:
                 if self._ssh_conn is None:
-                    self._ssh_conn = util.netutil.ssh_connect_or_return2(
+                    self._ssh_conn = util.netutil.ssh_connect_or_return(
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
                 else:
                     # Return a new client ssh object for the controller node
-                    return util.netutil.ssh_connect_or_return2(
+                    return util.netutil.ssh_connect_or_return(
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
             except:
@@ -154,7 +154,7 @@ class Controller:
                         '{0} clean handler does not exist'.
                         format('[controller.cleanup]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.clean_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -195,7 +195,7 @@ class Controller:
                         '{0} status handler does not exist'.
                         format('[controller.status]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.status_hnd)
                 q = queue.Queue()
@@ -276,7 +276,7 @@ class Controller:
                         '{0} start handler does not exist'.
                         format('[controller.stop]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.start_hnd)
                 if self._ssh_conn is None:
@@ -328,7 +328,7 @@ class Controller:
                         '{0} stop handler does not exist'.
                         format('[controller.stop]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.stop_hnd)
                 if self.check_status() == '1':
@@ -375,7 +375,7 @@ class Controller:
                         '{0} build handler does not exist'.
                         format('[controller.build]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.build_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -571,7 +571,7 @@ class ODL(Controller):
                         '{0} disable_persistence handler does not exist'.
                         format('[controller.disable_persistence]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.persistence_hnd)
                 util.netutil.ssh_run_command(self._ssh_conn,
@@ -600,7 +600,7 @@ class ODL(Controller):
                         '{0} statistics handler does not exist'.
                         format('[controller.change_stats]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.statistics_hnd)
                 util.netutil.ssh_run_command(
@@ -633,7 +633,7 @@ class ODL(Controller):
                         '{0} Configure for FlowMods handler does not exist'.
                         format('[controller.flowmods_config]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.flowmods_conf_hnd)
                 util.netutil.ssh_run_command(
@@ -669,7 +669,7 @@ class ODL(Controller):
                         '{0} get_oper_hosts handler does not exist'.
                         format('[controller.get_oper_hosts]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.oper_hosts)
                 if new_ssh_conn is not None:
@@ -715,7 +715,7 @@ class ODL(Controller):
                         '{0} get_oper_switches handler does not exist'.
                         format('[controller.get_oper_switches]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.oper_switches)
                 if new_ssh_conn is not None:
@@ -761,7 +761,7 @@ class ODL(Controller):
                         '{0} get_oper_links handler does not exist'.
                         format('[controller.get_oper_links]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.oper_links)
                 if new_ssh_conn is not None:
@@ -807,7 +807,7 @@ class ODL(Controller):
                         '{0} get_oper_flows handler does not exist'.
                         format('[controller.get_oper_links]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.oper_flows)
                 if new_ssh_conn is not None:

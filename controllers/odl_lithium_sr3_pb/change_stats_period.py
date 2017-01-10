@@ -1,7 +1,6 @@
 #! /usr/bin/env python3.4
 
-"""This handler changes the rate of statistics collection from the topology
-switches
+"""Handler changing the rate of statistics collection from the topology switches
 """
 
 import xml_utils
@@ -10,10 +9,8 @@ import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.3.3-Lithium-SR3'
 
-
 def change_stats_period():
-    """
-    Takes as command line argument the new interval of statistics period we
+    """Takes as command line argument the new interval of statistics period we
     want to set in the configuration file of the controller and writes it in
     this file.
     """
@@ -27,5 +24,4 @@ def change_stats_period():
 
 
 if __name__ == '__main__':
-
     change_stats_period()

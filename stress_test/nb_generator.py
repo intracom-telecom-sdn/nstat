@@ -107,12 +107,12 @@ class NBgen:
         try:
             try:
                 if self._ssh_conn is None:
-                    self._ssh_conn = util.netutil.ssh_connect_or_return2(
+                    self._ssh_conn = util.netutil.ssh_connect_or_return(
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
                 else:
                     # Return a new client ssh object for the nb-generator node
-                    return util.netutil.ssh_connect_or_return2(
+                    return util.netutil.ssh_connect_or_return(
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
             except:
@@ -137,7 +137,7 @@ class NBgen:
                         '{0} build handler does not exist'.
                         format('[nb_generator.build]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.build_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -178,7 +178,7 @@ class NBgen:
                         '{0} clean handler does not exist'.
                         format('[nb_generator.clean]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.clean_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
@@ -222,7 +222,7 @@ class NBgen:
                         '{0} run handler does not exist'.
                         format('[nb_generator.run]')))
                 else:
-                    util.netutil.make_remote_file_executable2(
+                    util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.run_hnd)
                 print(' '.join([str(self.venv_hnd),
