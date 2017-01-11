@@ -71,7 +71,7 @@ class Controller:
         """ Factory method. Creates a subclass class depending on the
         controller name
         :returns: a subclass or None
-        :rtype: failed_flow_ops int
+        :rtype: object
         :raises NotImplementedError: in case an invalid controller_name is
         given in the configuration json file
         """
