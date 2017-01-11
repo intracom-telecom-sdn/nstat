@@ -150,7 +150,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Clean mtcbench.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
@@ -221,7 +221,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Clean mtcbench.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
@@ -286,7 +286,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Clean mtcbench.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
