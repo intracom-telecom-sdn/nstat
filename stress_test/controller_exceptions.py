@@ -8,6 +8,9 @@
 
 
 class CtrlError(Exception):
+    """Contains the exception handling concerning the Controller class
+    functionalities.
+    """
 
     def __init__(self, err_msg=None, err_code=1):
         """Base-class for all controller exceptions raised by this module.
@@ -26,7 +29,8 @@ class CtrlError(Exception):
 
 
 class CtrlNodeConnectionError(CtrlError):
-
+    """Contains the exception handling concerning the Controller connectivity.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """A controller node connection error.
         :param additional_error_info: the general error message.
@@ -40,6 +44,9 @@ class CtrlNodeConnectionError(CtrlError):
 
 
 class CtrlBuildError(CtrlError):
+    """Contains the exception handling concerning the Controller building
+    functionality.
+    """
 
     def __init__(self, additional_error_info='', err_code=1):
         """A controller build error
@@ -53,6 +60,9 @@ class CtrlBuildError(CtrlError):
 
 
 class CtrlStartError(CtrlError):
+    """Contains the exception handling concerning the Controller starting
+    functionality.
+    """
 
     def __init__(self, additional_error_info='', err_code=1):
         """A controller start error.
@@ -66,7 +76,9 @@ class CtrlStartError(CtrlError):
 
 
 class CtrlStopError(CtrlError):
-
+    """Contains the exception handling concerning the Controller stopping
+    functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """A controller stop error.
         :param additional_error_info: the general error message.
@@ -79,7 +91,9 @@ class CtrlStopError(CtrlError):
 
 
 class CtrlCleanupError(CtrlError):
-
+    """Contains the exception handling concerning the Controller cleaning
+    functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """A controller cleanup error.
         :param additional_error_info: the general error message.
@@ -92,7 +106,8 @@ class CtrlCleanupError(CtrlError):
 
 
 class CtrlStatusUnknownError(CtrlError):
-
+    """Contains the exception handling unknown errors on the Controller
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """A controller status unknown error.
         :param additional_error_info: the general error message.
@@ -105,7 +120,8 @@ class CtrlStatusUnknownError(CtrlError):
 
 
 class CtrlReadyStateError(CtrlError):
-
+    """Contains the exception handling concerning the controller readyness
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """A controller ready state error."""
         CtrlError.__init__(self, 'Controller did not reach '
@@ -114,7 +130,9 @@ class CtrlReadyStateError(CtrlError):
 
 
 class CtrlPortConflictError(CtrlError):
-
+    """Contains the exception handling concerning errors in the Southbound
+    port of the controller
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """A controller port conflict error.
         :param additional_error_info: the general error message.
@@ -128,7 +146,9 @@ class CtrlPortConflictError(CtrlError):
 
 
 class ODLXMLError(CtrlError):
-
+    """Contains the exception handling concerning the Opendaylight
+    Controller XML generation
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """ODL XML generation error.
         :param additional_error_info: the general error message.
@@ -141,6 +161,9 @@ class ODLXMLError(CtrlError):
 
 
 class ODLDisablePersistenceError(CtrlError):
+    """Contains the exception handling concerning the Opendaylight
+    Controller changing persistence functionality
+    """
 
     def __init__(self, additional_error_info='', err_code=1):
         """ODL fail to disable persistence error.
@@ -154,7 +177,9 @@ class ODLDisablePersistenceError(CtrlError):
 
 
 class ODLChangeStats(CtrlError):
-
+    """Contains the exception handling concerning the Opendaylight
+    Controller changing statistics period functionality
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """ODL fail to change statistics period error.
         :param additional_error_info: the general error message.
@@ -167,7 +192,9 @@ class ODLChangeStats(CtrlError):
 
 
 class ODLFlowModConfError(CtrlError):
-
+    """Contains the exception handling concerning the Opendaylight
+    Controller flow modification functionality
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """ODL fail to configure for flow modifications send error.
         :param additional_error_info: the general error message.
@@ -181,7 +208,9 @@ class ODLFlowModConfError(CtrlError):
 
 
 class ODLGetOperHostsError(CtrlError):
-
+    """Contains the exception handling concerning the returned hosts from
+    Opendaylight Controller datastore
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """ODL fail to get hosts from operational datastore error.
         :param additional_error_info: the general error message.
@@ -195,7 +224,9 @@ class ODLGetOperHostsError(CtrlError):
 
 
 class ODLGetOperFlowsError(CtrlError):
-
+    """Contains the exception handling concerning the returned flows from
+    Opendaylight Controller datastore
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """ODL fail to get installed flows from operational datastore error.
         :param additional_error_info: the general error message.
@@ -209,7 +240,9 @@ class ODLGetOperFlowsError(CtrlError):
 
 
 class ODLGetOperSwitchesError(CtrlError):
-
+    """Contains the exception handling concerning the returned switches from
+    Opendaylight Controller datastore
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """ODL fail to get topology switches from operational datastore error.
         :param additional_error_info: the general error message.
@@ -223,7 +256,9 @@ class ODLGetOperSwitchesError(CtrlError):
 
 
 class ODLGetOperLinksError(CtrlError):
-
+    """Contains the exception handling concerning the returned links from
+    Opendaylight Controller datastore
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """ODL fail to get topology links from operational datastore error.
         :param additional_error_info: the general error message.
