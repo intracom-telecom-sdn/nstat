@@ -100,7 +100,7 @@ class TestType:
                     self.test_report_template.sb_active_scalability_mtcbench(
                         args.json_output)
                 report_gen = stress_test.report_gen.ReportGen(
-                    args, self.json_conf, report_spec, self.total_samples)
+                    args, json_conf, report_spec, self.total_samples)
                 report_gen.results_report()
             except:
                 logging.error('[{0}] Fail to generate test report.'.
@@ -122,7 +122,7 @@ class TestType:
                     self.test_report_template.sb_active_stability_mtcbench(
                         args.json_output)
                 report_gen = stress_test.report_gen.ReportGen(
-                    args, self.json_conf, report_spec, self.total_samples)
+                    args, json_conf, report_spec, self.total_samples)
                 report_gen.results_report()
             except:
                 logging.error('[{0}] Fail to generate test report.'.
@@ -144,7 +144,7 @@ class TestType:
                 self.test_report_template.sb_active_scalability_multinet(
                     args.json_output)
             report_gen = stress_test.report_gen.ReportGen(
-                args, self.json_conf, report_spec, self.total_samples)
+                args, json_conf, report_spec, self.total_samples)
             report_gen.results_report()
             #except:
             #    logging.error('[{0}] Fail to generate test report.'.
@@ -166,7 +166,7 @@ class TestType:
                     self.test_report_template.sb_idle_scalability_mtcbench(
                         args.json_output)
                 report_gen = stress_test.report_gen.ReportGen(
-                    args, self.json_conf, report_spec, self.total_samples)
+                    args, json_conf, report_spec, self.total_samples)
                 report_gen.results_report()
             except:
                 logging.error('[{0}] Fail to generate test report.'.
@@ -209,7 +209,7 @@ class TestType:
                     self.test_report_template.sb_idle_stability_multinet(
                         args.json_output)
                 report_gen = stress_test.report_gen.ReportGen(
-                    args, self.json_conf, report_spec, self.total_samples)
+                    args, json_conf, report_spec, self.total_samples)
                 report_gen.results_report()
             except:
                 logging.error('[{0}] Fail to generate test report.'.
@@ -231,7 +231,7 @@ class TestType:
                     self.test_report_template.nb_active_scalability_multinet_run(
                         args.json_output)
                 report_gen = stress_test.report_gen.ReportGen(
-                    args, self.json_conf, report_spec, self.total_samples)
+                    args, json_conf, report_spec, self.total_samples)
                 report_gen.results_report()
             except:
                 logging.error('[{0}] Fail to generate test report.'.
