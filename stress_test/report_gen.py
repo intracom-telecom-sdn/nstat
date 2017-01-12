@@ -196,10 +196,6 @@ class ReportGen:
         except:
             self.__error_handling('Error in generation of HTML report.')
         try:
-            self.save_controller_log()
-        except:
-            self.__error_handling('Error in copy of controller log files.')
-        try:
             shutil.copy(self.args.json_config, self.args.output_dir)
         except:
             self.__error_handling('Error in copy of results in results '
