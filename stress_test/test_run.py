@@ -141,6 +141,13 @@ class TestRun:
             logging.error('[{0}] Exiting test run'.format(self.test_type))
         finally:
             try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_controller_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
+                              format(self.test_type))
+            try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))
                 del self.ctrl
@@ -150,7 +157,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Clean mtcbench.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
@@ -212,6 +219,13 @@ class TestRun:
             logging.error('[{0}] Exiting test run'.format(self.test_type))
         finally:
             try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_controller_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
+                              format(self.test_type))
+            try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))
                 del self.ctrl
@@ -221,16 +235,14 @@ class TestRun:
             try:
                 logging.info('[{0}] Clean mtcbench.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
             return self.total_samples
 
-    def sb_idle_scalability_mtcbench_run(self,
-                                       json_conf,
-                                       json_output,
-                                       output_dir):
+    def sb_idle_scalability_mtcbench_run(self, json_conf, json_output,
+                                         output_dir):
         """
         Runs the SouthBound scalability test with idle MT-Cbench switches
         :param json_conf: JSON configuration dictionary
@@ -263,8 +275,8 @@ class TestRun:
                 self.ctrl.change_stats()
                 logging.info('{0} Starting controller'.format(self.test_type))
                 self.ctrl.start()
-                logging.info('{0} Starting MTCbench idle switches topology and '
-                             'monitor thread'.format(self.test_type))
+                logging.info('{0} Starting MTCbench idle switches topology and'
+                             ' monitor thread'.format(self.test_type))
                 topo_start_timestamp = time.time()
                 self.total_samples += self.mon.monitor_run(
                     topo_start_timestamp)
@@ -277,6 +289,13 @@ class TestRun:
             logging.error('[{0}] Exiting test run'.format(self.test_type))
         finally:
             try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_controller_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
+                              format(self.test_type))
+            try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))
                 del self.ctrl
@@ -286,7 +305,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Clean mtcbench.'.
                              format(self.test_type))
-                del self.ctrl
+                del self.sb_emu
             except:
                 logging.error('[{0}] Fail to clean mtcbench.'.
                               format(self.test_type))
@@ -393,6 +412,13 @@ class TestRun:
                 logging.error('[{0}] Fail to clean oftraf.'.
                               format(self.test_type))
             try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_controller_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
+                              format(self.test_type))
+            try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))
                 del self.ctrl
@@ -484,6 +510,13 @@ class TestRun:
                 del self.mon
             except:
                 logging.error('[{0}] Fail to clean Multinet Monitor.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_controller_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
             try:
                 logging.info('[{0}] Clean controller.'.
@@ -604,6 +637,13 @@ class TestRun:
                 del self.of
             except:
                 logging.error('[{0}] Fail to clean oftraf.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_controller_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
             try:
                 logging.info('[{0}] Clean controller.'.
@@ -745,10 +785,8 @@ class TestRun:
                 self.ctrl.stop()
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
-
                 results = util.file_ops.merge_dict_and_avg(result_metrics_add,
                                                            result_metrics_del)
-                #print(results)
                 global_sample_id = results['global_sample_id'] + 1
                 self.total_samples += [results]
 
@@ -779,6 +817,13 @@ class TestRun:
                 logging.error('[{0}] Fail to clean NB-Generator Monitor.'.
                               format(self.test_type))
             try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_controller_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
+                              format(self.test_type))
+            try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))
                 del self.ctrl
@@ -793,4 +838,3 @@ class TestRun:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
             return self.total_samples
-
