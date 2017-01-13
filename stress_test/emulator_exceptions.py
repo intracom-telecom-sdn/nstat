@@ -87,6 +87,7 @@ class MTCbenchRunError(SBEmuError):
         SBEmuError.__init__(self, 'Error occurred while running MTCbench. {0}'.
                             format(additional_error_info), err_code)
 
+
 class MultinetConfGenerateError(SBEmuError):
     """Contains the exception handling concerning the South-Bound Emulator
     building functionality.

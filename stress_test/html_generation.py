@@ -338,7 +338,7 @@ def insert_plots(plots_list):
                 # Adding a graph image in document.
                 plots_html = plots_html + \
                     '<img class=\"graph-' + graph_float + '\" src=\"' + \
-                str(plots_list[plot_id]['plot_filename']) + \
+                    str(plots_list[plot_id]['plot_filename']) + \
                     '.png\" alt=\"result graph\" />'
 
                 # Changing the page alignment of the next inserted graph image.

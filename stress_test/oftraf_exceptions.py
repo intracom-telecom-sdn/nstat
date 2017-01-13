@@ -8,7 +8,9 @@
 
 
 class OftrafError(Exception):
-
+    """Contains the exception handling concerning the Oftraf class
+    functionalities.
+    """
     def __init__(self, err_msg=None, err_code=1):
         """Base-class for all oftraf exceptions raised by this module.
         :param err_msg: the general error message.
@@ -26,7 +28,9 @@ class OftrafError(Exception):
 
 
 class OftrafBuildError(OftrafError):
-
+    """Contains the exception handling concerning the Oftraf building
+    functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """An oftraf build error.
         :param additional_error_info: the general error message.
@@ -39,6 +43,9 @@ class OftrafBuildError(OftrafError):
 
 
 class OftrafStartError(OftrafError):
+    """Contains the exception handling concerning the Oftraf starting
+    functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """An oftraf start error."""
         OftrafError.__init__(self, 'Fail to start oftraf. {0}'.
@@ -46,6 +53,9 @@ class OftrafStartError(OftrafError):
 
 
 class OftrafStopError(OftrafError):
+    """Contains the exception handling concerning the Oftraf stopping
+    functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """An oftraf stop error.
         :param additional_error_info: the general error message.
@@ -58,7 +68,9 @@ class OftrafStopError(OftrafError):
 
 
 class OftrafCleanError(OftrafError):
-
+    """Contains the exception handling concerning the Oftraf measurements
+    (packet counts) functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """An oftraf clean error.
         :param additional_error_info: the general error message.
@@ -71,7 +83,9 @@ class OftrafCleanError(OftrafError):
 
 
 class OftrafGetResultError(OftrafError):
-
+    """Contains the exception handling concerning the Oftraf cleaning
+    functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """An oftraf get results error.
         :param additional_error_info: the general error message.

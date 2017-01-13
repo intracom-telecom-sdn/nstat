@@ -18,7 +18,8 @@ import util.netutil
 
 
 class Oftraf:
-
+    """ All Oftraf related functionality is here
+    """
     def __init__(self, controller, test_config):
         """Create an Oftraf Monitor Controller object.
         Options from JSON input file
