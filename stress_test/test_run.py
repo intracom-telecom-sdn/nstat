@@ -411,13 +411,13 @@ class TestRun:
             except:
                 logging.error('[{0}] Fail to clean oftraf.'.
                               format(self.test_type))
-            #try:
-            logging.info('[{0}] Save controller logs'.
-                         format(self.test_type))
-            self.ctrl.save_log(output_dir)
-            #except:
-            #    logging.error('[{0}] Fail to save controller logs'.
-            #                  format(self.test_type))
+            try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
+                              format(self.test_type))
             try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))

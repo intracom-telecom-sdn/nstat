@@ -835,20 +835,20 @@ class ODL(Controller):
         :type output_dir: str
         """
         # Move controller log file if exist inside the test output dir
-        #try:
-        logging.info('[controller_save_log] collecting logs from '
-                     'controller node. Logs path:{0}'.
-                     format(self.logs_dir))
-        util.netutil.copy_dir_remote_to_local(
-            self.ip,
-            self.ssh_port,
-            self.ssh_user,
-            self.ssh_pass,
-            os.path.join(self.base_dir, self.logs_dir),
-            os.path.join(output_dir, 'log'))
-        #except:
-        #    logging.error('[controller_save_log] Fail transferring controller'
-        #                  ' logs directory.')
+        try:
+            logging.info('[controller_save_log] collecting logs from '
+                         'controller node. Logs path:{0}'.
+                         format(self.logs_dir))
+            util.netutil.copy_dir_remote_to_local(
+                self.ip,
+                self.ssh_port,
+                self.ssh_user,
+                self.ssh_pass,
+                os.path.join(self.base_dir, self.logs_dir),
+                os.path.join(output_dir, 'log'))
+        except:
+            logging.error('[controller_save_log] Fail transferring controller'
+                          ' logs directory.')
 
 
 class ONOS(Controller):
