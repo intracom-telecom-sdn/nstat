@@ -22,7 +22,7 @@
     node: test-server
     scm:
     - git:
-        url: https://github.com/intracom-telecom-sdn/nstat.git
+        url: https://github.com/intracom-telecom-sdn/nstat-cperf.git
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
