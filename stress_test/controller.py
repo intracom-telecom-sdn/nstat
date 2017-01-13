@@ -829,7 +829,7 @@ class ODL(Controller):
         except stress_test.controller_exceptions.CtrlError as e:
             self.__error_handling(e.err_msg, e.err_code)
 
-    def save_controller_log(self, output_dir):
+    def save_log(self, output_dir):
         """save controller log file
         :param output_dir: the directory where the controller logs are stored
         :type output_dir: str
@@ -838,7 +838,7 @@ class ODL(Controller):
         try:
             logging.info('[controller_save_log] collecting logs from '
                          'controller node. Logs path:{0}'.
-                         format(self.test_config_json['controller_logs_dir']))
+                         format(self.logs_dir))
             util.netutil.copy_dir_remote_to_local(
                 self.ip,
                 self.ssh_port,
