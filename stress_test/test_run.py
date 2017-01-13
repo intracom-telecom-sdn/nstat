@@ -744,7 +744,6 @@ class TestRun:
                             failed_flows_del,
                             expected_flows,
                             self.nb_emu.flow_delete_flag)
-
                 # stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
