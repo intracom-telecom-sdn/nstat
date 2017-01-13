@@ -838,7 +838,7 @@ class ODL(Controller):
         #try:
         logging.info('[controller_save_log] collecting logs from '
                      'controller node. Logs path:{0}'.
-                     format(self.test_config['controller_logs_dir']))
+                     format(self.logs_dir))
         util.netutil.copy_dir_remote_to_local(
             self.ip,
             self.ssh_port,
