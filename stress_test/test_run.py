@@ -143,7 +143,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Save controller logs'.
                              format(self.test_type))
-                self.ctrl.save_controller_log(output_dir)
+                self.ctrl.save_log(output_dir)
             except:
                 logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
@@ -221,7 +221,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Save controller logs'.
                              format(self.test_type))
-                self.ctrl.save_controller_log(output_dir)
+                self.ctrl.save_log(output_dir)
             except:
                 logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
@@ -291,7 +291,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Save controller logs'.
                              format(self.test_type))
-                self.ctrl.save_controller_log(output_dir)
+                self.ctrl.save_log(output_dir)
             except:
                 logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
@@ -414,7 +414,7 @@ class TestRun:
             #try:
             logging.info('[{0}] Save controller logs'.
                          format(self.test_type))
-            self.ctrl.save_controller_log(output_dir)
+            self.ctrl.save_log(output_dir)
             #except:
             #    logging.error('[{0}] Fail to save controller logs'.
             #                  format(self.test_type))
@@ -514,7 +514,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Save controller logs'.
                              format(self.test_type))
-                self.ctrl.save_controller_log(output_dir)
+                self.ctrl.save_log(output_dir)
             except:
                 logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
@@ -641,7 +641,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Save controller logs'.
                              format(self.test_type))
-                self.ctrl.save_controller_log(output_dir)
+                self.ctrl.save_log(output_dir)
             except:
                 logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
@@ -819,7 +819,7 @@ class TestRun:
             try:
                 logging.info('[{0}] Save controller logs'.
                              format(self.test_type))
-                self.ctrl.save_controller_log(output_dir)
+                self.ctrl.save_log(output_dir)
             except:
                 logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))

@@ -829,7 +829,7 @@ class ODL(Controller):
         except stress_test.controller_exceptions.CtrlError as e:
             self.__error_handling(e.err_msg, e.err_code)
 
-    def save_controller_log(self, output_dir):
+    def save_log(self, output_dir):
         """save controller log file
         :param output_dir: the directory where the controller logs are stored
         :type output_dir: str
