@@ -23,8 +23,7 @@ import util.file_ops
 class TestRun:
 
     def __init__(self, args, json_conf, test_type):
-        """
-        Initializes the appropriate test component objects according to the
+        """Initializes the appropriate test component objects according to the
         test_type and the test configuration json object, in order to prepare
         the test for running
         :param args:
@@ -60,12 +59,14 @@ class TestRun:
                 self.nb_emu.init_ssh()
                 self.nb_emu.build()
 
-        # Monitor object for nb-emulator---------------------------------------
+                # MONITOR objects for NB-EMULATOR
+                # --------------------------------------------------------------
                 self.mon = stress_test.monitor.NBgen(self.ctrl,
                                                      self.nb_emu,
                                                      self.sb_emu)
 
-        # Monitor objects for sb-emulators
+        # MONITOR objects for SB-EMULATOR
+        # ----------------------------------------------------------------------
         elif 'sb_emulator_name' in json_conf:
             if json_conf['sb_emulator_name'] == "MTCBENCH":
                 self.mon = stress_test.monitor.Mtcbench(self.ctrl,
@@ -86,23 +87,23 @@ class TestRun:
         self.json_conf = json_conf
         self.args = args
 
-    def sb_active_stability_mtcbench_run(self, json_conf, json_output,
+    def sb_active_stability_mtcbench_run(self,
+                                         json_conf,
+                                         json_output,
                                          output_dir):
-        """
-        Runs the SouthBound scalability or stability test with active
+        """ Runs the SouthBound scalability or stability test with active
         MT-Cbench switches
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: str
+        :type json_conf: dict
         :type json_output: str
         :type output_dir: str
         """
         try:
-
             global_sample_id = 0
-            # TEST run
-            # -------------------------------------------------------------------
+            # for LOOP to run the test for every test dimension
+            # ------------------------------------------------------------------
             for (self.sb_emu.threads,
                  self.sb_emu.switches_per_thread,
                  self.sb_emu.thread_creation_delay_ms,
@@ -110,13 +111,14 @@ class TestRun:
                  self.sb_emu.simulated_hosts,
                  repeat_id,
                  self.ctrl.stat_period_ms
-                 ) in itertools.product(json_conf['mtcbench_threads'],
-                                        json_conf['mtcbench_switches_per_thread'],
-                                        json_conf['mtcbench_thread_creation_delay_ms'],
-                                        json_conf['mtcbench_delay_before_traffic_ms'],
-                                        json_conf['mtcbench_simulated_hosts'],
-                                        list(range(0, json_conf['test_repeats'])),
-                                        json_conf['controller_statistics_period_ms']):
+                 ) in itertools.product(
+                    json_conf['mtcbench_threads'],
+                    json_conf['mtcbench_switches_per_thread'],
+                    json_conf['mtcbench_thread_creation_delay_ms'],
+                    json_conf['mtcbench_delay_before_traffic_ms'],
+                    json_conf['mtcbench_simulated_hosts'],
+                    list(range(0, json_conf['test_repeats'])),
+                    json_conf['controller_statistics_period_ms']):
                 self.mon.global_sample_id = global_sample_id
                 self.mon.repeat_id = repeat_id
                 self.mon.test_repeats = json_conf['test_repeats']
@@ -157,23 +159,24 @@ class TestRun:
 
             return self.total_samples
 
-    def sb_active_scalability_mtcbench_run(self, json_conf, json_output,
+    def sb_active_scalability_mtcbench_run(self,
+                                           json_conf,
+                                           json_output,
                                            output_dir):
-        """
-        Runs the SouthBound scalability or stability test with active
+        """ Runs the SouthBound scalability or stability test with active
         MT-Cbench switches
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: str
+        :type json_conf: dict
         :type json_output: str
         :type output_dir: str
         """
         try:
 
             global_sample_id = 0
-            # TEST run
-            # -------------------------------------------------------------------
+            # for LOOP to run the test for every test dimension
+            # ------------------------------------------------------------------
             for (self.sb_emu.threads,
                  self.sb_emu.switches_per_thread,
                  self.sb_emu.thread_creation_delay_ms,
@@ -181,13 +184,14 @@ class TestRun:
                  self.sb_emu.simulated_hosts,
                  repeat_id,
                  self.ctrl.stat_period_ms
-                 ) in itertools.product(json_conf['mtcbench_threads'],
-                                        json_conf['mtcbench_switches_per_thread'],
-                                        json_conf['mtcbench_thread_creation_delay_ms'],
-                                        json_conf['mtcbench_delay_before_traffic_ms'],
-                                        json_conf['mtcbench_simulated_hosts'],
-                                        list(range(0, json_conf['test_repeats'])),
-                                        json_conf['controller_statistics_period_ms']):
+                 ) in itertools.product(
+                    json_conf['mtcbench_threads'],
+                    json_conf['mtcbench_switches_per_thread'],
+                    json_conf['mtcbench_thread_creation_delay_ms'],
+                    json_conf['mtcbench_delay_before_traffic_ms'],
+                    json_conf['mtcbench_simulated_hosts'],
+                    list(range(0, json_conf['test_repeats'])),
+                    json_conf['controller_statistics_period_ms']):
                 self.mon.global_sample_id = global_sample_id
                 self.mon.repeat_id = repeat_id
                 self.mon.test_repeats = json_conf['test_repeats']
@@ -228,34 +232,34 @@ class TestRun:
             return self.total_samples
 
     def sb_idle_scalability_mtcbench_run(self,
-                                       json_conf,
-                                       json_output,
-                                       output_dir):
-        """
-        Runs the SouthBound scalability test with idle MT-Cbench switches
+                                         json_conf,
+                                         json_output,
+                                         output_dir):
+        """ Runs the SouthBound scalability test with idle MT-Cbench switches
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: str
+        :type json_conf: dict
         :type json_output: str
         :type output_dir: str
         """
         try:
             global_sample_id = 0
-            # TEST run
-            # ----------------------------------------------------------------
+            # for LOOP to run the test for every test dimension
+            # ------------------------------------------------------------------
             for (self.sb_emu.threads,
                  self.sb_emu.switches_per_thread,
                  self.sb_emu.thread_creation_delay_ms,
                  self.sb_emu.delay_before_traffic_ms,
                  self.sb_emu.simulated_hosts,
                  self.ctrl.stat_period_ms
-                 ) in itertools.product(json_conf['mtcbench_threads'],
-                                        json_conf['mtcbench_switches_per_thread'],
-                                        json_conf['mtcbench_thread_creation_delay_ms'],
-                                        json_conf['mtcbench_delay_before_traffic_ms'],
-                                        json_conf['mtcbench_simulated_hosts'],
-                                        json_conf['controller_statistics_period_ms']):
+                 ) in itertools.product(
+                     json_conf['mtcbench_threads'],
+                     json_conf['mtcbench_switches_per_thread'],
+                     json_conf['mtcbench_thread_creation_delay_ms'],
+                     json_conf['mtcbench_delay_before_traffic_ms'],
+                     json_conf['mtcbench_simulated_hosts'],
+                     json_conf['controller_statistics_period_ms']):
                 self.mon.global_sample_id = global_sample_id
                 logging.info('{0} Changing controller statistics period '
                              'to {1} ms'.
@@ -263,12 +267,11 @@ class TestRun:
                 self.ctrl.change_stats()
                 logging.info('{0} Starting controller'.format(self.test_type))
                 self.ctrl.start()
-                logging.info('{0} Starting MTCbench idle switches topology and '
+                logging.info('{0} Starting MTCbench idle switches topology and'
                              'monitor thread'.format(self.test_type))
                 topo_start_timestamp = time.time()
                 self.total_samples += self.mon.monitor_run(
                     topo_start_timestamp)
-                # total_samples = self.mon.monitor_run()
                 logging.info('{0} Stopping controller'.format(self.test_type))
                 self.ctrl.stop()
                 global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
@@ -296,12 +299,11 @@ class TestRun:
                                            json_conf,
                                            json_output,
                                            output_dir):
-        """
-        Runs the SouthBound scalability test with active Multinet switches
+        """ Runs the SouthBound scalability test with active Multinet switches
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: str
+        :type json_conf: dict
         :type json_output: str
         :type output_dir: str
         """
@@ -333,11 +335,10 @@ class TestRun:
                     json_conf['controller_statistics_period_ms']):
                 self.mon.global_sample_id = global_sample_id
                 self.mon.test_repeats = json_conf['test_repeats']
-                # start a controller
+
                 self.ctrl.check_status()
                 self.ctrl.start()
 
-                # disable persistence
                 if self.ctrl.persistence_hnd:
                     self.ctrl.disable_persistence()
 
@@ -357,8 +358,8 @@ class TestRun:
 
                 self.total_samples += self.mon.monitor_run()
 
-                # Stop/clean nodes
-                # ---------------------------------------------------------
+                # stop/clean nodes
+                # --------------------------------------------------------------
                 self.of.stop()
                 self.ctrl.stop()
 
@@ -417,7 +418,7 @@ class TestRun:
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: str
+        :type json_conf: dict
         :type json_output: str
         :type output_dir: str
         """
@@ -510,7 +511,7 @@ class TestRun:
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: str
+        :type json_conf: dict
         :type json_output: str
         :type output_dir: str
         """
@@ -521,7 +522,6 @@ class TestRun:
 
             # TEST run
             # ---------------------------------------------------------------
-            total_samples = []
             global_sample_id = 0
 
             self.sb_emu.topo_size = json_conf['multinet_topo_size']
@@ -534,15 +534,14 @@ class TestRun:
             self.ctrl.stat_period_ms = json_conf['controller_statistics_'
                                                  'period_ms']
 
-            # disable persistence if needed
             if self.ctrl.persistence_hnd:
                 self.ctrl.disable_persistence()
-            # start a controller
+
             self.ctrl.check_status()
             self.ctrl.change_stats()
             self.ctrl.start()
 
-            # start a Multinet topology
+            # start a MULTINET topology
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
@@ -569,7 +568,7 @@ class TestRun:
                     global_sample_id = results['global_sample_id'] + 1
                     self.total_samples += [results]
 
-            # Stop/clean nodes
+            # stop/clean nodes
             # ---------------------------------------------------------
             self.of.stop()
             self.ctrl.stop()
@@ -625,8 +624,7 @@ class TestRun:
                                            json_conf,
                                            json_output,
                                            output_dir):
-        """
-        Runs the NorthBound scalability test with idle Multinet switches
+        """ Runs the NorthBound scalability test with idle Multinet switches
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
@@ -635,12 +633,10 @@ class TestRun:
         :type output_dir: str
         """
         try:
-
             self.ctrl.flowmods_config()
 
             # TEST run
             # ---------------------------------------------------------------
-
             global_sample_id = 0
             flow_delete_flag = json_conf['flow_delete_flag']
 
@@ -666,10 +662,9 @@ class TestRun:
 
                 self.mon.global_sample_id = global_sample_id
 
-                # start a controller
                 self.ctrl.check_status()
                 self.ctrl.start()
-                # disable persistence
+
                 if self.ctrl.persistence_hnd:
                     self.ctrl.disable_persistence()
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
@@ -696,51 +691,61 @@ class TestRun:
                 result_metrics_add = {}
                 result_metrics_del = {}
 
+                # start NORTHBOUND generator flow_delete_flag NOT SET
+                # --------------------------------------------------------------
                 if flow_delete_flag is False:
                     expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
                     nb_gen_start_json_output_add = self.nb_emu.run()
-                    nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
+                    nb_gen_start_output_add = \
+                        json.loads(nb_gen_start_json_output_add)
                     failed_flows_add = nb_gen_start_output_add[0]
 
                     result_metrics_add = \
-                        self.mon.monitor_threads_run(start_rest_request_time_add,
-                                                     failed_flows_add,
-                                                     expected_flows,
-                                                     self.nb_emu.flow_delete_flag)
+                        self.mon.monitor_threads_run(
+                            start_rest_request_time_add,
+                            failed_flows_add,
+                            expected_flows,
+                            self.nb_emu.flow_delete_flag)
 
-                # start northbound generator flow_delete_flag SET
+                # start NORTHBOUND generator flow_delete_flag SET
+                # --------------------------------------------------------------
                 if flow_delete_flag is True:
-                    # Force flow_delete_flag to FALSE and run the NB generator
+
+                    # force flow_delete_flag to FALSE and RUN the NB generator
+                    # ----------------------------------------------------------
                     self.nb_emu.flow_delete_flag = False
                     expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
                     nb_gen_start_json_output_add = self.nb_emu.run()
-                    nb_gen_start_output_add = json.loads(nb_gen_start_json_output_add)
+                    nb_gen_start_output_add = \
+                        json.loads(nb_gen_start_json_output_add)
                     failed_flows_add = nb_gen_start_output_add[0]
                     result_metrics_add = \
-                        self.mon.monitor_threads_run(start_rest_request_time_add,
-                                                     failed_flows_add,
-                                                     expected_flows,
-                                                     self.nb_emu.flow_delete_flag)
+                        self.mon.monitor_threads_run(
+                            start_rest_request_time_add,
+                            failed_flows_add,
+                            expected_flows,
+                            self.nb_emu.flow_delete_flag)
 
-                    # Restore constructor value for flow_delete_flag and run the
-                    # NB generator
+                    # restore constructor value for flow_delete_flag and RE-RUN
+                    # the NB generator
+                    # ----------------------------------------------------------
                     self.nb_emu.flow_delete_flag = True
                     expected_flows = 0
                     start_rest_request_time_del = time.time()
                     nb_gen_start_json_output_del = self.nb_emu.run()
-                    nb_gen_start_output_del = json.loads(nb_gen_start_json_output_del)
+                    nb_gen_start_output_del = \
+                        json.loads(nb_gen_start_json_output_del)
                     failed_flows_del = nb_gen_start_output_del[0]
-
                     result_metrics_del = \
-                        self.mon.monitor_threads_run(start_rest_request_time_del,
-                                                     failed_flows_del,
-                                                     expected_flows,
-                                                     self.nb_emu.flow_delete_flag)
-                failed_flows_total = failed_flows_add + failed_flows_del
+                        self.mon.monitor_threads_run(
+                            start_rest_request_time_del,
+                            failed_flows_del,
+                            expected_flows,
+                            self.nb_emu.flow_delete_flag)
 
-                # Stop/clean nodes
+                # stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
                 self.sb_emu.stop_topos()
@@ -748,7 +753,6 @@ class TestRun:
 
                 results = util.file_ops.merge_dict_and_avg(result_metrics_add,
                                                            result_metrics_del)
-                #print(results)
                 global_sample_id = results['global_sample_id'] + 1
                 self.total_samples += [results]
 
@@ -793,4 +797,3 @@ class TestRun:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
             return self.total_samples
-

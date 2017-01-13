@@ -4,10 +4,8 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Contains data structure of report element and tables inside the report.
-These are used to generate the html report """
-
 import collections
+
 
 class ReportSpec(object):
     """Contains the specification of the html report, the title of the

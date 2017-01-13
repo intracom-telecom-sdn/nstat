@@ -12,7 +12,7 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import stress_test.test_run
 import sys
-import time
+
 
 class TestType:
 
