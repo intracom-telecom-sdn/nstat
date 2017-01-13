@@ -26,10 +26,3 @@
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
-    publishers:
-    - html-publisher:
-        dir: /tmp/publisher/
-        files: "report.html"
-        name: NSTAT
-        keep-all: true
-        allow-missing: true
