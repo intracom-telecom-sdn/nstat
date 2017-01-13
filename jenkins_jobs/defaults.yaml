@@ -19,7 +19,7 @@
     disabled: false
     block-downstream: false
     concurrent: false
-    node: test-server
+    node: NSTAT_192_168_160_206
     scm:
     - git:
         url: https://github.com/intracom-telecom-sdn/nstat-cperf.git

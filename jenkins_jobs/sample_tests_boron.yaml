@@ -22,7 +22,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_DS_sb_active_scalability_mtcbench_docker-{branch}
+    name: sample_boron_DS_sb_active_scalability_mtcbench_docker_jjb-{branch}
     description: "A booted switch topology sends OpenFlow traffic to the\n
                  controller to probe its performance. During this test the\n
                  topology is booted gradually. Therefore\n
@@ -56,7 +56,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_DS_sb_active_stability_mtcbench_docker-{branch}
+    name: sample_boron_DS_sb_active_stability_mtcbench_docker_jjb-{branch}
     description: "A booted switch topology sends OpenFlow traffic to the\n
                  controller to probe its performance. Stability tests explore\n
                  how controller performance behaves in a large time window for\n
@@ -85,7 +85,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_DS_sb_idle_scalability_mtcbench_docker-{branch}
+    name: sample_boron_DS_sb_idle_scalability_mtcbench_docker_jjb-{branch}
     description: "An idle network is created by Cbench but since the test is idle\n
                  no traffic is generated. The topology is created by several\n
                  threads and therefore gradually since MtCench is used."
@@ -109,7 +109,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_nb_active_scalability_multinet_docker-{branch}
+    name: sample_boron_nb_active_scalability_multinet_docker_jjb-{branch}
     description: "In Northbound tests we want to investigate how OpenDaylight\n
                  performs under heavy load of NB traffic. In the context of\n
                  OpenDaylight NBtraffic is translated in RESTCONF calls. In\n
@@ -138,7 +138,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_RPC_sb_active_scalability_mtcbench_docker-{branch}
+    name: sample_boron_RPC_sb_active_scalability_mtcbench_docker_jjb-{branch}
     description: "In this test DS operations do not take place on the controller.\n
                  The test is active and since MtCbench is the generator openflow\n
                  traffic is created to the controller. The test is 'scalability'\n
@@ -169,7 +169,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_RPC_sb_active_stability_mtcbench_docker-{branch}
+    name: sample_boron_RPC_sb_active_stability_mtcbench_docker_jjb-{branch}
     description: "A booted switch topology sends OpenFlow traffic to the\n
                  controller to probe its performance. Stability tests explore\n
                  how controller performance behaves in a large time window for\n
@@ -196,7 +196,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_RPC_sb_idle_scalability_mtcbench_docker-{branch}
+    name: sample_boron_RPC_sb_idle_scalability_mtcbench_docker_jjb-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -218,7 +218,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_sb_idle_scalability_multinet_docker-{branch}
+    name: sample_boron_sb_idle_scalability_multinet_docker_jjb-{branch}
     description: An idle multinet network is booted.
     block-downstream: false
     block-upstream: false
@@ -240,7 +240,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_sb_active_scalability_multinet_docker-{branch}
+    name: sample_boron_sb_active_scalability_multinet_docker_jjb-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -262,7 +262,7 @@
 # ------------------------------------------------------------------------------
 
 - job-template:
-    name: sample_boron_sb_idle_stability_multinet_docker-{branch}
+    name: sample_boron_sb_idle_stability_multinet_docker_jjb-{branch}
     description: 'Enter the job description here'
     block-downstream: false
     block-upstream: false
@@ -285,15 +285,15 @@
 
 - project:
     name: sample_nstat-jenkins-jobs
-    branch: master
+    branch: nstat-testing
     jobs:
-       - 'sample_boron_DS_sb_active_scalability_mtcbench_docker-{branch}'
-       - 'sample_boron_DS_sb_active_stability_mtcbench_docker-{branch}'
-       - 'sample_boron_DS_sb_idle_scalability_mtcbench_docker-{branch}'
-       - 'sample_boron_nb_active_scalability_multinet_docker-{branch}'
-       - 'sample_boron_RPC_sb_active_scalability_mtcbench_docker-{branch}'
-       - 'sample_boron_RPC_sb_active_stability_mtcbench_docker-{branch}'
-       - 'sample_boron_RPC_sb_idle_scalability_mtcbench_docker-{branch}'
-       - 'sample_boron_sb_idle_scalability_multinet_docker-{branch}'
-       - 'sample_boron_sb_active_scalability_multinet_docker-{branch}'
-       - 'sample_boron_sb_idle_stability_multinet_docker-{branch}'
+       - 'sample_boron_DS_sb_active_scalability_mtcbench_docker_jjb-{branch}'
+       - 'sample_boron_DS_sb_active_stability_mtcbench_docker_jjb-{branch}'
+       - 'sample_boron_DS_sb_idle_scalability_mtcbench_docker_jjb-{branch}'
+       - 'sample_boron_nb_active_scalability_multinet_docker_jjb-{branch}'
+       - 'sample_boron_RPC_sb_active_scalability_mtcbench_docker_jjb-{branch}'
+       - 'sample_boron_RPC_sb_active_stability_mtcbench_docker_jjb-{branch}'
+       - 'sample_boron_RPC_sb_idle_scalability_mtcbench_docker_jjb-{branch}'
+       - 'sample_boron_sb_idle_scalability_multinet_docker_jjb-{branch}'
+       - 'sample_boron_sb_active_scalability_multinet_docker_jjb-{branch}'
+       - 'sample_boron_sb_idle_stability_multinet_docker_jjb-{branch}'
