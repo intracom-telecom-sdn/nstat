@@ -1,0 +1,629 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util package &mdash; NSTAT: Network Stress Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="NSTAT: Network Stress Automation Toolkit 1.4.1 documentation" href="index.html" />
+    <link rel="prev" title="stress_test package" href="stress_test.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="stress_test.html" title="stress_test package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Automation Toolkit 1.4.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="util-package">
+<h1>util package<a class="headerlink" href="#util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-util.cpu">
+<span id="util-cpu-module"></span><h2>util.cpu module<a class="headerlink" href="#module-util.cpu" title="Permalink to this headline">¶</a></h2>
+<p>CPU-related utility functions</p>
+<dl class="function">
+<dt id="util.cpu.compute_cpu_shares">
+<code class="descclassname">util.cpu.</code><code class="descname">compute_cpu_shares</code><span class="sig-paren">(</span><em>shares_list</em>, <em>num_cpus</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/cpu.html#compute_cpu_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.cpu.compute_cpu_shares" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes lists of non-overlapping CPUs lists based on a list
+of CPU shares. A CPU share is a value between 1 and 99 and corresponds to
+the percentage of total system CPUs that should be allocated for a
+process. When a share of 0 or 100 is specified, a list with all system
+CPUs is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shares_list</strong> (<em>list&lt;int&gt;</em>) &#8211; values with the CPU percentages
+for each process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple with the CPU lists for each process</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>ValueError</strong> &#8211; When input leads to an invalid CPU sharing.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple&lt;list&lt;int&gt;&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.customsubprocess">
+<span id="util-customsubprocess-module"></span><h2>util.customsubprocess module<a class="headerlink" href="#module-util.customsubprocess" title="Permalink to this headline">¶</a></h2>
+<p>Extended subprocess functionality</p>
+<dl class="function">
+<dt id="util.customsubprocess.check_output_streaming">
+<code class="descclassname">util.customsubprocess.</code><code class="descname">check_output_streaming</code><span class="sig-paren">(</span><em>cmd</em>, <em>prefix=''</em>, <em>queue=None</em>, <em>block_flag=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/customsubprocess.html#check_output_streaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.customsubprocess.check_output_streaming" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redirect output to stderr, printing it whenever a new line
+is detected (bufsize=1 denotes line buffered output). This
+can be considered as &#8220;realtime&#8221; printing.
+Additionally, prints output by prepending it with a user-defined
+prefix. Furthermore, it optionally forwards output to a queue
+in order e.g. to be processed by a separate thread in real-time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmd</strong> &#8211; the command line list.</li>
+<li><strong>prefix</strong> &#8211; the user defined prefix for output.</li>
+<li><strong>queue</strong> &#8211; queue to forward console output to.</li>
+<li><strong>block_flag</strong> &#8211; defines if the execution will be performed in block mode</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">return exit status of command.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>subprocess.CalledProcessError</strong> &#8211; If the exit status of the executed</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>command is not 0.
+:rtype: int
+:type cmd: list&lt;str&gt;
+:type prefix: str
+:type queue: multiprocessing.Queue
+:type block_flag: bool</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.file_ops">
+<span id="util-file-ops-module"></span><h2>util.file_ops module<a class="headerlink" href="#module-util.file_ops" title="Permalink to this headline">¶</a></h2>
+<p>file handling utilities</p>
+<dl class="function">
+<dt id="util.file_ops.check_filelist">
+<code class="descclassname">util.file_ops.</code><code class="descname">check_filelist</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#check_filelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_filelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list of files and checks if those files exist and if those
+files are executables (have execution right in their privileges). If
+something is wrong then an exception is raised</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> (<em>list&lt;str&gt;</em>) &#8211; A list of files</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.check_files_executables">
+<code class="descclassname">util.file_ops.</code><code class="descname">check_files_executables</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#check_files_executables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_executables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if all files in a list have exe permissions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> &#8211; list of filenames to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>Exception</strong> &#8211; When file in file_list does not exist or is not</td>
+</tr>
+</tbody>
+</table>
+<p>executable.
+:type file_list: list&lt;str&gt;
+:returns: list&lt;str&gt;
+:rtype: list&lt;str&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.check_files_exist">
+<code class="descclassname">util.file_ops.</code><code class="descname">check_files_exist</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#check_files_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if all files in a list exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> (<em>list&lt;str&gt;</em>) &#8211; list of filenames to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list&lt;str&gt;</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list&lt;str&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.file_exists">
+<code class="descclassname">util.file_ops.</code><code class="descname">file_exists</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.file_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if file exists in filesystem.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fpath</strong> (<em>str</em>) &#8211; file path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.is_file_exe">
+<code class="descclassname">util.file_ops.</code><code class="descname">is_file_exe</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#is_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.is_file_exe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a file is executable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fpath</strong> (<em>str</em>) &#8211; file path to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.make_file_exe">
+<code class="descclassname">util.file_ops.</code><code class="descname">make_file_exe</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#make_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.make_file_exe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives executable rights to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fpath</strong> (<em>str</em>) &#8211; file path to handle</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.file_ops.merge_dict_and_avg">
+<code class="descclassname">util.file_ops.</code><code class="descname">merge_dict_and_avg</code><span class="sig-paren">(</span><em>results_add</em>, <em>results_delete</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#merge_dict_and_avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.merge_dict_and_avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes two dictionaries...</p>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:param command_to_run: Command to execute
+:returns: the exit code of the command to be executed remotely and the
+combined stdout - stderr of the executed command
+:rtype: tuple&lt;int, str&gt;
+:type ssh_client: paramiko.SSHClient
+:type command_to_run: str</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-util.html">
+<span id="util-html-module"></span><h2>util.html module<a class="headerlink" href="#module-util.html" title="Permalink to this headline">¶</a></h2>
+<p>HTML generation utilities</p>
+<dl class="function">
+<dt id="util.html.generate_html_foot">
+<code class="descclassname">util.html.</code><code class="descname">generate_html_foot</code><span class="sig-paren">(</span><em>foot_content=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#generate_html_foot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_foot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the ending and the contents at the end of html page.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">HTML code of the page ending.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.generate_html_head">
+<code class="descclassname">util.html.</code><code class="descname">generate_html_head</code><span class="sig-paren">(</span><em>css_style=''</em>, <em>javascript_functions=''</em>, <em>head_content=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#generate_html_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_head" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the head of an html file gets as input the
+styling of the page as a css string parameter and returns a string
+value, which is the html code of the header.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>css_style</strong> &#8211; the css styling text of the html page we produce.</td>
+</tr>
+</tbody>
+</table>
+<p>this parameter must be given as a multiline string.
+:param parameters_dictionary: Parameters of the specific testing scenario
+:param javascript_functions: JavaScript functions for report.
+This parameter must be given as a multiline string.
+:param head_content: this is the html code that will appear at the top
+of the page, just after the &lt;body&gt; tag. We can place here the Title of the
+page and everything else we want to appear at the top.
+:returns: str (the html code of the Header of the html page.)
+:rtype: str
+:type css_style: str
+:type parameters_dictionary: str
+:type javascript_functions: str
+:type head_content: str</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.get_ordered_index">
+<code class="descclassname">util.html.</code><code class="descname">get_ordered_index</code><span class="sig-paren">(</span><em>field_value</em>, <em>map_dictionary</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#get_ordered_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.get_ordered_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of a key in map_dictionary, which is defined by the
+field_value. If no match is found None is returned</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field_value</strong> &#8211; the value of the key we want to search for, inside</td>
+</tr>
+</tbody>
+</table>
+<p>the map_dictionary. This is a helper function called inside the
+single_dict_to_html() and multi_dict_to_html() to avoid repetitions of the
+same code blocks in these functions
+:param map_dictionary: An instance of OrderedDict which has mappings
+between keys and their values as they appear inside an html generated
+document.
+:returns: The index where the field_value should be placed, depending on
+the ordering inside the map_dictionary
+:rtype: int
+:type field_value: str
+:type map_dictionary: collections.OrderedDict</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.isalistofdictionaries">
+<code class="descclassname">util.html.</code><code class="descname">isalistofdictionaries</code><span class="sig-paren">(</span><em>lst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#isalistofdictionaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.isalistofdictionaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a list as argument and checks if all the
+elements of this list are dictionaries. If they are then it returns true,
+else it returns false. If the input argument type is not list then it
+also returns false.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lst</strong> &#8211; The list that we want to check its elements</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all the elements of the list are dictionaries</td>
+</tr>
+</tbody>
+</table>
+<p>False otherwise
+:rtype: bool
+:type lst: list&lt;dict&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.multi_dict_to_html">
+<code class="descclassname">util.html.</code><code class="descname">multi_dict_to_html</code><span class="sig-paren">(</span><em>data</em>, <em>table_title=''</em>, <em>map_dictionary=None</em>, <em>row_ordering_key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#multi_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.multi_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates html tables according to the input it gets from
+the input arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; This datastructure is a list that contains dictionaries of</td>
+</tr>
+</tbody>
+</table>
+<p>strings that contains the pair of field_name:value of all the data we want
+to convert to HTML table.
+:param table_title: An optional argument that contains the title of the
+table we want to generate.
+:param map_dictionary: data structure that contains the pair of
+field_name:value. It defines which fields will be kept from the data input
+dictionary and how their value will be translated in the HTML table.
+:returns: str
+:rtype: str
+:type data: list&lt;dict&gt;
+:type table_title: str
+:type map_dictionary: controller.OrderedDict</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.single_dict_table_data">
+<code class="descclassname">util.html.</code><code class="descname">single_dict_table_data</code><span class="sig-paren">(</span><em>data_values</em>, <em>td_style=None</em>, <em>td_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#single_dict_table_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_table_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a &lt;td&gt; ... &lt;/td&gt; html element for the single_dict_to_html()
+type of tables, data columns. In case that the input data_values is a
+list of dictionaries, this function calls recursively
+single_dict_to_html() and generates sub tables inside the &lt;td&gt; ... &lt;/td&gt;
+html element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_values</strong> &#8211; the data we want to place into a &lt;td&gt; ... &lt;/td&gt;</td>
+</tr>
+</tbody>
+</table>
+<p>html element.
+:param td_style: the styling code for the content of &lt;td&gt;...&lt;/td&gt; html
+element.
+:param cls: the class name attribute of the &lt;td&gt;...&lt;/td&gt; html element
+:returns: html code of a &lt;td&gt;  &lt;/td&gt; element for single_dict_to_html()
+tables
+:rtype: str
+:type style: str
+:type cls: str
+:type data_values: str or list&lt;dict&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.html.single_dict_to_html">
+<code class="descclassname">util.html.</code><code class="descname">single_dict_to_html</code><span class="sig-paren">(</span><em>data</em>, <em>key_title</em>, <em>data_title</em>, <em>table_title=''</em>, <em>map_dictionary=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#single_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates html tables according to the input it gets
+from the input arguments. The table generated is by row, which means that
+on each row the first element is the key value of the dictionary, the
+second element is the data value of the dictionary for the correspondent
+key. The columns are always 2 and their title are defined in the input
+arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; this data structure is a dictionary of strings that contains</td>
+</tr>
+</tbody>
+</table>
+<p>the pair of field_name:value for all the data we want to convert to HTML
+table.
+:param key_title: the title of the column, under which the dictionary key
+values will be placed.
+:param data_title: the title of the column, under which the dictionary data
+values will be placed.
+:param table_title: Optional argument. Contains the title of the table we
+want to generate
+:param map_dictionary: This data structure contains the pair of
+field_name:value. It defines which fields should be kept from the data
+input dictionary and how their value will be translated in the HTML table.
+:returns: str
+:rtype: str
+:type data: dict
+:type key_title: str
+:type data_title: str
+:type table_tytle:str
+:type map_dictionary: collections.OrderedDict</p>
+</dd></dl>
+
+</div>
+<div class="section" id="util-netutil-module">
+<h2>util.netutil module<a class="headerlink" href="#util-netutil-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-util.numeric">
+<span id="util-numeric-module"></span><h2>util.numeric module<a class="headerlink" href="#module-util.numeric" title="Permalink to this headline">¶</a></h2>
+<p>Numeric utilities</p>
+<dl class="function">
+<dt id="util.numeric.tonum">
+<code class="descclassname">util.numeric.</code><code class="descname">tonum</code><span class="sig-paren">(</span><em>str2cast</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/numeric.html#tonum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.numeric.tonum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts a string to the appropriate numeric type, i.e. int or float.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str2cast</strong> &#8211; string to cast</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the numeric value in the appropriate type or &#8220;Impossible cast&#8221;</td>
+</tr>
+</tbody>
+</table>
+<p>string
+:rtype: float
+:type str</p>
+</dd></dl>
+
+</div>
+<div class="section" id="util-plot-json-module">
+<h2>util.plot_json module<a class="headerlink" href="#util-plot-json-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="util-plot-utils-module">
+<h2>util.plot_utils module<a class="headerlink" href="#util-plot-utils-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="util-process-module">
+<h2>util.process module<a class="headerlink" href="#util-process-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-util.stats">
+<span id="util-stats-module"></span><h2>util.stats module<a class="headerlink" href="#module-util.stats" title="Permalink to this headline">¶</a></h2>
+<p>Module that computes statistic properties given a list of samples</p>
+<dl class="function">
+<dt id="util.stats.coefvariance">
+<code class="descclassname">util.stats.</code><code class="descname">coefvariance</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#coefvariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.coefvariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the co-efficient of variation of a number list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their coefficient.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the co-efficient of variation of the float numbers</td>
+</tr>
+</tbody>
+</table>
+<p>in the list
+:rtype: float
+:type samples: list&lt;float&gt;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.stats.mean">
+<code class="descclassname">util.stats.</code><code class="descname">mean</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the mean of a number list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float number, to calculate their mean.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the mean of the float numbers in the list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.stats.stddev">
+<code class="descclassname">util.stats.</code><code class="descname">stddev</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#stddev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.stddev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the standard deviation of a number list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their standard deviation.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the standard deviation of the float numbers in the list.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.stats.variance">
+<code class="descclassname">util.stats.</code><code class="descname">variance</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the variance of a number list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their variance.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the variance of the float numbers in the list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="util-sysstats-module">
+<h2>util.sysstats module<a class="headerlink" href="#util-sysstats-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-util" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">util package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-util.cpu">util.cpu module</a></li>
+<li><a class="reference internal" href="#module-util.customsubprocess">util.customsubprocess module</a></li>
+<li><a class="reference internal" href="#module-util.file_ops">util.file_ops module</a></li>
+<li><a class="reference internal" href="#module-util.html">util.html module</a></li>
+<li><a class="reference internal" href="#util-netutil-module">util.netutil module</a></li>
+<li><a class="reference internal" href="#module-util.numeric">util.numeric module</a></li>
+<li><a class="reference internal" href="#util-plot-json-module">util.plot_json module</a></li>
+<li><a class="reference internal" href="#util-plot-utils-module">util.plot_utils module</a></li>
+<li><a class="reference internal" href="#util-process-module">util.process module</a></li>
+<li><a class="reference internal" href="#module-util.stats">util.stats module</a></li>
+<li><a class="reference internal" href="#util-sysstats-module">util.sysstats module</a></li>
+<li><a class="reference internal" href="#module-util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="stress_test.html"
+                        title="previous chapter">stress_test package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/util.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="stress_test.html" title="stress_test package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Automation Toolkit 1.4.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

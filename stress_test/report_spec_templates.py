@@ -17,8 +17,8 @@ class TestReport:
 
     def sb_active_scalability_mtcbench(self, results_json_file):
         """
-        Returns the report specification object for SouthBound active
-        scalability test with MT-Cbench.
+        Returns the report specification for the Southbound active scalability
+        test with MT-Cbench
 
         :param results_json_file: This is the filepath to the results json file.
         :returns: report specification object
