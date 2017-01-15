@@ -8,8 +8,16 @@
 
 
 class NBGenError(Exception):
-    """Base-class for all NB generator exceptions raised by this module."""
+    """Contains the exception handling concerning the North-Bound Emulator
+    class functionalities.
+    """
     def __init__(self, err_msg=None, err_code=1):
+        """Base-class for all NB generator exceptions raised by this module.
+        :param err_msg: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         self.err_code = err_code
         if err_msg is None:
             Exception.__init__(self, 'NB generator generic exception')
@@ -20,58 +28,54 @@ class NBGenError(Exception):
 
 
 class NBGenNodeConnectionError(NBGenError):
-    """A NB generator node connection error."""
+    """Contains the exception handling concerning the North-Bound Emulator class
+    connectivity.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """A NB generator node connection error."""
         NBGenError.__init__(self, 'Fail to establish ssh connection with '
                             'NB generator node. {0}'.
                             format(additional_error_info), err_code)
 
 
 class NBGenBuildError(NBGenError):
-    """NB generator build failure."""
+    """Contains the exception handling concerning the North-Bound Emulator
+    building functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """NB generator build failure.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         NBGenError.__init__(self, 'Fail to build NB generator. {0}'.
                             format(additional_error_info), err_code)
 
 
 class NBGenCleanError(NBGenError):
-    """NB generator clean failure."""
+
     def __init__(self, additional_error_info='', err_code=1):
+        """NB generator clean failure.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         NBGenError.__init__(self, 'Fail to cleaning NB generator. {0}'.
                             format(additional_error_info), err_code)
 
 
 class NBGenRunError(NBGenError):
-    """NB generator run failure."""
+    """Contains the exception handling concerning the North-Bound Emulator
+    cleaning functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """NB generator run failure.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         NBGenError.__init__(self, 'Fail to run NB generator. {0}'.
-                            format(additional_error_info), err_code)
-
-
-class NBGenGetOperFlowsError(NBGenError):
-    """NB generator handler of getting operational flows failure."""
-    def __init__(self, additional_error_info='', err_code=1):
-        NBGenError.__init__(self, 'Failure during getting operational '
-                            'flows. {0}'.format(additional_error_info),
-                            err_code)
-
-
-class NBGenPollDSError(NBGenError):
-    """NB generator failure during datastore polling."""
-    def __init__(self, additional_error_info='', err_code=1):
-        NBGenError.__init__(self, 'Fail during datastore polling. {0}'.
-                            format(additional_error_info), err_code)
-
-
-class NBGenPollOVSError(NBGenError):
-    """NB generator failure during OpenVSwitch polling."""
-    def __init__(self, additional_error_info='', err_code=1):
-        NBGenError.__init__(self, 'Fail during OpenVSwitch. {0}'.
-                            format(additional_error_info), err_code)
-
-
-class NBGenMonitorRunError(NBGenError):
-    """Error during running monitor threads."""
-    def __init__(self, additional_error_info='', err_code=1):
-        NBGenError.__init__(self, 'Failure in monitor run. {0}'.
                             format(additional_error_info), err_code)

@@ -4,8 +4,6 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Controller Class- All controller-related functionality is here"""
-
 import logging
 import os
 import sys
@@ -19,10 +17,12 @@ import queue
 
 
 class Controller:
+    """ All controller-related functionality is here
+    """
 
     def __init__(self, ctrl_base_dir, test_config):
 
-        """Create a Controller object. Options from JSON input file
+        """Creates a Controller object. Options from JSON input file
         :param test_config: JSON input configuration
         :param ctrl_base_dir: controller base directory
         :type test_config: JSON configuration dictionary
@@ -71,7 +71,7 @@ class Controller:
         """ Factory method. Creates a subclass class depending on the
         controller name
         :returns: a subclass or None
-        :rtype: failed_flow_ops int
+        :rtype: object
         :raises NotImplementedError: in case an invalid controller_name is
         given in the configuration json file
         """
@@ -132,7 +132,8 @@ class Controller:
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
             except:
-                raise(stress_test.controller_exceptions.CtrlNodeConnectionError)
+                raise(stress_test.controller_exceptions.
+                      CtrlNodeConnectionError)
         except stress_test.controller_exceptions.CtrlError as e:
             self.__error_handling(e.err_msg, e.err_code)
 
@@ -211,11 +212,12 @@ class Controller:
                     logging.info('[controller.status]: Not'
                                  'Running- {0}'.format(cmd_output))
                 else:
-                    raise(stress_test.controller_exceptions.CtrlStatusUnknownError(
-                        '[controller.status_handler] Error while fetching '
-                        'status of the controller. Invalid value returned.'
-                        '/n Returned status value: {0}'.
-                        format(cmd_output.strip()), 2))
+                    raise(stress_test.controller_exceptions.
+                          CtrlStatusUnknownError(
+                              '[controller.status_handler] Error while '
+                              'fetching status of the controller. Invalid '
+                              'value returned./n Returned status value: {0}'.
+                              format(cmd_output.strip()), 2))
                 return cmd_output.strip()
             except:
                 raise(stress_test.controller_exceptions.CtrlStatusUnknownError)
@@ -238,13 +240,15 @@ class Controller:
                 gpid = util.process.getpid_listeningonport(self.of_port,
                                                            self._ssh_conn)
                 if gpid != -1:
-                    raise(stress_test.controller_exceptions.CtrlPortConflictError(
-                        '[check_other_controller] Another process is '
-                        'active on port {0}'.format(self.of_port), 2))
+                    raise(stress_test.controller_exceptions.
+                          CtrlPortConflictError(
+                              '[check_other_controller] Another process is '
+                              'active on port {0}'.format(self.of_port), 2))
             except stress_test.controller_exceptions.CtrlError as e:
                 self.__error_handling(e.err_msg, e.err_code)
             except:
-                raise(stress_test.controller_exceptions.CtrlPortConflictError)
+                raise(stress_test.controller_exceptions.
+                      CtrlPortConflictError)
         except stress_test.controller_exceptions.CtrlError as e:
             self.__error_handling(e.err_msg, e.err_code)
 
@@ -422,9 +426,10 @@ class Controller:
                     if gpid > 0:
                         return gpid
                     elif gpid == 0:
-                        raise(stress_test.controller_exceptions.CtrlPortConflictError(
-                            'Another controller seems to have started in the '
-                            'meantime. Exiting...'))
+                        raise(stress_test.controller_exceptions.
+                              CtrlPortConflictError(
+                                  'Another controller seems to have started '
+                                  'in the meantime. Exiting...'))
 
                 raise (stress_test.controller_exceptions.CtrlReadyStateError(
                     'Controller failed to start within a period of {0} '
@@ -579,7 +584,8 @@ class ODL(Controller):
                                              '[controller.disable_persistence]'
                                              )
             except:
-                raise(stress_test.controller_exceptions.ODLDisablePersistenceError)
+                raise(stress_test.controller_exceptions.
+                      ODLDisablePersistenceError)
         except stress_test.controller_exceptions.CtrlError as e:
             self.__error_handling(e.err_msg, e.err_code)
 
@@ -733,7 +739,8 @@ class ODL(Controller):
                     used_ssh_conn.close()
                 return int(ret)
             except:
-                raise(stress_test.controller_exceptions.ODLGetOperSwitchesError)
+                raise(stress_test.controller_exceptions.
+                      ODLGetOperSwitchesError)
         except stress_test.controller_exceptions.CtrlError as e:
             self.__error_handling(e.err_msg, e.err_code)
 

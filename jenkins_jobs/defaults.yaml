@@ -6,32 +6,23 @@
 
 # ------------------------------------------------------------------------------
 # github-sample:
-#     stress_tests_lithium_sr2.yaml
+#     sample_tests_lithium_sr1.yaml
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-# defaults:github-stress
+# defaults:github-sample
 # ------------------------------------------------------------------------------
 
 - defaults:
-    name: github-stress
+    name: github-sample
     project-type: freestyle
     disabled: false
     block-downstream: false
     concurrent: false
-    node: test-server
+    node: NSTAT_192_168_160_206
     scm:
     - git:
-        url: https://github.com/intracom-telecom-sdn/nstat.git
+        url: https://github.com/intracom-telecom-sdn/nstat-cperf.git
         branches: ['{branch}']
     logrotate:
        numToKeep: 30
-    publishers:
-    - html-publisher:
-        dir: /tmp/publisher/
-        files: "report.html"
-        name: NSTAT
-        keep-all: true
-        allow-missing: true
-    - email:
-        recipients: nstat@intracom-telecom.com

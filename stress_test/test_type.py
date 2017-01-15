@@ -12,12 +12,16 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import stress_test.test_run
 import sys
-import time
+
 
 class TestType:
 
     def __init__(self, args):
-        """
+        """ Initializes test type coming from args (user defined in cli),
+            total_samples: list with dictionaries, every "sample" is a
+            dictionary containing keys/values of results gathered at the end
+            of every run within the for loop of every *_run function in
+            TestRun class..
         """
         self.test_type = args.test_type
         self.total_samples = None
@@ -71,7 +75,9 @@ class TestType:
                 file_logging_handler.setLevel(level=logging.DEBUG)
 
     def test_selector(self, args):
-        """
+        """ Selects which test to run depending on the information coming from
+        the args object. nstat_test_type_run variable contains information
+        test_type + sb_emulatore_name, necessary to select which test to run.
         """
         self.set_test_log_level(args)
         json_conf = self.load_test_conf(args)

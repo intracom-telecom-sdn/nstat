@@ -8,8 +8,16 @@
 
 
 class SBEmuError(Exception):
-    """Base-class for all SB emulators exceptions raised by this module."""
+    """Contains the exception handling concerning the South-Bound Emulator
+    class functionalities.
+    """
     def __init__(self, err_msg=None, err_code=1):
+        """Base-class for all SB emulators exceptions raised by this module.
+        :param err_msg: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         self.err_code = err_code
         if err_msg is None:
             Exception.__init__(self, 'SB emulator generic exception')
@@ -20,104 +28,216 @@ class SBEmuError(Exception):
 
 
 class SBEmuNodeConnectionError(SBEmuError):
-    """A SB emulator node connection error."""
+    """Contains the exception handling concerning the South-Bound Emulator class
+    connectivity.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """A SB emulator node connection error.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to establish ssh connection with '
                             'SB emulator node. {0}'.
                             format(additional_error_info), err_code)
 
 
 class SBEmuBuildError(SBEmuError):
-    """A SB emulator build error."""
+    """Contains the exception handling concerning the South-Bound Emulator
+    building functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """A SB emulator build error.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'SB emulator build failure. {0}'.
                             format(additional_error_info), err_code)
 
 
 class SBEmuCleanupError(SBEmuError):
-    """A SB emulator cleanup error."""
+    """Contains the exception handling concerning the South-Bound Emulator
+    cleaning functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """A SB emulator cleanup error.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'SB emulator cleanup failure. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MTCbenchRunError(SBEmuError):
-    """MTCbench fail to run error."""
+    """Contains the exception handling concerning the South-Bound Emulator
+    running functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """MTCbench fail to run error.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Error occurred while running MTCbench. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetConfGenerateError(SBEmuError):
-    """Fail generate configuration file for multinet."""
+    """Contains the exception handling concerning the South-Bound Emulator
+    building functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail generate configuration file for multinet
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Error occurred while generating multinet '
                             'configuration file. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetOutputParsingError(SBEmuError):
-    """Fail parsing multinet handler output."""
+    """Contains the exception handling concerning the console output from
+    the South-Bound Multinet Emulator.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail parsing multinet handler output.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Error occurred while parsing multinet '
                             'handler output. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetDeployError(SBEmuError):
-    """Fail to deploy multinet workers."""
+    """Contains the exception handling concerning the South-Bound Multinet
+    Emulator deploy.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail to deploy multinet workers.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to deploy multinet workers. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetInitToposError(SBEmuError):
-    """Fail to initialize multinet topology."""
+    """Contains the exception handling concerning the initialization of a
+    South-Bound Multinet topology
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail to initialize multinet topology.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to initialize multinet topology. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetStartToposError(SBEmuError):
-    """Fail to start multinet topology."""
+    """Contains the exception handling concerning the staring of a
+    South-Bound Multinet topology
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail to start multinet topology.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to start multinet topology. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetGetSwitchesError(SBEmuError):
-    """Fail to get number of switches of multinet topology."""
+    """Contains the exception handling concerning the returned switches from
+    a the South-Bound Emulator topology
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail to get number of switches of multinet topology.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to get multinet topology total switch'
                             ' number. {0}'.format(additional_error_info),
                             err_code)
 
 
 class MultinetGetFlowsError(SBEmuError):
-    """Fail to get total number of flows of multinet topology."""
+    """Contains the exception handling concerning the returned flows from
+    a the South-Bound Emulator topology
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail to get total number of flows of multinet topology.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to get multinet topology total flows'
                             ' number. {0}'.format(additional_error_info),
                             err_code)
 
 
 class MultinetTraffigGenError(SBEmuError):
-    """Error while generating traffic in multinet topology."""
+    """Contains the exception handling concerning the South-Bound Multinet
+    Emulator traffic generator functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Error while generating traffic in multinet topology.
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail generating multinet topology PacketIn'
                             ' and FlowMod traffic. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetStopToposError(SBEmuError):
-    """Fail to stop multinet topology."""
+    """Contains the exception handling concerning the stopping of a
+    South-Bound Multinet topology
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail to stop multinet topology
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to stop multinet topology. {0}'.
                             format(additional_error_info), err_code)
 
 
 class MultinetCleanupError(SBEmuError):
-    """Fail to cleanup multinet workers."""
+    """Contains the exception handling concerning the South-Bound Multinet
+    Emulator cleaning functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
+        """Fail to cleanup multinet workers
+        :param additional_error_info: the general error message.
+        :param err_code: the specific error code.
+        :type str
+        :type int
+        """
         SBEmuError.__init__(self, 'Fail to cleanup multinet workers. {0}'.
                             format(additional_error_info), err_code)

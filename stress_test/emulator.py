@@ -19,7 +19,8 @@ import util.file_ops
 
 
 class SBEmu:
-
+    """ All South-bound related functionality is here
+    """
     def __init__(self, sb_emu_base_dir, test_config):
         """Create an SB-Emulator object. Options from JSON input file
         :param test_config: JSON input configuration
@@ -53,7 +54,11 @@ class SBEmu:
     def new(sb_emu_base_dir, test_config):
         """Factory method. Creates a subclass class depending on the
         SB-Emulator name
+        :param test_config: JSON input configuration
+        :param sb_emu_base_dir: emulator base directory
         :returns: a subclass or None
+        :type test_config: JSON configuration dictionary
+        :type sb_emu_base_dir: str
         :rtype: object
         :raises NotImplementedError: in case an invalid sb_emulator_name is
         given in the json configuration file
@@ -180,9 +185,10 @@ class SBEmu:
                         logging.info("[SB-Emulator] Successful clean")
                     else:
                         self.status = 'NOT_CLEANED'
-                        raise(stress_test.emulator_exceptions.SBEmuCleanupError(
-                            '[SB-Emulator] Failure during cleaning: {0}'.
-                            format(cmd_output), exit_status))
+                        raise(stress_test.emulator_exceptions.
+                              SBEmuCleanupError(
+                                  '[SB-Emulator] Failure during cleaning: {0}'.
+                                  format(cmd_output), exit_status))
             except stress_test.emulator_exceptions.SBEmuError as e:
                 self.__error_handling(e.err_msg, e.err_code)
             except:
@@ -206,7 +212,8 @@ class SBEmu:
 
 
 class MTCBench(SBEmu):
-
+    """ All South-bound MTCbench related functionality is here
+    """
     def __init__(self, sb_emu_base_dir, test_config):
         """Initialize the creation of an MTCbench SB emulator object.
         Inherits from SBEmu class.
@@ -237,13 +244,17 @@ class MTCBench(SBEmu):
         self.internal_repeats = test_config['mtcbench_internal_repeats']
 
     def get_topo_bootup_ms(self):
-        """Returns the total topology bootup time in ms.
+        """Calculates and returns the total topology bootup time in ms.
+        :returns: the total time for the topology to bootup
+        :rtype: int
         """
         topo_bootup_ms = self.threads * self.thread_creation_delay_ms
         return topo_bootup_ms
 
     def get_overall_topo_size(self):
-        """Returns the total topology size.
+        """Calculates and returns the total topology size.
+        :returns: the total switch number
+        :rtype: int
         """
         overall_topo_size = self.threads * self.switches_per_thread
         return overall_topo_size
@@ -320,7 +331,8 @@ class MTCBench(SBEmu):
 
 
 class Multinet(SBEmu):
-
+    """ All South-bound Multinet related functionality is here
+    """
     def __init__(self, sb_emu_base_dir, test_config):
         """Initialize the creation of an Multinet SB emulator object.
         Inherits from SBEmu class.
@@ -386,14 +398,18 @@ class Multinet(SBEmu):
         self.venv_hnd = self.base_dir + "bin/venv_handler_master.sh"
 
     def get_topo_bootup_ms(self):
-        """Returns the total topology bootup time in ms.
+        """Calculates and returns the total topology bootup time in ms.
+        :returns: the total time for the topology to bootup
+        :rtype: int
         """
         topo_bootup_ms = \
             (self.topo_size // self.topo_group_size) * self.topo_group_delay_ms
         return topo_bootup_ms
 
     def get_overall_topo_size(self):
-        """Returns the total topology size.
+        """Calculates and returns the total topology size.
+        :returns: the total worker number
+        :rtype: int
         """
         overall_topo_size = self.topo_size * len(self.workers_ips)
         return overall_topo_size
@@ -493,6 +509,10 @@ class Multinet(SBEmu):
 
     def deploy(self, cntrl_ip, cntrl_of_port):
         """ Wrapper to the Multinet SB-Emulator deploy handler
+        :param cntrl_ip: The IP of the Controller.
+        :param cntrl_of_port: The openflow interface port of the Controller
+        :type cntrl_ip: str
+        :type cntrl_of_port: int
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.MultinetDeployError: in case of Multinet
         deploy error
