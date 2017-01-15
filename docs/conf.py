@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # nstat.src documentation build configuration file, created by
-# sphinx-quickstart on Sun Jan 15 12:28:37 2017.
+# sphinx-quickstart on Sun Jan 15 15:07:09 2017.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -21,6 +21,7 @@ import os
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.append(os.path.abspath('../stress_test/'))
 sys.path.append(os.path.abspath('../util/'))
+sys.path.append(os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
