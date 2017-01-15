@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>stress_test package &mdash; nstat.src  documentation</title>
+    <title>stress_test package &mdash; NSTAT: Network Stress Automation Toolkit 1.4.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '',
+        VERSION:     '1.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="nstat.src  documentation" href="index.html" />
+    <link rel="top" title="NSTAT: Network Stress Automation Toolkit 1.4.1 documentation" href="index.html" />
     <link rel="next" title="util package" href="util.html" />
     <link rel="prev" title="emulators package" href="emulators.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="emulators.html" title="emulators package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">nstat.src  documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Automation Toolkit 1.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -67,119 +67,133 @@
 <dt id="stress_test.controller_exceptions.CtrlBuildError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlBuildError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlBuildError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlBuildError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller build error.</p>
+<p>Contains the exception handling concerning the Controller building
+functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlCleanupError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlCleanupError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlCleanupError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlCleanupError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller cleanup error.</p>
+<p>Contains the exception handling concerning the Controller cleaning
+functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlError</code><span class="sig-paren">(</span><em>err_msg=None</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
-<p>Base-class for all controller exceptions raised by this module.</p>
+<p>Contains the exception handling concerning the Controller class
+functionalities.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlNodeConnectionError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlNodeConnectionError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlNodeConnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlNodeConnectionError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller node connection error.</p>
+<p>Contains the exception handling concerning the Controller connectivity.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlPortConflictError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlPortConflictError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlPortConflictError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlPortConflictError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller port conflict error.</p>
+<p>Contains the exception handling concerning errors in the Southbound
+port of the controller</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlReadyStateError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlReadyStateError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlReadyStateError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlReadyStateError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller ready state error.</p>
+<p>Contains the exception handling concerning the controller readyness</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlStartError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlStartError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlStartError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlStartError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller start error.</p>
+<p>Contains the exception handling concerning the Controller starting
+functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlStatusUnknownError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlStatusUnknownError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlStatusUnknownError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlStatusUnknownError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller status unknown error.</p>
+<p>Contains the exception handling unknown errors on the Controller</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.CtrlStopError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">CtrlStopError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#CtrlStopError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.CtrlStopError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>A controller stop error.</p>
+<p>Contains the exception handling concerning the Controller stopping
+functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLChangeStats">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLChangeStats</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLChangeStats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLChangeStats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL fail to change statistics period error.</p>
+<p>Contains the exception handling concerning the Opendaylight
+Controller changing statistics period functionality</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLDisablePersistenceError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLDisablePersistenceError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLDisablePersistenceError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLDisablePersistenceError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL fail to disable persistence error.</p>
+<p>Contains the exception handling concerning the Opendaylight
+Controller changing persistence functionality</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLFlowModConfError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLFlowModConfError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLFlowModConfError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLFlowModConfError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL fail to configure for flow modifications send error.</p>
+<p>Contains the exception handling concerning the Opendaylight
+Controller flow modification functionality</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLGetOperFlowsError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLGetOperFlowsError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLGetOperFlowsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLGetOperFlowsError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL fail to get installed flows from operational datastore error.</p>
+<p>Contains the exception handling concerning the returned flows from
+Opendaylight Controller datastore</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLGetOperHostsError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLGetOperHostsError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLGetOperHostsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLGetOperHostsError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL fail to get hosts from operational datastore error.</p>
+<p>Contains the exception handling concerning the returned hosts from
+Opendaylight Controller datastore</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLGetOperLinksError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLGetOperLinksError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLGetOperLinksError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLGetOperLinksError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL fail to get topology links from operational datastore error.</p>
+<p>Contains the exception handling concerning the returned links from
+Opendaylight Controller datastore</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLGetOperSwitchesError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLGetOperSwitchesError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLGetOperSwitchesError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLGetOperSwitchesError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL fail to get topology switches from operational datastore error.</p>
+<p>Contains the exception handling concerning the returned switches from
+Opendaylight Controller datastore</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.controller_exceptions.ODLXMLError">
 <em class="property">exception </em><code class="descclassname">stress_test.controller_exceptions.</code><code class="descname">ODLXMLError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller_exceptions.html#ODLXMLError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller_exceptions.ODLXMLError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.controller_exceptions.CtrlError" title="stress_test.controller_exceptions.CtrlError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.controller_exceptions.CtrlError</span></code></a></p>
-<p>ODL XML generation error.</p>
+<p>Contains the exception handling concerning the Opendaylight
+Controller XML generation</p>
 </dd></dl>
 
 </div>
@@ -193,105 +207,120 @@
 <dt id="stress_test.emulator_exceptions.MTCbenchRunError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MTCbenchRunError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MTCbenchRunError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MTCbenchRunError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>MTCbench fail to run error.</p>
+<p>Contains the exception handling concerning the South-Bound Emulator
+running functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetCleanupError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetCleanupError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetCleanupError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetCleanupError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail to cleanup multinet workers.</p>
+<p>Contains the exception handling concerning the South-Bound Multinet
+Emulator cleaning functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetConfGenerateError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetConfGenerateError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetConfGenerateError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetConfGenerateError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail generate configuration file for multinet.</p>
+<p>Contains the exception handling concerning the South-Bound Emulator
+building functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetDeployError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetDeployError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetDeployError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetDeployError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail to deploy multinet workers.</p>
+<p>Contains the exception handling concerning the South-Bound Multinet
+Emulator deploy.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetGetFlowsError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetGetFlowsError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetGetFlowsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetGetFlowsError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail to get total number of flows of multinet topology.</p>
+<p>Contains the exception handling concerning the returned flows from
+a the South-Bound Emulator topology</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetGetSwitchesError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetGetSwitchesError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetGetSwitchesError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetGetSwitchesError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail to get number of switches of multinet topology.</p>
+<p>Contains the exception handling concerning the returned switches from
+a the South-Bound Emulator topology</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetInitToposError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetInitToposError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetInitToposError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetInitToposError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail to initialize multinet topology.</p>
+<p>Contains the exception handling concerning the initialization of a
+South-Bound Multinet topology</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetOutputParsingError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetOutputParsingError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetOutputParsingError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetOutputParsingError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail parsing multinet handler output.</p>
+<p>Contains the exception handling concerning the console output from
+the South-Bound Multinet Emulator.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetStartToposError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetStartToposError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetStartToposError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetStartToposError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail to start multinet topology.</p>
+<p>Contains the exception handling concerning the staring of a
+South-Bound Multinet topology</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetStopToposError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetStopToposError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetStopToposError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetStopToposError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Fail to stop multinet topology.</p>
+<p>Contains the exception handling concerning the stopping of a
+South-Bound Multinet topology</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.MultinetTraffigGenError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">MultinetTraffigGenError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#MultinetTraffigGenError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.MultinetTraffigGenError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>Error while generating traffic in multinet topology.</p>
+<p>Contains the exception handling concerning the South-Bound Multinet
+Emulator traffic generator functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.SBEmuBuildError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">SBEmuBuildError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#SBEmuBuildError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.SBEmuBuildError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>A SB emulator build error.</p>
+<p>Contains the exception handling concerning the South-Bound Emulator
+building functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.SBEmuCleanupError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">SBEmuCleanupError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#SBEmuCleanupError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.SBEmuCleanupError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>A SB emulator cleanup error.</p>
+<p>Contains the exception handling concerning the South-Bound Emulator
+cleaning functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.SBEmuError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">SBEmuError</code><span class="sig-paren">(</span><em>err_msg=None</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#SBEmuError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.SBEmuError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
-<p>Base-class for all SB emulators exceptions raised by this module.</p>
+<p>Contains the exception handling concerning the South-Bound Emulator
+class functionalities.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.emulator_exceptions.SBEmuNodeConnectionError">
 <em class="property">exception </em><code class="descclassname">stress_test.emulator_exceptions.</code><code class="descname">SBEmuNodeConnectionError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/emulator_exceptions.html#SBEmuNodeConnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.emulator_exceptions.SBEmuNodeConnectionError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.emulator_exceptions.SBEmuError" title="stress_test.emulator_exceptions.SBEmuError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.emulator_exceptions.SBEmuError</span></code></a></p>
-<p>A SB emulator node connection error.</p>
+<p>Contains the exception handling concerning the South-Bound Emulator class
+connectivity.</p>
 </dd></dl>
 
 </div>
@@ -374,63 +403,38 @@ and generates the corresponded html code.</p>
 <dt id="stress_test.nb_generator_exceptions.NBGenBuildError">
 <em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenBuildError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenBuildError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenBuildError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>NB generator build failure.</p>
+<p>Contains the exception handling concerning the North-Bound Emulator
+building functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.nb_generator_exceptions.NBGenCleanError">
 <em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenCleanError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenCleanError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenCleanError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>NB generator clean failure.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.nb_generator_exceptions.NBGenError">
 <em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenError</code><span class="sig-paren">(</span><em>err_msg=None</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
-<p>Base-class for all NB generator exceptions raised by this module.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="stress_test.nb_generator_exceptions.NBGenGetOperFlowsError">
-<em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenGetOperFlowsError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenGetOperFlowsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenGetOperFlowsError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>NB generator handler of getting operational flows failure.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="stress_test.nb_generator_exceptions.NBGenMonitorRunError">
-<em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenMonitorRunError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenMonitorRunError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenMonitorRunError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>Error during running monitor threads.</p>
+<p>Contains the exception handling concerning the North-Bound Emulator
+class functionalities.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.nb_generator_exceptions.NBGenNodeConnectionError">
 <em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenNodeConnectionError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenNodeConnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenNodeConnectionError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>A NB generator node connection error.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="stress_test.nb_generator_exceptions.NBGenPollDSError">
-<em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenPollDSError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenPollDSError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenPollDSError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>NB generator failure during datastore polling.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="stress_test.nb_generator_exceptions.NBGenPollOVSError">
-<em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenPollOVSError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenPollOVSError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenPollOVSError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>NB generator failure during OpenVSwitch polling.</p>
+<p>Contains the exception handling concerning the North-Bound Emulator class
+connectivity.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.nb_generator_exceptions.NBGenRunError">
 <em class="property">exception </em><code class="descclassname">stress_test.nb_generator_exceptions.</code><code class="descname">NBGenRunError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/nb_generator_exceptions.html#NBGenRunError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.nb_generator_exceptions.NBGenRunError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.nb_generator_exceptions.NBGenError" title="stress_test.nb_generator_exceptions.NBGenError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.nb_generator_exceptions.NBGenError</span></code></a></p>
-<p>NB generator run failure.</p>
+<p>Contains the exception handling concerning the North-Bound Emulator
+cleaning functionality.</p>
 </dd></dl>
 
 </div>
@@ -447,42 +451,48 @@ and generates the corresponded html code.</p>
 <dt id="stress_test.oftraf_exceptions.OftrafBuildError">
 <em class="property">exception </em><code class="descclassname">stress_test.oftraf_exceptions.</code><code class="descname">OftrafBuildError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/oftraf_exceptions.html#OftrafBuildError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.oftraf_exceptions.OftrafBuildError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.oftraf_exceptions.OftrafError" title="stress_test.oftraf_exceptions.OftrafError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.oftraf_exceptions.OftrafError</span></code></a></p>
-<p>An oftraf build error.</p>
+<p>Contains the exception handling concerning the Oftraf building
+functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.oftraf_exceptions.OftrafCleanError">
 <em class="property">exception </em><code class="descclassname">stress_test.oftraf_exceptions.</code><code class="descname">OftrafCleanError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/oftraf_exceptions.html#OftrafCleanError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.oftraf_exceptions.OftrafCleanError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.oftraf_exceptions.OftrafError" title="stress_test.oftraf_exceptions.OftrafError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.oftraf_exceptions.OftrafError</span></code></a></p>
-<p>An oftraf clean error.</p>
+<p>Contains the exception handling concerning the Oftraf measurements
+(packet counts) functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.oftraf_exceptions.OftrafError">
 <em class="property">exception </em><code class="descclassname">stress_test.oftraf_exceptions.</code><code class="descname">OftrafError</code><span class="sig-paren">(</span><em>err_msg=None</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/oftraf_exceptions.html#OftrafError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.oftraf_exceptions.OftrafError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
-<p>Base-class for all oftraf exceptions raised by this module.</p>
+<p>Contains the exception handling concerning the Oftraf class
+functionalities.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.oftraf_exceptions.OftrafGetResultError">
 <em class="property">exception </em><code class="descclassname">stress_test.oftraf_exceptions.</code><code class="descname">OftrafGetResultError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/oftraf_exceptions.html#OftrafGetResultError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.oftraf_exceptions.OftrafGetResultError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.oftraf_exceptions.OftrafError" title="stress_test.oftraf_exceptions.OftrafError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.oftraf_exceptions.OftrafError</span></code></a></p>
-<p>An oftraf get results error.</p>
+<p>Contains the exception handling concerning the Oftraf cleaning
+functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.oftraf_exceptions.OftrafStartError">
 <em class="property">exception </em><code class="descclassname">stress_test.oftraf_exceptions.</code><code class="descname">OftrafStartError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/oftraf_exceptions.html#OftrafStartError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.oftraf_exceptions.OftrafStartError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.oftraf_exceptions.OftrafError" title="stress_test.oftraf_exceptions.OftrafError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.oftraf_exceptions.OftrafError</span></code></a></p>
-<p>An oftraf start error.</p>
+<p>Contains the exception handling concerning the Oftraf starting
+functionality.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="stress_test.oftraf_exceptions.OftrafStopError">
 <em class="property">exception </em><code class="descclassname">stress_test.oftraf_exceptions.</code><code class="descname">OftrafStopError</code><span class="sig-paren">(</span><em>additional_error_info=''</em>, <em>err_code=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/oftraf_exceptions.html#OftrafStopError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.oftraf_exceptions.OftrafStopError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#stress_test.oftraf_exceptions.OftrafError" title="stress_test.oftraf_exceptions.OftrafError"><code class="xref py py-class docutils literal"><span class="pre">stress_test.oftraf_exceptions.OftrafError</span></code></a></p>
-<p>An oftraf stop error.</p>
+<p>Contains the exception handling concerning the Oftraf stopping
+functionality.</p>
 </dd></dl>
 
 </div>
@@ -491,8 +501,6 @@ and generates the corresponded html code.</p>
 </div>
 <div class="section" id="module-stress_test.report_spec">
 <span id="stress-test-report-spec-module"></span><h2>stress_test.report_spec module<a class="headerlink" href="#module-stress_test.report_spec" title="Permalink to this headline">¶</a></h2>
-<p>Contains data structure of report element and tables inside the report.
-These are used to generate the html report</p>
 <dl class="class">
 <dt id="stress_test.report_spec.ReportSpec">
 <em class="property">class </em><code class="descclassname">stress_test.report_spec.</code><code class="descname">ReportSpec</code><span class="sig-paren">(</span><em>config_json</em>, <em>results_json</em>, <em>title</em>, <em>config_tables</em>, <em>results_table</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/report_spec.html#ReportSpec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.report_spec.ReportSpec" title="Permalink to this definition">¶</a></dt>
@@ -553,8 +561,8 @@ html report.</p>
 <dl class="method">
 <dt id="stress_test.report_spec_templates.TestReport.sb_active_scalability_mtcbench">
 <code class="descname">sb_active_scalability_mtcbench</code><span class="sig-paren">(</span><em>results_json_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/report_spec_templates.html#TestReport.sb_active_scalability_mtcbench"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.report_spec_templates.TestReport.sb_active_scalability_mtcbench" title="Permalink to this definition">¶</a></dt>
-<dd><p>It returns all the information that is needed for the generation of the
-report for the specific test.</p>
+<dd><p>It returns all the information that is needed for the generation of
+the report for the specific test.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -791,11 +799,11 @@ html_generation.py, that is responsible for the report generation.
         <li class="right" >
           <a href="emulators.html" title="emulators package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">nstat.src  documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Automation Toolkit 1.4.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2017, Author.
+        &copy; Copyright 2017, Intracom S.A. Telecom Solutions.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
