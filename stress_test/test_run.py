@@ -23,9 +23,11 @@ import util.file_ops
 class TestRun:
 
     def __init__(self, args, json_conf, test_type):
-        """Initializes the appropriate test component objects according to the
+        """
+        Initializes the appropriate test component objects according to the
         test_type and the test configuration json object, in order to prepare
         the test for running
+
         :param args:
         :param json_conf:
         :param test_type:
@@ -91,14 +93,18 @@ class TestRun:
                                          json_conf,
                                          json_output,
                                          output_dir):
-        """ Runs the SouthBound scalability or stability test with active
+        """
+        Runs the SouthBound scalability or stability test with active
         MT-Cbench switches
+
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: dict
-        :type json_output: str
-        :type output_dir: str
+        :returns: total_samples: a list of dictionaries (one dict per test run)
+        :rtype: list<dict>
+        :type: json_conf: dict
+        :type: json_output: str
+        :type: output_dir: str
         """
         try:
             global_sample_id = 0
@@ -170,14 +176,16 @@ class TestRun:
                                            json_conf,
                                            json_output,
                                            output_dir):
-        """ Runs the SouthBound scalability or stability test with active
+        """
+        Runs the SouthBound scalability or stability test with active
         MT-Cbench switches
+
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
-        :type json_conf: dict
-        :type json_output: str
-        :type output_dir: str
+        :type: json_conf: dict
+        :type: json_output: str
+        :type: output_dir: str
         """
         try:
 

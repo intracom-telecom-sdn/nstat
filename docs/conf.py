@@ -53,7 +53,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'NSTAT: Network Stress Automation Toolkit'
+project = u'NSTAT: Network Stress Test Automation Toolkit'
 copyright = u'2017, Intracom S.A. Telecom Solutions'
 author = u'Intracom S.A. Telecom Solutions'
 
@@ -229,8 +229,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'nstatsrc.tex', u'nstat.src Documentation',
-     u'Author', 'manual'),
+    (master_doc, 'nstatsrc.tex', u'NSTAT Documentation',
+     u'Intracom S.A. Telecom Solutions', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -259,7 +259,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'nstatsrc', u'nstat.src Documentation',
+    (master_doc, 'nstatsrc', u'NSTAT Documentation',
      [author], 1)
 ]
 
@@ -273,7 +273,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'nstatsrc', u'nstat.src Documentation',
+    (master_doc, 'nstatsrc', u'NSTAT Documentation',
      author, 'nstatsrc', 'One line description of project.',
      'Miscellaneous'),
 ]

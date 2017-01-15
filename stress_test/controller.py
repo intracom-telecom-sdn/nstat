@@ -23,6 +23,7 @@ class Controller:
     def __init__(self, ctrl_base_dir, test_config):
 
         """Creates a Controller object. Options from JSON input file
+
         :param test_config: JSON input configuration
         :param ctrl_base_dir: controller base directory
         :type test_config: JSON configuration dictionary
