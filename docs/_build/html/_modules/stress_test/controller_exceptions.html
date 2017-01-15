@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>stress_test.controller_exceptions &mdash; nstat.src  documentation</title>
+    <title>stress_test.controller_exceptions &mdash; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '',
+        VERSION:     '1.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="nstat.src  documentation" href="../../index.html" />
+    <link rel="top" title="NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body role="document">
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">nstat.src  documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -57,8 +57,17 @@
 
 
 <div class="viewcode-block" id="CtrlError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlError">[docs]</a><span class="k">class</span> <span class="nc">CtrlError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base-class for all controller exceptions raised by this module.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Controller class</span>
+<span class="sd">    functionalities.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err_msg</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Base-class for all controller exceptions raised by this module.</span>
+<span class="sd">        :param err_msg: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">err_code</span> <span class="o">=</span> <span class="n">err_code</span>
         <span class="k">if</span> <span class="n">err_msg</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller generic exception&#39;</span><span class="p">)</span>
@@ -69,120 +78,243 @@
 
 
 <div class="viewcode-block" id="CtrlNodeConnectionError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlNodeConnectionError">[docs]</a><span class="k">class</span> <span class="nc">CtrlNodeConnectionError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller node connection error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Controller connectivity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller node connection error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Fail to establish ssh connection with &#39;</span>
                                  <span class="s1">&#39;controller node. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CtrlBuildError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlBuildError">[docs]</a><span class="k">class</span> <span class="nc">CtrlBuildError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller build error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Controller building</span>
+<span class="sd">    functionality.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller build error</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller build failure. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CtrlStartError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlStartError">[docs]</a><span class="k">class</span> <span class="nc">CtrlStartError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller start error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Controller starting</span>
+<span class="sd">    functionality.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller start error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller start failure. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CtrlStopError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlStopError">[docs]</a><span class="k">class</span> <span class="nc">CtrlStopError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller stop error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Controller stopping</span>
+<span class="sd">    functionality.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller stop error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller stop failure. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CtrlCleanupError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlCleanupError">[docs]</a><span class="k">class</span> <span class="nc">CtrlCleanupError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller cleanup error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Controller cleaning</span>
+<span class="sd">    functionality.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller cleanup error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller cleanup failure. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CtrlStatusUnknownError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlStatusUnknownError">[docs]</a><span class="k">class</span> <span class="nc">CtrlStatusUnknownError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller status unknown error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling unknown errors on the Controller</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller status unknown error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller fail to get status. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CtrlReadyStateError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlReadyStateError">[docs]</a><span class="k">class</span> <span class="nc">CtrlReadyStateError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller ready state error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the controller readyness</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller ready state error.&quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller did not reach &#39;</span>
                                  <span class="s1">&#39;ready state. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CtrlPortConflictError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.CtrlPortConflictError">[docs]</a><span class="k">class</span> <span class="nc">CtrlPortConflictError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A controller port conflict error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning errors in the Southbound</span>
+<span class="sd">    port of the controller</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A controller port conflict error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Controller SouthBound port is in &#39;</span>
                                  <span class="s1">&#39;use by another process. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLXMLError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLXMLError">[docs]</a><span class="k">class</span> <span class="nc">ODLXMLError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL XML generation error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Opendaylight</span>
+<span class="sd">    Controller XML generation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL XML generation error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL Fail to generate XML files. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLDisablePersistenceError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLDisablePersistenceError">[docs]</a><span class="k">class</span> <span class="nc">ODLDisablePersistenceError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL fail to disable persistence error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Opendaylight</span>
+<span class="sd">    Controller changing persistence functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL fail to disable persistence error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL Fail to disable persistence mode. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLChangeStats"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLChangeStats">[docs]</a><span class="k">class</span> <span class="nc">ODLChangeStats</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL fail to change statistics period error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Opendaylight</span>
+<span class="sd">    Controller changing statistics period functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL fail to change statistics period error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL Fail to change statistics period. {0}&#39;</span><span class="o">.</span>
                                  <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLFlowModConfError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLFlowModConfError">[docs]</a><span class="k">class</span> <span class="nc">ODLFlowModConfError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL fail to configure for flow modifications send error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the Opendaylight</span>
+<span class="sd">    Controller flow modification functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL fail to configure for flow modifications send error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL Fail to make configuration to send &#39;</span>
                            <span class="s1">&#39;flow modifications. {0}&#39;</span><span class="o">.</span>
                            <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLGetOperHostsError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLGetOperHostsError">[docs]</a><span class="k">class</span> <span class="nc">ODLGetOperHostsError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL fail to get hosts from operational datastore error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the returned hosts from</span>
+<span class="sd">    Opendaylight Controller datastore</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL fail to get hosts from operational datastore error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL fail to get hosts from &#39;</span>
                            <span class="s1">&#39;operational datastore. {0}&#39;</span><span class="o">.</span>
                            <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLGetOperFlowsError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLGetOperFlowsError">[docs]</a><span class="k">class</span> <span class="nc">ODLGetOperFlowsError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL fail to get installed flows from operational datastore error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the returned flows from</span>
+<span class="sd">    Opendaylight Controller datastore</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL fail to get installed flows from operational datastore error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL fail to get installed flows from &#39;</span>
                            <span class="s1">&#39;operational datastore. {0}&#39;</span><span class="o">.</span>
                            <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLGetOperSwitchesError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLGetOperSwitchesError">[docs]</a><span class="k">class</span> <span class="nc">ODLGetOperSwitchesError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL fail to get topology switches from operational datastore error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the returned switches from</span>
+<span class="sd">    Opendaylight Controller datastore</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL fail to get topology switches from operational datastore error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL fail to get topology switches from &#39;</span>
                            <span class="s1">&#39;operational datastore. {0}&#39;</span><span class="o">.</span>
                            <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ODLGetOperLinksError"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller_exceptions.ODLGetOperLinksError">[docs]</a><span class="k">class</span> <span class="nc">ODLGetOperLinksError</span><span class="p">(</span><span class="n">CtrlError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;ODL fail to get topology links from operational datastore error.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Contains the exception handling concerning the returned links from</span>
+<span class="sd">    Opendaylight Controller datastore</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_error_info</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">err_code</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ODL fail to get topology links from operational datastore error.</span>
+<span class="sd">        :param additional_error_info: the general error message.</span>
+<span class="sd">        :param err_code: the specific error code.</span>
+<span class="sd">        :type str</span>
+<span class="sd">        :type int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CtrlError</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ODL fail to get topology links from &#39;</span>
                            <span class="s1">&#39;operational datastore. {0}&#39;</span><span class="o">.</span>
                            <span class="n">format</span><span class="p">(</span><span class="n">additional_error_info</span><span class="p">),</span> <span class="n">err_code</span><span class="p">)</span></div>
@@ -219,12 +351,12 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">nstat.src  documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2017, Author.
+        &copy; Copyright 2017, Intracom S.A. Telecom Solutions.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
