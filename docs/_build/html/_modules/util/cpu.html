@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>util.cpu &mdash; NSTAT 1.1 documentation</title>
+    <title>util.cpu &mdash; nstat.src  documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1',
+        VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,11 +23,11 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="NSTAT 1.1 documentation" href="../../index.html" />
+    <link rel="top" title="nstat.src  documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,22 +36,22 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">nstat.src  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for util.cpu</h1><div class="highlight"><pre>
-<span class="c"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
-<span class="c">#</span>
-<span class="c"># This program and the accompanying materials are made available under the</span>
-<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
-<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+<span class="c1"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
 
 <span class="sd">&quot;&quot;&quot; CPU-related utility functions &quot;&quot;&quot;</span>
 
@@ -69,28 +67,28 @@
 <span class="sd">    CPUs is returned.</span>
 
 <span class="sd">    :param shares_list: values with the CPU percentages</span>
-<span class="sd">    for each process</span>
+<span class="sd">                        for each process</span>
 <span class="sd">    :returns: a tuple with the CPU lists for each process</span>
 <span class="sd">    :raises ValueError: When input leads to an invalid CPU sharing.</span>
 <span class="sd">    :rtype: tuple&lt;list&lt;int&gt;&gt;</span>
 <span class="sd">    :type shares_list: list&lt;int&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c"># check if we have values greater than 100 in shares_list</span>
+    <span class="c1"># check if we have values greater than 100 in shares_list</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shares_list</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">((</span>
-            <span class="s">&#39;[compute_cpu_shares] Invalid shares_list values, we cannot have &#39;</span>
-            <span class="s">&#39;values &gt; than 100. Return empty affinity lists.&#39;</span><span class="p">))</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Element greater than 100 in shares_list.&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;[compute_cpu_shares] Invalid shares_list values, we cannot have &#39;</span>
+            <span class="s1">&#39;values &gt; than 100. Return empty affinity lists.&#39;</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Element greater than 100 in shares_list.&#39;</span><span class="p">)</span>
 
-    <span class="c"># The sum of all shares (but those equal to 0 or 100) should be less that</span>
-    <span class="c"># or equal to 100</span>
+    <span class="c1"># The sum of all shares (but those equal to 0 or 100) should be less that</span>
+    <span class="c1"># or equal to 100</span>
     <span class="k">if</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shares_list</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">100</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">((</span>
-            <span class="s">&#39;[compute_cpu_shares] Invalid shares_list values, sum of &#39;</span>
-            <span class="s">&#39;shares_list must be &lt;= 100. Return empty affinity lists.&#39;</span><span class="p">))</span>
+            <span class="s1">&#39;[compute_cpu_shares] Invalid shares_list values, sum of &#39;</span>
+            <span class="s1">&#39;shares_list must be &lt;= 100. Return empty affinity lists.&#39;</span><span class="p">))</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s">&#39;Sum of non 100 elements in shares_list is greater than 100.&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;Sum of non 100 elements in shares_list is greater than 100.&#39;</span><span class="p">)</span>
 
     <span class="n">current_cpu</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -104,12 +102,12 @@
 
                 <span class="n">current_cpu</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cpu_afinity_list</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;[compute_cpu_shares] Invalid shares_list &#39;</span>
-                              <span class="s">&#39;we cannot have integer CPU  resources division.&#39;</span>
-                              <span class="s">&#39; Please review controller and generator &#39;</span>
-                              <span class="s">&#39;cpu_shares in json configuration file.&#39;</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Invalid CPU shares defined in &#39;</span>
-                                 <span class="s">&#39;configuration.&#39;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[compute_cpu_shares] Invalid shares_list &#39;</span>
+                              <span class="s1">&#39;we cannot have integer CPU  resources division.&#39;</span>
+                              <span class="s1">&#39; Please review controller and generator &#39;</span>
+                              <span class="s1">&#39;cpu_shares in json configuration file.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid CPU shares defined in &#39;</span>
+                                 <span class="s1">&#39;configuration.&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">cpu_afinity_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_cpus</span><span class="p">))</span>
 
@@ -120,9 +118,9 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -139,7 +137,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -148,13 +146,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">nstat.src  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2015, NSTAT Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2017, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>

@@ -3,8 +3,19 @@ languages:
   JavaScript: false
   Python: true
   PHP: false
+engines:
+ radon:
+  enabled: true
+ shellcheck:
+   enabled: true
+ markdownlint:
+   enabled: true
+ratings:
+  paths:
+    - "**.py"
+    - "**.sh"
+    - "**.md"
 exclude_paths:
-- "docs/*"
 - "jenkins_jobs/*"
 - "emulators/cbench/*"
 - "emulators/mt_cbench/*"

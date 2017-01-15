@@ -169,31 +169,6 @@ class ReportGen:
                 '[generate_plots] No output file {0} found. Finishing.'.
                 format(self.args.json_output))
 
-    def save_controller_log(self):
-        """NSTAT save log file
-        :param args: argparse.ArgumentParser object containing user specified
-        parameters (i.e test type, controller base directory, generator base
-        directory) when running NSTAT
-        :type args: ArgumentParser object
-        """
-        # Move controller log file if exist inside the test output dir
-        # ----------------------------------------------------------------------
-        try:
-            logging.info('[save_controller_log] collecting logs from '
-                         'controller node. Logs path:{0}'.
-                         format(self.test_config_json['controller_logs_dir']))
-            util.netutil.copy_dir_remote_to_local(
-                self.test_config_json['controller_node_ip'],
-                self.test_config_json['controller_node_ssh_port'],
-                self.test_config_json['controller_node_username'],
-                self.test_config_json['controller_node_password'],
-                os.path.join(self.args.ctrl_base_dir,
-                             self.test_config_json['controller_logs_dir']),
-                os.path.join(self.args.output_dir, 'log'))
-        except:
-            logging.error('[save_controller_log] Fail transferring controller'
-                          ' logs directory.')
-
     def generate_html_report(self):
         """NSTAT save log file
         :param args: argparse.ArgumentParser object containing user specified
@@ -229,10 +204,6 @@ class ReportGen:
             self.generate_html_report()
         except:
             self.__error_handling('Error in generation of HTML report.')
-        try:
-            self.save_controller_log()
-        except:
-            self.__error_handling('Error in copy of controller log files.')
         try:
             shutil.copy(self.args.json_config, self.args.output_dir)
         except:

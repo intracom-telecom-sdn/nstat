@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>stress_test.html_generation &mdash; NSTAT 1.1 documentation</title>
+    <title>stress_test.html_generation &mdash; nstat.src  documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1',
+        VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,11 +23,11 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="NSTAT 1.1 documentation" href="../../index.html" />
+    <link rel="top" title="nstat.src  documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -38,27 +36,27 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">nstat.src  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for stress_test.html_generation</h1><div class="highlight"><pre>
-<span class="c"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
-<span class="c">#</span>
-<span class="c"># This program and the accompanying materials are made available under the</span>
-<span class="c"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
-<span class="c"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+<span class="c1"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
 
 <span class="sd">&quot;&quot;&quot; HTML generation functions &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">optparse</span>
-<span class="kn">import</span> <span class="nn">report_spec</span>
+<span class="kn">import</span> <span class="nn">stress_test.report_spec</span>
 <span class="kn">import</span> <span class="nn">util.html</span>
 
 
@@ -67,369 +65,388 @@
 <span class="sd">    Generates the test HTML report</span>
 
 <span class="sd">    :param report_spec: report specification for this report</span>
-<span class="sd">    :param report_filename: target HTML filename </span>
+<span class="sd">    :param report_filename: target HTML filename</span>
 <span class="sd">    :type report_spec: ReportSpec</span>
 <span class="sd">    :type report_filename: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c"># The following multiline variable contains Javascript functions</span>
-    <span class="c"># that are integrated into the html report. The specific ones make the</span>
-    <span class="c"># headers of tables scroll with the page</span>
+    <span class="c1"># The following multiline variable contains Javascript functions</span>
+    <span class="c1"># that are integrated into the html report. The specific ones make the</span>
+    <span class="c1"># headers of tables scroll with the page</span>
 
-    <span class="n">javascript_functions</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
-<span class="s">&lt;script type=&quot;text/javascript&quot;</span>
-<span class="s">src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js&quot;&gt;</span>
-<span class="s">&lt;/script&gt;</span>
-<span class="s">&lt;script type=&quot;text/javascript&quot;&gt;</span>
-<span class="s">//&lt;![CDATA[</span>
-<span class="s">/**</span>
-<span class="s"> * Usage: Call ActivateFloatingHeader with a CSS selector(string) matching</span>
-<span class="s"> *        table elements that should have a floating header</span>
-<span class="s"> *</span>
-<span class="s"> *  $(document).ready(function() {</span>
-<span class="s"> *      ActivateFloatingHeaders(&quot;table.tableWithFloatingHeader&quot;);</span>
-<span class="s"> *  });</span>
-<span class="s"> */</span>
-
-
-<span class="s">function _UpdateTableHeadersScroll() {</span>
-<span class="s">    $(&quot;div.divTableWithFloatingHeader&quot;).each(function() {</span>
-<span class="s">        var originalHeaderRow = $(&quot;.tableFloatingHeaderOriginal&quot;, this);</span>
-<span class="s">        var floatingHeaderRow = $(&quot;.tableFloatingHeader&quot;, this);</span>
-<span class="s">        var offset = $(this).offset();</span>
-<span class="s">        var scrollTop = $(window).scrollTop();</span>
-<span class="s">        // check if floating header should be displayed</span>
-<span class="s">        if ((scrollTop &gt; offset.top) &amp;&amp;</span>
-<span class="s">            (scrollTop &lt;</span>
-<span class="s">             offset.top + $(this).height() - originalHeaderRow.height())) {</span>
-<span class="s">            floatingHeaderRow.css(&quot;visibility&quot;, &quot;visible&quot;);</span>
-<span class="s">            floatingHeaderRow.css(&quot;left&quot;, -$(window).scrollLeft());</span>
-<span class="s">        }</span>
-<span class="s">        else {</span>
-<span class="s">            floatingHeaderRow.css(&quot;visibility&quot;, &quot;hidden&quot;);</span>
-<span class="s">        }</span>
-<span class="s">    });</span>
-<span class="s">}</span>
+    <span class="n">javascript_functions</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">&lt;script type=&quot;text/javascript&quot;</span>
+<span class="s1">src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js&quot;&gt;</span>
+<span class="s1">&lt;/script&gt;</span>
+<span class="s1">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="s1">//&lt;![CDATA[</span>
+<span class="s1">/**</span>
+<span class="s1"> * Usage: Call ActivateFloatingHeader with a CSS selector(string) matching</span>
+<span class="s1"> *        table elements that should have a floating header</span>
+<span class="s1"> *</span>
+<span class="s1"> *  $(document).ready(function() {</span>
+<span class="s1"> *      ActivateFloatingHeaders(&quot;table.tableWithFloatingHeader&quot;);</span>
+<span class="s1"> *  });</span>
+<span class="s1"> */</span>
 
 
-<span class="s">function _UpdateTableHeadersResize() {</span>
-<span class="s">    $(&quot;div.divTableWithFloatingHeader&quot;).each(function() {</span>
-<span class="s">        var originalHeaderRow = $(&quot;.tableFloatingHeaderOriginal&quot;, this);</span>
-<span class="s">        var floatingHeaderRow = $(&quot;.tableFloatingHeader&quot;, this);</span>
+<span class="s1">function _UpdateTableHeadersScroll() {</span>
+<span class="s1">    $(&quot;div.divTableWithFloatingHeader&quot;).each(function() {</span>
+<span class="s1">        var originalHeaderRow = $(&quot;.tableFloatingHeaderOriginal&quot;, this);</span>
+<span class="s1">        var floatingHeaderRow = $(&quot;.tableFloatingHeader&quot;, this);</span>
+<span class="s1">        var offset = $(this).offset();</span>
+<span class="s1">        var scrollTop = $(window).scrollTop();</span>
+<span class="s1">        // check if floating header should be displayed</span>
+<span class="s1">        if ((scrollTop &gt; offset.top) &amp;&amp;</span>
+<span class="s1">            (scrollTop &lt;</span>
+<span class="s1">             offset.top + $(this).height() - originalHeaderRow.height())) {</span>
+<span class="s1">            floatingHeaderRow.css(&quot;visibility&quot;, &quot;visible&quot;);</span>
+<span class="s1">            floatingHeaderRow.css(&quot;left&quot;, -$(window).scrollLeft());</span>
+<span class="s1">        }</span>
+<span class="s1">        else {</span>
+<span class="s1">            floatingHeaderRow.css(&quot;visibility&quot;, &quot;hidden&quot;);</span>
+<span class="s1">        }</span>
+<span class="s1">    });</span>
+<span class="s1">}</span>
 
-<span class="s">        // Copy cell widths from original header</span>
-<span class="s">        $(&quot;th&quot;, floatingHeaderRow).each(function(index) {</span>
-<span class="s">            var cellWidth = $(&quot;th&quot;, originalHeaderRow).eq(index).css(&#39;width&#39;);</span>
-<span class="s">            $(this).css(&#39;width&#39;, cellWidth);</span>
-<span class="s">        });</span>
 
-<span class="s">        // Copy row width from whole table</span>
-<span class="s">        floatingHeaderRow.css(&quot;width&quot;, Math.max(originalHeaderRow.width(),</span>
-<span class="s">                              $(this).width()) + &quot;px&quot;);</span>
+<span class="s1">function _UpdateTableHeadersResize() {</span>
+<span class="s1">    $(&quot;div.divTableWithFloatingHeader&quot;).each(function() {</span>
+<span class="s1">        var originalHeaderRow = $(&quot;.tableFloatingHeaderOriginal&quot;, this);</span>
+<span class="s1">        var floatingHeaderRow = $(&quot;.tableFloatingHeader&quot;, this);</span>
 
-<span class="s">    });</span>
-<span class="s">}</span>
+<span class="s1">        // Copy cell widths from original header</span>
+<span class="s1">        $(&quot;th&quot;, floatingHeaderRow).each(function(index) {</span>
+<span class="s1">            var cellWidth = $(&quot;th&quot;, originalHeaderRow).eq(index).css(&#39;width&#39;);</span>
+<span class="s1">            $(this).css(&#39;width&#39;, cellWidth);</span>
+<span class="s1">        });</span>
+
+<span class="s1">        // Copy row width from whole table</span>
+<span class="s1">        floatingHeaderRow.css(&quot;width&quot;, Math.max(originalHeaderRow.width(),</span>
+<span class="s1">                              $(this).width()) + &quot;px&quot;);</span>
+
+<span class="s1">    });</span>
+<span class="s1">}</span>
 
 
-<span class="s">function ActivateFloatingHeaders(selector_str){</span>
-<span class="s">    $(selector_str).each(function() {</span>
-<span class="s">        $(this).wrap(&#39;&lt;div class=&quot;divTableWithFloatingHeader&quot; &#39; +</span>
-<span class="s">                     &#39;style=&quot;position:relative&quot;&gt;&lt;/div&gt;&#39;);</span>
+<span class="s1">function ActivateFloatingHeaders(selector_str){</span>
+<span class="s1">    $(selector_str).each(function() {</span>
+<span class="s1">        $(this).wrap(&#39;&lt;div class=&quot;divTableWithFloatingHeader&quot; &#39; +</span>
+<span class="s1">                     &#39;style=&quot;position:relative&quot;&gt;&lt;/div&gt;&#39;);</span>
 
-<span class="s">        // use first row as floating header by default</span>
-<span class="s">        var floatingHeaderSelector = &quot;thead&quot;;</span>
-<span class="s">        var explicitFloatingHeaderSelector = &quot;thead.floating-header&quot;</span>
-<span class="s">        if ($(explicitFloatingHeaderSelector, this).length){</span>
-<span class="s">            floatingHeaderSelector = explicitFloatingHeaderSelector;</span>
-<span class="s">        }</span>
+<span class="s1">        // use first row as floating header by default</span>
+<span class="s1">        var floatingHeaderSelector = &quot;thead&quot;;</span>
+<span class="s1">        var explicitFloatingHeaderSelector = &quot;thead.floating-header&quot;</span>
+<span class="s1">        if ($(explicitFloatingHeaderSelector, this).length){</span>
+<span class="s1">            floatingHeaderSelector = explicitFloatingHeaderSelector;</span>
+<span class="s1">        }</span>
 
-<span class="s">        var originalHeaderRow = $(floatingHeaderSelector, this).first();</span>
-<span class="s">        var clonedHeaderRow = originalHeaderRow.clone()</span>
-<span class="s">        originalHeaderRow.before(clonedHeaderRow);</span>
+<span class="s1">        var originalHeaderRow = $(floatingHeaderSelector, this).first();</span>
+<span class="s1">        var clonedHeaderRow = originalHeaderRow.clone()</span>
+<span class="s1">        originalHeaderRow.before(clonedHeaderRow);</span>
 
-<span class="s">        clonedHeaderRow.addClass(&quot;tableFloatingHeader&quot;);</span>
-<span class="s">        clonedHeaderRow.css(&quot;position&quot;, &quot;fixed&quot;);</span>
-<span class="s">        // not sure why but 0px is used there is still some space in the top</span>
-<span class="s">        clonedHeaderRow.css(&quot;top&quot;, &quot;-2px&quot;);</span>
-<span class="s">        clonedHeaderRow.css(&quot;margin-left&quot;, $(this).offset().left+1);</span>
-<span class="s">        clonedHeaderRow.css(&quot;margin-right&quot;, $(this).offset().right+1);</span>
-<span class="s">        clonedHeaderRow.css(&quot;visibility&quot;, &quot;hidden&quot;);</span>
+<span class="s1">        clonedHeaderRow.addClass(&quot;tableFloatingHeader&quot;);</span>
+<span class="s1">        clonedHeaderRow.css(&quot;position&quot;, &quot;fixed&quot;);</span>
+<span class="s1">        // not sure why but 0px is used there is still some space in the top</span>
+<span class="s1">        clonedHeaderRow.css(&quot;top&quot;, &quot;-2px&quot;);</span>
+<span class="s1">        clonedHeaderRow.css(&quot;margin-left&quot;, $(this).offset().left+1);</span>
+<span class="s1">        clonedHeaderRow.css(&quot;margin-right&quot;, $(this).offset().right+1);</span>
+<span class="s1">        clonedHeaderRow.css(&quot;visibility&quot;, &quot;hidden&quot;);</span>
 
-<span class="s">        originalHeaderRow.addClass(&quot;tableFloatingHeaderOriginal&quot;);</span>
-<span class="s">    });</span>
-<span class="s">    _UpdateTableHeadersResize();</span>
-<span class="s">    _UpdateTableHeadersScroll();</span>
-<span class="s">    $(window).scroll(_UpdateTableHeadersScroll);</span>
-<span class="s">    $(window).resize(_UpdateTableHeadersResize);</span>
-<span class="s">}</span>
-<span class="s">//]]&gt;</span>
-<span class="s">&lt;/script&gt;</span>
-<span class="s">&lt;script type=&quot;text/javascript&quot;&gt;</span>
-<span class="s">//&lt;![CDATA[</span>
-<span class="s">    $(document).ready(function() {</span>
-<span class="s">        ActivateFloatingHeaders(&quot;table.tableWithFloatingHeader&quot;);</span>
-<span class="s">});</span>
-<span class="s">//]]&gt;</span>
-<span class="s">&lt;/script&gt;</span>
-<span class="s">&#39;&#39;&#39;</span>
-    <span class="c"># In the following multiline variable, we keep the information about the</span>
-    <span class="c"># formating of the produced html document as a css string.</span>
-    <span class="n">default_css_styling</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
-<span class="s">body {</span>
-<span class="s">margin:0;</span>
-<span class="s">padding:20px;</span>
-<span class="s">font:13px &quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Helvetica, Arial, sans-serif;</span>
-<span class="s">}</span>
+<span class="s1">        originalHeaderRow.addClass(&quot;tableFloatingHeaderOriginal&quot;);</span>
+<span class="s1">    });</span>
+<span class="s1">    _UpdateTableHeadersResize();</span>
+<span class="s1">    _UpdateTableHeadersScroll();</span>
+<span class="s1">    $(window).scroll(_UpdateTableHeadersScroll);</span>
+<span class="s1">    $(window).resize(_UpdateTableHeadersResize);</span>
+<span class="s1">}</span>
+<span class="s1">//]]&gt;</span>
+<span class="s1">&lt;/script&gt;</span>
+<span class="s1">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+<span class="s1">//&lt;![CDATA[</span>
+<span class="s1">    $(document).ready(function() {</span>
+<span class="s1">        ActivateFloatingHeaders(&quot;table.tableWithFloatingHeader&quot;);</span>
+<span class="s1">});</span>
+<span class="s1">//]]&gt;</span>
+<span class="s1">&lt;/script&gt;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+    <span class="c1"># In the following multiline variable, we keep the information about the</span>
+    <span class="c1"># formating of the produced html document as a css string.</span>
+    <span class="n">default_css_styling</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">body {</span>
+<span class="s1">margin:0;</span>
+<span class="s1">padding:20px;</span>
+<span class="s1">font:13px &quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Helvetica, Arial, sans-serif;</span>
+<span class="s1">}</span>
 
-<span class="s">/* ---- Resets ---- */</span>
+<span class="s1">/* ---- Resets ---- */</span>
 
-<span class="s">p, table, caption, td, tr, th {</span>
-<span class="s">    margin:0;</span>
-<span class="s">    padding:0;</span>
-<span class="s">    font-weight:normal;</span>
-<span class="s">    }</span>
+<span class="s1">p, table, caption, td, tr, th {</span>
+<span class="s1">    margin:0;</span>
+<span class="s1">    padding:0;</span>
+<span class="s1">    font-weight:normal;</span>
+<span class="s1">    }</span>
 
-<span class="s">/* ---- Paragraphs ---- */</span>
+<span class="s1">/* ---- Paragraphs ---- */</span>
 
-<span class="s">p {</span>
-<span class="s">    margin-bottom:15px;</span>
-<span class="s">    }</span>
+<span class="s1">p {</span>
+<span class="s1">    margin-bottom:15px;</span>
+<span class="s1">    }</span>
 
-<span class="s">/* ---- Table ---- */</span>
+<span class="s1">/* ---- Table ---- */</span>
 
-<span class="s">table {</span>
-<span class="s">    border-collapse:separate;</span>
-<span class="s">    border-spacing:0px;</span>
-<span class="s">    margin-bottom:15px;</span>
-<span class="s">    width:90%;</span>
-<span class="s">    border:1px solid #cccccc;</span>
-<span class="s">    }</span>
+<span class="s1">table {</span>
+<span class="s1">    border-collapse:separate;</span>
+<span class="s1">    border-spacing:0px;</span>
+<span class="s1">    margin-bottom:15px;</span>
+<span class="s1">    width:90%;</span>
+<span class="s1">    border:1px solid #cccccc;</span>
+<span class="s1">    }</span>
 
-<span class="s">    caption {</span>
-<span class="s">        text-align:left;</span>
-<span class="s">        font-size:15px;</span>
-<span class="s">        padding-bottom:10px;</span>
-<span class="s">        }</span>
+<span class="s1">    caption {</span>
+<span class="s1">        text-align:left;</span>
+<span class="s1">        font-size:15px;</span>
+<span class="s1">        padding-bottom:10px;</span>
+<span class="s1">        }</span>
 
-<span class="s">    table td,</span>
-<span class="s">    table th {</span>
-<span class="s">        padding:5px;</span>
-<span class="s">        border:1px solid #fff;</span>
-<span class="s">        border-width:0px 1px 1px 0px;</span>
-<span class="s">        vertical-align: middle;</span>
-<span class="s">        }</span>
+<span class="s1">    table td,</span>
+<span class="s1">    table th {</span>
+<span class="s1">        padding:5px;</span>
+<span class="s1">        border:1px solid #fff;</span>
+<span class="s1">        border-width:0px 1px 1px 0px;</span>
+<span class="s1">        vertical-align: middle;</span>
+<span class="s1">        }</span>
 
-<span class="s">    thead th {</span>
-<span class="s">        background:#91c5d4;</span>
-<span class="s">        font-size: 17px;</span>
-<span class="s">        font-weight:bold;</span>
-<span class="s">        text-align:center;</span>
-<span class="s">        }</span>
+<span class="s1">    thead th {</span>
+<span class="s1">        background:#91c5d4;</span>
+<span class="s1">        font-size: 17px;</span>
+<span class="s1">        font-weight:bold;</span>
+<span class="s1">        text-align:center;</span>
+<span class="s1">        }</span>
 
-<span class="s">    thead th.table-title {</span>
-<span class="s">        font-size:19px;</span>
-<span class="s">        font-weight:bold;</span>
-<span class="s">        text-align:left;</span>
-<span class="s">        }</span>
+<span class="s1">    thead th.table-title {</span>
+<span class="s1">        font-size:19px;</span>
+<span class="s1">        font-weight:bold;</span>
+<span class="s1">        text-align:left;</span>
+<span class="s1">        }</span>
 
-<span class="s">    thead th[colspan],</span>
-<span class="s">    thead th[rowspan] {</span>
-<span class="s">        background:#66a9bd;</span>
-<span class="s">        }</span>
+<span class="s1">    thead th[colspan],</span>
+<span class="s1">    thead th[rowspan] {</span>
+<span class="s1">        background:#66a9bd;</span>
+<span class="s1">        }</span>
 
-<span class="s">    tbody th,</span>
-<span class="s">    tfoot th {</span>
-<span class="s">        text-align:left;</span>
-<span class="s">        background:#91c5d4;</span>
-<span class="s">        }</span>
+<span class="s1">    tbody th,</span>
+<span class="s1">    tfoot th {</span>
+<span class="s1">        text-align:left;</span>
+<span class="s1">        background:#91c5d4;</span>
+<span class="s1">        }</span>
 
-<span class="s">    tbody td,</span>
-<span class="s">    tfoot td {</span>
-<span class="s">        text-align:left;</span>
-<span class="s">        background:#d5eaf0;</span>
-<span class="s">        font-size:16px;</span>
-<span class="s">        font-weight:normal;</span>
-<span class="s">        }</span>
+<span class="s1">    tbody td,</span>
+<span class="s1">    tfoot td {</span>
+<span class="s1">        text-align:left;</span>
+<span class="s1">        background:#d5eaf0;</span>
+<span class="s1">        font-size:16px;</span>
+<span class="s1">        font-weight:normal;</span>
+<span class="s1">        }</span>
 
-<span class="s">    tbody td.center {</span>
-<span class="s">        text-align:center;</span>
-<span class="s">        }</span>
+<span class="s1">    tbody td.center {</span>
+<span class="s1">        text-align:center;</span>
+<span class="s1">        }</span>
 
-<span class="s">    tfoot th {</span>
-<span class="s">        background:#b0cc7f;</span>
-<span class="s">        }</span>
+<span class="s1">    tfoot th {</span>
+<span class="s1">        background:#b0cc7f;</span>
+<span class="s1">        }</span>
 
-<span class="s">    fieldset {</span>
-<span class="s">        width:30%;</span>
-<span class="s">        font-size:16px;</span>
-<span class="s">        border: 1px solid #000000;</span>
-<span class="s">        padding: 10px;</span>
-<span class="s">        }</span>
+<span class="s1">    fieldset {</span>
+<span class="s1">        width:30%;</span>
+<span class="s1">        font-size:16px;</span>
+<span class="s1">        border: 1px solid #000000;</span>
+<span class="s1">        padding: 10px;</span>
+<span class="s1">        }</span>
 
-<span class="s">    fieldset.left {</span>
-<span class="s">        float:left;</span>
-<span class="s">        margin-right:20px;</span>
-<span class="s">        }</span>
+<span class="s1">    fieldset.left {</span>
+<span class="s1">        float:left;</span>
+<span class="s1">        margin-right:20px;</span>
+<span class="s1">        }</span>
 
-<span class="s">    fieldset legend {</span>
-<span class="s">        font-size:17px;</span>
-<span class="s">        font-weight:bold;</span>
-<span class="s">        }</span>
+<span class="s1">    fieldset legend {</span>
+<span class="s1">        font-size:17px;</span>
+<span class="s1">        font-weight:bold;</span>
+<span class="s1">        }</span>
 
-<span class="s">    tfoot td {</span>
-<span class="s">        background:#d7e1c5;</span>
-<span class="s">        font-weight:bold;</span>
-<span class="s">        }</span>
+<span class="s1">    tfoot td {</span>
+<span class="s1">        background:#d7e1c5;</span>
+<span class="s1">        font-weight:bold;</span>
+<span class="s1">        }</span>
 
-<span class="s">    tbody tr.odd td {</span>
-<span class="s">        background:#bcd9e1;</span>
-<span class="s">        }</span>
+<span class="s1">    tbody tr.odd td {</span>
+<span class="s1">        background:#bcd9e1;</span>
+<span class="s1">        }</span>
 
-<span class="s">    img {</span>
-<span class="s">        width:49%;</span>
-<span class="s">        max-width:800px;</span>
-<span class="s">        min-width:640px;</span>
-<span class="s">        height:auto;</span>
-<span class="s">        border: 0;</span>
-<span class="s">    }</span>
+<span class="s1">    img {</span>
+<span class="s1">        width:49%;</span>
+<span class="s1">        max-width:800px;</span>
+<span class="s1">        min-width:640px;</span>
+<span class="s1">        height:auto;</span>
+<span class="s1">        border: 0;</span>
+<span class="s1">    }</span>
 
-<span class="s">    img.graph-left{</span>
-<span class="s">        float:left;</span>
-<span class="s">        margin-right:1px;</span>
-<span class="s">    }</span>
+<span class="s1">    img.graph-left{</span>
+<span class="s1">        float:left;</span>
+<span class="s1">        margin-right:1px;</span>
+<span class="s1">    }</span>
 
-<span class="s">    img.graph-right{</span>
-<span class="s">        float:right;</span>
-<span class="s">        margin-left:1px;</span>
-<span class="s">    }</span>
+<span class="s1">    img.graph-right{</span>
+<span class="s1">        float:right;</span>
+<span class="s1">        margin-left:1px;</span>
+<span class="s1">    }</span>
 
-<span class="s">    div.graph-container{</span>
-<span class="s">        float:left;</span>
-<span class="s">        width:100%;</span>
-<span class="s">        max-width:1605px;</span>
-<span class="s">        min-width:1285px;</span>
-<span class="s">    }</span>
+<span class="s1">    div.graph-container{</span>
+<span class="s1">        float:left;</span>
+<span class="s1">        width:100%;</span>
+<span class="s1">        max-width:1605px;</span>
+<span class="s1">        min-width:1285px;</span>
+<span class="s1">    }</span>
 
-<span class="s">    div.float-cleaner{</span>
-<span class="s">        clear:both;</span>
-<span class="s">    }</span>
-<span class="s">&#39;&#39;&#39;</span>
+<span class="s1">    div.float-cleaner{</span>
+<span class="s1">        clear:both;</span>
+<span class="s1">    }</span>
+<span class="s1">&#39;&#39;&#39;</span>
 
-    <span class="n">content</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">report_spec</span><span class="o">.</span><span class="n">config_json</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
-    <span class="c"># The content on the top of the html report</span>
-    <span class="n">html_head_content</span> <span class="o">=</span> <span class="s">&#39;&lt;h1&gt;&#39;</span> <span class="o">+</span> <span class="n">report_spec</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s">&#39;&lt;/h1&gt;&lt;hr&gt;&#39;</span>
+    <span class="c1"># The content on the top of the html report</span>
+    <span class="n">html_head_content</span> <span class="o">=</span> <span class="s1">&#39;&lt;h1&gt;&#39;</span> <span class="o">+</span> <span class="n">report_spec</span><span class="o">.</span><span class="n">title</span> <span class="o">+</span> <span class="s1">&#39;&lt;/h1&gt;&lt;hr&gt;&#39;</span>
 
-    <span class="c"># Generating header of the report page</span>
+    <span class="c1"># Generating header of the report page</span>
     <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">generate_html_head</span><span class="p">(</span><span class="n">default_css_styling</span><span class="p">,</span>
                                                      <span class="n">javascript_functions</span><span class="p">,</span>
                                                      <span class="n">html_head_content</span><span class="p">)</span>
 
-    <span class="c"># Generating results parameters table</span>
-    <span class="k">for</span> <span class="n">cfgt</span> <span class="ow">in</span> <span class="n">report_spec</span><span class="o">.</span><span class="n">config_tables</span><span class="p">:</span>
-        <span class="n">table_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">cfgt</span><span class="o">.</span><span class="n">source_json</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="c1"># Generating results parameters table</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="n">generate_table</span><span class="p">(</span><span class="n">report_spec</span><span class="o">.</span><span class="n">config_tables</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">cfgt</span><span class="o">.</span><span class="n">table_type</span> <span class="o">==</span> <span class="s">&#39;1d&#39;</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">single_dict_to_html</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span>
-                <span class="s">&#39;Parameter&#39;</span><span class="p">,</span> <span class="s">&#39;Value&#39;</span><span class="p">,</span> <span class="n">cfgt</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">cfgt</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span>
+    <span class="c1"># Inserting plots inside the report page</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="n">insert_plots</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">])</span>
 
-        <span class="k">elif</span> <span class="n">cfgt</span><span class="o">.</span><span class="n">table_type</span> <span class="o">==</span> <span class="s">&#39;2d&#39;</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">multi_dict_to_html</span><span class="p">(</span>
-                <span class="n">table_data</span><span class="p">,</span> <span class="n">cfgt</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">cfgt</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span> <span class="n">cfgt</span><span class="o">.</span><span class="n">ordering_key</span><span class="p">)</span>
-
-        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="s">&#39;&lt;br&gt;&#39;</span> <span class="o">+</span> <span class="s">&#39;&lt;hr&gt;&#39;</span>
-
-    <span class="c"># Generating inserting graph inside the report page</span>
-    <span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;plots&#39;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="n">num_plots</span><span class="p">:</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="s">&#39;&lt;div class=</span><span class="se">\&quot;</span><span class="s">graph-container</span><span class="se">\&quot;</span><span class="s">&gt;&#39;</span>
-        <span class="n">graph_float</span> <span class="o">=</span> <span class="s">&#39;left&#39;</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_plots</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s">&#39;plots&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s">&#39;plot_filename&#39;</span><span class="p">]:</span>
-
-                <span class="c"># Adding a graph image in document.</span>
-                <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> \
-                    <span class="s">&#39;&lt;img class=</span><span class="se">\&quot;</span><span class="s">graph-&#39;</span> <span class="o">+</span> <span class="n">graph_float</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\&quot;</span><span class="s"> src=</span><span class="se">\&quot;</span><span class="s">&#39;</span> <span class="o">+</span> \
-                <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;plots&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s">&#39;plot_filename&#39;</span><span class="p">])</span> <span class="o">+</span> \
-                    <span class="s">&#39;.png</span><span class="se">\&quot;</span><span class="s"> alt=</span><span class="se">\&quot;</span><span class="s">result graph</span><span class="se">\&quot;</span><span class="s"> /&gt;&#39;</span>
-
-                <span class="c"># Changing the page alignment of the next inserted graph image.</span>
-                <span class="c"># Also place a content break to have images group of 2.</span>
-                <span class="k">if</span> <span class="n">graph_float</span> <span class="o">==</span> <span class="s">&#39;right&#39;</span><span class="p">:</span>
-                    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> \
-                        <span class="s">&#39;&lt;div class=</span><span class="se">\&quot;</span><span class="s">float-cleaner</span><span class="se">\&quot;</span><span class="s">&gt;&lt;br&gt;&lt;/div&gt;&#39;</span>
-                    <span class="n">graph_float</span> <span class="o">=</span> <span class="s">&#39;left&#39;</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">graph_float</span> <span class="o">=</span> <span class="s">&#39;right&#39;</span>
-
-        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="s">&#39;&lt;/div&gt;&#39;</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="s">&#39;&lt;div class=</span><span class="se">\&quot;</span><span class="s">float-cleaner</span><span class="se">\&quot;</span><span class="s">&gt;&lt;br&gt;&lt;/div&gt;&#39;</span>
-
-    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="s">&#39;&lt;hr&gt;&#39;</span>
-
-    <span class="c"># Generating test results table</span>
-    <span class="k">for</span> <span class="n">rest</span> <span class="ow">in</span> <span class="n">report_spec</span><span class="o">.</span><span class="n">results_table</span><span class="p">:</span>
-        <span class="n">table_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">rest</span><span class="o">.</span><span class="n">source_json</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">rest</span><span class="o">.</span><span class="n">table_type</span> <span class="o">==</span> <span class="s">&#39;1d&#39;</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> \
-                <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">single_dict_to_html</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="s">&#39;Parameter&#39;</span><span class="p">,</span> <span class="s">&#39;Value&#39;</span><span class="p">,</span>
-                                              <span class="n">rest</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">rest</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">rest</span><span class="o">.</span><span class="n">table_type</span> <span class="o">==</span> <span class="s">&#39;2d&#39;</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> \
-                <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">multi_dict_to_html</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">rest</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">rest</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span>
-                                             <span class="n">rest</span><span class="o">.</span><span class="n">ordering_key</span><span class="p">)</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="s">&#39;&lt;br&gt;&#39;</span> <span class="o">+</span> <span class="s">&#39;&lt;hr&gt;&#39;</span>
+    <span class="c1"># Generating test results table</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="n">generate_table</span><span class="p">(</span><span class="n">report_spec</span><span class="o">.</span><span class="n">results_table</span><span class="p">)</span>
 
     <span class="n">content</span> <span class="o">=</span> <span class="n">content</span> <span class="o">+</span> <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">generate_html_foot</span><span class="p">()</span>
-    <span class="n">repf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">report_filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">repf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">report_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
     <span class="n">repf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-    <span class="n">repf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</div>
+    <span class="n">repf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="generate_table"><a class="viewcode-back" href="../../stress_test.html#stress_test.html_generation.generate_table">[docs]</a><span class="k">def</span> <span class="nf">generate_table</span><span class="p">(</span><span class="n">tables_specs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Gets a dictionary with tables specifications and generates the</span>
+<span class="sd">    corresponded html code.</span>
+
+<span class="sd">    :param tables_specs: Dictionary containing the specifications of a group</span>
+<span class="sd">    of tables.</span>
+<span class="sd">    :returns: html code of the table.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type tables_specs: &lt;dictionary&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">table_html</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">table_specs</span> <span class="ow">in</span> <span class="n">tables_specs</span><span class="p">:</span>
+        <span class="n">table_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">table_specs</span><span class="o">.</span><span class="n">source_json</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">table_specs</span><span class="o">.</span><span class="n">table_type</span> <span class="o">==</span> <span class="s1">&#39;1d&#39;</span><span class="p">:</span>
+            <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">single_dict_to_html</span><span class="p">(</span>
+                <span class="n">table_data</span><span class="p">,</span> <span class="s1">&#39;Parameter&#39;</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">,</span> <span class="n">table_specs</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+                <span class="n">table_specs</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">table_specs</span><span class="o">.</span><span class="n">table_type</span> <span class="o">==</span> <span class="s1">&#39;2d&#39;</span><span class="p">:</span>
+            <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="n">util</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">multi_dict_to_html</span><span class="p">(</span>
+                <span class="n">table_data</span><span class="p">,</span> <span class="n">table_specs</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">table_specs</span><span class="o">.</span><span class="n">keys</span><span class="p">,</span>
+                <span class="n">table_specs</span><span class="o">.</span><span class="n">ordering_key</span><span class="p">)</span>
+        <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;br&gt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;&lt;hr&gt;&#39;</span>
+    <span class="k">return</span> <span class="n">table_html</span></div>
+
+
+<div class="viewcode-block" id="insert_plots"><a class="viewcode-back" href="../../stress_test.html#stress_test.html_generation.insert_plots">[docs]</a><span class="k">def</span> <span class="nf">insert_plots</span><span class="p">(</span><span class="n">plots_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Gets a list of dictionaries that describes the plots of the report,</span>
+<span class="sd">    and generates the corresponded html code.</span>
+
+<span class="sd">    :param plots_list: A list of dictionaries with the plots description.</span>
+<span class="sd">    :returns: The corresponded html code to insert the plots.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type plots_list: &lt;list&lt;dictionary&gt;&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">plots_list</span><span class="p">)</span>
+    <span class="n">plots_html</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">num_plots</span><span class="p">:</span>
+        <span class="n">plots_html</span> <span class="o">=</span> <span class="n">plots_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;div class=</span><span class="se">\&quot;</span><span class="s1">graph-container</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span>
+        <span class="n">graph_float</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span>
+
+        <span class="k">for</span> <span class="n">plot_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_plots</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">plots_list</span><span class="p">[</span><span class="n">plot_id</span><span class="p">][</span><span class="s1">&#39;plot_filename&#39;</span><span class="p">]:</span>
+
+                <span class="c1"># Adding a graph image in document.</span>
+                <span class="n">plots_html</span> <span class="o">=</span> <span class="n">plots_html</span> <span class="o">+</span> \
+                    <span class="s1">&#39;&lt;img class=</span><span class="se">\&quot;</span><span class="s1">graph-&#39;</span> <span class="o">+</span> <span class="n">graph_float</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1"> src=</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> \
+                <span class="nb">str</span><span class="p">(</span><span class="n">plots_list</span><span class="p">[</span><span class="n">plot_id</span><span class="p">][</span><span class="s1">&#39;plot_filename&#39;</span><span class="p">])</span> <span class="o">+</span> \
+                    <span class="s1">&#39;.png</span><span class="se">\&quot;</span><span class="s1"> alt=</span><span class="se">\&quot;</span><span class="s1">result graph</span><span class="se">\&quot;</span><span class="s1"> /&gt;&#39;</span>
+
+                <span class="c1"># Changing the page alignment of the next inserted graph image.</span>
+                <span class="c1"># Also place a content break to have images group of 2.</span>
+                <span class="k">if</span> <span class="n">graph_float</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+                    <span class="n">plots_html</span> <span class="o">=</span> <span class="n">plots_html</span> <span class="o">+</span> \
+                        <span class="s1">&#39;&lt;div class=</span><span class="se">\&quot;</span><span class="s1">float-cleaner</span><span class="se">\&quot;</span><span class="s1">&gt;&lt;br&gt;&lt;/div&gt;&#39;</span>
+                    <span class="n">graph_float</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">graph_float</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>
+
+        <span class="n">plots_html</span> <span class="o">=</span> <span class="n">plots_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/div&gt;&#39;</span>
+        <span class="n">plots_html</span> <span class="o">=</span> <span class="n">plots_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;div class=</span><span class="se">\&quot;</span><span class="s1">float-cleaner</span><span class="se">\&quot;</span><span class="s1">&gt;&lt;br&gt;&lt;/div&gt;&#39;</span>
+
+    <span class="n">plots_html</span> <span class="o">=</span> <span class="n">plots_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;hr&gt;&#39;</span>
+    <span class="k">return</span> <span class="n">plots_html</span></div>
+
+
 <div class="viewcode-block" id="self_test"><a class="viewcode-back" href="../../stress_test.html#stress_test.html_generation.self_test">[docs]</a><span class="k">def</span> <span class="nf">self_test</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Used for self testing purposes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">opt_parser</span> <span class="o">=</span> <span class="n">optparse</span><span class="o">.</span><span class="n">OptionParser</span><span class="p">()</span>
 
-    <span class="n">opt_parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;--input-results&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;RESULTS_JSON&#39;</span><span class="p">,</span>
-                          <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;results.json&#39;</span><span class="p">,</span>
-                          <span class="n">help</span><span class="o">=</span><span class="s">&quot;pathname of the result json file to open&quot;</span><span class="p">)</span>
-    <span class="n">opt_parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;--input-conf&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;PARAMETERS_JSON&#39;</span><span class="p">,</span>
-                          <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;conf.json&#39;</span><span class="p">,</span>
-                          <span class="n">help</span><span class="o">=</span><span class="s">&#39;name of the parameter json file to open&#39;</span><span class="p">)</span>
-    <span class="n">opt_parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;--html-report&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;report_filename&#39;</span><span class="p">,</span>
-                          <span class="n">action</span><span class="o">=</span><span class="s">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;report.html&#39;</span><span class="p">,</span>
-                          <span class="n">help</span><span class="o">=</span><span class="s">&#39;name of the filename of html report&#39;</span><span class="p">)</span>
-    <span class="p">(</span><span class="n">json_opts</span><span class="p">,</span> <span class="n">args_remainder</span><span class="p">)</span> <span class="o">=</span> <span class="n">opt_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-    <span class="n">report_test</span> <span class="o">=</span> <span class="n">report_spec</span><span class="o">.</span><span class="n">ReportSpec</span><span class="p">(</span><span class="n">json_opts</span><span class="o">.</span><span class="n">PARAMETERS_JSON</span><span class="p">,</span>
-                      <span class="n">json_opts</span><span class="o">.</span><span class="n">RESULTS_JSON</span><span class="p">,</span> <span class="s">&#39;test&#39;</span><span class="p">,</span>
-                          <span class="p">[</span><span class="n">report_spec</span><span class="o">.</span><span class="n">TableSpec</span><span class="p">(</span><span class="s">&#39;1d&#39;</span><span class="p">,</span> <span class="s">&#39;config&#39;</span><span class="p">,</span>
-                              <span class="p">[(</span><span class="s">&#39;controller_start&#39;</span><span class="p">,</span> <span class="s">&#39;Controller Start&#39;</span><span class="p">),</span>
-                               <span class="p">(</span><span class="s">&#39;controller_stop&#39;</span><span class="p">,</span> <span class="s">&#39;Controller Stop&#39;</span><span class="p">),</span>
-                               <span class="p">(</span><span class="s">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s">&#39;Java Options&#39;</span><span class="p">)</span>
-                              <span class="p">],</span><span class="n">json_opts</span><span class="o">.</span><span class="n">PARAMETERS_JSON</span><span class="p">)</span>
-                           <span class="p">],</span>
-                           <span class="p">[</span><span class="n">report_spec</span><span class="o">.</span><span class="n">TableSpec</span><span class="p">(</span><span class="s">&#39;2d&#39;</span><span class="p">,</span> <span class="s">&#39;results&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span>
-                                <span class="n">json_opts</span><span class="o">.</span><span class="n">RESULTS_JSON</span><span class="p">,</span>
-                                <span class="s">&#39;generator_thread_creation_delay_ms&#39;</span><span class="p">)</span>
-                           <span class="p">]</span>
-                      <span class="p">)</span>
-    <span class="n">generate_html</span><span class="p">(</span><span class="n">report_test</span><span class="p">,</span> <span class="n">json_opts</span><span class="o">.</span><span class="n">report_filename</span><span class="p">)</span>
+    <span class="n">opt_parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;--input-results&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;RESULTS_JSON&#39;</span><span class="p">,</span>
+                          <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;results.json&#39;</span><span class="p">,</span>
+                          <span class="n">help</span><span class="o">=</span><span class="s2">&quot;pathname of the result json file to open&quot;</span><span class="p">)</span>
+    <span class="n">opt_parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;--input-conf&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;PARAMETERS_JSON&#39;</span><span class="p">,</span>
+                          <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;conf.json&#39;</span><span class="p">,</span>
+                          <span class="n">help</span><span class="o">=</span><span class="s1">&#39;name of the parameter json file to open&#39;</span><span class="p">)</span>
+    <span class="n">opt_parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s1">&#39;--html-report&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s1">&#39;report_filename&#39;</span><span class="p">,</span>
+                          <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;report.html&#39;</span><span class="p">,</span>
+                          <span class="n">help</span><span class="o">=</span><span class="s1">&#39;name of the filename of html report&#39;</span><span class="p">)</span>
+    <span class="n">json_opts</span> <span class="o">=</span> <span class="n">opt_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">report_test</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_spec</span><span class="o">.</span><span class="n">ReportSpec</span><span class="p">(</span>
+        <span class="n">json_opts</span><span class="o">.</span><span class="n">PARAMETERS_JSON</span><span class="p">,</span> <span class="n">json_opts</span><span class="o">.</span><span class="n">RESULTS_JSON</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">stress_test</span><span class="o">.</span><span class="n">report_spec</span><span class="o">.</span><span class="n">TableSpec</span><span class="p">(</span>
+            <span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="s1">&#39;config&#39;</span><span class="p">,</span>
+            <span class="p">[(</span><span class="s1">&#39;controller_start&#39;</span><span class="p">,</span> <span class="s1">&#39;Controller Start&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s1">&#39;controller_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;Controller Stop&#39;</span><span class="p">),</span>
+             <span class="p">(</span><span class="s1">&#39;java_opts&#39;</span><span class="p">,</span> <span class="s1">&#39;Java Options&#39;</span><span class="p">)],</span>
+            <span class="n">json_opts</span><span class="o">.</span><span class="n">PARAMETERS_JSON</span><span class="p">)],</span>
+        <span class="p">[</span><span class="n">stress_test</span><span class="o">.</span><span class="n">report_spec</span><span class="o">.</span><span class="n">TableSpec</span><span class="p">(</span>
+            <span class="s1">&#39;2d&#39;</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">json_opts</span><span class="o">.</span><span class="n">RESULTS_JSON</span><span class="p">,</span>
+            <span class="s1">&#39;generator_thread_creation_delay_ms&#39;</span><span class="p">)]</span>
+        <span class="p">)</span>
+    <span class="n">generate_html</span><span class="p">(</span><span class="n">report_test</span><span class="p">,</span> <span class="n">json_opts</span><span class="o">.</span><span class="n">report_filename</span><span class="p">)</span></div>
 
-<span class="c"># Used for self-testing purposes.</span></div>
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="c1"># Used for self-testing purposes.</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">self_test</span><span class="p">()</span>
 </pre></div>
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -446,7 +463,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -455,13 +472,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">NSTAT 1.1 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">nstat.src  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2015, NSTAT Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2017, Author.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
     </div>
   </body>
 </html>
