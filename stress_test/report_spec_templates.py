@@ -16,8 +16,9 @@ class TestReport:
         self.config_json_file = config_json_file
 
     def sb_active_scalability_mtcbench(self, results_json_file):
-        """It returns all the information that is needed for the generation of
-        the report for the specific test.
+        """
+        Returns the report specification for the Southbound active scalability
+        test with MT-Cbench
 
         :param test_type: describes the type of the specific test. This value
         defines the title of the html report.
