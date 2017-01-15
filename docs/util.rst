@@ -1,114 +1,102 @@
-util Package
+util package
 ============
 
-:mod:`util` Package
--------------------
+Submodules
+----------
 
-.. automodule:: util
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`cpu` Module
------------------
+util.cpu module
+---------------
 
 .. automodule:: util.cpu
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`customsubprocess` Module
-------------------------------
+util.customsubprocess module
+----------------------------
 
 .. automodule:: util.customsubprocess
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`file_ops` Module
-----------------------
+util.file_ops module
+--------------------
 
 .. automodule:: util.file_ops
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`html` Module
-------------------
+util.html module
+----------------
 
 .. automodule:: util.html
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`netutil` Module
----------------------
+util.netutil module
+-------------------
 
 .. automodule:: util.netutil
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`numeric` Module
----------------------
+util.numeric module
+-------------------
 
 .. automodule:: util.numeric
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`plot_json` Module
------------------------
+util.plot_json module
+---------------------
 
 .. automodule:: util.plot_json
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`plot_utils` Module
-------------------------
+util.plot_utils module
+----------------------
 
 .. automodule:: util.plot_utils
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`process` Module
----------------------
+util.process module
+-------------------
 
 .. automodule:: util.process
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`remote` Module
---------------------
-
-.. automodule:: util.remote
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`stats` Module
--------------------
+util.stats module
+-----------------
 
 .. automodule:: util.stats
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`sysstats` Module
-----------------------
+util.sysstats module
+--------------------
 
 .. automodule:: util.sysstats
     :members:
     :undoc-members:
     :show-inheritance:
 
-Subpackages
------------
 
-.. toctree::
+Module contents
+---------------
 
-    util.unittests
-
+.. automodule:: util
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,10 +1,10 @@
-emulators Package
+emulators package
 =================
 
-Subpackages
------------
+Module contents
+---------------
 
-.. toctree::
-
-    emulators.mininet
-
+.. automodule:: emulators
+    :members:
+    :undoc-members:
+    :show-inheritance:
