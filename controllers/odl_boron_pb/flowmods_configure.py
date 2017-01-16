@@ -11,7 +11,6 @@ import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.5.0-Boron'
 
-
 def change_flow_timeouts():
     """
     Set the minimum idle and hard flow timeouts in the controller's \
