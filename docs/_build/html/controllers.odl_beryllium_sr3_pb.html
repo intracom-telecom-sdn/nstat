@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>controllers.odl_beryllium_sr3_pb package &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="controllers.odl_boron_pb package" href="controllers.odl_boron_pb.html" />
+    <link rel="prev" title="controllers.odl_beryllium_pb package" href="controllers.odl_beryllium_pb.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="controllers.odl_boron_pb.html" title="controllers.odl_boron_pb package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="controllers.odl_beryllium_pb.html" title="controllers.odl_beryllium_pb package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="controllers.html" accesskey="U">controllers package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="controllers-odl-beryllium-sr3-pb-package">
+<h1>controllers.odl_beryllium_sr3_pb package<a class="headerlink" href="#controllers-odl-beryllium-sr3-pb-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.change_persistence">
+<span id="controllers-odl-beryllium-sr3-pb-change-persistence-module"></span><h2>controllers.odl_beryllium_sr3_pb.change_persistence module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.change_persistence" title="Permalink to this headline">¶</a></h2>
+<p>Handler disabling the percistence mode in the configuration of the controller.</p>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.change_persistence.change_persistence">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.change_persistence.</code><code class="descname">change_persistence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/change_persistence.html#change_persistence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.change_persistence.change_persistence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the persistence attribute to false. The controller will not backup         datastore on the disk.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.change_stats_period">
+<span id="controllers-odl-beryllium-sr3-pb-change-stats-period-module"></span><h2>controllers.odl_beryllium_sr3_pb.change_stats_period module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.change_stats_period" title="Permalink to this headline">¶</a></h2>
+<p>Handler changing the rate of statistics collection from the topology switches</p>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.change_stats_period.change_stats_period">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.change_stats_period.</code><code class="descname">change_stats_period</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/change_stats_period.html#change_stats_period"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.change_stats_period.change_stats_period" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Takes as command line argument the new interval of statistics period we         want to set in the configuration file of the controller and writes it</dt>
+<dd>in this file.</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.flowmods_configure">
+<span id="controllers-odl-beryllium-sr3-pb-flowmods-configure-module"></span><h2>controllers.odl_beryllium_sr3_pb.flowmods_configure module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.flowmods_configure" title="Permalink to this headline">¶</a></h2>
+<p>This handler configures the controller to respond with mac-to-mac FlowMods
+to PacketINs with ARP payload messages. It also configures the idle and hard
+timeout of these FlowMods to have the minimum value.</p>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.flowmods_configure.change_flow_timeouts">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.flowmods_configure.</code><code class="descname">change_flow_timeouts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/flowmods_configure.html#change_flow_timeouts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.flowmods_configure.change_flow_timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the minimum idle and hard flow timeouts in the controller&#8217;s         configuration file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.flowmods_configure.change_proactive_flow_mod">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.flowmods_configure.</code><code class="descname">change_proactive_flow_mod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/flowmods_configure.html#change_proactive_flow_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.flowmods_configure.change_proactive_flow_mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unset proactive flow mod, in controller&#8217;s configuration.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.get_flows">
+<span id="controllers-odl-beryllium-sr3-pb-get-flows-module"></span><h2>controllers.odl_beryllium_sr3_pb.get_flows module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.get_flows" title="Permalink to this headline">¶</a></h2>
+<p>This handler returns the number of installed flows of a topology, connected
+to the controller. This information is extracted from controller&#8217;s operational
+datastore, using RESTCONF.</p>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.get_flows.get_flow_stats">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.get_flows.</code><code class="descname">get_flow_stats</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/get_flows.html#get_flow_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.get_flows.get_flow_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects and returns data about installed flows for the topology nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ip</strong> (<em>str</em>) &#8211; controller IP Address</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; controller restconf port number</li>
+<li><strong>username</strong> (<em>str</em>) &#8211; username for restconf authorization</li>
+<li><strong>password</strong> (<em>str</em>) &#8211; password for restconf authorization</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the number of installed flows in the topology nodes or a         negative number in a negative case</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.get_flows.get_oper_flows">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.get_flows.</code><code class="descname">get_oper_flows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/get_flows.html#get_oper_flows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.get_flows.get_oper_flows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query number of flows registered in ODL operational DS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of flows found, 0 if none exists and -1 in case of         error.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.get_hosts">
+<span id="controllers-odl-beryllium-sr3-pb-get-hosts-module"></span><h2>controllers.odl_beryllium_sr3_pb.get_hosts module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.get_hosts" title="Permalink to this headline">¶</a></h2>
+<p>This handler returns the number of hosts of a topology, connected
+to the controller. This information is extracted from controller&#8217;s operational
+datastore, using RESTCONF.</p>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.get_hosts.get_oper_hosts">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.get_hosts.</code><code class="descname">get_oper_hosts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/get_hosts.html#get_oper_hosts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.get_hosts.get_oper_hosts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query number of hosts registered in ODL operational DS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of hosts found, 0 if none exists and -1 in case of         error.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.get_links">
+<span id="controllers-odl-beryllium-sr3-pb-get-links-module"></span><h2>controllers.odl_beryllium_sr3_pb.get_links module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.get_links" title="Permalink to this headline">¶</a></h2>
+<p>This handler returns the number of links of a topology, connected
+to the controller. This information is extracted from controller&#8217;s operational
+datastore, using RESTCONF.</p>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.get_links.get_oper_links">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.get_links.</code><code class="descname">get_oper_links</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/get_links.html#get_oper_links"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.get_links.get_oper_links" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query number of links registered in ODL operational DS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of links found, 0 if none exists and -1 in case of         error.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.get_switches">
+<span id="controllers-odl-beryllium-sr3-pb-get-switches-module"></span><h2>controllers.odl_beryllium_sr3_pb.get_switches module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.get_switches" title="Permalink to this headline">¶</a></h2>
+<p>This handler returns the number of switches of a topology, connected
+to the controller. This information is extracted from controller&#8217;s operational
+datastore, using RESTCONF.</p>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.get_switches.get_oper_switches">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.get_switches.</code><code class="descname">get_oper_switches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/get_switches.html#get_oper_switches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.get_switches.get_oper_switches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query number of switches registered in ODL operational DS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of switches found, 0 if none exists and -1 in case of         error.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb.xml_utils">
+<span id="controllers-odl-beryllium-sr3-pb-xml-utils-module"></span><h2>controllers.odl_beryllium_sr3_pb.xml_utils module<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb.xml_utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="controllers.odl_beryllium_sr3_pb.xml_utils.manipulate_xml">
+<code class="descclassname">controllers.odl_beryllium_sr3_pb.xml_utils.</code><code class="descname">manipulate_xml</code><span class="sig-paren">(</span><em>input_filename</em>, <em>output_filename</em>, <em>string_to_find</em>, <em>target_value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/controllers/odl_beryllium_sr3_pb/xml_utils.html#manipulate_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#controllers.odl_beryllium_sr3_pb.xml_utils.manipulate_xml" title="Permalink to this definition">¶</a></dt>
+<dd><p>It gets a configuration (.xml in our case) file, defined by the         input_filename parameter and changes its contents defied by the         string_to_find parameter. The new values are defined in the         target_value parameter. The result is saved in a new file defined by         the output_file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_filename</strong> (<em>str</em>) &#8211; The configuration filepath we want to change.</li>
+<li><strong>output_filename</strong> (<em>str</em>) &#8211; The new configuration file, after changing the         original one.</li>
+<li><strong>string_to_find</strong> (<em>str</em>) &#8211; The string we want to change in the configuration         file.</li>
+<li><strong>target_value</strong> (<em>str</em>) &#8211; The new value to replace the string_to_find</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-controllers.odl_beryllium_sr3_pb">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-controllers.odl_beryllium_sr3_pb" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">controllers.odl_beryllium_sr3_pb package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.change_persistence">controllers.odl_beryllium_sr3_pb.change_persistence module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.change_stats_period">controllers.odl_beryllium_sr3_pb.change_stats_period module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.flowmods_configure">controllers.odl_beryllium_sr3_pb.flowmods_configure module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.get_flows">controllers.odl_beryllium_sr3_pb.get_flows module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.get_hosts">controllers.odl_beryllium_sr3_pb.get_hosts module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.get_links">controllers.odl_beryllium_sr3_pb.get_links module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.get_switches">controllers.odl_beryllium_sr3_pb.get_switches module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb.xml_utils">controllers.odl_beryllium_sr3_pb.xml_utils module</a></li>
+<li><a class="reference internal" href="#module-controllers.odl_beryllium_sr3_pb">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="controllers.odl_beryllium_pb.html"
+                        title="previous chapter">controllers.odl_beryllium_pb package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="controllers.odl_boron_pb.html"
+                        title="next chapter">controllers.odl_boron_pb package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/controllers.odl_beryllium_sr3_pb.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="controllers.odl_boron_pb.html" title="controllers.odl_boron_pb package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="controllers.odl_beryllium_pb.html" title="controllers.odl_beryllium_pb package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="controllers.html" >controllers package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

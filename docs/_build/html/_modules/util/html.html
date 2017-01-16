@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util.html &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for util.html</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot; HTML generation utilities &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<div class="viewcode-block" id="generate_html_foot"><a class="viewcode-back" href="../../util.html#util.html.generate_html_foot">[docs]</a><span class="k">def</span> <span class="nf">generate_html_foot</span><span class="p">(</span><span class="n">foot_content</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the ending and the contents at the end of html page.</span>
+
+<span class="sd">    :returns: HTML code of the page ending.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">html_foot</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">&lt;/body&gt;&lt;/html&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">foot_content</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">html_foot</span></div>
+
+
+<div class="viewcode-block" id="generate_html_head"><a class="viewcode-back" href="../../util.html#util.html.generate_html_head">[docs]</a><span class="k">def</span> <span class="nf">generate_html_head</span><span class="p">(</span><span class="n">css_style</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">javascript_functions</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                       <span class="n">head_content</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates the head of an html file gets as input the styling of the page \</span>
+<span class="sd">        as a css string parameter and returns a string value, which is the \</span>
+<span class="sd">        html code of the header.</span>
+
+<span class="sd">    :param css_style: the css styling text of the html page we produce. \</span>
+<span class="sd">        this parameter must be given as a multiline string.</span>
+<span class="sd">    :param parameters_dictionary: Parameters of the specific testing scenario</span>
+<span class="sd">    :param javascript_functions: JavaScript functions for report. This \</span>
+<span class="sd">        parameter must be given as a multiline string.</span>
+<span class="sd">    :param head_content: this is the html code that will appear at the top of \</span>
+<span class="sd">        the page, just after the &lt;body&gt; tag. We can place here the Title of \</span>
+<span class="sd">        the page and everything else we want to appear at the top.</span>
+<span class="sd">    :returns: str (the html code of the Header of the html page.)</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type css_style: str</span>
+<span class="sd">    :type parameters_dictionary: str</span>
+<span class="sd">    :type javascript_functions: str</span>
+<span class="sd">    :type head_content: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">html_head</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&#39;</span>
+                 <span class="s1">&#39;&lt;title&gt;Southbound testing&lt;/title&gt;&#39;</span>
+                 <span class="s1">&#39;&lt;meta http-equiv=</span><span class="se">\&quot;</span><span class="s1">Content-Type</span><span class="se">\&quot;</span><span class="s1"> &#39;</span>
+                 <span class="s1">&#39;content=</span><span class="se">\&quot;</span><span class="s1">text/html;charset=UTF-8</span><span class="se">\&quot;</span><span class="s1">&gt; &lt;style&gt;&#39;</span><span class="p">)</span>
+    <span class="n">html_head</span> <span class="o">+=</span> <span class="n">css_style</span> <span class="o">+</span> <span class="s1">&#39;&lt;/style&gt;&#39;</span> <span class="o">+</span> \
+    <span class="n">javascript_functions</span> <span class="o">+</span> <span class="s1">&#39;&lt;/head&gt;&lt;body&gt;&#39;</span> <span class="o">+</span> <span class="n">head_content</span>
+    <span class="k">return</span> <span class="n">html_head</span></div>
+
+<div class="viewcode-block" id="get_ordered_index"><a class="viewcode-back" href="../../util.html#util.html.get_ordered_index">[docs]</a><span class="k">def</span> <span class="nf">get_ordered_index</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">map_dictionary</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the index of a key in map_dictionary, which is defined by the \</span>
+<span class="sd">        field_value. If no match is found None is returned</span>
+
+<span class="sd">    :param field_value: the value of the key we want to search for, inside \</span>
+<span class="sd">        the map_dictionary. This is a helper function called inside the</span>
+<span class="sd">        single_dict_to_html() and multi_dict_to_html() to avoid repetitions of \</span>
+<span class="sd">        the same code blocks in these functions</span>
+<span class="sd">    :param map_dictionary: An instance of OrderedDict which has mappings \</span>
+<span class="sd">        between keys and their values as they appear inside an html generated \</span>
+<span class="sd">        document.</span>
+<span class="sd">    :returns: The index where the field_value should be placed, depending on \</span>
+<span class="sd">        the ordering inside the map_dictionary</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type field_value: str</span>
+<span class="sd">    :type map_dictionary: collections.OrderedDict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ordered_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">map_key</span><span class="p">,</span> <span class="n">map_value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">map_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">map_key</span> <span class="o">==</span> <span class="n">field_value</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ordered_index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ordered_index</span> <span class="o">=</span> <span class="n">ordered_index</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="c1"># In case no match is found, None value is returned as index</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="isalistofdictionaries"><a class="viewcode-back" href="../../util.html#util.html.isalistofdictionaries">[docs]</a><span class="k">def</span> <span class="nf">isalistofdictionaries</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes a list as argument and checks if all the elements of this list \</span>
+<span class="sd">        are dictionaries. If they are then it returns true, else it returns</span>
+<span class="sd">        false. If the input argument type is not list then it also returns \</span>
+<span class="sd">        false.</span>
+
+<span class="sd">    :param lst: The list that we want to check its elements</span>
+<span class="sd">    :returns:  True if all the elements of the list are dictionaries. False \</span>
+<span class="sd">        otherwise</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    :type lst: list&lt;dict&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">all_list_items_dict</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lst</span><span class="p">:</span>
+            <span class="n">all_list_items_dict</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_list_items_dict</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">list_item</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">list_item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">all_list_items_dict</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span>
+    <span class="k">return</span> <span class="n">all_list_items_dict</span></div>
+
+<div class="viewcode-block" id="multi_dict_to_html"><a class="viewcode-back" href="../../util.html#util.html.multi_dict_to_html">[docs]</a><span class="k">def</span> <span class="nf">multi_dict_to_html</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">table_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">map_dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">row_ordering_key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates html tables according to the input it gets from the input \</span>
+<span class="sd">        arguments.</span>
+
+<span class="sd">    :param data: This datastructure is a list that contains dictionaries of \</span>
+<span class="sd">        strings that contains the pair of field_name:value of all the data we \</span>
+<span class="sd">        want to convert to HTML table.</span>
+<span class="sd">    :param table_title: An optional argument that contains the title of the \</span>
+<span class="sd">        table we want to generate.</span>
+<span class="sd">    :param map_dictionary: data structure that contains the pair of \</span>
+<span class="sd">        field_name:value. It defines which fields will be kept from the data \</span>
+<span class="sd">        input dictionary and how their value will be translated in the HTML \</span>
+<span class="sd">        table.</span>
+<span class="sd">    :returns: str</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type data: list&lt;dict&gt;</span>
+<span class="sd">    :type table_title: str</span>
+<span class="sd">    :type map_dictionary: controller.OrderedDict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">map_dictionary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">col_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">col_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">map_dictionary</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">row_ordering_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">k</span><span class="p">[</span><span class="n">row_ordering_key</span><span class="p">])</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="s1">&#39;&lt;table class=</span><span class="se">\&quot;</span><span class="s1">tableWithFloatingHeader</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;thead&gt;&#39;</span>
+    <span class="k">if</span> <span class="n">table_title</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr&gt;&lt;th colspan=</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">col_size</span><span class="p">)</span> <span class="o">+</span> \
+            <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1"> class=</span><span class="se">\&quot;</span><span class="s1">table-title</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">table_title</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/th&gt;&lt;/tr&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span>
+    <span class="k">if</span> <span class="n">map_dictionary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field_value</span><span class="p">,</span> <span class="n">data_value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;th&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">field_value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/th&gt;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field_key</span><span class="p">,</span> <span class="n">field_value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">map_dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">field_key</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;th&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">field_value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/th&gt;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Remove from map dictionary entries that do not exist inside</span>
+                <span class="c1"># the data in order not to affect the rest of the process</span>
+                <span class="k">del</span> <span class="n">map_dictionary</span><span class="p">[</span><span class="n">field_key</span><span class="p">]</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/tr&gt;&lt;/thead&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;tbody&gt;&#39;</span>
+    <span class="n">num_row</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">data_row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">num_row</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr class=</span><span class="se">\&quot;</span><span class="s1">odd</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span>
+        <span class="n">ordered_row</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">field_value</span><span class="p">,</span> <span class="n">data_value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">data_row</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">ordered_row_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">map_dictionary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;td&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/td&gt;&#39;</span>
+            <span class="k">elif</span> <span class="n">field_value</span> <span class="ow">in</span> <span class="n">map_dictionary</span><span class="p">:</span>
+                <span class="n">ordered_row_index</span> <span class="o">=</span> <span class="n">get_ordered_index</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span>
+                                                      <span class="n">map_dictionary</span><span class="p">)</span>
+                <span class="n">ordered_row</span><span class="p">[</span><span class="n">ordered_row_index</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&lt;td&gt;&#39;</span> <span class="o">+</span> \
+                    <span class="nb">str</span><span class="p">(</span><span class="n">data_value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/td&gt;&#39;</span>
+
+        <span class="k">for</span> <span class="n">row_key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ordered_row</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="n">ordered_row</span><span class="p">[</span><span class="n">row_key</span><span class="p">]</span>
+        <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/tr&gt;&#39;</span>
+        <span class="n">num_row</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/tbody&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/table&gt;&#39;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">table_html</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="single_dict_table_data"><a class="viewcode-back" href="../../util.html#util.html.single_dict_table_data">[docs]</a><span class="k">def</span> <span class="nf">single_dict_table_data</span><span class="p">(</span><span class="n">data_values</span><span class="p">,</span> <span class="n">td_style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">td_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a &lt;td&gt; ... &lt;/td&gt; html element for the single_dict_to_html() \</span>
+<span class="sd">        type of tables, data columns. In case that the input data_values is a \</span>
+<span class="sd">        list of dictionaries, this function calls recursively \</span>
+<span class="sd">        single_dict_to_html() and generates sub tables inside the \</span>
+<span class="sd">        &lt;td&gt; ... &lt;/td&gt; html element.</span>
+
+<span class="sd">    :param data_values: the data we want to place into a &lt;td&gt; ... &lt;/td&gt; html \</span>
+<span class="sd">        element.</span>
+<span class="sd">    :param td_style: the styling code for the content of &lt;td&gt;...&lt;/td&gt; html \</span>
+<span class="sd">        element.</span>
+<span class="sd">    :param cls: the class name attribute of the &lt;td&gt;...&lt;/td&gt; html element</span>
+<span class="sd">    :returns: html code of a &lt;td&gt;  &lt;/td&gt; element for single_dict_to_html()</span>
+<span class="sd">        tables</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type style: str</span>
+<span class="sd">    :type cls: str</span>
+<span class="sd">    :type data_values: str or list&lt;dict&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cell_str</span> <span class="o">=</span> <span class="s1">&#39;&lt;td&#39;</span>
+    <span class="k">if</span> <span class="n">td_style</span><span class="p">:</span>
+        <span class="n">cell_str</span> <span class="o">+=</span> <span class="s1">&#39; style=</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">td_style</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="n">td_class</span><span class="p">:</span>
+        <span class="n">cell_str</span> <span class="o">+=</span> <span class="s1">&#39; class=</span><span class="se">\&quot;</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">td_class</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span>
+    <span class="n">cell_str</span> <span class="o">+=</span> <span class="s1">&#39;&gt;&#39;</span>
+    <span class="k">if</span> <span class="n">isalistofdictionaries</span><span class="p">(</span><span class="n">data_values</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># In case we have a list of dictionaries recursive call</span>
+        <span class="c1"># of function</span>
+        <span class="k">for</span> <span class="n">data_value</span> <span class="ow">in</span> <span class="n">data_values</span><span class="p">:</span>
+            <span class="n">cell_str</span> <span class="o">+=</span> <span class="n">single_dict_to_html</span><span class="p">(</span><span class="n">data_value</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">cell_str</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/td&gt;&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cell_str</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_values</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/td&gt;&#39;</span>
+    <span class="k">return</span> <span class="n">cell_str</span></div>
+
+<div class="viewcode-block" id="single_dict_to_html"><a class="viewcode-back" href="../../util.html#util.html.single_dict_to_html">[docs]</a><span class="k">def</span> <span class="nf">single_dict_to_html</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_title</span><span class="p">,</span> <span class="n">data_title</span><span class="p">,</span> <span class="n">table_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                        <span class="n">map_dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates html tables according to the input it gets from the input \</span>
+<span class="sd">        arguments. The table generated is by row, which means that on each row \</span>
+<span class="sd">        the first element is the key value of the dictionary, the second \</span>
+<span class="sd">        element is the data value of the dictionary for the correspondent key. \</span>
+<span class="sd">        The columns are always 2 and their title are defined in the input \</span>
+<span class="sd">        arguments \</span>
+
+<span class="sd">    :param data: this data structure is a dictionary of strings that contains \</span>
+<span class="sd">        the pair of field_name:value for all the data we want to convert to \</span>
+<span class="sd">        HTML table.</span>
+<span class="sd">    :param key_title: the title of the column, under which the dictionary key \</span>
+<span class="sd">        values will be placed.</span>
+<span class="sd">    :param data_title: the title of the column, under which the dictionary \</span>
+<span class="sd">        data values will be placed.</span>
+<span class="sd">    :param table_title: Optional argument. Contains the title of the table we \</span>
+<span class="sd">        want to generate</span>
+<span class="sd">    :param map_dictionary: This data structure contains the pair of \</span>
+<span class="sd">        field_name:value. It defines which fields should be kept from the data \</span>
+<span class="sd">        input dictionary and how their value will be translated in the HTML \</span>
+<span class="sd">        table.</span>
+<span class="sd">    :returns: str</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type data: dict</span>
+<span class="sd">    :type key_title: str</span>
+<span class="sd">    :type data_title: str</span>
+<span class="sd">    :type table_tytle:str</span>
+<span class="sd">    :type map_dictionary: collections.OrderedDict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">table_html</span> <span class="o">=</span> <span class="s1">&#39;&lt;table class=</span><span class="se">\&quot;</span><span class="s1">tableWithFloatingHeader</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;thead&gt;&#39;</span>
+    <span class="k">if</span> <span class="n">table_title</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span><span class="o">+</span><span class="s1">&#39;&lt;tr&gt;&lt;th class=</span><span class="se">\&quot;</span><span class="s1">table-title</span><span class="se">\&quot;</span><span class="s1"> colspan=</span><span class="se">\&quot;</span><span class="s1">2</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span> <span class="o">+</span> \
+            <span class="nb">str</span><span class="p">(</span><span class="n">table_title</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/th&gt;&lt;/tr&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;th&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">key_title</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/th&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;th&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_title</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;&lt;/th&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/tr&gt;&lt;/thead&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;tbody&gt;&#39;</span>
+    <span class="n">row_ordered</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">row_ordered_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">field_value</span><span class="p">,</span> <span class="n">data_value</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">row_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">map_dictionary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">row_ordered_index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr class=</span><span class="se">\&quot;</span><span class="s1">odd</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span>
+            <span class="n">single_dict_table_data</span><span class="p">(</span><span class="n">data_values</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">field_value</span><span class="p">),</span>
+                                   <span class="n">td_style</span><span class="o">=</span><span class="s1">&#39;font-weight:bold;&#39;</span><span class="p">)</span>
+            <span class="c1"># If other List of dictionaries exist then we call recursively</span>
+            <span class="c1"># the function to generate subtables inside the columns of</span>
+            <span class="c1"># the main table. Else we just place the data_value inside the</span>
+            <span class="c1"># cell of the table</span>
+            <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="n">single_dict_table_data</span><span class="p">(</span><span class="n">data_value</span><span class="p">)</span>
+            <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="s1">&#39;&lt;/tr&gt;&#39;</span>
+            <span class="n">row_ordered</span><span class="p">[</span><span class="n">row_ordered_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_str</span>
+            <span class="n">row_ordered_index</span> <span class="o">=</span> <span class="n">row_ordered_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">field_value</span> <span class="ow">in</span> <span class="n">map_dictionary</span><span class="p">:</span>
+            <span class="n">row_ordered_index</span> <span class="o">=</span> <span class="n">get_ordered_index</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span>
+                                                  <span class="n">map_dictionary</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">row_ordered_index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr&gt;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="s1">&#39;&lt;tr class=</span><span class="se">\&quot;</span><span class="s1">odd</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span>
+            <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="s1">&#39;&lt;td style=</span><span class="se">\&quot;</span><span class="s1">font-weight:bold;</span><span class="se">\&quot;</span><span class="s1">&gt;&#39;</span> <span class="o">+</span> \
+            <span class="nb">str</span><span class="p">(</span><span class="n">map_dictionary</span><span class="p">[</span><span class="n">field_value</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;&lt;/td&gt;&#39;</span>
+            <span class="c1"># If other List of dictionaries exist then we call recursively</span>
+            <span class="c1"># the function to generate sub tables inside the columns of</span>
+            <span class="c1"># the main table. Else we just place the data_value inside the</span>
+            <span class="c1"># cell of the table</span>
+            <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="n">single_dict_table_data</span><span class="p">(</span><span class="n">data_value</span><span class="p">)</span>
+            <span class="n">row_str</span> <span class="o">=</span> <span class="n">row_str</span> <span class="o">+</span> <span class="s1">&#39;&lt;/tr&gt;&#39;</span>
+            <span class="n">row_ordered</span><span class="p">[</span><span class="n">row_ordered_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_str</span>
+            <span class="n">row_ordered_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">row_key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">row_ordered</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span><span class="o">+</span><span class="n">row_ordered</span><span class="p">[</span><span class="n">row_key</span><span class="p">]</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/tbody&gt;&#39;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="n">table_html</span> <span class="o">+</span> <span class="s1">&#39;&lt;/table&gt;&#39;</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">table_html</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

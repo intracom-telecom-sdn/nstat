@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.oftraf &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stress_test.oftraf</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2016 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Oftraf Class- All oftraf monitor-related functionality is here. Note that</span>
+<span class="sd">Oftraf Monitor runs thereto the controller is located (Controller-SB</span>
+<span class="sd">interface) &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">stress_test.oftraf_exceptions</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">util.netutil</span>
+
+
+<div class="viewcode-block" id="Oftraf"><a class="viewcode-back" href="../../stress_test.html#stress_test.oftraf.Oftraf">[docs]</a><span class="k">class</span> <span class="nc">Oftraf</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All Oftraf related functionality is here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an Oftraf Monitor Controller object.</span>
+<span class="sd">        Options from JSON input file</span>
+
+<span class="sd">        :param controller: object of the Controller class</span>
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :type controller: object</span>
+<span class="sd">        :type test_config: parsed json file with test configuration</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;oftraf_test_interval_ms&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interval_ms</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;oftraf_test_interval_ms&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interval_ms</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rest_server_port</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;oftraf_rest_server_port&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">ssh_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">ssh_user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">ssh_pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">of_port</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">of_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;UNKNOWN&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">init_ssh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__error_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">error_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles custom errors of oftraf</span>
+
+<span class="sd">        :param error_message: message of the handled error</span>
+<span class="sd">        :param error_num: error number of the handled error, used to define</span>
+<span class="sd">        subcases of raised errors.</span>
+<span class="sd">        :type error_message: str</span>
+<span class="sd">        :type error_num: int</span>
+<span class="sd">        :raises oftraf_exceptions.OftrafError: to terminate execution of</span>
+<span class="sd">        test after error handling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> :::::::::: Exception :::::::::::&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error number:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error_num</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - </span><span class="si">{1}</span><span class="s1"> Exception: </span><span class="si">{2}</span><span class="s1">, </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="c1"># Propagate error outside the class to stop execution</span>
+        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Oftraf.get_oftraf_path"><a class="viewcode-back" href="../../stress_test.html#stress_test.oftraf.Oftraf.get_oftraf_path">[docs]</a>    <span class="k">def</span> <span class="nf">get_oftraf_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns oftraf base directory path, using as base to the project</span>
+<span class="sd">        path</span>
+
+<span class="sd">        :returns: oftraf folder path</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stress_test_base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
+        <span class="n">monitors_base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stress_test_base_dir</span><span class="p">,</span>
+                                                         <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
+        <span class="n">oftraf_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">monitors_base_dir</span><span class="p">,</span> <span class="s1">&#39;monitors&#39;</span><span class="p">,</span> <span class="s1">&#39;oftraf&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">oftraf_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Oftraf.build"><a class="viewcode-back" href="../../stress_test.html#stress_test.oftraf.Oftraf.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the oftraf monitor build handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises oftraf_exceptions.OftrafBuildError: if build process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Oftraf] Building&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILDING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">oftraf_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_oftraf_path</span><span class="p">())</span>
+                <span class="n">build_hnd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">oftraf_path</span><span class="p">),</span> <span class="s1">&#39;build.sh&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="n">build_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> build handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[nb_generator.build]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="n">build_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> \
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span>
+                                                 <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">build_hnd</span><span class="p">]),</span>
+                                                 <span class="s1">&#39;[oftraf.build_handler]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILT&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Oftraf] Successful building&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafBuildError</span><span class="p">(</span>
+                        <span class="s1">&#39;Build process exited with non zero exit code. &#39;</span>
+                        <span class="s1">&#39;Command-line output: </span><span class="si">{0}</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> Exit status code: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">,</span> <span class="n">exit_status</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafBuildError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Oftraf.clean"><a class="viewcode-back" href="../../stress_test.html#stress_test.oftraf.Oftraf.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the oftraf monitor clean handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises oftraf_exceptions.OftrafCleanError: if clean process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Oftraf] Cleaning&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">oftraf_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_oftraf_path</span><span class="p">()</span>
+                <span class="n">clean_hnd</span> <span class="o">=</span> <span class="n">oftraf_path</span> <span class="o">+</span> <span class="s1">&#39;clean.sh&#39;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="n">clean_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> clean handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[nb_generator.build]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="n">clean_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> \
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span>
+                                                 <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">clean_hnd</span><span class="p">]),</span>
+                                                 <span class="s1">&#39;[oftraf.clean_handler]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Oftraf] Successful cleaning&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafCleanError</span><span class="p">(</span>
+                        <span class="s1">&#39;clean process exited with non zero exit code. &#39;</span>
+                        <span class="s1">&#39;Command-line output: </span><span class="si">{0}</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> Exit status code: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">,</span> <span class="n">exit_status</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafCleanError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Oftraf.start"><a class="viewcode-back" href="../../stress_test.html#stress_test.oftraf.Oftraf.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the oftraf monitor start handler. Initializes the REST</span>
+<span class="sd">        interface of oftraf and listen of traffic on controller Southbound</span>
+<span class="sd">        interface</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises oftraf_exceptions.OftrafStartError: if start process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Oftraf] Starting&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STARTING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">oftraf_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_oftraf_path</span><span class="p">()</span>
+                <span class="n">start_hnd</span> <span class="o">=</span> <span class="n">oftraf_path</span> <span class="o">+</span> <span class="s1">&#39;start.sh&#39;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="n">start_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STARTED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> start handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[nb_generator.build]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="n">start_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> \
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">start_hnd</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span>
+                                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_server_port</span><span class="p">),</span>
+                                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">of_port</span><span class="p">)]),</span>
+                        <span class="s1">&#39;[oftraf.start_handler]&#39;</span><span class="p">,</span>
+                        <span class="n">lines_queue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">block_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">getpty_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STARTED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Oftraf] Successful starting&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STARTED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafStartError</span><span class="p">(</span>
+                        <span class="s1">&#39;Start process exited with non zero exit code. &#39;</span>
+                        <span class="s1">&#39;Command-line output: </span><span class="si">{0}</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> Exit status code: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">,</span> <span class="n">exit_status</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafStartError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Oftraf.stop"><a class="viewcode-back" href="../../stress_test.html#stress_test.oftraf.Oftraf.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Wrapper to the oftraf monitor stop handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises oftraf_exceptions.OftrafStopError: if stop process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Oftraf] Starting&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STOPPING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">oftraf_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_oftraf_path</span><span class="p">()</span>
+                <span class="n">stop_hnd</span> <span class="o">=</span> <span class="n">oftraf_path</span> <span class="o">+</span> <span class="s1">&#39;stop.sh&#39;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="n">stop_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STOPPED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> stop handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[nb_generator.build]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="n">stop_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> \
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span>
+                        <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">stop_hnd</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rest_server_port</span><span class="p">)]),</span>
+                        <span class="s1">&#39;[oftraf.stop_handler]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STOPED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Oftraf] Successful stopping&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STOPPED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafStopError</span><span class="p">(</span>
+                        <span class="s1">&#39;Stop process exited with non zero exit code. &#39;</span>
+                        <span class="s1">&#39;Command-line output: </span><span class="si">{0}</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> Exit status code: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">,</span> <span class="n">exit_status</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafStopError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Oftraf.oftraf_get_of_counts"><a class="viewcode-back" href="../../stress_test.html#stress_test.oftraf.Oftraf.oftraf_get_of_counts">[docs]</a>    <span class="k">def</span> <span class="nf">oftraf_get_of_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the openFlow packets counts, measured by oftraf. It uses the</span>
+<span class="sd">        oftraf REST interface and returns the result as a string in JSON format</span>
+
+<span class="sd">        :returns: oftraf metrics as string in JSON format</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :raises oftraf_exceptions.OftrafError: if execution of handler fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">getheaders</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Accept&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+                <span class="n">url</span> <span class="o">=</span> \
+                    <span class="s1">&#39;http://</span><span class="si">{0}</span><span class="s1">:</span><span class="si">{1}</span><span class="s1">/get_of_counts&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest_server_port</span><span class="p">)</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">trust_env</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">req</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">getheaders</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">req</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafGetResultError</span><span class="p">(</span>
+                    <span class="s1">&#39;Fail getting total number of installed flows </span><span class="se">\n</span><span class="s1"> Oftraf &#39;</span>
+                    <span class="s1">&#39;REST request status code: </span><span class="si">{0}</span><span class="s1"> </span><span class="se">\n</span><span class="s1"> Oftraf REST request &#39;</span>
+                    <span class="s1">&#39;data: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                                       <span class="n">req</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))))</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf_exceptions</span><span class="o">.</span><span class="n">OftrafError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method called when object is destroyed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Run oftraf stop.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Run oftraf cleanup.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Close oftraf node ssh connection.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
