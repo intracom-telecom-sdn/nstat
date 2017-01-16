@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.nb_generator &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stress_test.nb_generator</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2016 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot; NB-Generator Class- All NB-Generator-related functionality is here&quot;&quot;&quot;</span>
+
+<span class="c1"># import emulators.nb_generator</span>
+<span class="kn">import</span> <span class="nn">gevent</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">stress_test.nb_generator_exceptions</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">util.netutil</span>
+
+
+<div class="viewcode-block" id="NBgen"><a class="viewcode-back" href="../../stress_test.html#stress_test.nb_generator.NBgen">[docs]</a><span class="k">class</span> <span class="nc">NBgen</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All NB-generator related functionality is here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_gen_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">sbemu</span><span class="p">,</span>
+                 <span class="n">log_level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create an NB-generator object. Options from JSON input file</span>
+
+<span class="sd">        :param nb_gen_base_dir: emulator base directory</span>
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :param controller: object of the Controller class</span>
+<span class="sd">        :param sbemu: object of the SBEmu subclass</span>
+<span class="sd">        :param log_level: defines the logging level. (DEBUG, INFO, ERROR)</span>
+<span class="sd">        :type nb_gen_base_dir: str</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        :type controller: object</span>
+<span class="sd">        :type sbemu: object</span>
+<span class="sd">        :type log_level: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">controller</span> <span class="o">=</span> <span class="n">controller</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sbemu</span> <span class="o">=</span> <span class="n">sbemu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">nb_gen_base_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_node_ip&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_node_ssh_port&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_node_username&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_node_password&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                          <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_build_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                          <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_clean_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                        <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_run_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_oper_ds_flows_hnd</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;nb_emulator_get_oper_ds_handler&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;UNKNOWN&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow_delete_flag</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;flow_delete_flag&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flows_per_request</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;flows_per_request&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="n">log_level</span>
+        <span class="c1"># The parameters initialized as None are dimensions of the test.</span>
+        <span class="c1"># These values are passed outside, from the test in the main for loop.</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow_workers</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_flows</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow_operations_delay_ms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flows_ds_discovery_deadline</span> <span class="o">=</span> <span class="mi">240</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">confirm_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e2e_installation_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discover_flows_on_switches_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="s2">&quot;bin/venv_handler.sh&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__error_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">error_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles custom errors of nb_generator</span>
+
+<span class="sd">        :param error_message: message of the handled error</span>
+<span class="sd">        :param error_num: error number of the handled error, used to define</span>
+<span class="sd">        subcases of raised errors.</span>
+<span class="sd">        :type error_message: str</span>
+<span class="sd">        :type error_num: int</span>
+<span class="sd">        :raises nb_generator_exceptions.NBGenError: to terminate execution of</span>
+<span class="sd">        test after error handling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> :::::::::: Exception :::::::::::&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error number: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error_num</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - </span><span class="si">{1}</span><span class="s1"> Exception: </span><span class="si">{2}</span><span class="s1">, </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NBgen.init_ssh"><a class="viewcode-back" href="../../stress_test.html#stress_test.nb_generator.NBgen.init_ssh">[docs]</a>    <span class="k">def</span> <span class="nf">init_ssh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a new SSH client object, with the nb_generator node and \</span>
+<span class="sd">            assigns it to the protected attribute _ssh_conn. If a connection \</span>
+<span class="sd">            already exists it returns a new SSH client object to the  \</span>
+<span class="sd">            controller node.</span>
+
+<span class="sd">        :raises nb_generator_exceptions.NBGenNodeConnectionError: if ssh \</span>
+<span class="sd">            connection establishment fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;[open_ssh_connection] Initiating SSH session with </span><span class="si">{0}</span><span class="s1"> node on &#39;</span>
+            <span class="s1">&#39;</span><span class="si">{1}</span><span class="s1"> host.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_connect_or_return</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Return a new client ssh object for the nb-generator node</span>
+                    <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_connect_or_return</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenNodeConnectionError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NBgen.build"><a class="viewcode-back" href="../../stress_test.html#stress_test.nb_generator.NBgen.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the NB-Generator build handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises nb_generator_exceptions.NBGenBuildError: if build process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[NB_generator] Building&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILDING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> build handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[nb_generator.build]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">]),</span>
+                    <span class="s1">&#39;[NB_generator.build_handler]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILT&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[NB_generator] Successful building&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenBuildError</span><span class="p">(</span>
+                        <span class="s1">&#39;[NB_generator] Failure during running. Build handler &#39;</span>
+                        <span class="s1">&#39;exited with no zero exit status. </span><span class="se">\n</span><span class="s1"> &#39;</span>
+                        <span class="s1">&#39;Handler output: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenBuildError</span><span class="p">(</span>
+                    <span class="s1">&#39;[NB_generator] Build handler was not executed at all. &#39;</span>
+                    <span class="s1">&#39;Failure running the handler.&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NBgen.clean"><a class="viewcode-back" href="../../stress_test.html#stress_test.nb_generator.NBgen.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the NB-Generator clean handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises nb_generator_exceptions.NBGenCleanError: if clean process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[NB_generator] Cleaning&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> clean handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[nb_generator.clean]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">,</span>
+                    <span class="s1">&#39;[NB_generator.clean_handler]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[NB_generator] Successful clean&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenCleanError</span><span class="p">(</span>
+                        <span class="s1">&#39;[NB_generator] Failure during running. Clean handler &#39;</span>
+                        <span class="s1">&#39;exited with no zero exit status. </span><span class="se">\n</span><span class="s1"> &#39;</span>
+                        <span class="s1">&#39;Handler output: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenCleanError</span><span class="p">(</span>
+                    <span class="s1">&#39;[NB_generator] Clean handler was not executed at all. &#39;</span>
+                    <span class="s1">&#39;Failure running the handler.&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NBgen.run"><a class="viewcode-back" href="../../stress_test.html#stress_test.nb_generator.NBgen.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the NB-Generator run handler</span>
+
+<span class="sd">        :returns: Returns the combined stdout - stderr of the executed command</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises nb_generator_exceptions.NBGenRunError: if running nb_generator \</span>
+<span class="sd">            fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[NB_generator] Run handler&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STARTED&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NB_GEN_NOT_RUNNING&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> run handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[nb_generator.run]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">ip</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">restconf_port</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_flows</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_workers</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_operations_delay_ms</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_delete_flag</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">restconf_user</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">restconf_pass</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flows_per_request</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">)]))</span>
+
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> \
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span>
+                        <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">ip</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">restconf_port</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_flows</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_workers</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_operations_delay_ms</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flow_delete_flag</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">restconf_user</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">restconf_pass</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flows_per_request</span><span class="p">),</span>
+                                  <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">)]),</span>
+                        <span class="s1">&#39;[NB_generator] run_handler]&#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NB_GEN_RUNNING&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[NB_generator] up and running&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NB_GEN_NOT_RUNNING&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenRunError</span><span class="p">(</span>
+                        <span class="s1">&#39;[NB_generator] Failure during running. </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">cmd_output</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenRunError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator_exceptions</span><span class="o">.</span><span class="n">NBGenError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method called when object is destroyed&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Closing NB-Generator ssh connection.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

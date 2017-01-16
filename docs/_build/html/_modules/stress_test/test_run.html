@@ -1,0 +1,954 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.test_run &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stress_test.test_run</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;Test run class. Here we define the different type of test run methods for</span>
+<span class="sd">each test&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">stress_test.controller</span>
+<span class="kn">import</span> <span class="nn">stress_test.emulator</span>
+<span class="kn">import</span> <span class="nn">stress_test.monitor</span>
+<span class="kn">import</span> <span class="nn">stress_test.nb_generator</span>
+<span class="kn">import</span> <span class="nn">stress_test.oftraf</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">util.file_ops</span>
+
+
+<div class="viewcode-block" id="TestRun"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun">[docs]</a><span class="k">class</span> <span class="nc">TestRun</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a Test run object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">test_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the appropriate test component objects according to the</span>
+<span class="sd">        test_type and the test configuration json object, in order to prepare</span>
+<span class="sd">        the test for running</span>
+
+<span class="sd">        :param args:</span>
+<span class="sd">        :param json_conf:</span>
+<span class="sd">        :param test_type:</span>
+<span class="sd">        :type args:</span>
+<span class="sd">        :type json_conf:</span>
+<span class="sd">        :type test_type: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># CONTROLLER preparation</span>
+        <span class="c1"># ----------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">Controller</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">ctrl_base_dir</span><span class="p">,</span>
+                                                          <span class="n">json_conf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">init_ssh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">generate_xmls</span><span class="p">()</span>
+
+        <span class="c1"># SB EMULATOR preparation</span>
+        <span class="c1"># ----------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator</span><span class="o">.</span><span class="n">SBEmu</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">sb_emu_base_dir</span><span class="p">,</span>
+                                                     <span class="n">json_conf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">init_ssh</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+        <span class="c1"># NB EMULATOR preparation</span>
+        <span class="c1"># ----------------------------------------------------------------------</span>
+        <span class="k">if</span> <span class="s1">&#39;nb_emulator_name&#39;</span> <span class="ow">in</span> <span class="n">json_conf</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">nb_generator</span><span class="o">.</span><span class="n">NBgen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">nb_emu_base_dir</span><span class="p">,</span>
+                    <span class="n">json_conf</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">init_ssh</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+                <span class="c1"># MONITOR objects for NB-EMULATOR</span>
+                <span class="c1"># --------------------------------------------------------------</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">monitor</span><span class="o">.</span><span class="n">NBgen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="p">)</span>
+
+        <span class="c1"># MONITOR objects for SB-EMULATOR</span>
+        <span class="c1"># ----------------------------------------------------------------------</span>
+        <span class="k">elif</span> <span class="s1">&#39;sb_emulator_name&#39;</span> <span class="ow">in</span> <span class="n">json_conf</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;sb_emulator_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;MTCBENCH&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">monitor</span><span class="o">.</span><span class="n">Mtcbench</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;sb_emulator_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;MULTINET&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;oftraf_rest_server_port&#39;</span> <span class="ow">in</span> <span class="n">json_conf</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">of</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">oftraf</span><span class="o">.</span><span class="n">Oftraf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">of</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">monitor</span><span class="o">.</span><span class="n">Multinet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">of</span><span class="p">,</span>
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_type</span> <span class="o">=</span> <span class="n">test_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">json_conf</span> <span class="o">=</span> <span class="n">json_conf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+
+<div class="viewcode-block" id="TestRun.sb_active_stability_mtcbench_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun.sb_active_stability_mtcbench_run">[docs]</a>    <span class="k">def</span> <span class="nf">sb_active_stability_mtcbench_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                         <span class="n">json_conf</span><span class="p">,</span>
+                                         <span class="n">json_output</span><span class="p">,</span>
+                                         <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the SouthBound scalability or stability test with active</span>
+<span class="sd">        MT-Cbench switches</span>
+
+<span class="sd">        :param json_conf: JSON configuration dictionary</span>
+<span class="sd">        :param json_output: JSON output file (results)</span>
+<span class="sd">        :param output_dir: directory to store output files</span>
+<span class="sd">        :returns: total_samples: a list of dictionaries (one dict per test run)</span>
+<span class="sd">        :rtype: list&lt;dict&gt;</span>
+<span class="sd">        :type: json_conf: dict</span>
+<span class="sd">        :type: json_output: str</span>
+<span class="sd">        :type: output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># for LOOP to run the test for every test dimension</span>
+            <span class="c1"># ------------------------------------------------------------------</span>
+            <span class="k">for</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">threads</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">switches_per_thread</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">thread_creation_delay_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">delay_before_traffic_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">simulated_hosts</span><span class="p">,</span>
+                 <span class="n">repeat_id</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span>
+                 <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_threads&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_switches_per_thread&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_thread_creation_delay_ms&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_delay_before_traffic_ms&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_simulated_hosts&#39;</span><span class="p">],</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;test_repeats&#39;</span><span class="p">])),</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;controller_statistics_period_ms&#39;</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">repeat_id</span> <span class="o">=</span> <span class="n">repeat_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">test_repeats</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;test_repeats&#39;</span><span class="p">]</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Changing controller statistics period to&#39;</span>
+                             <span class="s1">&#39; </span><span class="si">{1}</span><span class="s1"> ms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">change_stats</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Starting controller&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Starting MTCbench active switches &#39;</span>
+                             <span class="s1">&#39;topology and monitor thread&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_run</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Stopping controller&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="n">global_sample_id</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;global_sample_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Testing] All done!&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Exiting test run&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Save controller logs&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to save controller logs&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean controller.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to cleanup controller.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean mtcbench.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean mtcbench.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span></div>
+
+<div class="viewcode-block" id="TestRun.sb_active_scalability_mtcbench_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun.sb_active_scalability_mtcbench_run">[docs]</a>    <span class="k">def</span> <span class="nf">sb_active_scalability_mtcbench_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                           <span class="n">json_conf</span><span class="p">,</span>
+                                           <span class="n">json_output</span><span class="p">,</span>
+                                           <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the SouthBound scalability or stability test with active</span>
+<span class="sd">        MT-Cbench switches</span>
+
+<span class="sd">        :param json_conf: JSON configuration dictionary</span>
+<span class="sd">        :param json_output: JSON output file (results)</span>
+<span class="sd">        :param output_dir: directory to store output files</span>
+<span class="sd">        :type: json_conf: dict</span>
+<span class="sd">        :type: json_output: str</span>
+<span class="sd">        :type: output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># for LOOP to run the test for every test dimension</span>
+            <span class="c1"># ------------------------------------------------------------------</span>
+            <span class="k">for</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">threads</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">switches_per_thread</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">thread_creation_delay_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">delay_before_traffic_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">simulated_hosts</span><span class="p">,</span>
+                 <span class="n">repeat_id</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span>
+                 <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_threads&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_switches_per_thread&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_thread_creation_delay_ms&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_delay_before_traffic_ms&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_simulated_hosts&#39;</span><span class="p">],</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;test_repeats&#39;</span><span class="p">])),</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;controller_statistics_period_ms&#39;</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">repeat_id</span> <span class="o">=</span> <span class="n">repeat_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">test_repeats</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;test_repeats&#39;</span><span class="p">]</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Changing controller statistics period to&#39;</span>
+                             <span class="s1">&#39; </span><span class="si">{1}</span><span class="s1"> ms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">change_stats</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Starting controller&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Starting MTCbench active switches &#39;</span>
+                             <span class="s1">&#39;topology and monitor thread&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_run</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Stopping controller&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="n">global_sample_id</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;global_sample_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Testing] All done!&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Exiting test run&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Save controller logs&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to save controller logs&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean controller.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to cleanup controller.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean mtcbench.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean mtcbench.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span></div>
+
+<div class="viewcode-block" id="TestRun.sb_idle_scalability_mtcbench_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun.sb_idle_scalability_mtcbench_run">[docs]</a>    <span class="k">def</span> <span class="nf">sb_idle_scalability_mtcbench_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">json_output</span><span class="p">,</span>
+                                         <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the SouthBound scalability test with idle MT-Cbench switches</span>
+
+<span class="sd">        :param json_conf: JSON configuration dictionary</span>
+<span class="sd">        :param json_output: JSON output file (results)</span>
+<span class="sd">        :param output_dir: directory to store output files</span>
+<span class="sd">        :type json_conf: dict</span>
+<span class="sd">        :type json_output: str</span>
+<span class="sd">        :type output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># for LOOP to run the test for every test dimension</span>
+            <span class="c1"># ------------------------------------------------------------------</span>
+            <span class="k">for</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">threads</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">switches_per_thread</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">thread_creation_delay_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">delay_before_traffic_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">simulated_hosts</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span>
+                 <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_threads&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_switches_per_thread&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_thread_creation_delay_ms&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_delay_before_traffic_ms&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;mtcbench_simulated_hosts&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;controller_statistics_period_ms&#39;</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Changing controller statistics period &#39;</span>
+                             <span class="s1">&#39;to </span><span class="si">{1}</span><span class="s1"> ms&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">change_stats</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Starting controller&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Starting MTCbench idle switches topology and&#39;</span>
+                             <span class="s1">&#39; monitor thread&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">topo_start_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_run</span><span class="p">(</span>
+                    <span class="n">topo_start_timestamp</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Stopping controller&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="n">global_sample_id</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;global_sample_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Testing] All done!&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Exiting test run&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Save controller logs&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to save controller logs&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean controller.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to cleanup controller.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean mtcbench.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean mtcbench.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span></div>
+
+<div class="viewcode-block" id="TestRun.sb_active_scalability_multinet_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun.sb_active_scalability_multinet_run">[docs]</a>    <span class="k">def</span> <span class="nf">sb_active_scalability_multinet_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                           <span class="n">json_conf</span><span class="p">,</span>
+                                           <span class="n">json_output</span><span class="p">,</span>
+                                           <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Runs the SouthBound scalability test with active Multinet switches</span>
+
+<span class="sd">        :param json_conf: JSON configuration dictionary</span>
+<span class="sd">        :param json_output: JSON output file (results)</span>
+<span class="sd">        :param output_dir: directory to store output files</span>
+<span class="sd">        :type json_conf: dict</span>
+<span class="sd">        :type json_output: str</span>
+<span class="sd">        :type output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># Configuring controller for FLOWS_MODS</span>
+            <span class="c1"># ------------------------------------------------------------------</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">flowmods_config</span><span class="p">()</span>
+
+            <span class="c1"># OFTRAF preparation</span>
+            <span class="c1"># ------------------------------------------------------------------</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">of</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+            <span class="c1"># TEST run</span>
+            <span class="c1"># ---------------------------------------------------------------</span>
+            <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_size</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_type</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_hosts_per_switch</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_size</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_delay_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span>
+                 <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_size&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_type&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_hosts_per_switch&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_size&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_delay_ms&#39;</span><span class="p">],</span>
+                    <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;controller_statistics_period_ms&#39;</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">test_repeats</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;test_repeats&#39;</span><span class="p">]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">disable_persistence</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">of</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">of_port</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[sb_active_scalability_multinet] &#39;</span>
+                             <span class="s1">&#39;Generate multinet config file&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">init_topos</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">start_topos</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The whole number of switches are: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">get_switches</span><span class="p">()))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The whole number of flows are: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">get_flows</span><span class="p">()))</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">generate_traffic</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_run</span><span class="p">()</span>
+
+                <span class="c1"># stop/clean nodes</span>
+                <span class="c1"># --------------------------------------------------------------</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">of</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">stop_topos</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+                <span class="n">global_sample_id</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Testing] All done!&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> ::::::: Exception ::::::::&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Exception: </span><span class="si">{1}</span><span class="s1">, </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean Multinet Monitor&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean Multinet Monitor.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean Oftraf.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">of</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean oftraf.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Save controller logs&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to save controller logs&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean controller.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to cleanup controller.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean multinet.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean multinet.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span></div>
+
+<div class="viewcode-block" id="TestRun.sb_idle_scalability_multinet_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun.sb_idle_scalability_multinet_run">[docs]</a>    <span class="k">def</span> <span class="nf">sb_idle_scalability_multinet_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                         <span class="n">json_conf</span><span class="p">,</span>
+                                         <span class="n">json_output</span><span class="p">,</span>
+                                         <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the SouthBound scalability test with idle Multinet switches</span>
+
+<span class="sd">        :param json_conf: JSON configuration dictionary</span>
+<span class="sd">        :param json_output: JSON output file (results)</span>
+<span class="sd">        :param output_dir: directory to store output files</span>
+<span class="sd">        :type json_conf: dict</span>
+<span class="sd">        :type json_output: str</span>
+<span class="sd">        :type output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_size</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_size</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_delay_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_hosts_per_switch</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_type</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span>
+                 <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_size&#39;</span><span class="p">],</span>
+                                        <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_size&#39;</span><span class="p">],</span>
+                                        <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_&#39;</span>
+                                                  <span class="s1">&#39;delay_ms&#39;</span><span class="p">],</span>
+                                        <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_hosts_per_&#39;</span>
+                                                  <span class="s1">&#39;switch&#39;</span><span class="p">],</span>
+                                        <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_type&#39;</span><span class="p">],</span>
+                                        <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;controller_statistics_&#39;</span>
+                                                  <span class="s1">&#39;period_ms&#39;</span><span class="p">]):</span>
+                <span class="c1"># start a controller</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">change_stats</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="c1"># disable persistence</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">disable_persistence</span><span class="p">()</span>
+
+                <span class="c1"># start a Multinet topology</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">of_port</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> Starting Multinet idle switches topology&quot;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">init_topos</span><span class="p">()</span>
+                <span class="n">topo_start_timestamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">start_topos</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">+=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_run</span><span class="p">(</span><span class="n">boot_start_time</span><span class="o">=</span><span class="n">topo_start_timestamp</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">stop_topos</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+                <span class="n">global_sample_id</span> <span class="o">=</span>\
+                    <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;global_sample_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Testing] All done!&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> ::::::: Exception ::::::::&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Exception: </span><span class="si">{1}</span><span class="s1">, </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean Multinet Monitor&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean Multinet Monitor.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Save controller logs&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to save controller logs&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean controller.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to cleanup controller.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean multinet.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean multinet.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span></div>
+
+<div class="viewcode-block" id="TestRun.sb_idle_stability_multinet_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun.sb_idle_stability_multinet_run">[docs]</a>    <span class="k">def</span> <span class="nf">sb_idle_stability_multinet_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                       <span class="n">json_conf</span><span class="p">,</span>
+                                       <span class="n">json_output</span><span class="p">,</span>
+                                       <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the SouthBound stability test with idle Multinet switches</span>
+
+<span class="sd">        :param json_conf: JSON configuration dictionary</span>
+<span class="sd">        :param json_output: JSON output file (results)</span>
+<span class="sd">        :param output_dir: directory to store output files</span>
+<span class="sd">        :type json_conf: dict</span>
+<span class="sd">        :type json_output: str</span>
+<span class="sd">        :type output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># OFTRAF preparation</span>
+            <span class="c1"># ------------------------------------------------------------------</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">of</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+            <span class="c1"># TEST run</span>
+            <span class="c1"># ---------------------------------------------------------------</span>
+            <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_size</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_size&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_type</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_type&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_hosts_per_switch</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_&#39;</span>
+                                                          <span class="s1">&#39;hosts_per_switch&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_size</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_size&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_delay_ms</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_&#39;</span>
+                                                        <span class="s1">&#39;delay_ms&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;controller_statistics_&#39;</span>
+                                                 <span class="s1">&#39;period_ms&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">disable_persistence</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">change_stats</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+            <span class="c1"># start a MULTINET topology</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">of_port</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">init_topos</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">start_topos</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">of</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The whole number of switches are: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">get_switches</span><span class="p">()))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The whole number of flows are: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">get_flows</span><span class="p">()))</span>
+
+            <span class="n">reference_results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;of_out_traffic&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                 <span class="s1">&#39;of_in_traffic&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                 <span class="s1">&#39;tcp_of_out_traffic&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                 <span class="s1">&#39;tcp_of_in_traffic&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)}</span>
+
+            <span class="k">for</span> <span class="n">sample_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;number_of_samples&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">sample_id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+                    <span class="n">results</span><span class="p">,</span> <span class="n">reference_results</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_run</span><span class="p">(</span>
+                            <span class="n">reference_results</span><span class="o">=</span><span class="n">reference_results</span><span class="p">,</span>
+                            <span class="n">sample_id</span><span class="o">=</span><span class="n">sample_id</span><span class="p">)</span>
+                    <span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;global_sample_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">+=</span> <span class="p">[</span><span class="n">results</span><span class="p">]</span>
+
+            <span class="c1"># stop/clean nodes</span>
+            <span class="c1"># ---------------------------------------------------------</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">of</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">stop_topos</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+            <span class="n">global_sample_id</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Testing] All done!&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> ::::::: Exception ::::::::&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Exception: </span><span class="si">{1}</span><span class="s1">, </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean Multinet Monitor&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean Multinet Monitor.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean Oftraf.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">of</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean oftraf.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Save controller logs&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to save controller logs&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean controller.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to cleanup controller.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean multinet.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean multinet.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span></div>
+
+<div class="viewcode-block" id="TestRun.nb_active_scalability_multinet_run"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_run.TestRun.nb_active_scalability_multinet_run">[docs]</a>    <span class="k">def</span> <span class="nf">nb_active_scalability_multinet_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                           <span class="n">json_conf</span><span class="p">,</span>
+                                           <span class="n">json_output</span><span class="p">,</span>
+                                           <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Runs the NorthBound scalability test with idle Multinet switches</span>
+
+<span class="sd">        :param json_conf: JSON configuration dictionary</span>
+<span class="sd">        :param json_output: JSON output file (results)</span>
+<span class="sd">        :param output_dir: directory to store output files</span>
+<span class="sd">        :type json_conf: str</span>
+<span class="sd">        :type json_output: str</span>
+<span class="sd">        :type output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">flowmods_config</span><span class="p">()</span>
+
+            <span class="c1"># TEST run</span>
+            <span class="c1"># ---------------------------------------------------------------</span>
+            <span class="n">global_sample_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">flow_delete_flag</span> <span class="o">=</span> <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;flow_delete_flag&#39;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">total_flows</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">flow_operations_delay_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_size</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">flow_workers</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_size</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_group_delay_ms</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_hosts_per_switch</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">topo_type</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stat_period_ms</span>
+                 <span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;total_flows&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;flow_operations_delay_ms&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_size&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;flow_workers&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_size&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_group_delay_ms&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_hosts_per_switch&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;multinet_topo_type&#39;</span><span class="p">],</span>
+                     <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;controller_statistics_period_ms&#39;</span><span class="p">]):</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">global_sample_id</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">disable_persistence</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">of_port</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[sb_active_scalability_multinet] &#39;</span>
+                             <span class="s1">&#39;Generate multinet config file&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">init_topos</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">start_topos</span><span class="p">()</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The whole number of switches are: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">get_switches</span><span class="p">()))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The whole number of flows are: </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">get_flows</span><span class="p">()))</span>
+
+                <span class="n">initial_topo_flows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">get_flows</span><span class="p">()</span>
+                <span class="n">initial_oper_ds_flows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">get_oper_flows</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;initial_operational_ds_flows: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">initial_oper_ds_flows</span><span class="p">))</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">initial_oper_ds_flows</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">initial_topo_flows</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Initial installed flows &#39;</span>
+                                     <span class="s1">&#39;were not equal to 0.&#39;</span><span class="p">)</span>
+
+                <span class="n">failed_flows_add</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">failed_flows_del</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">result_metrics_add</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">result_metrics_del</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="c1"># start NORTHBOUND generator flow_delete_flag NOT SET</span>
+                <span class="c1"># --------------------------------------------------------------</span>
+                <span class="k">if</span> <span class="n">flow_delete_flag</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="n">expected_flows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">total_flows</span>
+                    <span class="n">start_rest_request_time_add</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                    <span class="n">nb_gen_start_json_output_add</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+                    <span class="n">nb_gen_start_output_add</span> <span class="o">=</span> \
+                        <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">nb_gen_start_json_output_add</span><span class="p">)</span>
+                    <span class="n">failed_flows_add</span> <span class="o">=</span> <span class="n">nb_gen_start_output_add</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="n">result_metrics_add</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_threads_run</span><span class="p">(</span>
+                            <span class="n">start_rest_request_time_add</span><span class="p">,</span>
+                            <span class="n">failed_flows_add</span><span class="p">,</span>
+                            <span class="n">expected_flows</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">flow_delete_flag</span><span class="p">)</span>
+
+                <span class="c1"># start NORTHBOUND generator flow_delete_flag SET</span>
+                <span class="c1"># --------------------------------------------------------------</span>
+                <span class="k">if</span> <span class="n">flow_delete_flag</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+
+                    <span class="c1"># force flow_delete_flag to FALSE and RUN the NB generator</span>
+                    <span class="c1"># ----------------------------------------------------------</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">flow_delete_flag</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">expected_flows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">total_flows</span>
+                    <span class="n">start_rest_request_time_add</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                    <span class="n">nb_gen_start_json_output_add</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+                    <span class="n">nb_gen_start_output_add</span> <span class="o">=</span> \
+                        <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">nb_gen_start_json_output_add</span><span class="p">)</span>
+                    <span class="n">failed_flows_add</span> <span class="o">=</span> <span class="n">nb_gen_start_output_add</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">result_metrics_add</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_threads_run</span><span class="p">(</span>
+                            <span class="n">start_rest_request_time_add</span><span class="p">,</span>
+                            <span class="n">failed_flows_add</span><span class="p">,</span>
+                            <span class="n">expected_flows</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">flow_delete_flag</span><span class="p">)</span>
+
+                    <span class="c1"># restore constructor value for flow_delete_flag and RE-RUN</span>
+                    <span class="c1"># the NB generator</span>
+                    <span class="c1"># ----------------------------------------------------------</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">flow_delete_flag</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">expected_flows</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">start_rest_request_time_del</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                    <span class="n">nb_gen_start_json_output_del</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+                    <span class="n">nb_gen_start_output_del</span> <span class="o">=</span> \
+                        <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">nb_gen_start_json_output_del</span><span class="p">)</span>
+                    <span class="n">failed_flows_del</span> <span class="o">=</span> <span class="n">nb_gen_start_output_del</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">result_metrics_del</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">mon</span><span class="o">.</span><span class="n">monitor_threads_run</span><span class="p">(</span>
+                            <span class="n">start_rest_request_time_del</span><span class="p">,</span>
+                            <span class="n">failed_flows_del</span><span class="p">,</span>
+                            <span class="n">expected_flows</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span><span class="o">.</span><span class="n">flow_delete_flag</span><span class="p">)</span>
+                <span class="c1"># stop/clean nodes</span>
+                <span class="c1"># ---------------------------------------------------------</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">stop_topos</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+                <span class="n">results</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">merge_dict_and_avg</span><span class="p">(</span><span class="n">result_metrics_add</span><span class="p">,</span>
+                                                           <span class="n">result_metrics_del</span><span class="p">)</span>
+                <span class="n">global_sample_id</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;global_sample_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">+=</span> <span class="p">[</span><span class="n">results</span><span class="p">]</span>
+
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> ::::::: Exception ::::::::&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Exception: </span><span class="si">{1}</span><span class="s1">, </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span>
+                          <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean NB-Generator.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean NB-Generator.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean NB-Generator Monitor&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mon</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean NB-Generator Monitor.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Save controller logs&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to save controller logs&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean controller.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to cleanup controller.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Clean multinet.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">sb_emu</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to clean multinet.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
