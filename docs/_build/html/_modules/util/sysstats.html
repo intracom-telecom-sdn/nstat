@@ -1,0 +1,380 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>util.sysstats &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for util.sysstats</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;Module with functions for getting system and process statistics&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">util.netutil</span>
+
+
+<div class="viewcode-block" id="command_exec_wrapper"><a class="viewcode-back" href="../../util.html#util.sysstats.command_exec_wrapper">[docs]</a><span class="k">def</span> <span class="nf">command_exec_wrapper</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s1">&#39;str&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Executes a command either locally or remotely and returns the result</span>
+
+<span class="sd">    :param cmd: the command to be executed</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :param return_type: Defines the return type of the command output</span>
+<span class="sd">    :returns: The commands execution result as string</span>
+<span class="sd">    :rtype: str, int, float</span>
+<span class="sd">    :type cmd: str</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    :type return_type: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">max_exec_tries</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">cmd_output</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">while</span> <span class="p">(</span><span class="ow">not</span> <span class="n">cmd_output</span><span class="p">)</span> <span class="ow">and</span> <span class="n">max_exec_tries</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ssh_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="n">ssh_client</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmd_output</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span>
+                             <span class="n">decode</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">encoding</span><span class="p">))</span>
+        <span class="n">max_exec_tries</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">cmd_output</span><span class="p">:</span>
+        <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">cmd_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cmd_output</span> <span class="o">=</span> <span class="s1">&#39;-1&#39;</span>
+
+    <span class="k">if</span> <span class="n">return_type</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">return_type</span> <span class="o">==</span> <span class="s1">&#39;float&#39;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cmd_output</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;-1&#39;</span></div>
+
+
+<div class="viewcode-block" id="sys_used_ram_mb"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_used_ram_mb">[docs]</a><span class="k">def</span> <span class="nf">sys_used_ram_mb</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns system used memory in MB.</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the amount of used RAM memory in the system in MB.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;free -m | awk </span><span class="se">\&#39;</span><span class="s1">/^Mem:/{print $3}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sys_nprocs"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_nprocs">[docs]</a><span class="k">def</span> <span class="nf">sys_nprocs</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the number of CPUs in the system.</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the number of CPUs in the system</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;cat /proc/cpuinfo | grep processor | wc -l&#39;</span><span class="p">,</span>
+                                <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sys_free_ram_mb"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_free_ram_mb">[docs]</a><span class="k">def</span> <span class="nf">sys_free_ram_mb</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns system free memory in MB.</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the amount of free RAM memory in the system in MB.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;free -m | awk </span><span class="se">\&#39;</span><span class="s1">/^Mem:/{print $4}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span>
+                                      <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sys_used_memory_bytes"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_used_memory_bytes">[docs]</a><span class="k">def</span> <span class="nf">sys_used_memory_bytes</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns system used memory in bytes.</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: The amount of used RAM memory in the system in bytes.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">sys_total_memory_bytes</span><span class="p">(</span><span class="n">ssh_client</span><span class="p">)</span> <span class="o">-</span> <span class="n">sys_free_memory_bytes</span><span class="p">(</span><span class="n">ssh_client</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sys_free_memory_bytes"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_free_memory_bytes">[docs]</a><span class="k">def</span> <span class="nf">sys_free_memory_bytes</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns system free memory in bytes</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the amount of free RAM memory in the system in bytes</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;cat /proc/meminfo | grep MemFree | awk </span><span class="se">\&#39;</span><span class="s1">{{print $2}}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sys_total_memory_bytes"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_total_memory_bytes">[docs]</a><span class="k">def</span> <span class="nf">sys_total_memory_bytes</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns system total memory in bytes</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: total system memory in bytes</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;cat /proc/meminfo | grep MemTotal | awk </span><span class="se">\&#39;</span><span class="s1">{{print $2}}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sys_iowait_time"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_iowait_time">[docs]</a><span class="k">def</span> <span class="nf">sys_iowait_time</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;For a given CPU, the I/O wait time is the time during which that CPU</span>
+<span class="sd">    was idle (i.e. didn&#39;t execute any tasks) and there was at least one</span>
+<span class="sd">    outstanding disk I/O operation requested by a task scheduled on that</span>
+<span class="sd">    CPU (at the time it generated that I/O request).</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the I/O wait time</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;cat /proc/stat | awk </span><span class="se">\&#39;</span><span class="s1">NR==1 {{print $6}}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span>
+                                      <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="proc_cmdline"><a class="viewcode-back" href="../../util.html#util.sysstats.proc_cmdline">[docs]</a><span class="k">def</span> <span class="nf">proc_cmdline</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the command line of a process as a string.</span>
+
+<span class="sd">    :param pid: the process ID of the target process</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: The command execution output</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s2">&quot;cat /proc/</span><span class="si">{0}</span><span class="s2">/cmdline&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pid</span><span class="p">),</span>
+                                <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="proc_cwd"><a class="viewcode-back" href="../../util.html#util.sysstats.proc_cwd">[docs]</a><span class="k">def</span> <span class="nf">proc_cwd</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Method that returns the process current working directory.</span>
+
+<span class="sd">    :param pid: the process ID of the target process</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the full path of working directory</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s2">&quot;pwdx </span><span class="si">{0}</span><span class="s2"> | awk &#39;{{print $2}}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pid</span><span class="p">),</span>
+                                <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="proc_cpu_system_time"><a class="viewcode-back" href="../../util.html#util.sysstats.proc_cpu_system_time">[docs]</a><span class="k">def</span> <span class="nf">proc_cpu_system_time</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Method that returns the CPU system time of a process.</span>
+
+<span class="sd">    :param pid: the process ID of the target process</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the CPU system time of a process</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;cat /proc/</span><span class="si">{0}</span><span class="s1">/stat | awk </span><span class="se">\&#39;</span><span class="s1"> {{ print $15 }} </span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">.</span>
+                                <span class="nb">format</span><span class="p">(</span><span class="n">pid</span><span class="p">),</span> <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="proc_cpu_user_time"><a class="viewcode-back" href="../../util.html#util.sysstats.proc_cpu_user_time">[docs]</a><span class="k">def</span> <span class="nf">proc_cpu_user_time</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Method that returns the CPU user time of a process.</span>
+
+<span class="sd">    :param pid: the process ID of the target process</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the CPU user time of a process</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;cat /proc/</span><span class="si">{0}</span><span class="s1">/stat | awk </span><span class="se">\&#39;</span><span class="s1">{{print $14}}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">.</span>
+                                <span class="nb">format</span><span class="p">(</span><span class="n">pid</span><span class="p">),</span> <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="proc_vm_size"><a class="viewcode-back" href="../../util.html#util.sysstats.proc_vm_size">[docs]</a><span class="k">def</span> <span class="nf">proc_vm_size</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Method that returns the virtual memory size of a process.</span>
+
+<span class="sd">    :param pid: the process ID of the target process</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the virtual memory size of a process</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">command_exec_wrapper</span><span class="p">((</span><span class="s1">&#39;cat /proc/</span><span class="si">{0}</span><span class="s1">/status |grep VmSize | awk </span><span class="se">\&#39;</span><span class="s1">{{print $2}}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">.</span>
+        <span class="nb">format</span><span class="p">(</span><span class="n">pid</span><span class="p">)),</span> <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="proc_num_fds"><a class="viewcode-back" href="../../util.html#util.sysstats.proc_num_fds">[docs]</a><span class="k">def</span> <span class="nf">proc_num_fds</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the number of file descriptors opened by this process.</span>
+
+<span class="sd">    :param pid: the process ID of the target process</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: total amount of open files for the specific process ID</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;ls -la /proc/</span><span class="si">{0}</span><span class="s1">/fd | wc -l&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pid</span><span class="p">),</span>
+                                 <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="proc_num_threads"><a class="viewcode-back" href="../../util.html#util.sysstats.proc_num_threads">[docs]</a><span class="k">def</span> <span class="nf">proc_num_threads</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the number of threads used by this process.</span>
+
+<span class="sd">    :param pid: the process ID of the target process</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: the number of threads for the specific pid</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">command_exec_wrapper</span><span class="p">((</span><span class="s1">&#39;cat /proc/</span><span class="si">{0}</span><span class="s1">/status |grep Threads | awk </span><span class="se">\&#39;</span><span class="s1">{{print $2}}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">.</span>
+        <span class="nb">format</span><span class="p">(</span><span class="n">pid</span><span class="p">)),</span> <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="sys_load_average"><a class="viewcode-back" href="../../util.html#util.sysstats.sys_load_average">[docs]</a><span class="k">def</span> <span class="nf">sys_load_average</span><span class="p">(</span><span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the system load average.</span>
+
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: tuple of floats with the 1-,5- and 15-min load average</span>
+<span class="sd">    :rtype: tuple&lt;float&gt;</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;uptime&#39;</span><span class="p">,</span> <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">r&#39;load average: (.+), (.+), (.+)&#39;</span><span class="p">,</span> <span class="n">cmd_output</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">matches</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="get_java_options"><a class="viewcode-back" href="../../util.html#util.sysstats.get_java_options">[docs]</a><span class="k">def</span> <span class="nf">get_java_options</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a list with all java options of a process defined by its</span>
+<span class="sd">    process ID.</span>
+
+<span class="sd">    :param pid: process id of the process we want to get the javaopts</span>
+<span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
+<span class="sd">    :returns: a list with all java options</span>
+<span class="sd">    :rtype: list&lt;str&gt;</span>
+<span class="sd">    :type pid: int</span>
+<span class="sd">    :type ssh_client: paramiko.SSHClient</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">command_exec_wrapper</span><span class="p">(</span><span class="s1">&#39;ps -ef | grep </span><span class="se">\&#39;</span><span class="s1"> </span><span class="si">{0}</span><span class="s1"> </span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pid</span><span class="p">),</span>
+                                      <span class="n">ssh_client</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">)</span>
+    <span class="n">java_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">cmd_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;-X&#39;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">java_options</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

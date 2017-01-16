@@ -1,0 +1,1022 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.controller &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stress_test.controller</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2016 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">stress_test.controller_exceptions</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">util.file_ops</span>
+<span class="kn">import</span> <span class="nn">util.netutil</span>
+<span class="kn">import</span> <span class="nn">util.process</span>
+<span class="kn">import</span> <span class="nn">queue</span>
+
+
+<div class="viewcode-block" id="Controller"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller">[docs]</a><span class="k">class</span> <span class="nc">Controller</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All controller-related functionality is here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a Controller object. Options from JSON input file</span>
+
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :param ctrl_base_dir: controller base directory</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        :type ctrl_base_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">ctrl_base_dir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_node_ip&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_node_ssh_port&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_node_username&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_node_password&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_cleanup</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_cleanup&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">of_port</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_port&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logs_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_logs_dir&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                          <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_build_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                          <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_start_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                         <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_stop_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                           <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_status_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                          <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_clean_handler&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;UNKNOWN&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">java_opts</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;java_opts&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># check handlers&#39; validity</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">check_filelist</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">start_hnd</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">stop_hnd</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">status_hnd</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Controller.new"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Factory method. Creates a subclass class depending on the</span>
+<span class="sd">        controller name</span>
+
+<span class="sd">        :returns: a subclass or None</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        :raises NotImplementedError: in case an invalid controller_name is \</span>
+<span class="sd">            given in the configuration json file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_name&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ODL&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ODL</span><span class="p">(</span><span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;ONOS&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;ONOS is not supported yet&#39;</span><span class="p">)</span>
+        <span class="c1">#  return ONOS(ctrl_base_dir, test_config)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Not supported yet&#39;</span><span class="p">)</span></div>
+        <span class="c1">#   return None</span>
+
+    <span class="k">def</span> <span class="nf">__error_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">error_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles custom errors of controller</span>
+
+<span class="sd">        :param error_message: message of the handled error</span>
+<span class="sd">        :param error_num: error number of the handled error, used to define</span>
+<span class="sd">        subcases of raised errors.</span>
+<span class="sd">        :type error_message: str</span>
+<span class="sd">        :type error_num: int</span>
+<span class="sd">        :raises controller_exceptions.CtrlError: to terminate execution of</span>
+<span class="sd">        test after error handling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> :::::::::: Exception :::::::::::&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error number:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error_num</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - </span><span class="si">{1}</span><span class="s1"> Exception: </span><span class="si">{2}</span><span class="s1">, </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="c1"># Propagate error outside the class to stop execution of test</span>
+        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Controller.init_ssh"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.init_ssh">[docs]</a>    <span class="k">def</span> <span class="nf">init_ssh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a new SSH client object, with the controller node and \</span>
+<span class="sd">            assigns it to the protected attribute _ssh_conn. If a connection \</span>
+<span class="sd">            already exists it returns a new SSH client object to the  \</span>
+<span class="sd">            controller node.</span>
+
+<span class="sd">        :raises controller_exceptions.CtrlNodeConnectionError: if ssh \</span>
+<span class="sd">            connection establishment fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;[open_ssh_connection] Initiating SSH session with </span><span class="si">{0}</span><span class="s1"> node.&#39;</span><span class="o">.</span>
+            <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_connect_or_return</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Return a new client ssh object for the controller node</span>
+                    <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_connect_or_return</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span>
+                      <span class="n">CtrlNodeConnectionError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.cleanup"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller cleanup handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.CtrlCleanupError: if controller cleanup \</span>
+<span class="sd">            handler fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Cleaning up&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> clean handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.cleanup]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">,</span>
+                    <span class="s1">&#39;[controller.clean_handler]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[controller.clean_handler] controller &#39;</span>
+                                 <span class="s1">&#39;successfully cleaned.&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlCleanupError</span><span class="p">(</span>
+                        <span class="s1">&#39;[controller.clean_handler] controller cleanup &#39;</span>
+                        <span class="s1">&#39;handler exited with non zero exit status. </span><span class="se">\n</span><span class="s1"> &#39;</span>
+                        <span class="s1">&#39;Handler output: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlCleanupError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.check_status"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.check_status">[docs]</a>    <span class="k">def</span> <span class="nf">check_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller status handler</span>
+
+<span class="sd">        :returns: the status of the controller (running = 1, not running = 0)</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.CtrlStatusUnknownError: if the handler \</span>
+<span class="sd">            fails to return controller status or fails to execute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Checking the status&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">status_hnd</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> status handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.status]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status_hnd</span><span class="p">)</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+                <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">status_hnd</span><span class="p">,</span>
+                                             <span class="s1">&#39;[controller.status]&#39;</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+                <span class="n">cmd_output</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+                    <span class="n">cmd_output</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+                <span class="k">if</span> <span class="n">cmd_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[controller.status]: Running-&#39;</span>
+                                 <span class="s1">&#39; </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">cmd_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[controller.status]: Not&#39;</span>
+                                 <span class="s1">&#39;Running- </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span>
+                          <span class="n">CtrlStatusUnknownError</span><span class="p">(</span>
+                              <span class="s1">&#39;[controller.status_handler] Error while &#39;</span>
+                              <span class="s1">&#39;fetching status of the controller. Invalid &#39;</span>
+                              <span class="s1">&#39;value returned./n Returned status value: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()),</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">cmd_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlStatusUnknownError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.check_other_controller"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.check_other_controller">[docs]</a>    <span class="k">def</span> <span class="nf">check_other_controller</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks for processes listening on the specified port</span>
+
+<span class="sd">        :raises controller_exceptions.CtrlPortConflictError: when another \</span>
+<span class="sd">            process listens on controller&#39;s port.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;[Controller] Checking if another process is &#39;</span>
+            <span class="s1">&#39;listening on specified port. Port number: </span><span class="si">{0}</span><span class="s1">.&#39;</span><span class="o">.</span>
+            <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">of_port</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># check if any process listens on controller port</span>
+                <span class="n">gpid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">of_port</span><span class="p">,</span>
+                                                           <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gpid</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span>
+                          <span class="n">CtrlPortConflictError</span><span class="p">(</span>
+                              <span class="s1">&#39;[check_other_controller] Another process is &#39;</span>
+                              <span class="s1">&#39;active on port </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">of_port</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span>
+                      <span class="n">CtrlPortConflictError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.restart"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restarts the controller</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Restarting&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;RESTARTING&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;RESTARTED&#39;</span></div>
+
+<div class="viewcode-block" id="Controller.start"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller start handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.CtrlStartError: When controller fails to \</span>
+<span class="sd">            start.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller.start] Starting&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STARTING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STARTED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> start handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.stop]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">start_hnd</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;JAVA_OPTS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">java_opts</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_hnd</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;export JAVA_OPTS=&quot;</span><span class="si">{0}</span><span class="s1">&quot;;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">java_opts</span><span class="p">),</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">start_hnd</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
+                    <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">),</span>
+                        <span class="s1">&#39;[Controller.start]&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_listens</span><span class="p">(</span><span class="mi">420000</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller.start] Controller &#39;</span>
+                                 <span class="s1">&#39;pid: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_up</span><span class="p">(</span><span class="mi">420000</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">exit_status</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STARTED&#39;</span>
+                        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlStartError</span><span class="p">(</span>
+                            <span class="s1">&#39;[Controller.start] Fail to start. Start handler &#39;</span>
+                            <span class="s1">&#39;exited with non zero exit status. </span><span class="se">\n</span><span class="s1"> &#39;</span>
+                            <span class="s1">&#39;Handler output: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span>
+                            <span class="n">exit_status</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller.start] Controller already &#39;</span>
+                                 <span class="s1">&#39;started.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STARTED&#39;</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlStartError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.stop"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller stop handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.CtrlStopError: if controller fails to \</span>
+<span class="sd">            stop successfully</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STOPPING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STOPED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> stop handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.stop]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">stop_hnd</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller.stop] Stopping. Controller &#39;</span>
+                                 <span class="s1">&#39;PID: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">))</span>
+                    <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_hnd</span><span class="p">]),</span>
+                        <span class="s1">&#39;[controller.stop]&#39;</span><span class="p">)</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait_until_process_finishes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pid</span><span class="p">,</span>
+                                                             <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STOPPED&#39;</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Controller.stop] Successful stopped&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STOPPED&#39;</span>
+                        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlStopError</span><span class="p">(</span>
+                            <span class="s1">&#39;[Controller.stop] Controller failed to stop: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                            <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STOPPED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller.stop] Controller already &#39;</span>
+                                 <span class="s1">&#39;stopped.&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlStopError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.build"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller build handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.CtrlBuildError: if build process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Building&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILDING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> build handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.build]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">]),</span>
+                    <span class="s1">&#39;[controller.build]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILT&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Controller.build] Successful building&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlBuildError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Controller.build] Failure during building. Build &#39;</span>
+                        <span class="s1">&#39;handler exited with non zero exit status. </span><span class="se">\n</span><span class="s1"> &#39;</span>
+                        <span class="s1">&#39;Handler output: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">)),</span> <span class="n">exit_status</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlBuildError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.wait_until_listens"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.wait_until_listens">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_listens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for controller to start listening on specified port.</span>
+
+<span class="sd">        :param timeout_ms: milliseconds to wait (in milliseconds).</span>
+<span class="sd">        :returns: the process ID PID of the controller.</span>
+<span class="sd">        :rtype int</span>
+<span class="sd">        :type timeout_ms: int</span>
+<span class="sd">        :raises controller_exceptions.CtrlReadyStateError: If controller fails \</span>
+<span class="sd">            to start</span>
+<span class="sd">        :raises controller_exceptions.CtrlPortConflictError: if another \</span>
+<span class="sd">            process listens on controllers port.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Waiting to start listening on a port&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">timeout</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">timeout_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+                <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">gpid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">getpid_listeningonport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">of_port</span><span class="p">,</span>
+                                                               <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">)</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Returned pid listening &#39;</span>
+                                 <span class="s1">&#39;on port </span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">of_port</span><span class="p">,</span> <span class="n">gpid</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">gpid</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">gpid</span>
+                    <span class="k">elif</span> <span class="n">gpid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span>
+                              <span class="n">CtrlPortConflictError</span><span class="p">(</span>
+                                  <span class="s1">&#39;Another controller seems to have started &#39;</span>
+                                  <span class="s1">&#39;in the meantime. Exiting...&#39;</span><span class="p">))</span>
+
+                <span class="k">raise</span> <span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlReadyStateError</span><span class="p">(</span>
+                    <span class="s1">&#39;Controller failed to start within a period of </span><span class="si">{0}</span><span class="s1"> &#39;</span>
+                    <span class="s1">&#39;seconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">timeout_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlReadyStateError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Controller.wait_until_up"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.Controller.wait_until_up">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for controller status to become 1 (started).</span>
+
+<span class="sd">        :param timeout_ms: milliseconds to wait (in milliseconds).</span>
+<span class="sd">        :type timeout_ms: int</span>
+<span class="sd">        :raises controller_exceptions.CtrlReadyStateError: If controller fails \</span>
+<span class="sd">         to reach a ready state within a certain period of time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Waiting to be started&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">timeout</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">timeout_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span>
+                <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">timeout</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_status</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Started&#39;</span><span class="p">)</span>
+                        <span class="k">return</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlReadyStateError</span><span class="p">(</span>
+                    <span class="s1">&#39;Controller failed to start. Status check returned 0 &#39;</span>
+                    <span class="s1">&#39;after trying for </span><span class="si">{0}</span><span class="s1"> seconds.&#39;</span><span class="o">.</span>
+                    <span class="nb">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">timeout_ms</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlReadyStateError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method called when object is destroyed. Cleanup activities are</span>
+<span class="sd">        triggered and open connections closed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Run controller stop.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Run controller cleanup.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Close controller node ssh connection.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ODL"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL">[docs]</a><span class="k">class</span> <span class="nc">ODL</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the creation of an OpenDaylight controller object.</span>
+<span class="sd">        Inherits from Controller class.</span>
+
+<span class="sd">        :param ctrl_base_dir: emulator base directory</span>
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :type ctrl_base_dir: str</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">)</span>
+
+        <span class="c1"># The parameters initialized as None are dimensions of the test.</span>
+        <span class="c1"># These values are passed outside, from the test in the main for loop.</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stat_period_ms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="k">if</span> <span class="s1">&#39;controller_flowmods_conf_handler&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flowmods_conf_hnd</span> <span class="o">=</span> \
+                <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_flowmods_conf_handler&#39;</span><span class="p">]</span>
+
+            <span class="c1"># check handler&#39;s validity</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">check_filelist</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">flowmods_conf_hnd</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;controller_statistics_handler&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">statistics_hnd</span> <span class="o">=</span> \
+                <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_statistics_handler&#39;</span><span class="p">]</span>
+
+            <span class="c1"># check handler&#39;s validity</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">check_filelist</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">statistics_hnd</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;controller_persistent_handler&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">persistence_hnd</span> <span class="o">=</span> \
+                <span class="n">ctrl_base_dir</span> <span class="o">+</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_persistent_handler&#39;</span><span class="p">]</span>
+
+            <span class="c1"># check handler&#39;s validity</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">check_filelist</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;controller_restconf_port&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">restconf_port</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_restconf_port&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">restconf_user</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_restconf_user&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">restconf_pass</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_restconf_password&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_hosts</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctrl_base_dir</span> <span class="o">+</span>
+                           <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_oper_hosts_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_switches</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctrl_base_dir</span> <span class="o">+</span>
+                              <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_oper_switches_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_links</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctrl_base_dir</span> <span class="o">+</span>
+                           <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_oper_links_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_flows</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctrl_base_dir</span> <span class="o">+</span>
+                           <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_oper_flows_handler&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="ODL.generate_xmls"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.generate_xmls">[docs]</a>    <span class="k">def</span> <span class="nf">generate_xmls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts and then stops the controller to trigger the generation of \</span>
+<span class="sd">            controller&#39;s XML files.</span>
+
+<span class="sd">        :raises controller_exceptions.ODLXMLError: if generation of XML files \</span>
+<span class="sd">            fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Generating XML files&#39;</span>
+                     <span class="s1">&#39; (start and stop the Controller)&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">ODLXMLError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.disable_persistence"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.disable_persistence">[docs]</a>    <span class="k">def</span> <span class="nf">disable_persistence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configure controller persistent to false in order not to backup \</span>
+<span class="sd">            datastore on the disk.</span>
+
+<span class="sd">        :raises controller_exceptions.ODLDisablePersistenceError: if disable \</span>
+<span class="sd">            of persistence fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Disabling persistence&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> disable_persistence handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.disable_persistence]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">)</span>
+                <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span>
+                                             <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">persistence_hnd</span><span class="p">]),</span>
+                                             <span class="s1">&#39;[controller.disable_persistence]&#39;</span>
+                                             <span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span>
+                      <span class="n">ODLDisablePersistenceError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.change_stats"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.change_stats">[docs]</a>    <span class="k">def</span> <span class="nf">change_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller statistics handler. Changes the value of \</span>
+<span class="sd">            statistics interval in the configuration files of controller.</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.ODLChangeStats: if change of statistics \</span>
+<span class="sd">            interval fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Changing statistics period&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">statistics_hnd</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> statistics handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.change_stats]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">statistics_hnd</span><span class="p">)</span>
+                <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">statistics_hnd</span><span class="p">,</span>
+                                              <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stat_period_ms</span><span class="p">)]),</span>
+                    <span class="s1">&#39;[controller.statistics_handler]&#39;</span>
+                    <span class="s1">&#39; Changing statistics interval&#39;</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;[Controller] Changed statistics period to </span><span class="si">{0}</span><span class="s1"> ms&#39;</span><span class="o">.</span>
+                    <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stat_period_ms</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">ODLChangeStats</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.flowmods_config"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.flowmods_config">[docs]</a>    <span class="k">def</span> <span class="nf">flowmods_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configure controller to send flow modifications as a response to ARP \</span>
+<span class="sd">            ARP Packet_INs.</span>
+
+<span class="sd">        :raises controller_exceptions.ODLFlowModConfError: if configuration \</span>
+<span class="sd">            actions to respond with flow modifications fail.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller.flowmods_config] Configure flow &#39;</span>
+                     <span class="s1">&#39;modifications&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">flowmods_conf_hnd</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Configure for FlowMods handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.flowmods_config]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">flowmods_conf_hnd</span><span class="p">)</span>
+                <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">flowmods_conf_hnd</span><span class="p">]),</span>
+                    <span class="s1">&#39;[controller.flowmods_config]&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller.flowmods_config] Controller is &#39;</span>
+                             <span class="s1">&#39;configured to send flow mods&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">ODLFlowModConfError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.get_oper_hosts"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.get_oper_hosts">[docs]</a>    <span class="k">def</span> <span class="nf">get_oper_hosts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ssh_conn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller oper_hosts handler. Makes a REST call to \</span>
+<span class="sd">            the NB interface of the controller and returns the number of hosts \</span>
+<span class="sd">            of the topology, recorded in operational datastore of the controller</span>
+
+<span class="sd">        :param new_ssh_conn: an ssh connection client object</span>
+<span class="sd">        :returns: number of hosts from controller&#39;s operational datastore</span>
+<span class="sd">        :type new_ssh_conn: paramiko.SSHClient</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.ODLGetOperHostsError: if handler fails \</span>
+<span class="sd">            to run or return a valid value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Query number of hosts &#39;</span>
+                     <span class="s1">&#39;registered in ODL operational DS&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_hosts</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> get_oper_hosts handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.get_oper_hosts]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">oper_hosts</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="n">new_ssh_conn</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="n">used_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_hosts</span><span class="p">,</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_port</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_user</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_pass</span><span class="p">)]),</span>
+                    <span class="s1">&#39;[controller.get_oper_hosts]&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">ODLGetOperHostsError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.get_oper_switches"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.get_oper_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_oper_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ssh_conn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller oper_switches handler. Makes a REST call \</span>
+<span class="sd">            to the NB interface of the controller and returns the number of \</span>
+<span class="sd">            switches of the topology, recorded in operational datastore of the \</span>
+<span class="sd">            controller</span>
+
+<span class="sd">        :param new_ssh_conn: an ssh connection client object</span>
+<span class="sd">        :returns: number of switches from controller&#39;s operational datastore</span>
+<span class="sd">        :type new_ssh_conn: paramiko.SSHClient</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.ODLGetOperSwitchesError:  if handler \</span>
+<span class="sd">            fails to run or return a valid value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Query number of switches &#39;</span>
+                     <span class="s1">&#39; registered in ODL operational DS&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_switches</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> get_oper_switches handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.get_oper_switches]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">oper_switches</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="n">new_ssh_conn</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="n">used_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_switches</span><span class="p">,</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_port</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_user</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_pass</span><span class="p">)]),</span>
+                    <span class="s1">&#39;[controller.get_oper_switches]&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span>
+                      <span class="n">ODLGetOperSwitchesError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.get_oper_links"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.get_oper_links">[docs]</a>    <span class="k">def</span> <span class="nf">get_oper_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ssh_conn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller oper_links handler. Makes a REST call \</span>
+<span class="sd">            to the NB interface of the controller and returns the number of \</span>
+<span class="sd">            links of the topology, recorded in operational datastore of the \</span>
+<span class="sd">            controller</span>
+
+<span class="sd">        :param new_ssh_conn: an ssh connection client object</span>
+<span class="sd">        :returns: number of links from controller&#39;s operational datastore</span>
+<span class="sd">        :type new_ssh_conn: paramiko.SSHClient</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.ODLGetOperLinksError: if handler \</span>
+<span class="sd">            fails to run or return a valid value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Query number of links registered in &#39;</span>
+                     <span class="s1">&#39; ODL operational DS&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_links</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> get_oper_links handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.get_oper_links]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">oper_links</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="n">new_ssh_conn</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="n">used_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_links</span><span class="p">,</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_port</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_user</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_pass</span><span class="p">)]),</span>
+                    <span class="s1">&#39;[controller.get_oper_links]&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">ODLGetOperLinksError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.get_oper_flows"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.get_oper_flows">[docs]</a>    <span class="k">def</span> <span class="nf">get_oper_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ssh_conn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the controller oper_flows handler. Makes a REST call \</span>
+<span class="sd">            to the NB interface of the controller and returns the number of \</span>
+<span class="sd">            flows of the topology, recorded in operational datastore of the \</span>
+<span class="sd">            controller</span>
+
+<span class="sd">        :param new_ssh_conn: an ssh connection client object</span>
+<span class="sd">        :returns: number of flows from controller&#39;s operational datastore</span>
+<span class="sd">        :type new_ssh_conn: paramiko.SSHClient</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises controller_exceptions.ODLGetOperFlowsError: if handler \</span>
+<span class="sd">            fails to run or return a valid value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Controller] Query number of flows installed for &#39;</span>
+                     <span class="s1">&#39;all installed nodes of the topology&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_flows</span><span class="p">]):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> get_oper_flows handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[controller.get_oper_links]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">oper_flows</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="n">new_ssh_conn</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="n">used_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">oper_flows</span><span class="p">,</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_port</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_user</span><span class="p">),</span>
+                                             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restconf_pass</span><span class="p">)]),</span>
+                    <span class="s1">&#39;[controller.operational_flows_handler]&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">ODLGetOperFlowsError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">controller_exceptions</span><span class="o">.</span><span class="n">CtrlError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ODL.save_log"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ODL.save_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save controller log file</span>
+
+<span class="sd">        :param output_dir: the directory where the controller logs are stored</span>
+<span class="sd">        :type output_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Move controller log file if exist inside the test output dir</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[controller_save_log] collecting logs from &#39;</span>
+                         <span class="s1">&#39;controller node. Logs path:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                         <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logs_dir</span><span class="p">))</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">copy_dir_remote_to_local</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logs_dir</span><span class="p">),</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[controller_save_log] Fail transferring controller&#39;</span>
+                          <span class="s1">&#39; logs directory.&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ONOS"><a class="viewcode-back" href="../../stress_test.html#stress_test.controller.ONOS">[docs]</a><span class="k">class</span> <span class="nc">ONOS</span><span class="p">(</span><span class="n">Controller</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the creation of an ONOS controller object.</span>
+<span class="sd">        Inherits from Controller class.</span>
+
+<span class="sd">        :param ctrl_base_dir: emulator base directory</span>
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :type ctrl_base_dir: str</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">ctrl_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stat_period_ms</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;controller_statistics_period_ms&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_hosts</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_switches</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_links</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oper_flows</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

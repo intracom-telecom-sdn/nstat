@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.report_gen &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stress_test.report_gen</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">stress_test.html_generation</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">util.plot_json</span>
+
+
+<div class="viewcode-block" id="ReportGen"><a class="viewcode-back" href="../../stress_test.html#stress_test.report_gen.ReportGen">[docs]</a><span class="k">class</span> <span class="nc">ReportGen</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class used for Reporting and plot generation after a test</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">test_config_json</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="n">total_samples</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a ReportGen class</span>
+
+<span class="sd">        :param test_config_json: JSON input configuration</span>
+<span class="sd">        :param report_spec: a report_spec object</span>
+<span class="sd">        :param total_samples: the results commited from a test, which are to</span>
+<span class="sd">        be reported</span>
+<span class="sd">        :type test_config_json: json file</span>
+<span class="sd">        :type report_spec: object</span>
+<span class="sd">        :type total_samples: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span> <span class="o">=</span> <span class="n">test_config_json</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">report_spec</span> <span class="o">=</span> <span class="n">report_spec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> <span class="n">total_samples</span>
+        <span class="c1"># Defines level of detail of error message  printed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[ReportGen] creating test output directory if not &#39;</span>
+                         <span class="s1">&#39;present.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;[ReportGen] Fail to create output directory for the report&#39;</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__error_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints a detailed message traceback of the error in plotting</span>
+
+<span class="sd">        :param error_message: message of the handled error</span>
+<span class="sd">        :param error_num: error number of the handled error, used to define</span>
+<span class="sd">        subcases of raised errors.</span>
+<span class="sd">        :type error_message: str</span>
+<span class="sd">        :type error_num: int</span>
+<span class="sd">        :raises controller_exceptions.CtrlError: to terminate execution of</span>
+<span class="sd">        test after error handling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> :::::::::: Exception :::::::::::&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - </span><span class="si">{1}</span><span class="s1"> Exception: </span><span class="si">{2}</span><span class="s1">, </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ReportGen.generate_json_results"><a class="viewcode-back" href="../../stress_test.html#stress_test.report_gen.ReportGen.generate_json_results">[docs]</a>    <span class="k">def</span> <span class="nf">generate_json_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the result json file and writes test results in it</span>
+
+<span class="sd">        :param results A list containing the results.</span>
+<span class="sd">        :param out_json: The file path of json file to be created and write</span>
+<span class="sd">        results in it</span>
+<span class="sd">        :type results: &lt;list&lt;dictionary&gt;&gt;</span>
+<span class="sd">        :type out_json: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ojf</span><span class="p">:</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">,</span> <span class="n">ojf</span><span class="p">)</span>
+                    <span class="n">ojf</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s1">&#39;[generate_json_results] Results written to </span><span class="si">{0}</span><span class="s1">.&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;[generate_json_results] copy </span><span class="si">{0}</span><span class="s1"> to </span><span class="si">{1}</span><span class="s1">.&#39;</span><span class="o">.</span>
+                    <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">&#39;[generate_json_results] results parameter was empty.&#39;</span>
+                    <span class="s1">&#39; Nothing to be saved&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;[generate_json_results] output json file could not be &#39;</span>
+                <span class="s1">&#39;created. Check privileges.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ReportGen.generate_plots"><a class="viewcode-back" href="../../stress_test.html#stress_test.report_gen.ReportGen.generate_plots">[docs]</a>    <span class="k">def</span> <span class="nf">generate_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        NSTAT post test actions</span>
+
+<span class="sd">        :param args: argparse.ArgumentParser object containing user specified \</span>
+<span class="sd">            parameters (i.e test type, controller base directory, generator \</span>
+<span class="sd">            base directory) when running NSTAT</span>
+<span class="sd">        :param test_config : JSON input configuration</span>
+<span class="sd">        :param report_spec : A ReportSpec object that holds all the test \</span>
+<span class="sd">            report information and is passed as input to the generate_html() \</span>
+<span class="sd">            function in the html_generation.py, that is responsible for the \</span>
+<span class="sd">            report generation.</span>
+<span class="sd">        :type args: ArgumentParser object</span>
+<span class="sd">        :type test_config: python object resulting from a deserialized file \</span>
+<span class="sd">            like object containing a json document</span>
+<span class="sd">        :type report_spec: ReportSpec object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s1">&#39;[generate_plots] Creating output directory of test results&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[generate_plots] Producing plots&#39;</span><span class="p">)</span>
+            <span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">plot_index</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_plots</span><span class="p">)):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">plot_options</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">plot_utils</span><span class="o">.</span><span class="n">PlotOptions</span><span class="p">()</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">xmin</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;x_min&#39;</span><span class="p">]</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">xmax</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;x_max&#39;</span><span class="p">]</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">ymin</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;y_min&#39;</span><span class="p">]</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">ymax</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;y_max&#39;</span><span class="p">]</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">x_axis_label</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">]</span>\
+                        <span class="p">[</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;x_axis_label&#39;</span><span class="p">]</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">y_axis_label</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;y_axis_label&#39;</span><span class="p">]</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">out_fig</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;plot_filename&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.png&#39;</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">plot_title</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;plot_title&#39;</span><span class="p">]</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">x_axis_fct</span> <span class="o">=</span> \
+                        <span class="nb">float</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;x_axis_factor&#39;</span><span class="p">]))</span>
+                    <span class="n">plot_options</span><span class="o">.</span><span class="n">y_axis_fct</span> <span class="o">=</span> \
+                        <span class="nb">float</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;y_axis_factor&#39;</span><span class="p">]))</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;x_axis_scale&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+                        <span class="n">plot_options</span><span class="o">.</span><span class="n">xscale_log</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">plot_options</span><span class="o">.</span><span class="n">xscale_log</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;y_axis_scale&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;log&#39;</span><span class="p">:</span>
+                        <span class="n">plot_options</span><span class="o">.</span><span class="n">yscale_log</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">plot_options</span><span class="o">.</span><span class="n">yscale_log</span> <span class="o">=</span> <span class="kc">False</span>
+
+                    <span class="c1"># Call the util function responsible to generate the plot</span>
+                    <span class="c1"># png</span>
+                    <span class="c1"># ----------------------------------------------------------</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">plot_json</span><span class="o">.</span><span class="n">plot_json</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;x_axis_key&#39;</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;y_axis_key&#39;</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;z_axis_key&#39;</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;plot_type&#39;</span><span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;plot_subtitle_keys&#39;</span><span class="p">],</span>
+                        <span class="n">plot_options</span><span class="p">)</span>
+                    <span class="c1"># move produced plot in output directory</span>
+                    <span class="c1"># ----------------------------------------------------------</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="s1">&#39;[generate_plots] Gathering plot </span><span class="si">{0}</span><span class="s1"> into output &#39;</span>
+                        <span class="s1">&#39;directory&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plot_options</span><span class="o">.</span><span class="n">out_fig</span><span class="p">))</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">plot_options</span><span class="o">.</span><span class="n">out_fig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="s1">&#39;[generate_plots] The plot </span><span class="si">{0}</span><span class="s1"> could not be &#39;</span>
+                        <span class="s1">&#39;created. Please check configuration. Continuing &#39;</span>
+                        <span class="s1">&#39;to the next plot.&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_config_json</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">][</span><span class="n">plot_index</span><span class="p">][</span><span class="s1">&#39;plot_title&#39;</span><span class="p">]))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s1">&#39;[generate_plots] No output file </span><span class="si">{0}</span><span class="s1"> found. Finishing.&#39;</span><span class="o">.</span>
+                <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ReportGen.generate_html_report"><a class="viewcode-back" href="../../stress_test.html#stress_test.report_gen.ReportGen.generate_html_report">[docs]</a>    <span class="k">def</span> <span class="nf">generate_html_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        NSTAT save log file</span>
+
+<span class="sd">        :param args: argparse.ArgumentParser object containing user specified \</span>
+<span class="sd">            parameters (i.e test type, controller base directory, generator \</span>
+<span class="sd">            directory) when running NSTAT</span>
+<span class="sd">        :param report_spec: A ReportSpec object that holds all the test report \</span>
+<span class="sd">            information and is passed as input to the generate_html() function \</span>
+<span class="sd">            in the html_generation.py, that is responsible for the report \</span>
+<span class="sd">            generation.</span>
+<span class="sd">        :type args: ArgumentParser object</span>
+<span class="sd">        :type report_spec: ReportSpec object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Generate html report and move it within test output dir</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] Generating html report&#39;</span><span class="p">)</span>
+        <span class="n">stress_test</span><span class="o">.</span><span class="n">html_generation</span><span class="o">.</span><span class="n">generate_html</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">report_spec</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">html_report</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">html_report</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ReportGen.results_report"><a class="viewcode-back" href="../../stress_test.html#stress_test.report_gen.ReportGen.results_report">[docs]</a>    <span class="k">def</span> <span class="nf">results_report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a complete report of the test. This is the main method of</span>
+<span class="sd">        this class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">generate_json_results</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="s1">&#39;Error in generation of JSON results.&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_plots</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="s1">&#39;Error in generation of plots.&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_html_report</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="s1">&#39;Error in generation of HTML report.&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">json_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="s1">&#39;Error in copy of results in results &#39;</span>
+                                  <span class="s1">&#39;folder.&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
