@@ -77,8 +77,8 @@ class Controller:
 
         :returns: a subclass or None
         :rtype: object
-        :raises NotImplementedError: in case an invalid controller_name is
-        given in the configuration json file
+        :raises NotImplementedError: in case an invalid controller_name is \
+            given in the configuration json file
         """
         name = test_config['controller_name']
         if (name == 'ODL'):
@@ -118,13 +118,13 @@ class Controller:
 
     def init_ssh(self):
         """
-        Initializes a new SSH client object, with the controller node and
-        assigns it to the protected attribute _ssh_conn. If a connection
-        already exists it returns a new SSH client object to the controller
-        node.
+        Initializes a new SSH client object, with the controller node and \
+            assigns it to the protected attribute _ssh_conn. If a connection \
+            already exists it returns a new SSH client object to the  \
+            controller node.
 
-        :raises controller_exceptions.CtrlNodeConnectionError: if ssh
-        connection establishment fails
+        :raises controller_exceptions.CtrlNodeConnectionError: if ssh \
+            connection establishment fails
         """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node.'.
@@ -151,8 +151,8 @@ class Controller:
         Wrapper to the controller cleanup handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.CtrlCleanupError: if controller cleanup
-        handler fails
+        :raises controller_exceptions.CtrlCleanupError: if controller cleanup \
+            handler fails
         """
         logging.info('[Controller] Cleaning up')
         self.status = 'CLEANING'
@@ -196,8 +196,8 @@ class Controller:
         :returns: the status of the controller (running = 1, not running = 0)
         :rtype: int
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.CtrlStatusUnknownError: if the handler
-        fails to return controller status or fails to execute
+        :raises controller_exceptions.CtrlStatusUnknownError: if the handler \
+            fails to return controller status or fails to execute
         """
         logging.info('[Controller] Checking the status')
         try:
@@ -241,8 +241,8 @@ class Controller:
         """
         Checks for processes listening on the specified port
 
-        :raises controller_exceptions.CtrlPortConflictError: when another
-        process listens on controller's port.
+        :raises controller_exceptions.CtrlPortConflictError: when another \
+            process listens on controller's port.
         """
 
         logging.info(
@@ -283,8 +283,8 @@ class Controller:
         Wrapper to the controller start handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.CtrlStartError: When controller fails to
-        start.
+        :raises controller_exceptions.CtrlStartError: When controller fails to \
+            start.
         """
         logging.info('[Controller.start] Starting')
         self.status = 'STARTING'
@@ -338,8 +338,8 @@ class Controller:
         Wrapper to the controller stop handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.CtrlStopError: if controller fails to
-        stop successfully
+        :raises controller_exceptions.CtrlStopError: if controller fails to \
+            stop successfully
         """
         self.status = 'STOPPING'
         try:
@@ -432,11 +432,12 @@ class Controller:
         :returns: the process ID PID of the controller.
         :rtype int
         :type timeout_ms: int
-        :raises controller_exceptions.CtrlReadyStateError: If controller fails
-        to start
-        :raises controller_exceptions.CtrlPortConflictError: if another process
-        listens on controllers port.
+        :raises controller_exceptions.CtrlReadyStateError: If controller fails \
+            to start
+        :raises controller_exceptions.CtrlPortConflictError: if another \
+            process listens on controllers port.
         """
+
         logging.info('[Controller] Waiting to start listening on a port')
         try:
             try:
@@ -471,8 +472,8 @@ class Controller:
 
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :type timeout_ms: int
-        :raises controller_exceptions.CtrlReadyStateError: If controller fails
-        to reach a ready state within a certain period of time.
+        :raises controller_exceptions.CtrlReadyStateError: If controller fails \
+            to reach a ready state within a certain period of time.
         """
 
         logging.info('[Controller] Waiting to be started')
@@ -575,11 +576,11 @@ class ODL(Controller):
 
     def generate_xmls(self):
         """
-        Starts and then stops the controller to trigger the generation of
-        controller's XML files.
+        Starts and then stops the controller to trigger the generation of \
+            controller's XML files.
 
-        :raises controller_exceptions.ODLXMLError: if generation of XML files
-        fails
+        :raises controller_exceptions.ODLXMLError: if generation of XML files \
+            fails
         """
         logging.info('[Controller] Generating XML files'
                      ' (start and stop the Controller)')
@@ -594,11 +595,11 @@ class ODL(Controller):
 
     def disable_persistence(self):
         """
-        Configure controller persistent to false in order not to backup
-        datastore on the disk.
+        Configure controller persistent to false in order not to backup \
+            datastore on the disk.
 
-        :raises controller_exceptions.ODLDisablePersistenceError: if disable of
-        persistence fails
+        :raises controller_exceptions.ODLDisablePersistenceError: if disable \
+            of persistence fails
         """
         logging.info('[Controller] Disabling persistence')
         try:
@@ -625,12 +626,12 @@ class ODL(Controller):
 
     def change_stats(self):
         """
-        Wrapper to the controller statistics handler. Changes the value of
-        statistics interval in the configuration files of controller.
+        Wrapper to the controller statistics handler. Changes the value of \
+            statistics interval in the configuration files of controller.
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.ODLChangeStats: if change of statistics
-        interval fails
+        :raises controller_exceptions.ODLChangeStats: if change of statistics \
+            interval fails
         """
         logging.info('[Controller] Changing statistics period')
         try:
@@ -660,11 +661,11 @@ class ODL(Controller):
 
     def flowmods_config(self):
         """
-        Configure controller to send flow modifications as a
-        response to ARP Packet_INs.
+        Configure controller to send flow modifications as a response to ARP \
+            ARP Packet_INs.
 
-        :raises controller_exceptions.ODLFlowModConfError: if configuration
-        actions to respond with flow modifications fail.
+        :raises controller_exceptions.ODLFlowModConfError: if configuration \
+            actions to respond with flow modifications fail.
         """
         logging.info('[Controller.flowmods_config] Configure flow '
                      'modifications')
@@ -692,17 +693,17 @@ class ODL(Controller):
 
     def get_oper_hosts(self, new_ssh_conn=None):
         """
-        Wrapper to the controller oper_hosts handler. Makes a REST call to
-        the NB interface of the controller and returns the number of hosts
-        of the topology, recorded in operational datastore of the controller
+        Wrapper to the controller oper_hosts handler. Makes a REST call to \
+            the NB interface of the controller and returns the number of hosts \
+            of the topology, recorded in operational datastore of the controller
 
         :param new_ssh_conn: an ssh connection client object
         :returns: number of hosts from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.ODLGetOperHostsError: if handler fails to
-        run or return a valid value
+        :raises controller_exceptions.ODLGetOperHostsError: if handler fails \
+            to run or return a valid value
         """
         logging.info('[Controller] Query number of hosts '
                      'registered in ODL operational DS')
@@ -739,18 +740,18 @@ class ODL(Controller):
 
     def get_oper_switches(self, new_ssh_conn=None):
         """
-        Wrapper to the controller oper_switches handler. Makes a REST call
-        to the NB interface of the controller and returns the number of
-        switches of the topology, recorded in operational datastore of the
-        controller
+        Wrapper to the controller oper_switches handler. Makes a REST call \
+            to the NB interface of the controller and returns the number of \
+            switches of the topology, recorded in operational datastore of the \
+            controller
 
         :param new_ssh_conn: an ssh connection client object
         :returns: number of switches from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.ODLGetOperSwitchesError:  if handler
-        fails to run or return a valid value
+        :raises controller_exceptions.ODLGetOperSwitchesError:  if handler \
+            fails to run or return a valid value
         """
         logging.info('[Controller] Query number of switches '
                      ' registered in ODL operational DS')
@@ -788,18 +789,18 @@ class ODL(Controller):
 
     def get_oper_links(self, new_ssh_conn=None):
         """
-        Wrapper to the controller oper_links handler. Makes a REST call
-        to the NB interface of the controller and returns the number of
-        links of the topology, recorded in operational datastore of the
-        controller
+        Wrapper to the controller oper_links handler. Makes a REST call \
+            to the NB interface of the controller and returns the number of \
+            links of the topology, recorded in operational datastore of the \
+            controller
 
         :param new_ssh_conn: an ssh connection client object
         :returns: number of links from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.ODLGetOperLinksError: if handler
-        fails to run or return a valid value
+        :raises controller_exceptions.ODLGetOperLinksError: if handler \
+            fails to run or return a valid value
         """
         logging.info('[Controller] Query number of links registered in '
                      ' ODL operational DS')
@@ -836,18 +837,18 @@ class ODL(Controller):
 
     def get_oper_flows(self, new_ssh_conn=None):
         """
-        Wrapper to the controller oper_flows handler. Makes a REST call
-        to the NB interface of the controller and returns the number of
-        flows of the topology, recorded in operational datastore of the
-        controller
+        Wrapper to the controller oper_flows handler. Makes a REST call \
+            to the NB interface of the controller and returns the number of \
+            flows of the topology, recorded in operational datastore of the \
+            controller
 
         :param new_ssh_conn: an ssh connection client object
         :returns: number of flows from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
         :rtype: int
         :raises IOError: if the handler does not exist on the remote host
-        :raises controller_exceptions.ODLGetOperFlowsError: if handler
-        fails to run or return a valid value
+        :raises controller_exceptions.ODLGetOperFlowsError: if handler \
+            fails to run or return a valid value
         """
         logging.info('[Controller] Query number of flows installed for '
                      'all installed nodes of the topology')

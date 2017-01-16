@@ -101,13 +101,13 @@ class NBgen:
 
     def init_ssh(self):
         """
-        Initializes a new SSH client object, with the nb_generator node and
-        assigns it to the protected attribute _ssh_conn. If a connection
-        already exists it returns a new SSH client object to the controller
-        node.
+        Initializes a new SSH client object, with the nb_generator node and \
+            assigns it to the protected attribute _ssh_conn. If a connection \
+            already exists it returns a new SSH client object to the  \
+            controller node.
 
-        :raises nb_generator_exceptions.NBGenNodeConnectionError: if ssh
-        connection establishment fails
+        :raises nb_generator_exceptions.NBGenNodeConnectionError: if ssh \
+            connection establishment fails
         """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node on '
@@ -221,8 +221,8 @@ class NBgen:
         :returns: Returns the combined stdout - stderr of the executed command
         :rtype: str
         :raises IOError: if the handler does not exist on the remote host
-        :raises nb_generator_exceptions.NBGenRunError: if running nb_generator
-        fails
+        :raises nb_generator_exceptions.NBGenRunError: if running nb_generator \
+            fails
         """
         logging.info("[NB_generator] Run handler")
         self.status = 'STARTED'

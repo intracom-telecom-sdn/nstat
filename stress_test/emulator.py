@@ -57,8 +57,8 @@ class SBEmu:
     @staticmethod
     def new(sb_emu_base_dir, test_config):
         """
-        Factory method. Creates a subclass class depending on the
-        SB-Emulator name
+        Factory method. Creates a subclass class depending on the \
+            SB-Emulator name
 
         :param test_config: JSON input configuration
         :param sb_emu_base_dir: emulator base directory
@@ -66,8 +66,8 @@ class SBEmu:
         :type test_config: JSON configuration dictionary
         :type sb_emu_base_dir: str
         :rtype: object
-        :raises NotImplementedError: in case an invalid sb_emulator_name is
-        given in the json configuration file
+        :raises NotImplementedError: in case an invalid sb_emulator_name is \
+            given in the json configuration file
         """
         name = test_config['sb_emulator_name']
         if (name == 'MTCBENCH'):
@@ -102,13 +102,13 @@ class SBEmu:
 
     def init_ssh(self):
         """
-        Initializes a new SSH client object, with the emulator node and
-        assigns it to the protected attribute _ssh_conn. If a connection
-        already exists it returns a new SSH client object to the controller
-        node.
+        Initializes a new SSH client object, with the emulator node and \
+            assigns it to the protected attribute _ssh_conn. If a connection \
+            already exists it returns a new SSH client object to the  \
+            controller node.
 
-        :raises emulator_exceptions.SBEmuNodeConnectionError: if ssh connection
-        establishment fails
+        :raises emulator_exceptions.SBEmuNodeConnectionError: if ssh \
+            connection establishment fails
         """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node on '
@@ -289,19 +289,19 @@ class MTCBench(SBEmu):
         Wrapper to the MTCBench SB-Emulator run handler
 
         :param ctrl_ip: The ip address of the controller
-        :param ctrl_sb_port: the port number of the SouthBound interface of
-        the controller
-        :param prefix: prefix of logging messages printed during execution of
-        MTCbench handler
-        :param lines_queue: a queue object gathering the output of MTCbench
-        handler line by line.
-        :param print_flag: defines if the output of MTCbench handler will be
-        printed on the screen
-        :param block_flag: defines if the run handler will run in blocking or
-        non blocking mode. In not blocking mode no output will be printed or
-        saved in a queue.
-        :param getpty_flag: defines if the run handler will run in a separate
-        pty terminal
+        :param ctrl_sb_port: the port number of the SouthBound interface of \
+            the controller
+        :param prefix: prefix of logging messages printed during execution of \
+            MTCbench handler
+        :param lines_queue: a queue object gathering the output of MTCbench \
+            handler line by line.
+        :param print_flag: defines if the output of MTCbench handler will be \
+            printed on the screen
+        :param block_flag: defines if the run handler will run in blocking or \
+            non blocking mode. In not blocking mode no output will be printed \
+            or saved in a queue.
+        :param getpty_flag: defines if the run handler will run in a separate \
+            pty terminal
         :type ctrl_ip: str
         :type ctrl_sb_port: int
         :type prefix: str
@@ -310,8 +310,8 @@ class MTCBench(SBEmu):
         :type block_flag: bool
         :type getpty_flag: bool
         :raises IOError: if the exit status of the handler is not 0
-        :raises emulator_exceptions.MTCbenchRunError: in case of run MTCbench
-        error
+        :raises emulator_exceptions.MTCbenchRunError: in case of run MTCbench \
+            error
         """
         logging.info('{0} Starting'.format(prefix))
         self.status = 'STARTING'
@@ -551,8 +551,8 @@ class Multinet(SBEmu):
         :type cntrl_ip: str
         :type cntrl_of_port: int
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetDeployError: in case of Multinet
-        deploy error
+        :raises emulator_exceptions.MultinetDeployError: in case of Multinet \
+            deploy error
         """
         logging.info('[Multinet] Deploy')
         self.status = 'DEPLOYING'
@@ -603,8 +603,8 @@ class Multinet(SBEmu):
         :rtype: strcleanup_hnd
         :type new_ssh_conn: paramiko.SFTPClient
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetGetSwitchesError: if handler fails
-        to run successfully and return a valid result
+        :raises emulator_exceptions.MultinetGetSwitchesError: if handler fails \
+            to run successfully and return a valid result
         """
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING_SWITCHES'
@@ -657,8 +657,8 @@ class Multinet(SBEmu):
         :rtype: str
         :type new_ssh_conn: paramiko.SFTPClient
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetGetFlowsError: if handler fails to
-        run successfully
+        :raises emulator_exceptions.MultinetGetFlowsError: if handler fails to \
+            run successfully
         """
         logging.info('[Multinet] get_flows')
         self.status = 'GETTING_FLOWS'
@@ -708,8 +708,8 @@ class Multinet(SBEmu):
         Wrapper to the Multinet SB-Emulator init_topos handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetInitToposError: if Multinet
-        initialization fails
+        :raises emulator_exceptions.MultinetInitToposError: if Multinet \
+            initialization fails
         """
         logging.info('[Multinet] init_topos')
         self.status = 'INIT_MININET_TOPOS'
@@ -751,8 +751,8 @@ class Multinet(SBEmu):
         Wrapper to the Multinet SB-Emulator start_topos handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetStartToposError: if Multinet start
-        topology handler fails
+        :raises emulator_exceptions.MultinetStartToposError: if Multinet start \
+            topology handler fails
         """
         logging.info('[Multinet] start_topos')
         self.status = 'START_MININET_TOPOS'
@@ -794,8 +794,8 @@ class Multinet(SBEmu):
         Wrapper to the Multinet SB-Emulator stop_topos handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetStopToposError: if Multinet stop
-        handler fails
+        :raises emulator_exceptions.MultinetStopToposError: if Multinet stop \
+            handler fails
         """
         logging.info('[Multinet] stop_topos')
         self.status = 'STOP_MININET_TOPOS'
@@ -836,8 +836,8 @@ class Multinet(SBEmu):
         Wrapper to the Multinet SB-Emulator cleanup handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetCleanupError: if Multinet cleanup
-        handler fails
+        :raises emulator_exceptions.MultinetCleanupError: if Multinet cleanup \
+            handler fails
         """
         logging.info('[Multinet] cleanup')
         self.status = 'CLEANUP_MININET'
@@ -879,8 +879,8 @@ class Multinet(SBEmu):
         Wrapper to the Multinet SB-Emulator traffic_gen handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetTraffigGenError: if Multinet
-        traffic generator handler fails to run successfully
+        :raises emulator_exceptions.MultinetTraffigGenError: if Multinet \
+            traffic generator handler fails to run successfully
         """
         logging.info('[Multinet] traffic gen')
         self.status = 'CREATE_TRAFFIC'

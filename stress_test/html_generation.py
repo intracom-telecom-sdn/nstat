@@ -293,11 +293,11 @@ table {
 
 def generate_table(tables_specs):
     """
-    Gets a dictionary with tables specifications and generates the
-    corresponded html code.
+    Gets a dictionary with tables specifications and generates the \
+        corresponded html code.
 
-    :param tables_specs: Dictionary containing the specifications of a group
-    of tables.
+    :param tables_specs: Dictionary containing the specifications of a group \
+        of tables.
     :returns: html code of the table.
     :rtype: str
     :type tables_specs: <dictionary>
