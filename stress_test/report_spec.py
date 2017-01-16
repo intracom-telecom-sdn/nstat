@@ -16,6 +16,8 @@ class ReportSpec(object):
     def __init__(self, config_json, results_json, title, config_tables,
                  results_table):
         """
+        Creates ReportSpec object
+
         :param config_json: string containing the file path to the
         json file containing the configuration parameters of the test.
         :param results_json: string containing the file path to the json file
