@@ -1,6 +1,7 @@
 #! /usr/bin/env python3.4
 
-"""This handler returns the number of installed flows of a topology, connected
+"""
+This handler returns the number of installed flows of a topology, connected
 to the controller. This information is extracted from controller's operational
 datastore, using RESTCONF.
 """
@@ -12,7 +13,8 @@ import sys
 
 
 def get_oper_flows():
-    """Query number of flows registered in ODL operational DS
+    """
+    Query number of flows registered in ODL operational DS
 
     :returns: number of flows found, 0 if none exists and -1 in case of
     error.

@@ -11,7 +11,8 @@ import requests
 
 
 def get_oper_hosts():
-    """Query number of hosts registered in ODL operational DS
+    """
+    Query number of hosts registered in ODL operational DS
 
     :returns: number of hosts found, 0 if none exists and -1 in case of
     error.

@@ -8,9 +8,12 @@ import stress_test.report_spec
 
 
 class TestReport:
-
+    """
+    Creates a class for each test includeing the key to be demonstrated
+    """
     def __init__(self, test_type, config_json_file):
-        """ Initializes the test_type and json configuration file attributes
+        """
+        Initializes the test_type and json configuration file attributes
         """
         self.test_type = test_type
         self.config_json_file = config_json_file
@@ -20,7 +23,7 @@ class TestReport:
         Returns the report specification for the Southbound active scalability
         test with MT-Cbench
 
-        :param results_json_file: This is the filepath to the results json file.
+        :param results_json_file: This is the filepath to the results json file
         :returns: report specification object
         :rtype: ReportSpec
         :type: results_json_file: str

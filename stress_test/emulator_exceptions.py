@@ -8,11 +8,14 @@
 
 
 class SBEmuError(Exception):
-    """Contains the exception handling concerning the South-Bound Emulator
+    """
+    Contains the exception handling concerning the South-Bound Emulator
     class functionalities.
     """
     def __init__(self, err_msg=None, err_code=1):
-        """Base-class for all SB emulators exceptions raised by this module.
+        """
+        Base-class for all SB emulators exceptions raised by this module.
+
         :param err_msg: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -28,11 +31,14 @@ class SBEmuError(Exception):
 
 
 class SBEmuNodeConnectionError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Emulator class
+    """
+    Contains the exception handling concerning the South-Bound Emulator class
     connectivity.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """A SB emulator node connection error.
+        """
+        A SB emulator node connection error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -44,11 +50,14 @@ class SBEmuNodeConnectionError(SBEmuError):
 
 
 class SBEmuBuildError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Emulator
+    """
+    Contains the exception handling concerning the South-Bound Emulator
     building functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """A SB emulator build error.
+        """
+        A SB emulator build error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -59,11 +68,14 @@ class SBEmuBuildError(SBEmuError):
 
 
 class SBEmuCleanupError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Emulator
+    """
+    Contains the exception handling concerning the South-Bound Emulator
     cleaning functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """A SB emulator cleanup error.
+        """
+        A SB emulator cleanup error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -74,11 +86,14 @@ class SBEmuCleanupError(SBEmuError):
 
 
 class MTCbenchRunError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Emulator
+    """
+    Contains the exception handling concerning the South-Bound Emulator
     running functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """MTCbench fail to run error.
+        """
+        MTCbench fail to run error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -89,11 +104,14 @@ class MTCbenchRunError(SBEmuError):
 
 
 class MultinetConfGenerateError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Emulator
+    """
+    Contains the exception handling concerning the South-Bound Emulator
     building functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail generate configuration file for multinet
+        """
+        Fail generate configuration file for multinet
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -105,11 +123,14 @@ class MultinetConfGenerateError(SBEmuError):
 
 
 class MultinetOutputParsingError(SBEmuError):
-    """Contains the exception handling concerning the console output from
+    """
+    Contains the exception handling concerning the console output from
     the South-Bound Multinet Emulator.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail parsing multinet handler output.
+        """
+        Fail parsing multinet handler output.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -121,11 +142,13 @@ class MultinetOutputParsingError(SBEmuError):
 
 
 class MultinetDeployError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Multinet
+    """
+    Contains the exception handling concerning the South-Bound Multinet
     Emulator deploy.
     """
     def __init__(self, additional_error_info='', err_code=1):
         """Fail to deploy multinet workers.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -136,11 +159,13 @@ class MultinetDeployError(SBEmuError):
 
 
 class MultinetInitToposError(SBEmuError):
-    """Contains the exception handling concerning the initialization of a
+    """
+    Contains the exception handling concerning the initialization of a
     South-Bound Multinet topology
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail to initialize multinet topology.
+        """
+Fail to initialize multinet topology.
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -151,11 +176,14 @@ class MultinetInitToposError(SBEmuError):
 
 
 class MultinetStartToposError(SBEmuError):
-    """Contains the exception handling concerning the staring of a
+    """
+    Contains the exception handling concerning the staring of a
     South-Bound Multinet topology
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail to start multinet topology.
+        """
+        Fail to start multinet topology.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -166,11 +194,14 @@ class MultinetStartToposError(SBEmuError):
 
 
 class MultinetGetSwitchesError(SBEmuError):
-    """Contains the exception handling concerning the returned switches from
+    """
+    Contains the exception handling concerning the returned switches from
     a the South-Bound Emulator topology
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail to get number of switches of multinet topology.
+        """
+        Fail to get number of switches of multinet topology.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -182,11 +213,14 @@ class MultinetGetSwitchesError(SBEmuError):
 
 
 class MultinetGetFlowsError(SBEmuError):
-    """Contains the exception handling concerning the returned flows from
+    """
+    Contains the exception handling concerning the returned flows from
     a the South-Bound Emulator topology
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail to get total number of flows of multinet topology.
+        """
+        Fail to get total number of flows of multinet topology.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -198,11 +232,14 @@ class MultinetGetFlowsError(SBEmuError):
 
 
 class MultinetTraffigGenError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Multinet
+    """
+    Contains the exception handling concerning the South-Bound Multinet
     Emulator traffic generator functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Error while generating traffic in multinet topology.
+        """
+        Error while generating traffic in multinet topology.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -214,11 +251,14 @@ class MultinetTraffigGenError(SBEmuError):
 
 
 class MultinetStopToposError(SBEmuError):
-    """Contains the exception handling concerning the stopping of a
+    """
+    Contains the exception handling concerning the stopping of a
     South-Bound Multinet topology
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail to stop multinet topology
+        """
+        Fail to stop multinet topology
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -229,11 +269,14 @@ class MultinetStopToposError(SBEmuError):
 
 
 class MultinetCleanupError(SBEmuError):
-    """Contains the exception handling concerning the South-Bound Multinet
+    """
+    Contains the exception handling concerning the South-Bound Multinet
     Emulator cleaning functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """Fail to cleanup multinet workers
+        """
+        Fail to cleanup multinet workers
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str

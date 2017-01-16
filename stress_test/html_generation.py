@@ -4,7 +4,8 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" HTML generation functions """
+"""
+HTML generation functions """
 import json
 import optparse
 import stress_test.report_spec
@@ -291,7 +292,8 @@ table {
 
 
 def generate_table(tables_specs):
-    """ Gets a dictionary with tables specifications and generates the
+    """
+    Gets a dictionary with tables specifications and generates the
     corresponded html code.
 
     :param tables_specs: Dictionary containing the specifications of a group
@@ -317,7 +319,8 @@ def generate_table(tables_specs):
 
 
 def insert_plots(plots_list):
-    """ Gets a list of dictionaries that describes the plots of the report,
+    """
+    Gets a list of dictionaries that describes the plots of the report,
     and generates the corresponded html code.
 
     :param plots_list: A list of dictionaries with the plots description.
