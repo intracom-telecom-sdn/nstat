@@ -12,39 +12,38 @@ import util.stats
 
 def plot_json(results_file, x_axis_key, y_axis_key, z_axis_key, plot_type,
               plot_subtitle_keys, plot_options):
-    """Acts as a wrapper method for plotting a set of samples from a
-    JSON file. The method ends up calling specific methods for one of the
-    following plot types: errorbar plots, scatter plots
-
-    Prerequisites:
-    1. the result JSON file must have the following format:
-    [
-    {"k1": v1, "k2": v2, ... },      # 1st line (sample)
-    {"k1": v3, "k2": v4, ... },      # 2nd line (sample)
-    {"k1": v5, "k2": v6, ... },      # ...
-    ...
-    ]
-
-    2. the values for both the x_axis_key and y_axis_key must be numeric
+    """
+    Acts as a wrapper method for plotting a set of samples from a \
+        JSON file. The method ends up calling specific methods for one of the \
+        following plot types: errorbar plots, scatter plots \
+        Prerequisites: \
+        1. the result JSON file must have the following format: \
+        [ \
+        {"k1": v1, "k2": v2, ... },      # 1st line (sample) \
+        {"k1": v3, "k2": v4, ... },      # 2nd line (sample) \
+        {"k1": v5, "k2": v6, ... },      # ... \
+        ... \
+        ] \
+        2. the values for both the x_axis_key and y_axis_key must be numeric \
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value,
-    which is intended to serve as the x-axis key
-    :param y_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the y-axis key
-    :param z_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the z-axis key
-    :param plot_type: plot type, one of:
-    - 'errorbar
-    - 'errorbar_connected'
-    - 'scatter'
-    - 'multi_errorbar
-    - 'multi_errorbar_connected'
-    - 'multi_scatter'
-    :param plot_subtitle_keys: list of keys from the result file which we would
-    like to print as key-value pairs in the plot subtitle
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param x_axis_key: some key from the results file with numeric type value, \
+        which is intended to serve as the x-axis key
+    :param y_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the y-axis key
+    :param z_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the z-axis key
+    :param plot_type: plot type, one of: \
+        - 'errorbar \
+        - 'errorbar_connected' \
+        - 'scatter' \
+        - 'multi_errorbar \
+        - 'multi_errorbar_connected' \
+        - 'multi_scatter' \
+    :param plot_subtitle_keys: list of keys from the result file which we \
+        would like to print as key-value pairs in the plot subtitle \
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :raises ValueError: When we give an invalid plot_type.
     :type results_file: str
     :type x_axis_key: str
@@ -81,34 +80,32 @@ def plot_json(results_file, x_axis_key, y_axis_key, z_axis_key, plot_type,
 
 def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
                        plot_subtitle_keys, plot_options):
-    """Draw a single collection of errorbars over a set of samples from a
-    JSON file.
-
-    For each different x value, the function finds one or more
-    corresponding y values and plots an errorbar over them.
-    The x and y values are determined by the x_axis_key and y_axis_key
-    arguments.
-
-    Prerequisites:
-    1. the result JSON file must have the following format:
-    [
-    {"k1": v1, "k2": v2, ... },      # 1st line (sample)
-    {"k1": v3, "k2": v4, ... },      # 2nd line (sample)
-    {"k1": v5, "k2": v6, ... },      # ...
-    ...
-    ]
-
-    2. the values for both the x_axis_key and y_axis_key must be numeric
+    """
+    Draw a single collection of errorbars over a set of samples from a JSON \
+        file. \
+        For each different x value, the function finds one or more \
+        corresponding y values and plots an errorbar over them. \
+        The x and y values are determined by the x_axis_key and y_axis_key \
+        arguments. \
+        Prerequisites: \
+        1. the result JSON file must have the following format: \
+        [ \
+        {"k1": v1, "k2": v2, ... },      # 1st line (sample) \
+        {"k1": v3, "k2": v4, ... },      # 2nd line (sample) \
+        {"k1": v5, "k2": v6, ... },      # ... \
+        ... \
+        ] \
+        2. the values for both the x_axis_key and y_axis_key must be numeric
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value,
-    which is intended to serve as the x-axis key
-    :param y_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the y-axis key
-    :param plot_subtitle_keys: list of keys from the result file which we would
-    like to print as key-value pairs in the plot subtitle
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param x_axis_key: some key from the results file with numeric type value, \
+        which is intended to serve as the x-axis key
+    :param y_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the y-axis key
+    :param plot_subtitle_keys: list of keys from the result file which we would \
+        like to print as key-value pairs in the plot subtitle
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type results_file: str
     :type x_axis_key: str
     :type y_axis_key: str
@@ -158,39 +155,36 @@ def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
 
 def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
                             plot_subtitle_keys, plot_options):
-    """Draw multiple collection of errorbars over a set of samples from a
-    JSON file.
-
-    For each different z value do the following:
-    for each different x value, the function finds one or more
-    corresponding y values and plots an errorbar over them.
-
-    The x and y values are determined by the x_axis_key and y_axis_key
-    arguments.
-    The z value is determined by the z_axis_key argument.
-
-    Prerequisites:
-    1. the result JSON file must have the following format:
-    [
-    {"k1": v1, "k2": v2, ... },      # 1st line (sample)
-    {"k1": v3, "k2": v4, ... },      # 2nd line (sample)
-    {"k1": v5, "k2": v6, ... },      # ...
-    ...
-    ]
-
-    2. the values for x_axis_key, y_axis_key and z_axis_key must be numeric
+    """
+    Draw multiple collection of errorbars over a set of samples from a
+        JSON file. \
+        For each different z value do the following: \
+        for each different x value, the function finds one or more \
+        corresponding y values and plots an errorbar over them. \
+        The x and y values are determined by the x_axis_key and y_axis_key \
+        arguments. \
+        The z value is determined by the z_axis_key argument. \
+        Prerequisites: \
+        1. the result JSON file must have the following format: \
+        [ \
+        {"k1": v1, "k2": v2, ... },      # 1st line (sample) \
+        {"k1": v3, "k2": v4, ... },      # 2nd line (sample) \
+        {"k1": v5, "k2": v6, ... },      # ... \
+        ... \
+        ] \
+        2. the values for x_axis_key, y_axis_key and z_axis_key must be numeric
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value,
-    which is intended to serve as the x-axis key
-    :param y_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the y-axis key
-    :param z_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the z-axis key
-    :param plot_subtitle_keys: list of keys from the result file which we would
-    like to print as key-value pairs in the plot subtitle
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param x_axis_key: some key from the results file with numeric type value, \
+        which is intended to serve as the x-axis key
+    :param y_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the y-axis key
+    :param z_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the z-axis key
+    :param plot_subtitle_keys: list of keys from the result file which we  \
+        would like to print as key-value pairs in the plot subtitle
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type results_file: str
     :type x_axis_key: str
     :type y_axis_key: str
@@ -225,35 +219,32 @@ def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
 
 def plot_scatter_json(results_file, x_axis_key, y_axis_key, plot_subtitle_keys,
                       plot_options):
-    """Draw a single scatter-plot over a set of samples from a JSON file.
-
-    For each different x value, the function plots a point for every
-    corresponding y values it finds.
-    The x and y values are determined by the x_axis_key and y_axis_key
-    arguments.
-
-    Prerequisites:
-    1. the result JSON file must have the following format:
-    [
-    {"k1": v1, "k2": v2, ... },      # 1st line (sample)
-    {"k1": v3, "k2": v4, ... },      # 2nd line (sample)
-    {"k1": v5, "k2": v6, ... },      # ...
-    ...
-    ]
-
-    2. the values for both the x_axis_key and y_axis_key must be numeric
-
+    """
+    Draw a single scatter-plot over a set of samples from a JSON file. \
+        For each different x value, the function plots a point for every \
+        corresponding y values it finds. \
+        The x and y values are determined by the x_axis_key and y_axis_key \
+        arguments. \
+        Prerequisites: \
+        1. the result JSON file must have the following format: \
+        [ \
+        {"k1": v1, "k2": v2, ... },      # 1st line (sample) \
+        {"k1": v3, "k2": v4, ... },      # 2nd line (sample) \
+        {"k1": v5, "k2": v6, ... },      # ... \
+        ... \
+        ] \
+        2. the values for both the x_axis_key and y_axis_key must be numeric \
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value,
-    which is intended to serve as the x-axis key
-    :param y_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the y-axis key
+    :param x_axis_key: some key from the results file with numeric type value, \
+        which is intended to serve as the x-axis key
+    :param y_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the y-axis key
     :param plot_title: description for the plot title
-    :param plot_subtitle_keys: list of keys from the result file which we would
-    like to print as key-value pairs in the plot subtitle
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param plot_subtitle_keys: list of keys from the result file which we \
+        would like to print as key-value pairs in the plot subtitle
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type results_file: str
     :type x_axis_key: str
     :type y_axis_key: str
@@ -297,39 +288,36 @@ def plot_scatter_json(results_file, x_axis_key, y_axis_key, plot_subtitle_keys,
 def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
                            plot_subtitle_keys, plot_options):
     """
-    Draw multiple scatter-plots over a set of samples from a JSON file.
-    Each scatter-plot is determined by a specific value of the z_axis_key
-
-    For each different z value do the following:
-    for each different x value, plot a point for every corresponding y
-    value found.
-
-    The x and y values are determined by the x_axis_key and y_axis_key
-    arguments.
-    The z value is determined by the z_axis_key argument.
-
-    Prerequisites:
-    1. the result JSON file must have the following format:
-    [
-    {"k1": v1, "k2": v2, ... },      # 1st line (sample)
-    {"k1": v3, "k2": v4, ... },      # 2nd line (sample)
-    {"k1": v5, "k2": v6, ... },      # ...
-    ...
-    ]
-
-    2. the values for x_axis_key, y_axis_key and z_axis_key must be numeric
+    Draw multiple scatter-plots over a set of samples from a JSON file. \
+        Each scatter-plot is determined by a specific value of the z_axis_key \
+        For each different z value do the following: \
+        for each different x value, plot a point for every corresponding y \
+        value found. \
+        The x and y values are determined by the x_axis_key and y_axis_key \
+        arguments. \
+        The z value is determined by the z_axis_key argument. \
+        Prerequisites: \
+        1. the result JSON file must have the following format: \
+        [ \
+        {"k1": v1, "k2": v2, ... },      # 1st line (sample) \
+        {"k1": v3, "k2": v4, ... },      # 2nd line (sample) \
+        {"k1": v5, "k2": v6, ... },      # ... \
+        ... \
+        ] \
+        2. the values for x_axis_key, y_axis_key and z_axis_key must be \
+            numeric
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value,
-    which is intended to serve as the x-axis key
-    :param y_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the y-axis key
-    :param z_axis_key: some key from the result file with numeric type value,
-    which is intended to serve as the z-axis key
-    :param plot_subtitle_keys: list of keys from the result file which we would
-    like to print as key-value pairs in the plot subtitle
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param x_axis_key: some key from the results file with numeric type value, \
+        which is intended to serve as the x-axis key
+    :param y_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the y-axis key
+    :param z_axis_key: some key from the result file with numeric type value, \
+        which is intended to serve as the z-axis key
+    :param plot_subtitle_keys: list of keys from the result file which we \
+        would like to print as key-value pairs in the plot subtitle
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type results_file: str
     :type x_axis_key: str
     :type y_axis_key: str

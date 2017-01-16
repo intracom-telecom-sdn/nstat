@@ -11,20 +11,21 @@ import subprocess
 
 
 def check_output_streaming(cmd, prefix='', queue=None, block_flag=True):
-    """ Redirect output to stderr, printing it whenever a new line
-    is detected (bufsize=1 denotes line buffered output). This
-    can be considered as "realtime" printing.
-    Additionally, prints output by prepending it with a user-defined
-    prefix. Furthermore, it optionally forwards output to a queue
-    in order e.g. to be processed by a separate thread in real-time.
+    """
+    Redirect output to stderr, printing it whenever a new line is detected \
+        (bufsize=1 denotes line buffered output). This can be considered as \
+        "realtime" printing. Additionally, prints output by prepending it with \
+         a user-defined prefix. Furthermore, it optionally forwards output to \
+         a queue in order e.g. to be processed by a separate thread in \
+         real-time.
 
     :param cmd: the command line list.
     :param prefix: the user defined prefix for output.
     :param queue: queue to forward console output to.
     :param block_flag: defines if the execution will be performed in block mode
     :returns: return exit status of command.
-    :raises subprocess.CalledProcessError: If the exit status of the executed
-    command is not 0.
+    :raises subprocess.CalledProcessError: If the exit status of the executed \
+        command is not 0.
     :rtype: int
     :type cmd: list<str>
     :type prefix: str
