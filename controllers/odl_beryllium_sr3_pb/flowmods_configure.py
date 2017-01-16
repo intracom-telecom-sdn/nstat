@@ -14,8 +14,8 @@ CONTROLLER_DIR_NAME = 'distribution-karaf-0.4.3-Beryllium-SR3'
 
 def change_flow_timeouts():
     """
-    Set the minimum idle and hard flow timeouts in the controller's
-    configuration file.
+    Set the minimum idle and hard flow timeouts in the controller's \
+        configuration file.
     """
 
     string_to_find_1 = 'reactive-flow-idle-timeout'
@@ -29,6 +29,7 @@ def change_flow_timeouts():
                              '1')
     xml_utils.manipulate_xml(input_file, input_file, string_to_find_2,
                              '1')
+
 
 def change_proactive_flow_mod():
     """

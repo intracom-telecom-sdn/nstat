@@ -15,8 +15,8 @@ def get_oper_switches():
     """
     Query number of switches registered in ODL operational DS
 
-    :returns: number of switches found, 0 if none exists and -1 in case of
-    error.
+    :returns: number of switches found, 0 if none exists and -1 in case of \
+        error.
     :rtype: int
     """
 
@@ -28,11 +28,12 @@ def get_oper_switches():
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
            format(ip, port))
-
+    s = requests.Session()
+    s.trust_env = False
     auth_token = (username, password)
     try:
-        datastore = requests.get(url=url,
-                                 auth=auth_token).json()['topology'][0]
+        datastore = s.get(url=url,
+                          auth=auth_token).json()['topology'][0]
     except:
         logging.error('[get_oper_switches] Fail response from operational DS')
         return -1

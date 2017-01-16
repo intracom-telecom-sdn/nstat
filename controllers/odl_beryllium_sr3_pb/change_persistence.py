@@ -12,8 +12,8 @@ CONTROLLER_DIR_NAME = 'distribution-karaf-0.4.3-Beryllium-SR3'
 
 def change_persistence():
     """
-    Change the persistence attribute to false. The controller will not
-    backup datastore on the disk.
+    Change the persistence attribute to false. The controller will not backup \
+        datastore on the disk.
     """
 
     string_to_find = '#persistent=true'
