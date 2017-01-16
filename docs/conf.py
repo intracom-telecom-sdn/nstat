@@ -20,6 +20,13 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.append(os.path.abspath('../stress_test/'))
+sys.path.append(os.path.abspath('../controllers/odl_beryllium_pb/'))
+sys.path.append(os.path.abspath('../controllers/odl_beryllium_sr3_pb/'))
+sys.path.append(os.path.abspath('../controllers/odl_boron_pb/'))
+sys.path.append(os.path.abspath('../controllers/odl_helium_sr3_pb/'))
+sys.path.append(os.path.abspath('../controllers/odl_lithium_sr1_pb/'))
+sys.path.append(os.path.abspath('../controllers/odl_lithium_sr2_pb/'))
+sys.path.append(os.path.abspath('../controllers/odl_lithium_sr3_pb/'))
 sys.path.append(os.path.abspath('../util/'))
 sys.path.append(os.path.abspath('../util/unittests/'))
 sys.path.append(os.path.abspath('..'))
@@ -75,9 +82,9 @@ language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
-#today = ''
+today = ''
 # Else, today_fmt is used as the format for a strftime call.
-#today_fmt = '%B %d, %Y'
+today_fmt = '%B %d, %Y'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -120,7 +127,10 @@ html_theme = 'classic'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    "rightsidebar": "false",
+    "relbarbgcolor": "black"
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -134,7 +144,7 @@ html_theme = 'classic'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-#html_logo = None
+html_logo = 'intracom_logo.png'
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -359,3 +369,4 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 #epub_use_index = True
+

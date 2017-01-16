@@ -104,16 +104,17 @@ class ReportGen:
         """
         NSTAT post test actions
 
-        :param args: argparse.ArgumentParser object containing user specified
-        parameters (i.e test type, controller base directory, generator base
-        directory) when running NSTAT
+        :param args: argparse.ArgumentParser object containing user specified \
+            parameters (i.e test type, controller base directory, generator \
+            base directory) when running NSTAT
         :param test_config : JSON input configuration
-        :param report_spec : A ReportSpec object that holds all the test report
-        information and is passed as input to the generate_html() function in
-        the html_generation.py, that is responsible for the report generation.
+        :param report_spec : A ReportSpec object that holds all the test \
+            report information and is passed as input to the generate_html() \
+            function in the html_generation.py, that is responsible for the \
+            report generation.
         :type args: ArgumentParser object
-        :type test_config: python object resulting from a deserialized file
-        like object containing a json document
+        :type test_config: python object resulting from a deserialized file \
+            like object containing a json document
         :type report_spec: ReportSpec object
         """
         if os.path.isfile(self.args.json_output):
@@ -191,12 +192,13 @@ class ReportGen:
         """
         NSTAT save log file
 
-        :param args: argparse.ArgumentParser object containing user specified
-        parameters (i.e test type, controller base directory, generator base
-        directory) when running NSTAT
-        :param report_spec: A ReportSpec object that holds all the test report
-        information and is passed as input to the generate_html() function in
-        the html_generation.py, that is responsible for the report generation.
+        :param args: argparse.ArgumentParser object containing user specified \
+            parameters (i.e test type, controller base directory, generator \
+            directory) when running NSTAT
+        :param report_spec: A ReportSpec object that holds all the test report \
+            information and is passed as input to the generate_html() function \
+            in the html_generation.py, that is responsible for the report \
+            generation.
         :type args: ArgumentParser object
         :type report_spec: ReportSpec object
         """

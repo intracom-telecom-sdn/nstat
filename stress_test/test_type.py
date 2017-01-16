@@ -34,15 +34,15 @@ class TestType:
 
     def load_test_conf(self, args):
         """
-        Loading test configuration for NSTAT experiment. Parsing
-        configuration options from JSON input file
+        Loading test configuration for NSTAT experiment. Parsing \
+            configuration options from JSON input file
 
-        :param args: ArgumentParser object containing user specified
-        parameters (i.e test type, controller base directory, generator base
-        directory) when running NSTAT
+        :param args: ArgumentParser object containing user specified \
+            parameters (i.e test type, controller base directory, generator \
+            base directory) when running NSTAT
         :returns: json_conf:
-        :rtype: json_conf:  python object resulting from a deserialized file
-        like object containing a json document
+        :rtype: json_conf:  python object resulting from a deserialized file \
+            like object containing a json document
         :type args: ArgumentParser object
         """
 
@@ -54,9 +54,9 @@ class TestType:
         """
         Setting log level for NSTAT experiment
 
-        :param args: ArgumentParser object containing user specified
-        parameters (i.e test type, controller base directory, generator base
-        directory) when running NSTAT
+        :param args: ArgumentParser object containing user specified \
+            parameters (i.e test type, controller base directory, generator \
+            base directory) when running NSTAT
         :type args: ArgumentParser object
         """
         logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'

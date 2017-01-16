@@ -172,11 +172,11 @@ class Mtcbench(Monitor):
 
     def monitor_results_active(self):
         """
-        This monitor function is used from south bound active mtcbench
-        tests to collect the related key results
+        This monitor function is used from south bound active mtcbench \
+            tests to collect the related key results
 
-        :returns: Returns the dictionary with the results included into JSON
-        input file
+        :returns: Returns the dictionary with the results included into JSON \
+            input file
         :rtype: dict
         """
         results = self.system_results()
@@ -213,11 +213,11 @@ class Mtcbench(Monitor):
 
     def monitor_results_idle(self):
         """
-        This monitor function is used from south bound idle mtcbench
-        tests to collect the related key results
+        This monitor function is used from south bound idle mtcbench \
+            tests to collect the related key results
 
-        :returns: Returns the dictionary with the results included into JSON
-        input file
+        :returns: Returns the dictionary with the results included into JSON \
+            input file
         :rtype: dict
         """
         results = self.system_results()
@@ -404,11 +404,11 @@ class Mtcbench(Monitor):
         """
         Function used to execute MTCBench thread
 
-        :param block_flag: It is used as a flag. When it is True the emulator
-        run will wait for the completition of MTcbench thread running
-        :param data_queue: If not None the results are written into the
-        data_queue line by line. In case of None the results are written into
-        standard output
+        :param block_flag: It is used as a flag. When it is True the emulator \
+            run will wait for the completition of MTcbench thread running
+        :param data_queue: If not None the results are written into the \
+            data_queue line by line. In case of None the results are written \
+            into standard output
         :returns: Returns a dictionary, including all the results
         :rtype: dict
         :type block_flag: boolean
@@ -455,13 +455,13 @@ class Multinet(Monitor):
     def monitor_run(self, reference_results=None, sample_id=None,
                     boot_start_time=None):
         """
-        This monitor function is used from both south bound active and idle
-        multinet tests to get the results from gevent queue
+        This monitor function is used from both south bound active and idle \
+            multinet tests to get the results from gevent queue
 
-        :param: reference_results: The results returned from the just previous
-        iteration of the test. Used in the frame of a stability test
-        :param sample_id: The id of the sample running. Used in the frame of a
-        stability test
+        :param: reference_results: The results returned from the just previous \
+            iteration of the test. Used in the frame of a stability test
+        :param sample_id: The id of the sample running. Used in the frame of a \
+            stability test
         :param boot_start_time: The time we begin starting topology switches
         :returns: Returns a dictionary, including all the results
         :rtype: dict
@@ -594,13 +594,13 @@ class Multinet(Monitor):
 
     def monitor_thread_idle_stability(self, reference_results, sample_id):
         """
-        This monitor function is used from idle stability multinet tests
-        to put the results into gevent queue
+        This monitor function is used from idle stability multinet tests \
+            to put the results into gevent queue
 
-        :param: reference_results: The results returned from the just previous
-        iteration of the test. Used in the frame of a stability test
-        :param sample_id: The id of the sample running. Used in the frame of a
-        stability test
+        :param: reference_results: The results returned from the just previous \
+            iteration of the test. Used in the frame of a stability test
+        :param sample_id: The id of the sample running. Used in the frame of a \
+            stability test
         :type reference_results: dict
         :type sample_id: int
         """
@@ -906,18 +906,18 @@ class NBgen(Monitor):
                             expected_flows,
                             flow_delete_flag):
         """
-        This monitor function is used from  north bound tests to get the
-        results from gevent queue
+        This monitor function is used from  north bound tests to get the \
+            results from gevent queue
 
-        :param: t_start: timestamp for beginning of discovery
-        iteration of the test.
-        :param total_failed_flows: The number of failed flows after an add or
-        delete function
-        :param expected_flows: The number of expected flows to be compared with
-        discovered flows
-        :param flow_delete_flag: Flag, which when is set to True, a delete
-        flows action in DS is performed. Otherwise an add flows action is
-        performed
+        :param: t_start: timestamp for beginning of discovery iteration of \
+            the test.
+        :param total_failed_flows: The number of failed flows after an add or \
+            delete function
+        :param expected_flows: The number of expected flows to be compared \
+            with discovered flows
+        :param flow_delete_flag: Flag, which when is set to True, a delete \
+            flows action in DS is performed. Otherwise an add flows action is \
+            performed
         :returns: Returns a dictionary, including all the results
         :rtype: dict
         :type t_start: float
@@ -965,15 +965,15 @@ class NBgen(Monitor):
     def monitor_results_add(self, add_controller_time,
                             results_thread, total_failed_flows):
         """
-        This monitor function is used to create the result dictionary during an
-        add flows action
+        This monitor function is used to create the result dictionary during \
+            an add flows action
 
-        :param: add_controller_time: time for all add REST requests to be sent
-        and their response to be received
-        :param results_thread: The dictionary from monitor_threads_run function
-        including the contents from nbgen_queue
-        :param total_failed_flows: The number of failed flows after an add or
-        delete function
+        :param: add_controller_time: time for all add REST requests to be sent \
+            and their response to be received
+        :param results_thread: The dictionary from monitor_threads_run \
+            function including the contents from nbgen_queue
+        :param total_failed_flows: The number of failed flows after an add or \
+            delete function
         :returns: Returns a dictionary, including all the results
         :rtype: dict
         :type add_controller_time: float
@@ -1048,15 +1048,15 @@ class NBgen(Monitor):
     def monitor_results_del(self, controller_time,
                             results_thread, total_failed_flows):
         """
-        This monitor function is used to create the result dictionary during a
-        delete flows action
+        This monitor function is used to create the result dictionary during a \
+            delete flows action
 
-        :param: controller_time: time for all delete REST requests to be sent
-        and their response to be received
-        :param results_thread: The dictionary from monitor_threads_run function
-        including the contents from nbgen_queue
-        :param total_failed_flows: The number of failed flows after an add or
-        delete function
+        :param: controller_time: time for all delete REST requests to be sent \
+            and their response to be received
+        :param results_thread: The dictionary from monitor_threads_run \
+            function including the contents from nbgen_queue
+        :param total_failed_flows: The number of failed flows after an add or \
+            delete function
         :returns: Returns a dictionary, including all the results
         :rtype: dict
         :type controller_time: float
