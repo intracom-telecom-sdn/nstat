@@ -4,7 +4,8 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Oftraf Class- All oftraf monitor-related functionality is here. Note that
+"""
+Oftraf Class- All oftraf monitor-related functionality is here. Note that
 Oftraf Monitor runs thereto the controller is located (Controller-SB
 interface) """
 
@@ -18,11 +19,14 @@ import util.netutil
 
 
 class Oftraf:
-    """ All Oftraf related functionality is here
+    """
+    All Oftraf related functionality is here
     """
     def __init__(self, controller, test_config):
-        """Create an Oftraf Monitor Controller object.
+        """
+        Creates an Oftraf Monitor Controller object.
         Options from JSON input file
+
         :param controller: object of the Controller class
         :param test_config: JSON input configuration
         :type controller: object
@@ -44,7 +48,9 @@ class Oftraf:
         self.traceback_enabled = False
 
     def __error_handling(self, error_message, error_num=1):
-        """Handles custom errors of oftraf
+        """
+        Handles custom errors of oftraf
+
         :param error_message: message of the handled error
         :param error_num: error number of the handled error, used to define
         subcases of raised errors.
@@ -66,8 +72,10 @@ class Oftraf:
         raise(stress_test.oftraf_exceptions.OftrafError)
 
     def get_oftraf_path(self):
-        """Returns oftraf base directory path, using as base to the project
+        """
+        Returns oftraf base directory path, using as base to the project
         path
+
         :returns: oftraf folder path
         :rtype: str
         """
@@ -80,7 +88,9 @@ class Oftraf:
         return str(oftraf_path)
 
     def build(self):
-        """ Wrapper to the oftraf monitor build handler
+        """
+        Wrapper to the oftraf monitor build handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafBuildError: if build process fails
         """
@@ -124,7 +134,9 @@ class Oftraf:
             self.__error_handling(e.err_msg, e.err_code)
 
     def clean(self):
-        """ Wrapper to the oftraf monitor clean handler
+        """
+        Wrapper to the oftraf monitor clean handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafCleanError: if clean process fails
         """
@@ -166,9 +178,11 @@ class Oftraf:
             self.__error_handling(e.err_msg, e.err_code)
 
     def start(self):
-        """ Wrapper to the oftraf monitor start handler. Initializes the REST
+        """
+        Wrapper to the oftraf monitor start handler. Initializes the REST
         interface of oftraf and listen of traffic on controller Southbound
         interface
+
         :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafStartError: if start process fails
         """
@@ -216,6 +230,7 @@ class Oftraf:
 
     def stop(self):
         """ Wrapper to the oftraf monitor stop handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises oftraf_exceptions.OftrafStopError: if stop process fails
         """
@@ -260,8 +275,10 @@ class Oftraf:
             self.__error_handling(e.err_msg, e.err_code)
 
     def oftraf_get_of_counts(self):
-        """Gets the openFlow packets counts, measured by oftraf. It uses the
+        """
+        Gets the openFlow packets counts, measured by oftraf. It uses the
         oftraf REST interface and returns the result as a string in JSON format
+
         :returns: oftraf metrics as string in JSON format
         :rtype: str
         :raises oftraf_exceptions.OftrafError: if execution of handler fails
@@ -286,7 +303,9 @@ class Oftraf:
             self.__error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
-        """Method called when object is destroyed"""
+        """
+        Method called when object is destroyed
+        """
         try:
             logging.info('Run oftraf stop.')
             self.stop()

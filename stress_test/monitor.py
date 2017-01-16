@@ -18,10 +18,12 @@ import util.sysstats
 
 
 class Monitor:
-    """ All monitor- related functionality is here
+    """
+    All monitor- related functionality is here
     """
     def __init__(self, controller):
-        """Create a Monitor. Options from JSON input file
+        """
+        Creates a Monitor. Options from JSON input file
         :param controller: object of the Controller class
         :type controller: object
         """
@@ -31,7 +33,8 @@ class Monitor:
         self.test_repeats = 0
 
     def system_results(self):
-        """ Collect runtime statistics
+        """
+        Collect runtime statistics
         :returns: experiment statistics in dictionary
         :rtype: dict
         """
@@ -82,10 +85,12 @@ class Monitor:
 
 
 class Oftraf:
-    """ Oftraf related monitoring
+    """
+    Oftraf related monitoring
     """
     def __init__(self, controller, oftraf):
-        """ Creates an oftraf monitor object.
+        """
+        Creates an oftraf monitor object.
         :param controller: object of the Controller class
         :param oftraf: object of the Oftraf class
         :type controller: object
@@ -97,7 +102,8 @@ class Oftraf:
         self.results_queue = gevent.queue.Queue(maxsize=1)
 
     def of_monitor_thread(self):
-        """ Function executed inside a thread and returns the output in json
+        """
+        Function executed inside a thread and returns the output in json
         format, of openflow packets counts
         """
         try:
@@ -130,7 +136,8 @@ class Oftraf:
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
-        """ This monitor function is used to collect the results from
+        """
+        This monitor function is used to collect the results from
         of_monitor_thread function
 
         :returns: Returns the results from the gevent queue
@@ -146,7 +153,8 @@ class Oftraf:
 
 
 class Mtcbench(Monitor):
-    """ MTCbench- related monitoring. Subclass of Monitor superclass
+    """
+    MTCbench- related monitoring. Subclass of Monitor superclass
     """
     def __init__(self, controller, emulator):
         """ Creates a MTCbench monitor object.
@@ -163,7 +171,8 @@ class Mtcbench(Monitor):
         self.data_queue = gevent.queue.Queue()
 
     def monitor_results_active(self):
-        """ This monitor function is used from south bound active mtcbench
+        """
+        This monitor function is used from south bound active mtcbench
         tests to collect the related key results
 
         :returns: Returns the dictionary with the results included into JSON
@@ -203,7 +212,8 @@ class Mtcbench(Monitor):
         return results
 
     def monitor_results_idle(self):
-        """ This monitor function is used from south bound idle mtcbench
+        """
+        This monitor function is used from south bound idle mtcbench
         tests to collect the related key results
 
         :returns: Returns the dictionary with the results included into JSON
@@ -391,7 +401,8 @@ class Mtcbench(Monitor):
         return samples
 
     def mtcbench_thread(self, block_flag=True, data_queue=None):
-        """ Function used to execute MTCBench thread
+        """
+        Function used to execute MTCBench thread
 
         :param block_flag: It is used as a flag. When it is True the emulator
         run will wait for the completition of MTcbench thread running
@@ -425,7 +436,8 @@ class Multinet(Monitor):
     """ Multinet- related monitoring. Subclass of Monitor superclass
     """
     def __init__(self, controller, oftraf, emulator):
-        """ Creates a Multinet monitor object.
+        """
+        Creates a Multinet monitor object.
 
         :param controller: object of the Controller class
         :param oftraf: object of the Oftraf class
@@ -691,7 +703,8 @@ class Multinet(Monitor):
 
 
 class NBgen(Monitor):
-    """ NB-generator- related monitoring. Subclass of Monitor superclass
+    """
+    NB-generator- related monitoring. Subclass of Monitor superclass
     """
     def __init__(self, controller, nbgen, sbemu):
         """ Creates a NBgen monitor object.

@@ -12,7 +12,8 @@ import sys
 
 
 def get_oper_flows():
-    """Query number of flows registered in ODL operational DS
+    """
+    Query number of flows registered in ODL operational DS
 
     :returns: number of flows found, 0 if none exists and -1 in case of
     error.

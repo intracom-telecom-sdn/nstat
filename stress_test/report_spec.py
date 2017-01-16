@@ -16,7 +16,7 @@ class ReportSpec(object):
     def __init__(self, config_json, results_json, title, config_tables,
                  results_table):
         """
-        Creates ReportSpec object
+        Creates a ReportSpec object
 
         :param config_json: string containing the file path to the
         json file containing the configuration parameters of the test.
@@ -54,6 +54,8 @@ class TableSpec(object):
     def __init__(self, table_type, title, keys, source_json,
                  ordering_key=None):
         """
+        Creates a TabelSpec class
+
         :param table_type: A string describing the type of table that
         we want to generate. It can have one of the following values '1d' for a
         one dimensional table with keys and values, or '2d' for a

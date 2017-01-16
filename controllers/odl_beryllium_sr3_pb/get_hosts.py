@@ -1,6 +1,7 @@
 #! /usr/bin/env python3.4
 
-"""This handler returns the number of hosts of a topology, connected
+"""
+This handler returns the number of hosts of a topology, connected
 to the controller. This information is extracted from controller's operational
 datastore, using RESTCONF.
 """
@@ -11,7 +12,8 @@ import requests
 
 
 def get_oper_hosts():
-    """Query number of hosts registered in ODL operational DS
+    """
+    Query number of hosts registered in ODL operational DS
 
     :returns: number of hosts found, 0 if none exists and -1 in case of
     error.

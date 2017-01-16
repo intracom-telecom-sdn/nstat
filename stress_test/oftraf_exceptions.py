@@ -4,15 +4,19 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Implementation of custom oftraf exception classes."""
+"""
+Implementation of custom oftraf exception classes."""
 
 
 class OftrafError(Exception):
-    """Contains the exception handling concerning the Oftraf class
+    """
+    Contains the exception handling concerning the Oftraf class
     functionalities.
     """
     def __init__(self, err_msg=None, err_code=1):
-        """Base-class for all oftraf exceptions raised by this module.
+        """
+        Base-class for all oftraf exceptions raised by this module.
+
         :param err_msg: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -28,11 +32,14 @@ class OftrafError(Exception):
 
 
 class OftrafBuildError(OftrafError):
-    """Contains the exception handling concerning the Oftraf building
+    """
+    Contains the exception handling concerning the Oftraf building
     functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """An oftraf build error.
+        """
+        An oftraf build error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -43,21 +50,27 @@ class OftrafBuildError(OftrafError):
 
 
 class OftrafStartError(OftrafError):
-    """Contains the exception handling concerning the Oftraf starting
+    """
+    Contains the exception handling concerning the Oftraf starting
     functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """An oftraf start error."""
+        """
+        An oftraf start error
+        """
         OftrafError.__init__(self, 'Fail to start oftraf. {0}'.
                              format(additional_error_info), err_code)
 
 
 class OftrafStopError(OftrafError):
-    """Contains the exception handling concerning the Oftraf stopping
+    """
+    Contains the exception handling concerning the Oftraf stopping
     functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """An oftraf stop error.
+        """
+        An oftraf stop error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -68,11 +81,14 @@ class OftrafStopError(OftrafError):
 
 
 class OftrafCleanError(OftrafError):
-    """Contains the exception handling concerning the Oftraf measurements
+    """
+    Contains the exception handling concerning the Oftraf measurements
     (packet counts) functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """An oftraf clean error.
+        """
+        An oftraf clean error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -83,11 +99,14 @@ class OftrafCleanError(OftrafError):
 
 
 class OftrafGetResultError(OftrafError):
-    """Contains the exception handling concerning the Oftraf cleaning
+    """
+    Contains the exception handling concerning the Oftraf cleaning
     functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """An oftraf get results error.
+        """
+        An oftraf get results error.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str

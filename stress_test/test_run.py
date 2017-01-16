@@ -21,7 +21,9 @@ import util.file_ops
 
 
 class TestRun:
-
+    """
+    Creates a Test run object
+    """
     def __init__(self, args, json_conf, test_type):
         """
         Initializes the appropriate test component objects according to the
@@ -253,11 +255,11 @@ class TestRun:
                               format(self.test_type))
             return self.total_samples
 
-
     def sb_idle_scalability_mtcbench_run(self, json_conf, json_output,
                                          output_dir):
         """
         Runs the SouthBound scalability test with idle MT-Cbench switches
+
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
@@ -296,7 +298,8 @@ class TestRun:
                     topo_start_timestamp)
                 logging.info('{0} Stopping controller'.format(self.test_type))
                 self.ctrl.stop()
-                global_sample_id = self.total_samples[-1]['global_sample_id'] + 1
+                global_sample_id = \
+                    self.total_samples[-1]['global_sample_id'] + 1
             logging.info('[Testing] All done!')
         except:
             logging.error('[{0}] Exiting test run'.format(self.test_type))
@@ -329,6 +332,7 @@ class TestRun:
                                            json_output,
                                            output_dir):
         """ Runs the SouthBound scalability test with active Multinet switches
+
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
@@ -451,6 +455,7 @@ class TestRun:
                                          output_dir):
         """
         Runs the SouthBound scalability test with idle Multinet switches
+
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
@@ -551,6 +556,7 @@ class TestRun:
                                        output_dir):
         """
         Runs the SouthBound stability test with idle Multinet switches
+
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files
@@ -675,6 +681,7 @@ class TestRun:
                                            json_output,
                                            output_dir):
         """ Runs the NorthBound scalability test with idle Multinet switches
+
         :param json_conf: JSON configuration dictionary
         :param json_output: JSON output file (results)
         :param output_dir: directory to store output files

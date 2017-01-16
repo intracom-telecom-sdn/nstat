@@ -8,9 +8,11 @@ from lxml import etree
 import os
 import sys
 
+
 def manipulate_xml(input_filename, output_filename,
                    string_to_find, target_value):
-    """It gets a configuration (.xml in our case) file, defined by the
+    """
+    It gets a configuration (.xml in our case) file, defined by the
     input_filename parameter and changes its contents defied by the
     string_to_find parameter. The new values are defined in the target_value
     parameter. The result is saved in a new file defined by the output_file.
@@ -37,4 +39,3 @@ def manipulate_xml(input_filename, output_filename,
         doc.write(outFile)
     else:
         sys.exit(1)
-

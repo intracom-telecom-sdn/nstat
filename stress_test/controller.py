@@ -17,12 +17,14 @@ import queue
 
 
 class Controller:
-    """ All controller-related functionality is here
+    """
+    All controller-related functionality is here
     """
 
     def __init__(self, ctrl_base_dir, test_config):
 
-        """Creates a Controller object. Options from JSON input file
+        """
+        Creates a Controller object. Options from JSON input file
 
         :param test_config: JSON input configuration
         :param ctrl_base_dir: controller base directory
@@ -69,8 +71,10 @@ class Controller:
 
     @staticmethod
     def new(ctrl_base_dir, test_config):
-        """ Factory method. Creates a subclass class depending on the
+        """
+        Factory method. Creates a subclass class depending on the
         controller name
+
         :returns: a subclass or None
         :rtype: object
         :raises NotImplementedError: in case an invalid controller_name is
@@ -89,7 +93,9 @@ class Controller:
         #   return None
 
     def __error_handling(self, error_message, error_num=1):
-        """Handles custom errors of controller
+        """
+        Handles custom errors of controller
+
         :param error_message: message of the handled error
         :param error_num: error number of the handled error, used to define
         subcases of raised errors.
@@ -111,10 +117,12 @@ class Controller:
         raise(stress_test.controller_exceptions.CtrlError)
 
     def init_ssh(self):
-        """Initializes a new SSH client object, with the controller node and
+        """
+        Initializes a new SSH client object, with the controller node and
         assigns it to the protected attribute _ssh_conn. If a connection
         already exists it returns a new SSH client object to the controller
         node.
+
         :raises controller_exceptions.CtrlNodeConnectionError: if ssh
         connection establishment fails
         """
@@ -139,7 +147,9 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def cleanup(self):
-        """Wrapper to the controller cleanup handler
+        """
+        Wrapper to the controller cleanup handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlCleanupError: if controller cleanup
         handler fails
@@ -180,7 +190,9 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def check_status(self):
-        """Wrapper to the controller status handler
+        """
+        Wrapper to the controller status handler
+
         :returns: the status of the controller (running = 1, not running = 0)
         :rtype: int
         :raises IOError: if the handler does not exist on the remote host
@@ -226,7 +238,9 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def check_other_controller(self):
-        """Checks for processes listening on the specified port
+        """
+        Checks for processes listening on the specified port
+
         :raises controller_exceptions.CtrlPortConflictError: when another
         process listens on controller's port.
         """
@@ -254,7 +268,8 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def restart(self):
-        """Restarts the controller
+        """
+        Restarts the controller
         """
         logging.info('[Controller] Restarting')
 
@@ -264,7 +279,9 @@ class Controller:
         self.status = 'RESTARTED'
 
     def start(self):
-        """Wrapper to the controller start handler
+        """
+        Wrapper to the controller start handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlStartError: When controller fails to
         start.
@@ -317,7 +334,9 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def stop(self):
-        """Wrapper to the controller stop handler
+        """
+        Wrapper to the controller stop handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlStopError: if controller fails to
         stop successfully
@@ -364,7 +383,9 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def build(self):
-        """Wrapper to the controller build handler
+        """
+        Wrapper to the controller build handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.CtrlBuildError: if build process fails
         """
@@ -404,7 +425,9 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def wait_until_listens(self, timeout_ms):
-        """Waits for controller to start listening on specified port.
+        """
+        Waits for controller to start listening on specified port.
+
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :returns: the process ID PID of the controller.
         :rtype int
@@ -443,7 +466,9 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def wait_until_up(self, timeout_ms):
-        """Waits for controller status to become 1 (started).
+        """
+        Waits for controller status to become 1 (started).
+
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :type timeout_ms: int
         :raises controller_exceptions.CtrlReadyStateError: If controller fails
@@ -471,8 +496,10 @@ class Controller:
             self.__error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
-        """Method called when object is destroyed. Cleanup activities are
-        triggered and open connections closed"""
+        """
+        Method called when object is destroyed. Cleanup activities are
+        triggered and open connections closed
+        """
         try:
             logging.info('Run controller stop.')
             self.stop()
@@ -495,8 +522,10 @@ class Controller:
 class ODL(Controller):
 
     def __init__(self, ctrl_base_dir, test_config):
-        """Initialize the creation of an OpenDaylight controller object.
+        """
+        Initialize the creation of an OpenDaylight controller object.
         Inherits from Controller class.
+
         :param ctrl_base_dir: emulator base directory
         :param test_config: JSON input configuration
         :type ctrl_base_dir: str
@@ -545,8 +574,10 @@ class ODL(Controller):
                            test_config['controller_oper_flows_handler'])
 
     def generate_xmls(self):
-        """Starts and then stops the controller to trigger the generation of
+        """
+        Starts and then stops the controller to trigger the generation of
         controller's XML files.
+
         :raises controller_exceptions.ODLXMLError: if generation of XML files
         fails
         """
@@ -562,8 +593,10 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def disable_persistence(self):
-        """Configure controller persistent to false in order not to backup
+        """
+        Configure controller persistent to false in order not to backup
         datastore on the disk.
+
         :raises controller_exceptions.ODLDisablePersistenceError: if disable of
         persistence fails
         """
@@ -591,8 +624,10 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def change_stats(self):
-        """Wrapper to the controller statistics handler. Changes the value of
+        """
+        Wrapper to the controller statistics handler. Changes the value of
         statistics interval in the configuration files of controller.
+
         :raises IOError: if the handler does not exist on the remote host
         :raises controller_exceptions.ODLChangeStats: if change of statistics
         interval fails
@@ -624,8 +659,10 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def flowmods_config(self):
-        """Configure controller to send flow modifications as a
+        """
+        Configure controller to send flow modifications as a
         response to ARP Packet_INs.
+
         :raises controller_exceptions.ODLFlowModConfError: if configuration
         actions to respond with flow modifications fail.
         """
@@ -654,9 +691,11 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_hosts(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_hosts handler. Makes a REST call to
+        """
+        Wrapper to the controller oper_hosts handler. Makes a REST call to
         the NB interface of the controller and returns the number of hosts
         of the topology, recorded in operational datastore of the controller
+
         :param new_ssh_conn: an ssh connection client object
         :returns: number of hosts from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
@@ -699,10 +738,12 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_switches(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_switches handler. Makes a REST call
+        """
+        Wrapper to the controller oper_switches handler. Makes a REST call
         to the NB interface of the controller and returns the number of
         switches of the topology, recorded in operational datastore of the
         controller
+
         :param new_ssh_conn: an ssh connection client object
         :returns: number of switches from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
@@ -746,10 +787,12 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_links(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_links handler. Makes a REST call
+        """
+        Wrapper to the controller oper_links handler. Makes a REST call
         to the NB interface of the controller and returns the number of
         links of the topology, recorded in operational datastore of the
         controller
+
         :param new_ssh_conn: an ssh connection client object
         :returns: number of links from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
@@ -792,10 +835,12 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_oper_flows(self, new_ssh_conn=None):
-        """Wrapper to the controller oper_flows handler. Makes a REST call
+        """
+        Wrapper to the controller oper_flows handler. Makes a REST call
         to the NB interface of the controller and returns the number of
         flows of the topology, recorded in operational datastore of the
         controller
+
         :param new_ssh_conn: an ssh connection client object
         :returns: number of flows from controller's operational datastore
         :type new_ssh_conn: paramiko.SSHClient
@@ -838,7 +883,9 @@ class ODL(Controller):
             self.__error_handling(e.err_msg, e.err_code)
 
     def save_log(self, output_dir):
-        """save controller log file
+        """
+        Save controller log file
+
         :param output_dir: the directory where the controller logs are stored
         :type output_dir: str
         """
@@ -862,8 +909,10 @@ class ODL(Controller):
 class ONOS(Controller):
 
     def __init__(self, ctrl_base_dir, test_config):
-        """Initialize the creation of an ONOS controller object.
+        """
+        Initialize the creation of an ONOS controller object.
         Inherits from Controller class.
+
         :param ctrl_base_dir: emulator base directory
         :param test_config: JSON input configuration
         :type ctrl_base_dir: str

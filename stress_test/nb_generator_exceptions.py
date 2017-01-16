@@ -4,15 +4,19 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Implementation of custom NB generator exception classes."""
+"""
+Implementation of custom NB generator exception classes."""
 
 
 class NBGenError(Exception):
-    """Contains the exception handling concerning the North-Bound Emulator
+    """
+    Contains the exception handling concerning the North-Bound Emulator
     class functionalities.
     """
     def __init__(self, err_msg=None, err_code=1):
-        """Base-class for all NB generator exceptions raised by this module.
+        """
+        Base-class for all NB generator exceptions raised by this module.
+
         :param err_msg: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -28,7 +32,8 @@ class NBGenError(Exception):
 
 
 class NBGenNodeConnectionError(NBGenError):
-    """Contains the exception handling concerning the North-Bound Emulator class
+    """
+    Contains the exception handling concerning the North-Bound Emulator class
     connectivity.
     """
     def __init__(self, additional_error_info='', err_code=1):
@@ -39,11 +44,13 @@ class NBGenNodeConnectionError(NBGenError):
 
 
 class NBGenBuildError(NBGenError):
-    """Contains the exception handling concerning the North-Bound Emulator
+    """
+    Contains the exception handling concerning the North-Bound Emulator
     building functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
         """NB generator build failure.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -56,7 +63,9 @@ class NBGenBuildError(NBGenError):
 class NBGenCleanError(NBGenError):
 
     def __init__(self, additional_error_info='', err_code=1):
-        """NB generator clean failure.
+        """
+        NB generator clean failure.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str
@@ -67,11 +76,14 @@ class NBGenCleanError(NBGenError):
 
 
 class NBGenRunError(NBGenError):
-    """Contains the exception handling concerning the North-Bound Emulator
+    """
+    Contains the exception handling concerning the North-Bound Emulator
     cleaning functionality.
     """
     def __init__(self, additional_error_info='', err_code=1):
-        """NB generator run failure.
+        """
+        NB generator run failure.
+
         :param additional_error_info: the general error message.
         :param err_code: the specific error code.
         :type str

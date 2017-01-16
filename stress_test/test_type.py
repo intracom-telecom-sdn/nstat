@@ -15,13 +15,16 @@ import sys
 
 
 class TestType:
-
+    """
+    Creates a TestType object
+    """
     def __init__(self, args):
-        """ Initializes test type coming from args (user defined in cli),
-            total_samples: list with dictionaries, every "sample" is a
-            dictionary containing keys/values of results gathered at the end
-            of every run within the for loop of every *_run function in
-            TestRun class..
+        """
+        Initializes test type coming from args (user defined in cli),
+        total_samples: list with dictionaries, every "sample" is a
+        dictionary containing keys/values of results gathered at the end
+        of every run within the for loop of every *_run function in
+        TestRun class..
         """
         self.test_type = args.test_type
         self.total_samples = None
@@ -30,8 +33,10 @@ class TestType:
                                                          args.json_config)
 
     def load_test_conf(self, args):
-        """ Loading test configuration for NSTAT experiment. Parsing
+        """
+        Loading test configuration for NSTAT experiment. Parsing
         configuration options from JSON input file
+
         :param args: ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
@@ -46,7 +51,9 @@ class TestType:
         return json_conf
 
     def set_test_log_level(self, args):
-        """Setting log level for NSTAT experiment
+        """
+        Setting log level for NSTAT experiment
+
         :param args: ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
@@ -75,7 +82,8 @@ class TestType:
                 file_logging_handler.setLevel(level=logging.DEBUG)
 
     def test_selector(self, args):
-        """ Selects which test to run depending on the information coming from
+        """
+        Selects which test to run depending on the information coming from
         the args object. nstat_test_type_run variable contains information
         test_type + sb_emulatore_name, necessary to select which test to run.
         """

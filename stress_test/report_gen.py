@@ -15,9 +15,21 @@ import util.plot_json
 
 
 class ReportGen:
+    """
+    Class used for Reporting and plot generation after a test
+    """
 
     def __init__(self, args, test_config_json, report_spec, total_samples):
         """
+        Creates a ReportGen class
+
+        :param test_config_json: JSON input configuration
+        :param report_spec: a report_spec object
+        :param total_samples: the results commited from a test, which are to
+        be reported
+        :type test_config_json: json file
+        :type report_spec: object
+        :type total_samples: list
         """
         self.test_config_json = test_config_json
         self.args = args
@@ -36,7 +48,9 @@ class ReportGen:
             raise(IOError)
 
     def __error_handling(self, error_message):
-        """Prints a detailed message traceback of the error in plotting
+        """
+        Prints a detailed message traceback of the error in plotting
+
         :param error_message: message of the handled error
         :param error_num: error number of the handled error, used to define
         subcases of raised errors.
@@ -55,7 +69,9 @@ class ReportGen:
             traceback.print_exc()
 
     def generate_json_results(self):
-        """ Creates the result json file and writes test results in it
+        """
+        Creates the result json file and writes test results in it
+
         :param results A list containing the results.
         :param out_json: The file path of json file to be created and write
         results in it
@@ -85,7 +101,9 @@ class ReportGen:
                 'created. Check privileges.')
 
     def generate_plots(self):
-        """NSTAT post test actions
+        """
+        NSTAT post test actions
+
         :param args: argparse.ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
@@ -170,7 +188,9 @@ class ReportGen:
                 format(self.args.json_output))
 
     def generate_html_report(self):
-        """NSTAT save log file
+        """
+        NSTAT save log file
+
         :param args: argparse.ArgumentParser object containing user specified
         parameters (i.e test type, controller base directory, generator base
         directory) when running NSTAT
@@ -188,7 +208,8 @@ class ReportGen:
         shutil.move(self.args.html_report, self.args.output_dir)
 
     def results_report(self):
-        """Creates a complete report of the test. This is the main method of
+        """
+        Creates a complete report of the test. This is the main method of
         this class.
         """
         if self.total_samples is not None:

@@ -9,8 +9,10 @@ import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.4.0-Beryllium'
 
+
 def change_stats_period():
-    """Takes as command line argument the new interval of statistics period we
+    """
+    Takes as command line argument the new interval of statistics period we
     want to set in the configuration file of the controller and writes it in
     this file.
     """

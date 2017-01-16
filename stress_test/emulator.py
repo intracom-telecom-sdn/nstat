@@ -4,7 +4,8 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" SB-Emulator Class- All SB-Emulator-related functionality is here"""
+"""
+SB-Emulator Class- All SB-Emulator-related functionality is here"""
 
 
 import json
@@ -19,10 +20,13 @@ import util.file_ops
 
 
 class SBEmu:
-    """ All South-bound related functionality is here
+    """
+    All South-bound related functionality is here
     """
     def __init__(self, sb_emu_base_dir, test_config):
-        """Create an SB-Emulator object. Options from JSON input file
+        """
+        Creates an SB-Emulator object. Options from JSON input file
+
         :param test_config: JSON input configuration
         :param sb_emu_base_dir: emulator base directory
         :type test_config: JSON configuration dictionary
@@ -52,8 +56,10 @@ class SBEmu:
 
     @staticmethod
     def new(sb_emu_base_dir, test_config):
-        """Factory method. Creates a subclass class depending on the
+        """
+        Factory method. Creates a subclass class depending on the
         SB-Emulator name
+
         :param test_config: JSON input configuration
         :param sb_emu_base_dir: emulator base directory
         :returns: a subclass or None
@@ -72,7 +78,9 @@ class SBEmu:
             raise NotImplementedError('Not supported yet')
 
     def __error_handling(self, error_message, error_num=1):
-        """Handles custom errors of sb emulators
+        """
+        Handles custom errors of sb emulators
+
         :param error_message: message of the handled error
         :param error_num: error number of the handled error, used to define
         subcases of raised errors.
@@ -93,10 +101,12 @@ class SBEmu:
         raise(stress_test.emulator_exceptions.SBEmuError)
 
     def init_ssh(self):
-        """Initializes a new SSH client object, with the emulator node and
+        """
+        Initializes a new SSH client object, with the emulator node and
         assigns it to the protected attribute _ssh_conn. If a connection
         already exists it returns a new SSH client object to the controller
         node.
+
         :raises emulator_exceptions.SBEmuNodeConnectionError: if ssh connection
         establishment fails
         """
@@ -120,7 +130,9 @@ class SBEmu:
             self.__error_handling(e.err_msg, e.err_code)
 
     def build(self):
-        """Wrapper to the SB-Emulator build handler
+        """
+        Wrapper to the SB-Emulator build handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.SBEmuBuildError: build fails
         """
@@ -158,7 +170,9 @@ class SBEmu:
             self.__error_handling(e.err_msg, e.err_code)
 
     def clean(self):
-        """Wrapper to the SB-Emulator clean handler
+        """
+        Wrapper to the SB-Emulator clean handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.SBEmuCleanupError: if cleanup process fails
         """
@@ -197,7 +211,9 @@ class SBEmu:
             self.__error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
-        """Method called when object is destroyed"""
+        """
+        Method called when object is destroyed
+        """
         try:
             logging.info('Run emulator clean handler.')
             self.cleanup()
@@ -212,11 +228,14 @@ class SBEmu:
 
 
 class MTCBench(SBEmu):
-    """ All South-bound MTCbench related functionality is here
+    """
+    All South-bound MTCbench related functionality is here
     """
     def __init__(self, sb_emu_base_dir, test_config):
-        """Initialize the creation of an MTCbench SB emulator object.
+        """
+        Initialize the creation of an MTCbench SB emulator object.
         Inherits from SBEmu class.
+
         :param sb_emu_base_dir: emulator base directory
         :param test_config: JSON input configuration
         :type sb_emu_base_dir: str
@@ -244,7 +263,9 @@ class MTCBench(SBEmu):
         self.internal_repeats = test_config['mtcbench_internal_repeats']
 
     def get_topo_bootup_ms(self):
-        """Calculates and returns the total topology bootup time in ms.
+        """
+        Calculates and returns the total topology bootup time in ms.
+
         :returns: the total time for the topology to bootup
         :rtype: int
         """
@@ -252,7 +273,9 @@ class MTCBench(SBEmu):
         return topo_bootup_ms
 
     def get_overall_topo_size(self):
-        """Calculates and returns the total topology size.
+        """
+        Calculates and returns the total topology size.
+
         :returns: the total switch number
         :rtype: int
         """
@@ -262,7 +285,9 @@ class MTCBench(SBEmu):
     def run(self, ctrl_ip, ctrl_sb_port, prefix='[MTCBench.run_handler]',
             lines_queue=None, print_flag=True, block_flag=True,
             getpty_flag=False):
-        """ Wrapper to the MTCBench SB-Emulator run handler
+        """
+        Wrapper to the MTCBench SB-Emulator run handler
+
         :param ctrl_ip: The ip address of the controller
         :param ctrl_sb_port: the port number of the SouthBound interface of
         the controller
@@ -331,11 +356,14 @@ class MTCBench(SBEmu):
 
 
 class Multinet(SBEmu):
-    """ All South-bound Multinet related functionality is here
+    """
+    All South-bound Multinet related functionality is here
     """
     def __init__(self, sb_emu_base_dir, test_config):
-        """Initialize the creation of an Multinet SB emulator object.
+        """
+        Initialize the creation of an Multinet SB emulator object.
         Inherits from SBEmu class.
+
         :param sb_emu_base_dir: emulator base directory
         :param test_config: JSON input configuration
         :type sb_emu_base_dir: str
@@ -398,7 +426,9 @@ class Multinet(SBEmu):
         self.venv_hnd = self.base_dir + "bin/venv_handler_master.sh"
 
     def get_topo_bootup_ms(self):
-        """Calculates and returns the total topology bootup time in ms.
+        """
+        Calculates and returns the total topology bootup time in ms.
+
         :returns: the total time for the topology to bootup
         :rtype: int
         """
@@ -407,7 +437,9 @@ class Multinet(SBEmu):
         return topo_bootup_ms
 
     def get_overall_topo_size(self):
-        """Calculates and returns the total topology size.
+        """
+        Calculates and returns the total topology size.
+
         :returns: the total worker number
         :rtype: int
         """
@@ -418,6 +450,7 @@ class Multinet(SBEmu):
         """
         Generates a new json configuration file for multinet, according to the
         configuration values that are passed as parameters.
+
         :param cntrl_of_port: this is the southbound port of the controller,
         where it listens for openflow protocol messages
         :param cntrl_ip: IP address of controller node
@@ -469,9 +502,11 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def __parse_output(self, multinet_handler_name, multinet_output):
-        """Gets the console output of a multinet handler and extracts the
+        """
+        Gets the console output of a multinet handler and extracts the
         aggregated result from all workers, as a numeric value.
         (Helper function)
+
         :param multinet_handler_name: The name of multinet handler from which
         we get the results.
         :param multinet_output: The console output of multinet handler
@@ -508,7 +543,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def deploy(self, cntrl_ip, cntrl_of_port):
-        """ Wrapper to the Multinet SB-Emulator deploy handler
+        """
+        Wrapper to the Multinet SB-Emulator deploy handler
+
         :param cntrl_ip: The IP of the Controller.
         :param cntrl_of_port: The openflow interface port of the Controller
         :type cntrl_ip: str
@@ -558,7 +595,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_switches(self, new_ssh_conn=None):
-        """ Wrapper to the Multinet SB-Emulator get_switches handler
+        """
+        Wrapper to the Multinet SB-Emulator get_switches handler
+
         :param new_ssh_conn: an SSH client connection object
         :returns: The per worker number of switches in json string
         :rtype: strcleanup_hnd
@@ -610,7 +649,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def get_flows(self, new_ssh_conn=None):
-        """ Wrapper to the Multinet SB-Emulator get_flows handler
+        """
+        Wrapper to the Multinet SB-Emulator get_flows handler
+
         :param new_ssh_conn: an SSH client connection object
         :returns: The per worker total number of flows in json string
         :rtype: str
@@ -663,7 +704,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def init_topos(self):
-        """ Wrapper to the Multinet SB-Emulator init_topos handler
+        """
+        Wrapper to the Multinet SB-Emulator init_topos handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.MultinetInitToposError: if Multinet
         initialization fails
@@ -704,7 +747,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def start_topos(self):
-        """ Wrapper to the Multinet SB-Emulator start_topos handler
+        """
+        Wrapper to the Multinet SB-Emulator start_topos handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.MultinetStartToposError: if Multinet start
         topology handler fails
@@ -745,7 +790,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def stop_topos(self):
-        """ Wrapper to the Multinet SB-Emulator stop_topos handler
+        """
+        Wrapper to the Multinet SB-Emulator stop_topos handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.MultinetStopToposError: if Multinet stop
         handler fails
@@ -785,7 +832,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def cleanup(self):
-        """ Wrapper to the Multinet SB-Emulator cleanup handler
+        """
+        Wrapper to the Multinet SB-Emulator cleanup handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.MultinetCleanupError: if Multinet cleanup
         handler fails
@@ -826,7 +875,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def generate_traffic(self):
-        """ Wrapper to the Multinet SB-Emulator traffic_gen handler
+        """
+        Wrapper to the Multinet SB-Emulator traffic_gen handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises emulator_exceptions.MultinetTraffigGenError: if Multinet
         traffic generator handler fails to run successfully
@@ -867,7 +918,9 @@ class Multinet(SBEmu):
             self.__error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
-        """Method called when object is destroyed"""
+        """
+        Method called when object is destroyed
+        """
         try:
             logging.info('Run Multinet cleanup.')
             self.cleanup()
