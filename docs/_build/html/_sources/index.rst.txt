@@ -1,9 +1,9 @@
 .. nstat.src documentation master file, created by
-   sphinx-quickstart on Mon Jan 16 16:51:26 2017.
+   sphinx-quickstart on Mon Jan 16 22:19:32 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to nstat.src's documentation!
+Welcome to NSTAT's documentation!
 =====================================
 
 .. toctree::

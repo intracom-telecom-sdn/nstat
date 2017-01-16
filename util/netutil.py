@@ -20,13 +20,13 @@ def copy_dir_local_to_remote(ip, ssh_port, username, password,
                              local_path, remote_path):
     """Copy a local directory on a remote machine.
 
-    :param connection: A named tuple with all the connection information.
-    It must have the following elements:
-    ['name', 'ip', 'ssh_port', 'username', 'password']
-    :param local_path: directory path from local machine to be copied, full
-    location required
-    :param remote_path: directory path on the remote node, full location
-    required
+    :param connection: A named tuple with all the connection information. \
+        It must have the following elements: \
+        ['name', 'ip', 'ssh_port', 'username', 'password'] \
+    :param local_path: directory path from local machine to be copied, full \
+        location required
+    :param remote_path: directory path on the remote node, full location \
+        required
     :type connection: namedtuple<>
     :type local_path: str
     :type remote_path: str
@@ -55,11 +55,12 @@ def copy_dir_local_to_remote(ip, ssh_port, username, password,
 
 def copy_dir_remote_to_local(ip, ssh_port, username, password,
                              remote_path, local_path):
-    """Copy recursively remote directories (Copies all files and other
-    sub-directories).
+    """
+    Copy recursively remote directories (Copies all files and other \
+        sub-directories).
 
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: \
+        ['name', 'ip', 'ssh_port', 'username', 'password']
     :param remote_path: full remote path we want to copy
     :param local_path: full local path we want to copy
     :type connection: namedtuple<>
@@ -94,8 +95,8 @@ def copy_dir_remote_to_local(ip, ssh_port, username, password,
 def create_dir_remote(ip, ssh_port, username, password, remote_path):
     """Opens an ssh connection to a remote machine and creates a new directory.
 
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: \
+        ['name', 'ip', 'ssh_port', 'username', 'password']
     :param remote_path:
     :type connection: namedtuple<>
     :type remote_path: str
@@ -133,8 +134,8 @@ def isdir(path, sftp):
 def make_remote_file_executable(ip, port, username, password, remote_file):
     """Makes the remote file executable.
 
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: \
+        ['name', 'ip', 'ssh_port', 'username', 'password']
     :param remote_file: remote file to make executable
     :type connection: namedtuple<>
     :type remote_file: str
@@ -150,11 +151,12 @@ def make_remote_file_executable(ip, port, username, password, remote_file):
 
 
 def remove_remote_directory(ip, ssh_port, username, password, path):
-    """Removes recursively remote directories (removes all files and
-    other sub-directories).
+    """
+    Removes recursively remote directories (removes all files and other \
+        sub-directories).
 
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: \
+        ['name', 'ip', 'ssh_port', 'username', 'password']
     :param path: A string with the full path we want to remove
     :type connection: namedtuple<>
     :type path: str
@@ -176,8 +178,10 @@ def remove_remote_directory(ip, ssh_port, username, password, path):
 
 
 def isfile(ip, port, username, password, file_list):
-    """Checks if all files in a given list exist. All files are
-    located remotely
+    """
+    Checks if all files in a given list exist. All files are located \
+        remotely
+
     :param ip: ip address of the remote host
     :param port: port number of the remote host
     :param username: username of the remote host
@@ -205,8 +209,9 @@ def isfile(ip, port, username, password, file_list):
 
 
 def ssh_connect_or_return(ip, ssh_port, username, password, maxretries):
-    """Opens a connection and returns a connection object. If it fails to open
-    a connection after a specified number of tries, it returns -1.
+    """
+    Opens a connection and returns a connection object. If it fails to open \
+        a connection after a specified number of tries, it returns -1.
 
     :param ip: controller IP address
     :param ssh_port: controller port
@@ -256,7 +261,8 @@ def ssh_connect_or_return(ip, ssh_port, username, password, maxretries):
 
 
 def ssh_connection_close(sftp, transport_layer):
-    """ Closes an ssh connection with a remote node
+    """
+    Closes an ssh connection with a remote node
 
     :param sftp:
     :param transport_layer:
@@ -271,7 +277,8 @@ def ssh_connection_close(sftp, transport_layer):
 
 
 def ssh_connection_open(ip, ssh_port, username, password):
-    """ Opens an ssh connection on a remote node
+    """
+    Opens an ssh connection on a remote node \
 
     :param ip: ip address of the remote host
     :param ssh_port: port number of the remote host
@@ -297,15 +304,16 @@ def ssh_connection_open(ip, ssh_port, username, password):
 
 def ssh_copy_file_to_target(ip, ssh_port, username, password, local_file,
                             remote_file):
-    """Copies local file on a remote machine target.
+    """
+    Copies local file on a remote machine target.
 
     :param ip: ip address of the remote host
     :param ssh_port: port number of the remote host
     :param username: username of the remote host
     :param password: password of the remote host
     :param local_file: file from local machine to copy,full location required
-    :param remote_file: remote destination, full location required
-    i.e /tmp/foo.txt
+    :param remote_file: remote destination, full location required \
+        i.e /tmp/foo.txt
     :type ip: str
     :type ssh_port: int
     :type username: str
@@ -320,10 +328,11 @@ def ssh_copy_file_to_target(ip, ssh_port, username, password, local_file,
 
 
 def ssh_delete_file_if_exists(ip, ssh_port, username, password, remote_file):
-    """Deletes the file on a remote machine, if exists
+    """
+    Deletes the file on a remote machine, if exists
 
-    :param connection: named tuple with connection information: ['name', 'ip',
-    'ssh_port', 'username', 'password']
+    :param connection: named tuple with connection information: \
+        ['name', 'ip', 'ssh_port', 'username', 'password']
     :param remote_file: remote file to remove, full path must be used.
     :type connection: collections.namedtuple
     :type remote_file: str
@@ -355,14 +364,14 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     :param command_to_run: Command to execute
     :param prefix: prefix of log message
     :param lines_queue: Queue datastructure to buffer the result of execution
-    :param print_flag: Flag that defines if the output of the command will be
-    printed on screen
-    :param block_flag: Defines if we block execution waiting for the running
-    command to return its exit status
-    :param getpty_flag: add a pseudo-terminal console (pty console) to the
-    channel
-    :returns: the exit code of the command to be executed remotely and the
-    combined stdout - stderr of the executed command
+    :param print_flag: Flag that defines if the output of the command will be \
+        printed on screen
+    :param block_flag: Defines if we block execution waiting for the running \
+        command to return its exit status
+    :param getpty_flag: add a pseudo-terminal console (pty console) to the \
+        channel
+    :returns: the exit code of the command to be executed remotely and the \
+        combined stdout - stderr of the executed command
     :rtype: tuple<int, str>
     :type ssh_client: paramiko.SSHClient
     :type command_to_run: str

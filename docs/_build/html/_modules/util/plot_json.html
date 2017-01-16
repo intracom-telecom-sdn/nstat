@@ -62,39 +62,38 @@
 
 <div class="viewcode-block" id="plot_json"><a class="viewcode-back" href="../../util.html#util.plot_json.plot_json">[docs]</a><span class="k">def</span> <span class="nf">plot_json</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">x_axis_key</span><span class="p">,</span> <span class="n">y_axis_key</span><span class="p">,</span> <span class="n">z_axis_key</span><span class="p">,</span> <span class="n">plot_type</span><span class="p">,</span>
               <span class="n">plot_subtitle_keys</span><span class="p">,</span> <span class="n">plot_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Acts as a wrapper method for plotting a set of samples from a</span>
-<span class="sd">    JSON file. The method ends up calling specific methods for one of the</span>
-<span class="sd">    following plot types: errorbar plots, scatter plots</span>
-
-<span class="sd">    Prerequisites:</span>
-<span class="sd">    1. the result JSON file must have the following format:</span>
-<span class="sd">    [</span>
-<span class="sd">    {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ...</span>
-<span class="sd">    ...</span>
-<span class="sd">    ]</span>
-
-<span class="sd">    2. the values for both the x_axis_key and y_axis_key must be numeric</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Acts as a wrapper method for plotting a set of samples from a \</span>
+<span class="sd">        JSON file. The method ends up calling specific methods for one of the \</span>
+<span class="sd">        following plot types: errorbar plots, scatter plots \</span>
+<span class="sd">        Prerequisites: \</span>
+<span class="sd">        1. the result JSON file must have the following format: \</span>
+<span class="sd">        [ \</span>
+<span class="sd">        {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ... \</span>
+<span class="sd">        ... \</span>
+<span class="sd">        ] \</span>
+<span class="sd">        2. the values for both the x_axis_key and y_axis_key must be numeric \</span>
 
 <span class="sd">    :param results_file: results file to plot samples from</span>
-<span class="sd">    :param x_axis_key: some key from the results file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the x-axis key</span>
-<span class="sd">    :param y_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the y-axis key</span>
-<span class="sd">    :param z_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the z-axis key</span>
-<span class="sd">    :param plot_type: plot type, one of:</span>
-<span class="sd">    - &#39;errorbar</span>
-<span class="sd">    - &#39;errorbar_connected&#39;</span>
-<span class="sd">    - &#39;scatter&#39;</span>
-<span class="sd">    - &#39;multi_errorbar</span>
-<span class="sd">    - &#39;multi_errorbar_connected&#39;</span>
-<span class="sd">    - &#39;multi_scatter&#39;</span>
-<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we would</span>
-<span class="sd">    like to print as key-value pairs in the plot subtitle</span>
-<span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">    produced plot.</span>
+<span class="sd">    :param x_axis_key: some key from the results file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the x-axis key</span>
+<span class="sd">    :param y_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the y-axis key</span>
+<span class="sd">    :param z_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the z-axis key</span>
+<span class="sd">    :param plot_type: plot type, one of: \</span>
+<span class="sd">        - &#39;errorbar \</span>
+<span class="sd">        - &#39;errorbar_connected&#39; \</span>
+<span class="sd">        - &#39;scatter&#39; \</span>
+<span class="sd">        - &#39;multi_errorbar \</span>
+<span class="sd">        - &#39;multi_errorbar_connected&#39; \</span>
+<span class="sd">        - &#39;multi_scatter&#39; \</span>
+<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we \</span>
+<span class="sd">        would like to print as key-value pairs in the plot subtitle \</span>
+<span class="sd">    :param plot_options: object containing configuration parameters of the \</span>
+<span class="sd">        produced plot.</span>
 <span class="sd">    :raises ValueError: When we give an invalid plot_type.</span>
 <span class="sd">    :type results_file: str</span>
 <span class="sd">    :type x_axis_key: str</span>
@@ -131,34 +130,32 @@
 
 <div class="viewcode-block" id="plot_errorbar_json"><a class="viewcode-back" href="../../util.html#util.plot_json.plot_errorbar_json">[docs]</a><span class="k">def</span> <span class="nf">plot_errorbar_json</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">x_axis_key</span><span class="p">,</span> <span class="n">y_axis_key</span><span class="p">,</span>
                        <span class="n">plot_subtitle_keys</span><span class="p">,</span> <span class="n">plot_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draw a single collection of errorbars over a set of samples from a</span>
-<span class="sd">    JSON file.</span>
-
-<span class="sd">    For each different x value, the function finds one or more</span>
-<span class="sd">    corresponding y values and plots an errorbar over them.</span>
-<span class="sd">    The x and y values are determined by the x_axis_key and y_axis_key</span>
-<span class="sd">    arguments.</span>
-
-<span class="sd">    Prerequisites:</span>
-<span class="sd">    1. the result JSON file must have the following format:</span>
-<span class="sd">    [</span>
-<span class="sd">    {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ...</span>
-<span class="sd">    ...</span>
-<span class="sd">    ]</span>
-
-<span class="sd">    2. the values for both the x_axis_key and y_axis_key must be numeric</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw a single collection of errorbars over a set of samples from a JSON \</span>
+<span class="sd">        file. \</span>
+<span class="sd">        For each different x value, the function finds one or more \</span>
+<span class="sd">        corresponding y values and plots an errorbar over them. \</span>
+<span class="sd">        The x and y values are determined by the x_axis_key and y_axis_key \</span>
+<span class="sd">        arguments. \</span>
+<span class="sd">        Prerequisites: \</span>
+<span class="sd">        1. the result JSON file must have the following format: \</span>
+<span class="sd">        [ \</span>
+<span class="sd">        {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ... \</span>
+<span class="sd">        ... \</span>
+<span class="sd">        ] \</span>
+<span class="sd">        2. the values for both the x_axis_key and y_axis_key must be numeric</span>
 
 <span class="sd">    :param results_file: results file to plot samples from</span>
-<span class="sd">    :param x_axis_key: some key from the results file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the x-axis key</span>
-<span class="sd">    :param y_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the y-axis key</span>
-<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we would</span>
-<span class="sd">    like to print as key-value pairs in the plot subtitle</span>
-<span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">    produced plot.</span>
+<span class="sd">    :param x_axis_key: some key from the results file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the x-axis key</span>
+<span class="sd">    :param y_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the y-axis key</span>
+<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we would \</span>
+<span class="sd">        like to print as key-value pairs in the plot subtitle</span>
+<span class="sd">    :param plot_options: object containing configuration parameters of the \</span>
+<span class="sd">        produced plot.</span>
 <span class="sd">    :type results_file: str</span>
 <span class="sd">    :type x_axis_key: str</span>
 <span class="sd">    :type y_axis_key: str</span>
@@ -208,39 +205,36 @@
 
 <div class="viewcode-block" id="multiplot_errorbar_json"><a class="viewcode-back" href="../../util.html#util.plot_json.multiplot_errorbar_json">[docs]</a><span class="k">def</span> <span class="nf">multiplot_errorbar_json</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">x_axis_key</span><span class="p">,</span> <span class="n">y_axis_key</span><span class="p">,</span> <span class="n">z_axis_key</span><span class="p">,</span>
                             <span class="n">plot_subtitle_keys</span><span class="p">,</span> <span class="n">plot_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draw multiple collection of errorbars over a set of samples from a</span>
-<span class="sd">    JSON file.</span>
-
-<span class="sd">    For each different z value do the following:</span>
-<span class="sd">    for each different x value, the function finds one or more</span>
-<span class="sd">    corresponding y values and plots an errorbar over them.</span>
-
-<span class="sd">    The x and y values are determined by the x_axis_key and y_axis_key</span>
-<span class="sd">    arguments.</span>
-<span class="sd">    The z value is determined by the z_axis_key argument.</span>
-
-<span class="sd">    Prerequisites:</span>
-<span class="sd">    1. the result JSON file must have the following format:</span>
-<span class="sd">    [</span>
-<span class="sd">    {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ...</span>
-<span class="sd">    ...</span>
-<span class="sd">    ]</span>
-
-<span class="sd">    2. the values for x_axis_key, y_axis_key and z_axis_key must be numeric</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw multiple collection of errorbars over a set of samples from a</span>
+<span class="sd">        JSON file. \</span>
+<span class="sd">        For each different z value do the following: \</span>
+<span class="sd">        for each different x value, the function finds one or more \</span>
+<span class="sd">        corresponding y values and plots an errorbar over them. \</span>
+<span class="sd">        The x and y values are determined by the x_axis_key and y_axis_key \</span>
+<span class="sd">        arguments. \</span>
+<span class="sd">        The z value is determined by the z_axis_key argument. \</span>
+<span class="sd">        Prerequisites: \</span>
+<span class="sd">        1. the result JSON file must have the following format: \</span>
+<span class="sd">        [ \</span>
+<span class="sd">        {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ... \</span>
+<span class="sd">        ... \</span>
+<span class="sd">        ] \</span>
+<span class="sd">        2. the values for x_axis_key, y_axis_key and z_axis_key must be numeric</span>
 
 <span class="sd">    :param results_file: results file to plot samples from</span>
-<span class="sd">    :param x_axis_key: some key from the results file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the x-axis key</span>
-<span class="sd">    :param y_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the y-axis key</span>
-<span class="sd">    :param z_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the z-axis key</span>
-<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we would</span>
-<span class="sd">    like to print as key-value pairs in the plot subtitle</span>
-<span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">    produced plot.</span>
+<span class="sd">    :param x_axis_key: some key from the results file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the x-axis key</span>
+<span class="sd">    :param y_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the y-axis key</span>
+<span class="sd">    :param z_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the z-axis key</span>
+<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we  \</span>
+<span class="sd">        would like to print as key-value pairs in the plot subtitle</span>
+<span class="sd">    :param plot_options: object containing configuration parameters of the \</span>
+<span class="sd">        produced plot.</span>
 <span class="sd">    :type results_file: str</span>
 <span class="sd">    :type x_axis_key: str</span>
 <span class="sd">    :type y_axis_key: str</span>
@@ -275,35 +269,32 @@
 
 <div class="viewcode-block" id="plot_scatter_json"><a class="viewcode-back" href="../../util.html#util.plot_json.plot_scatter_json">[docs]</a><span class="k">def</span> <span class="nf">plot_scatter_json</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">x_axis_key</span><span class="p">,</span> <span class="n">y_axis_key</span><span class="p">,</span> <span class="n">plot_subtitle_keys</span><span class="p">,</span>
                       <span class="n">plot_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Draw a single scatter-plot over a set of samples from a JSON file.</span>
-
-<span class="sd">    For each different x value, the function plots a point for every</span>
-<span class="sd">    corresponding y values it finds.</span>
-<span class="sd">    The x and y values are determined by the x_axis_key and y_axis_key</span>
-<span class="sd">    arguments.</span>
-
-<span class="sd">    Prerequisites:</span>
-<span class="sd">    1. the result JSON file must have the following format:</span>
-<span class="sd">    [</span>
-<span class="sd">    {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ...</span>
-<span class="sd">    ...</span>
-<span class="sd">    ]</span>
-
-<span class="sd">    2. the values for both the x_axis_key and y_axis_key must be numeric</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw a single scatter-plot over a set of samples from a JSON file. \</span>
+<span class="sd">        For each different x value, the function plots a point for every \</span>
+<span class="sd">        corresponding y values it finds. \</span>
+<span class="sd">        The x and y values are determined by the x_axis_key and y_axis_key \</span>
+<span class="sd">        arguments. \</span>
+<span class="sd">        Prerequisites: \</span>
+<span class="sd">        1. the result JSON file must have the following format: \</span>
+<span class="sd">        [ \</span>
+<span class="sd">        {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ... \</span>
+<span class="sd">        ... \</span>
+<span class="sd">        ] \</span>
+<span class="sd">        2. the values for both the x_axis_key and y_axis_key must be numeric \</span>
 
 <span class="sd">    :param results_file: results file to plot samples from</span>
-<span class="sd">    :param x_axis_key: some key from the results file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the x-axis key</span>
-<span class="sd">    :param y_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the y-axis key</span>
+<span class="sd">    :param x_axis_key: some key from the results file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the x-axis key</span>
+<span class="sd">    :param y_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the y-axis key</span>
 <span class="sd">    :param plot_title: description for the plot title</span>
-<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we would</span>
-<span class="sd">    like to print as key-value pairs in the plot subtitle</span>
-<span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">    produced plot.</span>
+<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we \</span>
+<span class="sd">        would like to print as key-value pairs in the plot subtitle</span>
+<span class="sd">    :param plot_options: object containing configuration parameters of the \</span>
+<span class="sd">        produced plot.</span>
 <span class="sd">    :type results_file: str</span>
 <span class="sd">    :type x_axis_key: str</span>
 <span class="sd">    :type y_axis_key: str</span>
@@ -347,39 +338,36 @@
 <div class="viewcode-block" id="multiplot_scatter_json"><a class="viewcode-back" href="../../util.html#util.plot_json.multiplot_scatter_json">[docs]</a><span class="k">def</span> <span class="nf">multiplot_scatter_json</span><span class="p">(</span><span class="n">results_file</span><span class="p">,</span> <span class="n">x_axis_key</span><span class="p">,</span> <span class="n">y_axis_key</span><span class="p">,</span> <span class="n">z_axis_key</span><span class="p">,</span>
                            <span class="n">plot_subtitle_keys</span><span class="p">,</span> <span class="n">plot_options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draw multiple scatter-plots over a set of samples from a JSON file.</span>
-<span class="sd">    Each scatter-plot is determined by a specific value of the z_axis_key</span>
-
-<span class="sd">    For each different z value do the following:</span>
-<span class="sd">    for each different x value, plot a point for every corresponding y</span>
-<span class="sd">    value found.</span>
-
-<span class="sd">    The x and y values are determined by the x_axis_key and y_axis_key</span>
-<span class="sd">    arguments.</span>
-<span class="sd">    The z value is determined by the z_axis_key argument.</span>
-
-<span class="sd">    Prerequisites:</span>
-<span class="sd">    1. the result JSON file must have the following format:</span>
-<span class="sd">    [</span>
-<span class="sd">    {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample)</span>
-<span class="sd">    {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ...</span>
-<span class="sd">    ...</span>
-<span class="sd">    ]</span>
-
-<span class="sd">    2. the values for x_axis_key, y_axis_key and z_axis_key must be numeric</span>
+<span class="sd">    Draw multiple scatter-plots over a set of samples from a JSON file. \</span>
+<span class="sd">        Each scatter-plot is determined by a specific value of the z_axis_key \</span>
+<span class="sd">        For each different z value do the following: \</span>
+<span class="sd">        for each different x value, plot a point for every corresponding y \</span>
+<span class="sd">        value found. \</span>
+<span class="sd">        The x and y values are determined by the x_axis_key and y_axis_key \</span>
+<span class="sd">        arguments. \</span>
+<span class="sd">        The z value is determined by the z_axis_key argument. \</span>
+<span class="sd">        Prerequisites: \</span>
+<span class="sd">        1. the result JSON file must have the following format: \</span>
+<span class="sd">        [ \</span>
+<span class="sd">        {&quot;k1&quot;: v1, &quot;k2&quot;: v2, ... },      # 1st line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v3, &quot;k2&quot;: v4, ... },      # 2nd line (sample) \</span>
+<span class="sd">        {&quot;k1&quot;: v5, &quot;k2&quot;: v6, ... },      # ... \</span>
+<span class="sd">        ... \</span>
+<span class="sd">        ] \</span>
+<span class="sd">        2. the values for x_axis_key, y_axis_key and z_axis_key must be \</span>
+<span class="sd">            numeric</span>
 
 <span class="sd">    :param results_file: results file to plot samples from</span>
-<span class="sd">    :param x_axis_key: some key from the results file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the x-axis key</span>
-<span class="sd">    :param y_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the y-axis key</span>
-<span class="sd">    :param z_axis_key: some key from the result file with numeric type value,</span>
-<span class="sd">    which is intended to serve as the z-axis key</span>
-<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we would</span>
-<span class="sd">    like to print as key-value pairs in the plot subtitle</span>
-<span class="sd">    :param plot_options: object containing configuration parameters of the</span>
-<span class="sd">    produced plot.</span>
+<span class="sd">    :param x_axis_key: some key from the results file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the x-axis key</span>
+<span class="sd">    :param y_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the y-axis key</span>
+<span class="sd">    :param z_axis_key: some key from the result file with numeric type value, \</span>
+<span class="sd">        which is intended to serve as the z-axis key</span>
+<span class="sd">    :param plot_subtitle_keys: list of keys from the result file which we \</span>
+<span class="sd">        would like to print as key-value pairs in the plot subtitle</span>
+<span class="sd">    :param plot_options: object containing configuration parameters of the \</span>
+<span class="sd">        produced plot.</span>
 <span class="sd">    :type results_file: str</span>
 <span class="sd">    :type x_axis_key: str</span>
 <span class="sd">    :type y_axis_key: str</span>

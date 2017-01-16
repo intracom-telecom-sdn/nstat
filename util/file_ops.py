@@ -27,8 +27,8 @@ def check_files_executables(file_list):
     """Checks if all files in a list have exe permissions.
 
     :param file_list: list of filenames to check
-    :raises Exception: When file in file_list does not exist or is not
-    executable.
+    :raises Exception: When file in file_list does not exist or is not \
+        executable.
     :type file_list: list<str>
     :returns: list<str>
     :rtype: list<str>
@@ -38,9 +38,9 @@ def check_files_executables(file_list):
 
 
 def check_filelist(file_list):
-    """Takes a list of files and checks if those files exist and if those
-    files are executables (have execution right in their privileges). If
-    something is wrong then an exception is raised
+    """Takes a list of files and checks if those files exist and if those \
+        files are executables (have execution right in their privileges). If \
+        something is wrong then an exception is raised
 
     :param file_list: A list of files
     :type file_list: list<str>
@@ -94,8 +94,8 @@ def merge_dict_and_avg(results_add, results_delete):
 
     :param ssh_client : SSH client provided by paramiko to run the command
     :param command_to_run: Command to execute
-    :returns: the exit code of the command to be executed remotely and the
-    combined stdout - stderr of the executed command
+    :returns: the exit code of the command to be executed remotely and the \
+        combined stdout - stderr of the executed command
     :rtype: tuple<int, str>
     :type ssh_client: paramiko.SSHClient
     :type command_to_run: str

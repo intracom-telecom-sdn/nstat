@@ -210,7 +210,8 @@ def proc_cpu_user_time(pid, ssh_client=None):
 
 
 def proc_vm_size(pid, ssh_client=None):
-    """Method that returns the virtual memory size of a process.
+    """
+    Method that returns the virtual memory size of a process.
 
     :param pid: the process ID of the target process
     :param ssh_client : SSH client provided by paramiko to run the command

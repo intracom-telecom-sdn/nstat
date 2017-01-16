@@ -10,10 +10,10 @@ def tonum(str2cast):
     """Casts a string to the appropriate numeric type, i.e. int or float.
 
     :param str2cast: string to cast
-    :returns: the numeric value in the appropriate type or "Impossible cast"
-    string
-    :rtype: float
-    :type str
+    :returns: the numeric value in the appropriate type or "Impossible cast" \
+        string \
+    :rtype: float \
+    :type str \
     """
 
     try:

@@ -21,18 +21,18 @@ def generate_html_foot(foot_content=''):
 
 def generate_html_head(css_style='', javascript_functions='',
                        head_content=''):
-    """Creates the head of an html file gets as input the
-    styling of the page as a css string parameter and returns a string
-    value, which is the html code of the header.
+    """Creates the head of an html file gets as input the styling of the page \
+        as a css string parameter and returns a string value, which is the \
+        html code of the header.
 
-    :param css_style: the css styling text of the html page we produce.
-    this parameter must be given as a multiline string.
+    :param css_style: the css styling text of the html page we produce. \
+        this parameter must be given as a multiline string.
     :param parameters_dictionary: Parameters of the specific testing scenario
-    :param javascript_functions: JavaScript functions for report.
-    This parameter must be given as a multiline string.
-    :param head_content: this is the html code that will appear at the top
-    of the page, just after the <body> tag. We can place here the Title of the
-    page and everything else we want to appear at the top.
+    :param javascript_functions: JavaScript functions for report. This \
+        parameter must be given as a multiline string.
+    :param head_content: this is the html code that will appear at the top of \
+        the page, just after the <body> tag. We can place here the Title of \
+        the page and everything else we want to appear at the top.
     :returns: str (the html code of the Header of the html page.)
     :rtype: str
     :type css_style: str
@@ -50,18 +50,18 @@ def generate_html_head(css_style='', javascript_functions='',
     return html_head
 
 def get_ordered_index(field_value, map_dictionary):
-    """Returns the index of a key in map_dictionary, which is defined by the
-    field_value. If no match is found None is returned
+    """Returns the index of a key in map_dictionary, which is defined by the \
+        field_value. If no match is found None is returned
 
-    :param field_value: the value of the key we want to search for, inside
-    the map_dictionary. This is a helper function called inside the
-    single_dict_to_html() and multi_dict_to_html() to avoid repetitions of the
-    same code blocks in these functions
-    :param map_dictionary: An instance of OrderedDict which has mappings
-    between keys and their values as they appear inside an html generated
-    document.
-    :returns: The index where the field_value should be placed, depending on
-    the ordering inside the map_dictionary
+    :param field_value: the value of the key we want to search for, inside \
+        the map_dictionary. This is a helper function called inside the
+        single_dict_to_html() and multi_dict_to_html() to avoid repetitions of \
+        the same code blocks in these functions
+    :param map_dictionary: An instance of OrderedDict which has mappings \
+        between keys and their values as they appear inside an html generated \
+        document.
+    :returns: The index where the field_value should be placed, depending on \
+        the ordering inside the map_dictionary
     :rtype: int
     :type field_value: str
     :type map_dictionary: collections.OrderedDict
@@ -77,14 +77,15 @@ def get_ordered_index(field_value, map_dictionary):
     return -1
 
 def isalistofdictionaries(lst):
-    """Takes a list as argument and checks if all the
-    elements of this list are dictionaries. If they are then it returns true,
-    else it returns false. If the input argument type is not list then it
-    also returns false.
+    """
+    Takes a list as argument and checks if all the elements of this list \
+        are dictionaries. If they are then it returns true, else it returns
+        false. If the input argument type is not list then it also returns \
+        false.
 
     :param lst: The list that we want to check its elements
-    :returns:  True if all the elements of the list are dictionaries
-    False otherwise
+    :returns:  True if all the elements of the list are dictionaries. False \
+        otherwise
     :rtype: bool
     :type lst: list<dict>
     """
@@ -103,17 +104,18 @@ def isalistofdictionaries(lst):
 
 def multi_dict_to_html(data, table_title='', map_dictionary=None,
                        row_ordering_key=None):
-    """Generates html tables according to the input it gets from
-    the input arguments.
+    """Generates html tables according to the input it gets from the input \
+        arguments.
 
-    :param data: This datastructure is a list that contains dictionaries of
-    strings that contains the pair of field_name:value of all the data we want
-    to convert to HTML table.
-    :param table_title: An optional argument that contains the title of the
-    table we want to generate.
-    :param map_dictionary: data structure that contains the pair of
-    field_name:value. It defines which fields will be kept from the data input
-    dictionary and how their value will be translated in the HTML table.
+    :param data: This datastructure is a list that contains dictionaries of \
+        strings that contains the pair of field_name:value of all the data we \
+        want to convert to HTML table.
+    :param table_title: An optional argument that contains the title of the \
+        table we want to generate.
+    :param map_dictionary: data structure that contains the pair of \
+        field_name:value. It defines which fields will be kept from the data \
+        input dictionary and how their value will be translated in the HTML \
+        table.
     :returns: str
     :rtype: str
     :type data: list<dict>
@@ -172,19 +174,20 @@ def multi_dict_to_html(data, table_title='', map_dictionary=None,
     return str(table_html)
 
 def single_dict_table_data(data_values, td_style=None, td_class=None):
-    """Returns a <td> ... </td> html element for the single_dict_to_html()
-    type of tables, data columns. In case that the input data_values is a
-    list of dictionaries, this function calls recursively
-    single_dict_to_html() and generates sub tables inside the <td> ... </td>
-    html element.
+    """
+    Returns a <td> ... </td> html element for the single_dict_to_html() \
+        type of tables, data columns. In case that the input data_values is a \
+        list of dictionaries, this function calls recursively \
+        single_dict_to_html() and generates sub tables inside the \
+        <td> ... </td> html element.
 
-    :param data_values: the data we want to place into a <td> ... </td>
-    html element.
-    :param td_style: the styling code for the content of <td>...</td> html
-    element.
+    :param data_values: the data we want to place into a <td> ... </td> html \
+        element.
+    :param td_style: the styling code for the content of <td>...</td> html \
+        element.
     :param cls: the class name attribute of the <td>...</td> html element
     :returns: html code of a <td>  </td> element for single_dict_to_html()
-    tables
+        tables
     :rtype: str
     :type style: str
     :type cls: str
@@ -209,25 +212,27 @@ def single_dict_table_data(data_values, td_style=None, td_class=None):
 
 def single_dict_to_html(data, key_title, data_title, table_title='',
                         map_dictionary=None):
-    """Generates html tables according to the input it gets
-    from the input arguments. The table generated is by row, which means that
-    on each row the first element is the key value of the dictionary, the
-    second element is the data value of the dictionary for the correspondent
-    key. The columns are always 2 and their title are defined in the input
-    arguments
+    """
+    Generates html tables according to the input it gets from the input \
+        arguments. The table generated is by row, which means that on each row \
+        the first element is the key value of the dictionary, the second \
+        element is the data value of the dictionary for the correspondent key. \
+        The columns are always 2 and their title are defined in the input \
+        arguments \
 
-    :param data: this data structure is a dictionary of strings that contains
-    the pair of field_name:value for all the data we want to convert to HTML
-    table.
-    :param key_title: the title of the column, under which the dictionary key
-    values will be placed.
-    :param data_title: the title of the column, under which the dictionary data
-    values will be placed.
-    :param table_title: Optional argument. Contains the title of the table we
-    want to generate
-    :param map_dictionary: This data structure contains the pair of
-    field_name:value. It defines which fields should be kept from the data
-    input dictionary and how their value will be translated in the HTML table.
+    :param data: this data structure is a dictionary of strings that contains \
+        the pair of field_name:value for all the data we want to convert to \
+        HTML table.
+    :param key_title: the title of the column, under which the dictionary key \
+        values will be placed.
+    :param data_title: the title of the column, under which the dictionary \
+        data values will be placed.
+    :param table_title: Optional argument. Contains the title of the table we \
+        want to generate
+    :param map_dictionary: This data structure contains the pair of \
+        field_name:value. It defines which fields should be kept from the data \
+        input dictionary and how their value will be translated in the HTML \
+        table.
     :returns: str
     :rtype: str
     :type data: dict

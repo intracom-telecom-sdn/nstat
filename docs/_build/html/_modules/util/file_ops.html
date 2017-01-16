@@ -77,8 +77,8 @@
     <span class="sd">&quot;&quot;&quot;Checks if all files in a list have exe permissions.</span>
 
 <span class="sd">    :param file_list: list of filenames to check</span>
-<span class="sd">    :raises Exception: When file in file_list does not exist or is not</span>
-<span class="sd">    executable.</span>
+<span class="sd">    :raises Exception: When file in file_list does not exist or is not \</span>
+<span class="sd">        executable.</span>
 <span class="sd">    :type file_list: list&lt;str&gt;</span>
 <span class="sd">    :returns: list&lt;str&gt;</span>
 <span class="sd">    :rtype: list&lt;str&gt;</span>
@@ -88,9 +88,9 @@
 
 
 <div class="viewcode-block" id="check_filelist"><a class="viewcode-back" href="../../util.html#util.file_ops.check_filelist">[docs]</a><span class="k">def</span> <span class="nf">check_filelist</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Takes a list of files and checks if those files exist and if those</span>
-<span class="sd">    files are executables (have execution right in their privileges). If</span>
-<span class="sd">    something is wrong then an exception is raised</span>
+    <span class="sd">&quot;&quot;&quot;Takes a list of files and checks if those files exist and if those \</span>
+<span class="sd">        files are executables (have execution right in their privileges). If \</span>
+<span class="sd">        something is wrong then an exception is raised</span>
 
 <span class="sd">    :param file_list: A list of files</span>
 <span class="sd">    :type file_list: list&lt;str&gt;</span>
@@ -144,8 +144,8 @@
 
 <span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
 <span class="sd">    :param command_to_run: Command to execute</span>
-<span class="sd">    :returns: the exit code of the command to be executed remotely and the</span>
-<span class="sd">    combined stdout - stderr of the executed command</span>
+<span class="sd">    :returns: the exit code of the command to be executed remotely and the \</span>
+<span class="sd">        combined stdout - stderr of the executed command</span>
 <span class="sd">    :rtype: tuple&lt;int, str&gt;</span>
 <span class="sd">    :type ssh_client: paramiko.SSHClient</span>
 <span class="sd">    :type command_to_run: str</span>
