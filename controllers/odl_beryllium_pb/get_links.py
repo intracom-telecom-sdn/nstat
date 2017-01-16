@@ -14,8 +14,7 @@ def get_oper_links():
     """
     Query number of links registered in ODL operational DS
 
-    :returns: number of links found, 0 if none exists and -1 in case of
-    error.
+    :returns: number of links found, 0 if none exists and -1 in case of error.
     :rtype: int
     """
 

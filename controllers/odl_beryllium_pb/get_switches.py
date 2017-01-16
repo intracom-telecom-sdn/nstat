@@ -14,8 +14,8 @@ def get_oper_switches():
     """
     Query number of switches registered in ODL operational DS
 
-    :returns: number of switches found, 0 if none exists and -1 in case of
-    error.
+    :returns: number of switches found, 0 if none exists and -1 in case of \
+        error.
     :rtype: int
     """
 
