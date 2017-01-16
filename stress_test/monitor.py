@@ -945,3 +945,120 @@ class NBgen(Monitor):
         results['flow_delete_flag'] = 'True'
 
         return results
+
+
+class MEF(Monitor):
+
+    def __init__(self, controller, emulator):
+        super(self.__class__, self).__init__(controller)
+        self.emulator = emulator
+        self.result_queue = gevent.queue.Queue()
+        self.term_success = '__successful_termination__'
+        self.term_fail = '__failed_termination__'
+        self.data_queue = gevent.queue.Queue()
+
+    def monitor_thread_topo_bootup(self, boot_start_time):
+        """
+        This monitor function is used from idle tests.
+        Poll operational DS to discover installed switches.
+        It is used for idle tests from mtcbench and multinet emulators.
+        """
+
+        discovery_deadline = 120
+        expected_switches = self.emulator.get_overall_topo_size()
+        topology_bootup_time_ms = self.emulator.get_topo_bootup_ms()
+        sleep_before_discovery = float(topology_bootup_time_ms) / 1000
+        logging.info('[monitor_thread_idle] Monitor thread started')
+        t_start = boot_start_time
+        logging.info('[monitor_thread_idle] Starting discovery')
+        previous_discovered_switches = 0
+        discovered_switches = 0
+        previous_discovered_links = 0
+        discovered_links = 0
+        time.sleep(sleep_before_discovery)
+        t_discovery_start = time.time()
+        error_code = 0
+        max_discovered_switches = 0
+        max_discovered_links = 0
+
+        while True:
+            results = self.system_results()
+            results['global_sample_id'] = self.global_sample_id
+            self.global_sample_id += 1
+            results['multinet_workers'] = len(self.emulator.workers_ips)
+            results['multinet_worker_topo_size'] = self.emulator.topo_size
+            results['multinet_topology_type'] = self.emulator.topo_type
+            results['multinet_hosts_per_switch'] = \
+                self.emulator.topo_hosts_per_switch
+            results['multinet_group_size'] = self.emulator.topo_group_size
+            results['multinet_group_delay_ms'] = \
+                self.emulator.topo_group_delay_ms
+            results['controller_statistics_period_ms'] = \
+                self.controller.stat_period_ms
+            results['controller_node_ip'] = self.controller.ip
+            results['controller_port'] = str(self.controller.of_port)
+            # case of failure
+            if (time.time() - t_discovery_start) > discovery_deadline:
+                error_code = 201
+                logging.info(
+                    '[monitor_thread_idle] Deadline of {0} seconds passed, '
+                    'discovered {1} switches.'.format(discovery_deadline,
+                                                      discovered_switches))
+                discovery_time = time.time() - t_start - discovery_deadline
+                results['multinet_size'] = \
+                    self.emulator.topo_size * len(self.emulator.workers_ips)
+                results['bootup_time_secs'] = discovery_time
+                results['discovered_switches'] = discovered_switches
+                results['max_discovered_switches'] = max_discovered_switches
+                results['discovered_switches_error_code'] = error_code
+                results['discovered_links'] = discovered_links
+                results['max_discovered_links'] = max_discovered_links
+                results['successful_bootup_time'] = -1
+                self.result_queue.put([results])
+                return 0
+            else:
+
+                discovered_switches = \
+                    self.controller.get_oper_switches(self.controller.init_ssh())
+                logging.info('Discovered switches: ='
+                             .format(discovered_switches))
+                discovered_links = \
+                    int(self.controller.get_oper_links(self.controller.init_ssh())) / 2
+                logging.info('Discovered links: ='
+                             .format(discovered_switches))
+
+                if discovered_switches == -1:
+                    discovered_switches = previous_discovered_switches
+                if discovered_switches > max_discovered_switches:
+                    max_discovered_switches = discovered_switches
+                if discovered_switches != previous_discovered_switches:
+                    t_discovery_start = time.time()
+                    previous_discovered_switches = discovered_switches
+
+                if discovered_links == -1:
+                    max_discovered_links = previous_discovered_links
+                if discovered_links > max_discovered_links:
+                    max_discovered_links = discovered_links
+                if discovered_links != previous_discovered_links:
+                    t_discovery_start = time.time()
+                    previous_discovered_links = discovered_links
+                # In MEF we test with ring topology so this condition of
+                # success works only for ring topologies where number of
+                # switches equals number of links
+                if discovered_switches == expected_switches == discovered_links:
+                    delta_t = time.time() - t_start
+                    logging.info(
+                        '[monitor_thread_idle] {0} switches found in '
+                        '{1} seconds'.
+                        format(discovered_switches, delta_t))
+                    results['multinet_size'] = \
+                        self.emulator.topo_size * len(self.emulator.workers_ips)
+                    results['bootup_time_secs'] = delta_t
+                    results['discovered_switches'] = discovered_switches
+                    results['max_discovered_switches'] = \
+                        max_discovered_switches
+                    results['discovered_switches_error_code'] = error_code
+                    results['successful_bootup_time'] = delta_t
+                    self.result_queue.put([results])
+                    return 0
+            gevent.sleep(1)
