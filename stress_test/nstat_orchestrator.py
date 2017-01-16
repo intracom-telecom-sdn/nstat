@@ -17,7 +17,8 @@ import stress_test.emulator
 import stress_test.test_type
 
 def main():
-    """Main function where NSTAT test application starts.
+    """
+    Main function where NSTAT test application starts.
     """
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)

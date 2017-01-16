@@ -22,11 +22,11 @@ script:
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_cpu.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_customsubprocess.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_numeric.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_file.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_sysstats.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_html.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_process.py
-  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_netutil.py
+#  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_file.py
+#  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_sysstats.py
+#  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_html.py
+#  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_process.py
+#  - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./util/unittests/test_netutil.py
   - coverage run --omit='/usr/local/lib/python3.4/*' --include='./util/*.py' --parallel-mode ./stress_test/nstat_orchestrator.py --help
   - coverage combine
 after_success:

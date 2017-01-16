@@ -1,0 +1,1022 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.emulator &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stress_test.emulator</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2016 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">SB-Emulator Class- All SB-Emulator-related functionality is here&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">stress_test.emulator_exceptions</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">util.netutil</span>
+<span class="kn">import</span> <span class="nn">util.file_ops</span>
+
+
+<div class="viewcode-block" id="SBEmu"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.SBEmu">[docs]</a><span class="k">class</span> <span class="nc">SBEmu</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All South-bound related functionality is here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates an SB-Emulator object. Options from JSON input file</span>
+
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :param sb_emu_base_dir: emulator base directory</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        :type sb_emu_base_dir: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">=</span> <span class="n">sb_emu_base_dir</span>
+
+        <span class="c1"># self.host_spec = test_config[&#39;SB-Emulator_node_spec&#39;]</span>
+        <span class="c1"># self.host_ip = test_config[&#39;SB-Emulator_host_ip&#39;]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_node_ip&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_node_ssh_port&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_node_username&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_node_password&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                          <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_build_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                          <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_clean_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;UNKNOWN&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="sd">&#39;&#39;&#39;check handlers&#39; validity&#39;&#39;&#39;</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">check_filelist</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SBEmu.new"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.SBEmu.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Factory method. Creates a subclass class depending on the \</span>
+<span class="sd">            SB-Emulator name</span>
+
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :param sb_emu_base_dir: emulator base directory</span>
+<span class="sd">        :returns: a subclass or None</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        :type sb_emu_base_dir: str</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        :raises NotImplementedError: in case an invalid sb_emulator_name is \</span>
+<span class="sd">            given in the json configuration file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;sb_emulator_name&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;MTCBENCH&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">MTCBench</span><span class="p">(</span><span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;MULTINET&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Multinet</span><span class="p">(</span><span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Not supported yet&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__error_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_message</span><span class="p">,</span> <span class="n">error_num</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles custom errors of sb emulators</span>
+
+<span class="sd">        :param error_message: message of the handled error</span>
+<span class="sd">        :param error_num: error number of the handled error, used to define</span>
+<span class="sd">        subcases of raised errors.</span>
+<span class="sd">        :type error_message: str</span>
+<span class="sd">        :type error_num: int</span>
+<span class="sd">        :raises controller_exceptions.SBEmuError: to terminate execution of</span>
+<span class="sd">        test after error handling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_obj</span><span class="p">,</span> <span class="n">exc_tb</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> :::::::::: Exception :::::::::::&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error number: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">error_num</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - </span><span class="si">{1}</span><span class="s1"> Exception: </span><span class="si">{2}</span><span class="s1">, </span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span>
+                      <span class="nb">format</span><span class="p">(</span><span class="n">exc_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_tb</span><span class="o">.</span><span class="n">tb_lineno</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">traceback_enabled</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SBEmu.init_ssh"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.SBEmu.init_ssh">[docs]</a>    <span class="k">def</span> <span class="nf">init_ssh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a new SSH client object, with the emulator node and \</span>
+<span class="sd">            assigns it to the protected attribute _ssh_conn. If a connection \</span>
+<span class="sd">            already exists it returns a new SSH client object to the  \</span>
+<span class="sd">            controller node.</span>
+
+<span class="sd">        :raises emulator_exceptions.SBEmuNodeConnectionError: if ssh \</span>
+<span class="sd">            connection establishment fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;[open_ssh_connection] Initiating SSH session with </span><span class="si">{0}</span><span class="s1"> node on &#39;</span>
+            <span class="s1">&#39;</span><span class="si">{1}</span><span class="s1"> host.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_connect_or_return</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Return a new client ssh object for the emulator node</span>
+                    <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_connect_or_return</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuNodeConnectionError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SBEmu.build"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.SBEmu.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the SB-Emulator build handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.SBEmuBuildError: build fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[SB-Emulator] Building&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILDING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> build handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[SB-Emulator.build_handler]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">)</span>
+                    <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">build_hnd</span><span class="p">]),</span>
+                        <span class="s1">&#39;[SB-Emulator.build_handler]&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;BUILT&#39;</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[SB-Emulator] Successful building&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_BUILT&#39;</span>
+                        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuBuildError</span><span class="p">(</span>
+                            <span class="s1">&#39;[SB-Emulator] Failure during building: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                            <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuBuildError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SBEmu.clean"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.SBEmu.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the SB-Emulator clean handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.SBEmuCleanupError: if cleanup process fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[SB-Emulator] Cleaning&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> clean handler does not exist&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="s1">&#39;[SB-Emulator.clean_handler]&#39;</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">)</span>
+                    <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_hnd</span><span class="p">,</span>
+                        <span class="s1">&#39;[SB-Emulator.clean_handler]&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANED&#39;</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[SB-Emulator] Successful clean&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_CLEANED&#39;</span>
+                        <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span>
+                              <span class="n">SBEmuCleanupError</span><span class="p">(</span>
+                                  <span class="s1">&#39;[SB-Emulator] Failure during cleaning: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                                  <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuCleanupError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method called when object is destroyed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Run emulator clean handler.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Close emulator node ssh connection.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="MTCBench"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.MTCBench">[docs]</a><span class="k">class</span> <span class="nc">MTCBench</span><span class="p">(</span><span class="n">SBEmu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All South-bound MTCbench related functionality is here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the creation of an MTCbench SB emulator object.</span>
+<span class="sd">        Inherits from SBEmu class.</span>
+
+<span class="sd">        :param sb_emu_base_dir: emulator base directory</span>
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :type sb_emu_base_dir: str</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;mtcbench_run_handler&#39;</span><span class="p">]</span>
+
+        <span class="sd">&#39;&#39;&#39;check handlers&#39; validity&#39;&#39;&#39;</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">check_filelist</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">])</span>
+
+        <span class="c1"># The parameters initialized as None are dimensions of the test.</span>
+        <span class="c1"># These values are passed outside, from the test in the main for loop.</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulated_hosts</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">switches_per_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_creation_delay_ms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay_before_traffic_ms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;mtcbench_mode&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">warmup</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;mtcbench_warmup&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms_per_test</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;mtcbench_ms_per_test&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">internal_repeats</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;mtcbench_internal_repeats&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MTCBench.get_topo_bootup_ms"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.MTCBench.get_topo_bootup_ms">[docs]</a>    <span class="k">def</span> <span class="nf">get_topo_bootup_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and returns the total topology bootup time in ms.</span>
+
+<span class="sd">        :returns: the total time for the topology to bootup</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">topo_bootup_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread_creation_delay_ms</span>
+        <span class="k">return</span> <span class="n">topo_bootup_ms</span></div>
+
+<div class="viewcode-block" id="MTCBench.get_overall_topo_size"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.MTCBench.get_overall_topo_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_overall_topo_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and returns the total topology size.</span>
+
+<span class="sd">        :returns: the total switch number</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">overall_topo_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">switches_per_thread</span>
+        <span class="k">return</span> <span class="n">overall_topo_size</span></div>
+
+<div class="viewcode-block" id="MTCBench.run"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.MTCBench.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctrl_ip</span><span class="p">,</span> <span class="n">ctrl_sb_port</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;[MTCBench.run_handler]&#39;</span><span class="p">,</span>
+            <span class="n">lines_queue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">block_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">getpty_flag</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the MTCBench SB-Emulator run handler</span>
+
+<span class="sd">        :param ctrl_ip: The ip address of the controller</span>
+<span class="sd">        :param ctrl_sb_port: the port number of the SouthBound interface of \</span>
+<span class="sd">            the controller</span>
+<span class="sd">        :param prefix: prefix of logging messages printed during execution of \</span>
+<span class="sd">            MTCbench handler</span>
+<span class="sd">        :param lines_queue: a queue object gathering the output of MTCbench \</span>
+<span class="sd">            handler line by line.</span>
+<span class="sd">        :param print_flag: defines if the output of MTCbench handler will be \</span>
+<span class="sd">            printed on the screen</span>
+<span class="sd">        :param block_flag: defines if the run handler will run in blocking or \</span>
+<span class="sd">            non blocking mode. In not blocking mode no output will be printed \</span>
+<span class="sd">            or saved in a queue.</span>
+<span class="sd">        :param getpty_flag: defines if the run handler will run in a separate \</span>
+<span class="sd">            pty terminal</span>
+<span class="sd">        :type ctrl_ip: str</span>
+<span class="sd">        :type ctrl_sb_port: int</span>
+<span class="sd">        :type prefix: str</span>
+<span class="sd">        :type lines_queue: gevent.queue.Queue()</span>
+<span class="sd">        :type print_flag: bool</span>
+<span class="sd">        :type block_flag: bool</span>
+<span class="sd">        :type getpty_flag: bool</span>
+<span class="sd">        :raises IOError: if the exit status of the handler is not 0</span>
+<span class="sd">        :raises emulator_exceptions.MTCbenchRunError: in case of run MTCbench \</span>
+<span class="sd">            error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Starting&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STARTING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STARTED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> run handler does not exist&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">)))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">run_hnd</span><span class="p">,</span> <span class="n">ctrl_ip</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">ctrl_sb_port</span><span class="p">),</span>
+                         <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">switches_per_thread</span><span class="p">),</span>
+                         <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">switches_per_thread</span><span class="p">),</span>
+                         <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_creation_delay_ms</span><span class="p">),</span>
+                         <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay_before_traffic_ms</span><span class="p">),</span>
+                         <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms_per_test</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">internal_repeats</span><span class="p">),</span>
+                         <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simulated_hosts</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">warmup</span><span class="p">),</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">]),</span>
+                    <span class="n">prefix</span><span class="p">,</span> <span class="n">lines_queue</span><span class="p">,</span> <span class="n">print_flag</span><span class="p">,</span>
+                    <span class="n">block_flag</span><span class="p">,</span> <span class="n">getpty_flag</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STARTED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Successful started&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_STARTED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MTCbenchRunError</span><span class="p">(</span>
+                        <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> Failure during starting: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MTCbenchRunError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Multinet"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet">[docs]</a><span class="k">class</span> <span class="nc">Multinet</span><span class="p">(</span><span class="n">SBEmu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    All South-bound Multinet related functionality is here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the creation of an Multinet SB emulator object.</span>
+<span class="sd">        Inherits from SBEmu class.</span>
+
+<span class="sd">        :param sb_emu_base_dir: emulator base directory</span>
+<span class="sd">        :param test_config: JSON input configuration</span>
+<span class="sd">        :type sb_emu_base_dir: str</span>
+<span class="sd">        :type test_config: JSON configuration dictionary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">sb_emu_base_dir</span><span class="p">,</span> <span class="n">test_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deploy_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                           <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_rest_server_boot&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                            <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_rest_server_stop&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">master_rest_port</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_rest_server_port&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_switches_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="n">sb_emu_base_dir</span> <span class="o">+</span>
+                                 <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_get_switches_handler&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;topology_traffic_gen_handler&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traffic_gen_hnd</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_traffic_gen_handler&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;topology_get_flows_handler&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_flows_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                                  <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_get_flows_handler&#39;</span><span class="p">])</span>
+
+        <span class="c1"># The parameters initialized as None are dimensions of the test.</span>
+        <span class="c1"># These values are passed outside, from the test in the main for loop.</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topo_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topo_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topo_hosts_per_switch</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topo_group_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topo_group_delay_ms</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># ---------------------------------------------------------------------</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_topos_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                               <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_init_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_topos_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                                <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_start_switches_handler&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop_topos_hnd</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span>
+                               <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;topology_stop_switches_handler&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="s1">&#39;multinet_traffic_gen_duration_ms&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traffic_gen_duration_ms</span> <span class="o">=</span> \
+                <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;multinet_traffic_gen_duration_ms&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traffic_gen_duration_ms</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="s1">&#39;multinet_interpacket_delay_ms&#39;</span> <span class="ow">in</span> <span class="n">test_config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interpacket_delay_ms</span> <span class="o">=</span> \
+                <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;multinet_interpacket_delay_ms&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interpacket_delay_ms</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">topo_switch_type</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;multinet_switch_type&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workers_ips</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;multinet_worker_ip_list&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workers_ports</span> <span class="o">=</span> <span class="n">test_config</span><span class="p">[</span><span class="s1">&#39;multinet_worker_port_list&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_local_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span>
+                                                              <span class="s2">&quot;config.json&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span>
+                                                               <span class="s2">&quot;config&quot;</span><span class="p">,</span>
+                                                               <span class="s2">&quot;config.json&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span> <span class="o">+</span> <span class="s2">&quot;bin/venv_handler_master.sh&quot;</span>
+
+<div class="viewcode-block" id="Multinet.get_topo_bootup_ms"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.get_topo_bootup_ms">[docs]</a>    <span class="k">def</span> <span class="nf">get_topo_bootup_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and returns the total topology bootup time in ms.</span>
+
+<span class="sd">        :returns: the total time for the topology to bootup</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">topo_bootup_ms</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topo_size</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_group_size</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_group_delay_ms</span>
+        <span class="k">return</span> <span class="n">topo_bootup_ms</span></div>
+
+<div class="viewcode-block" id="Multinet.get_overall_topo_size"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.get_overall_topo_size">[docs]</a>    <span class="k">def</span> <span class="nf">get_overall_topo_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates and returns the total topology size.</span>
+
+<span class="sd">        :returns: the total worker number</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">overall_topo_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_size</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workers_ips</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">overall_topo_size</span></div>
+
+    <span class="k">def</span> <span class="nf">__generate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cntrl_of_port</span><span class="p">,</span> <span class="n">cntrl_ip</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a new json configuration file for multinet, according to the</span>
+<span class="sd">        configuration values that are passed as parameters.</span>
+
+<span class="sd">        :param cntrl_of_port: this is the southbound port of the controller,</span>
+<span class="sd">        where it listens for openflow protocol messages</span>
+<span class="sd">        :param cntrl_ip: IP address of controller node</span>
+<span class="sd">        :type cntrl_of_port: int</span>
+<span class="sd">        :type cntrl_ip: str</span>
+<span class="sd">        :raises emulator_exceptions.MultinetConfGenerateError: if json</span>
+<span class="sd">        configuration file generation of multinet fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">config_data</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;master_ip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ip</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;master_port&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">master_rest_port</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;worker_ip_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers_ips</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;worker_port_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers_ports</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;deploy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;deploy&#39;</span><span class="p">][</span><span class="s1">&#39;multinet_base_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;deploy&#39;</span><span class="p">][</span><span class="s1">&#39;ssh_port&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;deploy&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;deploy&#39;</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;controller_ip_address&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cntrl_ip</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;controller_of_port&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cntrl_of_port</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;switch_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_switch_type</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;topo_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_type</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;topo_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_size</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;group_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_group_size</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;group_delay&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topo_group_delay_ms</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;hosts_per_switch&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">topo_hosts_per_switch</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;traffic_generation_duration_ms&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">traffic_gen_duration_ms</span>
+                <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;topo&#39;</span><span class="p">][</span><span class="s1">&#39;interpacket_delay_ms&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interpacket_delay_ms</span>
+
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_local_path</span><span class="p">,</span>
+                          <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_json_file</span><span class="p">:</span>
+                    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="n">config_json_file</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">file_ops</span><span class="o">.</span><span class="n">file_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_local_path</span><span class="p">):</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetConfGenerateError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Config local file has not been created&#39;</span><span class="p">,</span>
+                        <span class="mi">2</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span>
+                    <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetConfGenerateError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__parse_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multinet_handler_name</span><span class="p">,</span> <span class="n">multinet_output</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the console output of a multinet handler and extracts the</span>
+<span class="sd">        aggregated result from all workers, as a numeric value.</span>
+<span class="sd">        (Helper function)</span>
+
+<span class="sd">        :param multinet_handler_name: The name of multinet handler from which</span>
+<span class="sd">        we get the results.</span>
+<span class="sd">        :param multinet_output: The console output of multinet handler</span>
+<span class="sd">        :returns: The aggregated result from all workers</span>
+<span class="sd">        (aggregation function is sum)</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        :type multinet_handler_name: string</span>
+<span class="sd">        :type multinet_output: string</span>
+<span class="sd">        :raises emulator_exceptions.MultinetOutputParsingError: If the result</span>
+<span class="sd">        of the parsed multinet output is None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">regex_result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+                    <span class="s1">r&#39;INFO:root:\[</span><span class="si">{0}</span><span class="s1">\]\[response data\].*&#39;</span><span class="o">.</span>
+                    <span class="nb">format</span><span class="p">(</span><span class="n">multinet_handler_name</span><span class="p">),</span> <span class="n">multinet_output</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">regex_result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetOutputParsingError</span><span class="p">(</span>
+                        <span class="s1">&#39;Failed to get results from </span><span class="si">{0}</span><span class="s1"> multinet handler.&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">multinet_handler_name</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">json_result</span> <span class="o">=</span> <span class="n">regex_result</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="s1">&#39;INFO:root:[</span><span class="si">{0}</span><span class="s1">][response data] &#39;</span>
+                        <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">multinet_handler_name</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">multinet_result</span> <span class="o">=</span> \
+                    <span class="nb">sum</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_result</span><span class="p">)])</span>
+                <span class="k">return</span> <span class="n">multinet_result</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span>
+                    <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetOutputParsingError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Multinet.deploy"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.deploy">[docs]</a>    <span class="k">def</span> <span class="nf">deploy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cntrl_ip</span><span class="p">,</span> <span class="n">cntrl_of_port</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator deploy handler</span>
+
+<span class="sd">        :param cntrl_ip: The IP of the Controller.</span>
+<span class="sd">        :param cntrl_of_port: The openflow interface port of the Controller</span>
+<span class="sd">        :type cntrl_ip: str</span>
+<span class="sd">        :type cntrl_of_port: int</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetDeployError: in case of Multinet \</span>
+<span class="sd">            deploy error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] Deploy&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;DEPLOYING&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__generate_config</span><span class="p">(</span><span class="n">cntrl_of_port</span><span class="p">,</span> <span class="n">cntrl_ip</span><span class="p">)</span>
+                <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_copy_file_to_target</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_local_path</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">deploy_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_DEPLOYED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Deploy handler does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deploy_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deploy_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet.deploy_handler]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;DEPLOYED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] Successful deployed&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_DEPLOYED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetDeployError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during deploying: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetDeployError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Multinet.get_switches"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.get_switches">[docs]</a>    <span class="k">def</span> <span class="nf">get_switches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ssh_conn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator get_switches handler</span>
+
+<span class="sd">        :param new_ssh_conn: an SSH client connection object</span>
+<span class="sd">        :returns: The per worker number of switches in json string</span>
+<span class="sd">        :rtype: strcleanup_hnd</span>
+<span class="sd">        :type new_ssh_conn: paramiko.SFTPClient</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetGetSwitchesError: if handler fails \</span>
+<span class="sd">            to run successfully and return a valid result</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] get_switches&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;GETTING_SWITCHES&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_switches_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_GOT_SWITCHES&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Get_switches handler does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_switches_hnd</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="n">new_ssh_conn</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="n">used_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_switches_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet.get_switches_hnd]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;GOT_SWITCHES&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Multinet] Successful got switches&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_output</span><span class="p">(</span><span class="s1">&#39;get_switches_topology_handler&#39;</span><span class="p">,</span>
+                                               <span class="n">cmd_output</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_GOT_SWITCHES&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetGetSwitchesError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during getting switches: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetGetSwitchesError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Multinet.get_flows"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.get_flows">[docs]</a>    <span class="k">def</span> <span class="nf">get_flows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ssh_conn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator get_flows handler</span>
+
+<span class="sd">        :param new_ssh_conn: an SSH client connection object</span>
+<span class="sd">        :returns: The per worker total number of flows in json string</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :type new_ssh_conn: paramiko.SFTPClient</span>
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetGetFlowsError: if handler fails to \</span>
+<span class="sd">            run successfully</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] get_flows&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;GETTING_FLOWS&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_flows_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_GOT_FLOWS&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Get_flows handler does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_flows_hnd</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="n">new_ssh_conn</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">get_flows_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet. get_flows_hnd]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_ssh_conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">used_ssh_conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;GOT_FLOWS&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[Multinet] Successful got flows&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_output</span><span class="p">(</span><span class="s1">&#39;get_flows_topology_handler&#39;</span><span class="p">,</span>
+                                               <span class="n">cmd_output</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;NOT_GOT_FLOWS&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetGetFlowsError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during getting flows: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetGetFlowsError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Multinet.init_topos"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.init_topos">[docs]</a>    <span class="k">def</span> <span class="nf">init_topos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator init_topos handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetInitToposError: if Multinet \</span>
+<span class="sd">            initialization fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] init_topos&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;INIT_MININET_TOPOS&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">init_topos_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_INITIALIZED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Init_topos handler does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">init_topos_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_topos_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet.init_topos_hnd]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_INITIALIZED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] Successful initialization &#39;</span>
+                                 <span class="s1">&#39;of Mininet topos&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_INITIALIZED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetInitToposError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during topos initialization: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetInitToposError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Multinet.start_topos"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.start_topos">[docs]</a>    <span class="k">def</span> <span class="nf">start_topos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator start_topos handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetStartToposError: if Multinet start \</span>
+<span class="sd">            topology handler fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] start_topos&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;START_MININET_TOPOS&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_topos_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_STARTED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Start_topos handler does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">start_topos_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_topos_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet.start_topos_hnd]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_STARTED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] Successful start &#39;</span>
+                                 <span class="s1">&#39;of Mininet topos&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_STARTED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetStartToposError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during the starting of topos: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetStartToposError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Multinet.stop_topos"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.stop_topos">[docs]</a>    <span class="k">def</span> <span class="nf">stop_topos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator stop_topos handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetStopToposError: if Multinet stop \</span>
+<span class="sd">            handler fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] stop_topos&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;STOP_MININET_TOPOS&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_topos_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_STOPPED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Stop_topos handler does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">stop_topos_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_topos_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet.stop_topos_hnd]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_STOPPED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] Successful stop of Mininet topos&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_STOPPED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetStopToposError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during the stopping of topos&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetStopToposError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Multinet.cleanup"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator cleanup handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetCleanupError: if Multinet cleanup \</span>
+<span class="sd">            handler fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] cleanup&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CLEANUP_MININET&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cleanup_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Cleanup handler does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet.cleanup_hnd]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_CLEANED&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] Successful cleanup of Mininet &#39;</span>
+                                 <span class="s1">&#39;topos&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TOPOS_NOT_CLEANED&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetCleanupError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during the cleanup of topos: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                        <span class="nb">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetCleanupError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Multinet.generate_traffic"><a class="viewcode-back" href="../../stress_test.html#stress_test.emulator.Multinet.generate_traffic">[docs]</a>    <span class="k">def</span> <span class="nf">generate_traffic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to the Multinet SB-Emulator traffic_gen handler</span>
+
+<span class="sd">        :raises IOError: if the handler does not exist on the remote host</span>
+<span class="sd">        :raises emulator_exceptions.MultinetTraffigGenError: if Multinet \</span>
+<span class="sd">            traffic generator handler fails to run successfully</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] traffic gen&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;CREATE_TRAFFIC&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                                           <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">traffic_gen_hnd</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TRAFFIC_DOWN&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;[Multinet] Traffic_generator handler &#39;</span>
+                                  <span class="s1">&#39;does not exist&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">make_remote_file_executable</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_port</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssh_pass</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">traffic_gen_hnd</span><span class="p">)</span>
+                <span class="n">exit_status</span><span class="p">,</span> <span class="n">cmd_output</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">netutil</span><span class="o">.</span><span class="n">ssh_run_command</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ssh_conn</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">venv_hnd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">traffic_gen_hnd</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">__multinet_config_file_remote_path</span><span class="p">]),</span>
+                    <span class="s1">&#39;[Multinet.generate_traffic_hnd]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">exit_status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TRAFFIC_UP&#39;</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[Multinet] Successful traffic generation &#39;</span>
+                                 <span class="s1">&#39;from switches&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;TRAFFIC_DOWN&#39;</span>
+                    <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetTraffigGenError</span><span class="p">(</span>
+                        <span class="s1">&#39;[Multinet] Failure during traffic generation &#39;</span>
+                        <span class="s1">&#39;from switches: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_output</span><span class="p">),</span> <span class="n">exit_status</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span><span class="p">(</span><span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">MultinetTraffigGenError</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">emulator_exceptions</span><span class="o">.</span><span class="n">SBEmuError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__error_handling</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">err_msg</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">err_code</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method called when object is destroyed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Run Multinet cleanup.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__del__</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

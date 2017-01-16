@@ -12,12 +12,19 @@ import stress_test.report_gen
 import stress_test.report_spec_templates
 import stress_test.test_run
 import sys
-import time
+
 
 class TestType:
-
+    """
+    Creates a TestType object
+    """
     def __init__(self, args):
         """
+        Initializes test type coming from args (user defined in cli),
+        total_samples: list with dictionaries, every "sample" is a
+        dictionary containing keys/values of results gathered at the end
+        of every run within the for loop of every *_run function in
+        TestRun class..
         """
         self.test_type = args.test_type
         self.total_samples = None
@@ -26,14 +33,16 @@ class TestType:
                                                          args.json_config)
 
     def load_test_conf(self, args):
-        """ Loading test configuration for NSTAT experiment. Parsing
-        configuration options from JSON input file
-        :param args: ArgumentParser object containing user specified
-        parameters (i.e test type, controller base directory, generator base
-        directory) when running NSTAT
+        """
+        Loading test configuration for NSTAT experiment. Parsing \
+            configuration options from JSON input file
+
+        :param args: ArgumentParser object containing user specified \
+            parameters (i.e test type, controller base directory, generator \
+            base directory) when running NSTAT
         :returns: json_conf:
-        :rtype: json_conf:  python object resulting from a deserialized file
-        like object containing a json document
+        :rtype: json_conf:  python object resulting from a deserialized file \
+            like object containing a json document
         :type args: ArgumentParser object
         """
 
@@ -42,10 +51,12 @@ class TestType:
         return json_conf
 
     def set_test_log_level(self, args):
-        """Setting log level for NSTAT experiment
-        :param args: ArgumentParser object containing user specified
-        parameters (i.e test type, controller base directory, generator base
-        directory) when running NSTAT
+        """
+        Setting log level for NSTAT experiment
+
+        :param args: ArgumentParser object containing user specified \
+            parameters (i.e test type, controller base directory, generator \
+            base directory) when running NSTAT
         :type args: ArgumentParser object
         """
         logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
@@ -72,6 +83,9 @@ class TestType:
 
     def test_selector(self, args):
         """
+        Selects which test to run depending on the information coming from
+        the args object. nstat_test_type_run variable contains information
+        test_type + sb_emulatore_name, necessary to select which test to run.
         """
         self.set_test_log_level(args)
         json_conf = self.load_test_conf(args)

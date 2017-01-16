@@ -18,15 +18,14 @@ import util.sysstats
 
 
 class Monitor:
-
+    """
+    All monitor- related functionality is here
+    """
     def __init__(self, controller):
-        """Create a Monitor. Options from JSON input file
-        :param nb_gen_base_dir: emulator base directory
+        """
+        Creates a Monitor. Options from JSON input file
         :param controller: object of the Controller class
-        :param sbemu: object of the SBEmu subclass
-        :type nb_gen_base_dir: str
         :type controller: object
-        :type sbemu: object
         """
         self.controller = controller
         self.global_sample_id = 0
@@ -34,7 +33,8 @@ class Monitor:
         self.test_repeats = 0
 
     def system_results(self):
-        """ Collect runtime statistics
+        """
+        Collect runtime statistics
         :returns: experiment statistics in dictionary
         :rtype: dict
         """
@@ -85,15 +85,25 @@ class Monitor:
 
 
 class Oftraf:
-
+    """
+    Oftraf related monitoring
+    """
     def __init__(self, controller, oftraf):
+        """
+        Creates an oftraf monitor object.
+        :param controller: object of the Controller class
+        :param oftraf: object of the Oftraf class
+        :type controller: object
+        :type oftraf: object
+        """
         self.oftraf = oftraf
         self.controller = controller
         self.exit_flag = False
         self.results_queue = gevent.queue.Queue(maxsize=1)
 
     def of_monitor_thread(self):
-        """Function executed inside a thread and returns the output in json
+        """
+        Function executed inside a thread and returns the output in json
         format, of openflow packets counts
         """
         try:
@@ -126,6 +136,13 @@ class Oftraf:
         self.results_queue.put(results)
 
     def monitor_run_oftraf(self):
+        """
+        This monitor function is used to collect the results from
+        of_monitor_thread function
+
+        :returns: Returns the results from the gevent queue
+        :rtype: dict
+        """
         # Parallel section
         self.exit_flag = False
         monitor_thread = gevent.spawn(self.of_monitor_thread)
@@ -136,7 +153,16 @@ class Oftraf:
 
 
 class Mtcbench(Monitor):
+    """
+    MTCbench- related monitoring. Subclass of Monitor superclass
+    """
     def __init__(self, controller, emulator):
+        """ Creates a MTCbench monitor object.
+        :param controller: object of the Controller class
+        :param emulator: object of the SBEmu subclass
+        :type controller: object
+        :type emulator: object
+        """
         super(self.__class__, self).__init__(controller)
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
@@ -145,6 +171,14 @@ class Mtcbench(Monitor):
         self.data_queue = gevent.queue.Queue()
 
     def monitor_results_active(self):
+        """
+        This monitor function is used from south bound active mtcbench \
+            tests to collect the related key results
+
+        :returns: Returns the dictionary with the results included into JSON \
+            input file
+        :rtype: dict
+        """
         results = self.system_results()
         results['global_sample_id'] = \
             self.global_sample_id
@@ -178,6 +212,14 @@ class Mtcbench(Monitor):
         return results
 
     def monitor_results_idle(self):
+        """
+        This monitor function is used from south bound idle mtcbench \
+            tests to collect the related key results
+
+        :returns: Returns the dictionary with the results included into JSON \
+            input file
+        :rtype: dict
+        """
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
@@ -204,19 +246,11 @@ class Mtcbench(Monitor):
 
     def monitor_thread_idle(self, boot_start_time):
         """
-        This monitor function is used from idle tests.
-        Poll operational DS to discover installed switches.
-        It is used for idle tests from mtcbench and multinet emulators.
+        This monitor function is used from south bound idle mtcbench
+        tests to put into gevent queue the results during test running
+
         :param boot_start_time: The time we begin starting topology switches
-        :param sleep_before_discovery_ms: amount of time (in milliseconds)
-        to sleep before starting polling datastore to discover switches
-        :param expected_switches: switches expected to find in the DS
-        should discover switches (in milliseconds)
-        :param queuecomm: queue for communicating with the main context
         :type boot_start_time: int
-        :type sleep_before_discovery_ms: int
-        :type expected_switches: int
-        :type queuecomm: multiprocessing.Queue
         """
         discovery_deadline = 120
         expected_switches = self.emulator.get_overall_topo_size()
@@ -282,9 +316,8 @@ class Mtcbench(Monitor):
 
     def monitor_thread_active(self):
         """
-        This monitor function is used by active tests
-        Function executed by the monitor thread
-        It is used for active tests.
+        This monitor function is used from south bound active mtcbench
+        tests to put into gevent queue the results during test running
         """
 
         internal_repeat_id = 0
@@ -334,7 +367,15 @@ class Mtcbench(Monitor):
             gevent.sleep(0.5)
 
     def monitor_run(self, boot_start_time=None):
+        """
+        This monitor function is used from both south bound active and idle
+        mtcbench tests to get the results from gevent queue
 
+        :param boot_start_time: The time we begin starting topology switches
+        :returns: Returns a dictionary, including all the results
+        :rtype: dict
+        :type boot_start_time: int
+        """
         logging.info('[MTCbench.monitor_run] creating and starting'
                      ' monitor and MTCbench threads.')
         # Consumer - producer threads (mtcbench_thread is the producer,
@@ -360,7 +401,18 @@ class Mtcbench(Monitor):
         return samples
 
     def mtcbench_thread(self, block_flag=True, data_queue=None):
-        """ Function executed by mtcbench thread.
+        """
+        Function used to execute MTCBench thread
+
+        :param block_flag: It is used as a flag. When it is True the emulator \
+            run will wait for the completition of MTcbench thread running
+        :param data_queue: If not None the results are written into the \
+            data_queue line by line. In case of None the results are written \
+            into standard output
+        :returns: Returns a dictionary, including all the results
+        :rtype: dict
+        :type block_flag: boolean
+        :type data_queue: queue
         """
         logging.info('[MTCbench.mtcbench_thread] MTCbench thread started')
         try:
@@ -381,17 +433,42 @@ class Mtcbench(Monitor):
 
 
 class Multinet(Monitor):
+    """ Multinet- related monitoring. Subclass of Monitor superclass
+    """
     def __init__(self, controller, oftraf, emulator):
+        """
+        Creates a Multinet monitor object.
+
+        :param controller: object of the Controller class
+        :param oftraf: object of the Oftraf class
+        :param emulator: object of the SBEmu subclass
+        :type controller: object
+        :type oftraf: object
+        :type emulator: object
+        """
         Monitor.__init__(self, controller)
         # Oftraf.__init__(self, controller, oftraf)
         self.oftraf_node = oftraf
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
 
-    def monitor_run(self, reference_results=None,
-                    sample_id=None,
+    def monitor_run(self, reference_results=None, sample_id=None,
                     boot_start_time=None):
+        """
+        This monitor function is used from both south bound active and idle \
+            multinet tests to get the results from gevent queue
 
+        :param: reference_results: The results returned from the just previous \
+            iteration of the test. Used in the frame of a stability test
+        :param sample_id: The id of the sample running. Used in the frame of a \
+            stability test
+        :param boot_start_time: The time we begin starting topology switches
+        :returns: Returns a dictionary, including all the results
+        :rtype: dict
+        :type reference_results: dict
+        :type sample_id: int
+        :type boot_start_time: int
+        """
         logging.info('[Multinet.monitor_run] creating and starting'
                      ' monitoring of Multinet worker events.')
         if boot_start_time is None and sample_id is None:
@@ -426,11 +503,12 @@ class Multinet(Monitor):
 
     def monitor_thread_idle_scalability(self, boot_start_time):
         """
-        This monitor function is used from idle tests.
-        Poll operational DS to discover installed switches.
-        It is used for idle tests from mtcbench and multinet emulators.
-        """
+        This monitor function is used from both idle scalability multinet tests
+        tests to put into gevent queue the results during test running
 
+        :param boot_start_time: The time we begin starting topology switches
+        :type boot_start_time: int
+        """
         discovery_deadline = 120
         expected_switches = self.emulator.get_overall_topo_size()
         topology_bootup_time_ms = self.emulator.get_topo_bootup_ms()
@@ -516,6 +594,15 @@ class Multinet(Monitor):
 
     def monitor_thread_idle_stability(self, reference_results, sample_id):
         """
+        This monitor function is used from idle stability multinet tests \
+            to put the results into gevent queue
+
+        :param: reference_results: The results returned from the just previous \
+            iteration of the test. Used in the frame of a stability test
+        :param sample_id: The id of the sample running. Used in the frame of a \
+            stability test
+        :type reference_results: dict
+        :type sample_id: int
         """
         oftraf_mon = Oftraf(self.controller, self.oftraf_node)
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
@@ -567,9 +654,11 @@ class Multinet(Monitor):
         return
 
     def monitor_thread_active(self):
-        """ Function executed by multinet thread.
-            It calls monitor_thread() method of Oftraf Class
         """
+        This monitor function is used from active scalability multinet tests
+        to put the results into gevent queue
+        """
+
         oftraf_mon = Oftraf(self.controller, self.oftraf_node)
         oftraf_monitor_results = oftraf_mon.monitor_run_oftraf()
         results = self.system_results()
@@ -614,7 +703,19 @@ class Multinet(Monitor):
 
 
 class NBgen(Monitor):
+    """
+    NB-generator- related monitoring. Subclass of Monitor superclass
+    """
     def __init__(self, controller, nbgen, sbemu):
+        """ Creates a NBgen monitor object.
+
+        :param controller: object of the Controller class
+        :param nbgen: object of the NB-generator class
+        :param sbemu: object of the SBEmu subclass
+        :type controller: object
+        :type nbgen: object
+        :type sbemu: object
+        """
         Monitor.__init__(self, controller)
         self.nbgen_queue = gevent.queue.Queue()
         self.nbgen = nbgen
@@ -625,11 +726,15 @@ class NBgen(Monitor):
         Monitors operational DS from the time the transmission starts from NB
         towards the controller until the expected number of flows are
         found or the deadline is reached.
+
         :param t_start: timestamp for begin of discovery
+        :param expected_flows: The number of expected flows to be compared with
+        discovered flows
         :returns: Returns a float number containing the time in which
         total flows were discovered otherwise containing -1.0 on failure.
         :rtype: float
         :type t_start: float
+        :type expected_flows: int
         """
         t_discovery_start = time.time()
         previous_discovered_flows = 0
@@ -676,9 +781,13 @@ class NBgen(Monitor):
         """
         Monitors operational DS until the expected number of flows are found
         or the deadline is reached.
+
+        :param expected_flows: The number of expected flows to be compared with
+        discovered flows
         :returns: Returns a float number containing the time in which
         total flows were discovered otherwise containing -1.0 on failure.
         :rtype: float
+        :type expected_flows: int
         """
         t_start = time.time()
         t_discovery_start = time.time()
@@ -726,12 +835,16 @@ class NBgen(Monitor):
         Monitors installed flows into switches of Multinet from the first REST
         request, until the expected number of flows are found or the deadline
         is reached.
+
         :param t_start: timestamp for beginning of discovery
+        :param expected_flows: The number of expected flows to be compared with
+        discovered flows
         :returns: Returns a float number containing the time in which
         total flows were discovered in Multinet switches. Otherwise containing
         -1.0 on failure.
         :rtype: float
         :type t_start: float
+        :type expected_flows: int
         """
         t_discovery_start = time.time()
         previous_discovered_flows = 0
@@ -778,6 +891,7 @@ class NBgen(Monitor):
         """
         Monitors the time for all add REST requests to be sent and their
         response to be received.
+
         :param t_start: timestamp for beginning of discovery
         :returns: Returns a float number containing the time in which
         total flows were discovered in Multinet switches. Otherwise containing
@@ -792,13 +906,24 @@ class NBgen(Monitor):
                             expected_flows,
                             flow_delete_flag):
         """
-        Monitors operational flows in switches of Multinet until the expected
-        number of flows are found or the deadline is reached.
-        :param t_start: timestamp for begin of discovery
-        :returns: Returns a float number containing the time in which
-        total flows were discovered otherwise containing -1.0 on failure.
-        :rtype: float
-        :type t_start:
+        This monitor function is used from  north bound tests to get the \
+            results from gevent queue
+
+        :param: t_start: timestamp for beginning of discovery iteration of \
+            the test.
+        :param total_failed_flows: The number of failed flows after an add or \
+            delete function
+        :param expected_flows: The number of expected flows to be compared \
+            with discovered flows
+        :param flow_delete_flag: Flag, which when is set to True, a delete \
+            flows action in DS is performed. Otherwise an add flows action is \
+            performed
+        :returns: Returns a dictionary, including all the results
+        :rtype: dict
+        :type t_start: float
+        :type total_failed_flows: int
+        :type expected_flows: int
+        :type flow_delete_flag: boolean
         """
         logging.info('[NB_generator] Start polling measurements')
         monitor_ds = gevent.spawn(self.__poll_flows_ds,
@@ -839,6 +964,22 @@ class NBgen(Monitor):
 
     def monitor_results_add(self, add_controller_time,
                             results_thread, total_failed_flows):
+        """
+        This monitor function is used to create the result dictionary during \
+            an add flows action
+
+        :param: add_controller_time: time for all add REST requests to be sent \
+            and their response to be received
+        :param results_thread: The dictionary from monitor_threads_run \
+            function including the contents from nbgen_queue
+        :param total_failed_flows: The number of failed flows after an add or \
+            delete function
+        :returns: Returns a dictionary, including all the results
+        :rtype: dict
+        :type add_controller_time: float
+        :type results_thread: dict
+        :type total_failed_flows: int
+        """
 
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
@@ -906,6 +1047,22 @@ class NBgen(Monitor):
 
     def monitor_results_del(self, controller_time,
                             results_thread, total_failed_flows):
+        """
+        This monitor function is used to create the result dictionary during a \
+            delete flows action
+
+        :param: controller_time: time for all delete REST requests to be sent \
+            and their response to be received
+        :param results_thread: The dictionary from monitor_threads_run \
+            function including the contents from nbgen_queue
+        :param total_failed_flows: The number of failed flows after an add or \
+            delete function
+        :returns: Returns a dictionary, including all the results
+        :rtype: dict
+        :type controller_time: float
+        :type results_thread: dict
+        :type total_failed_flows: int
+        """
 
         # Remove controller time: Time for all delete REST requests to be sent
         # and their response to be received

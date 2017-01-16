@@ -1,6 +1,7 @@
 #! /usr/bin/env python3.4
 
-"""Handler changing the rate of statistics collection from the topology switches
+"""
+Handler changing the rate of statistics collection from the topology switches
 """
 
 import xml_utils
@@ -9,10 +10,12 @@ import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.2.3-Helium-SR3'
 
+
 def change_stats_period():
-    """Takes as command line argument the new interval of statistics period we
-    want to set in the configuration file of the controller and writes it in
-    this file.
+    """
+    Takes as command line argument the new interval of statistics period we \
+        want to set in the configuration file of the controller and writes it
+        in this file.
     """
 
     string_to_find = 'min-request-net-monitor-interval'

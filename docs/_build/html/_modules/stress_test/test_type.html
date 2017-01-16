@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>stress_test.test_type &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.4.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stress_test.test_type</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2016 Intracom S.A. Telecom Solutions. All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This program and the accompanying materials are made available under the</span>
+<span class="c1"># terms of the Eclipse Public License v1.0 which accompanies this distribution,</span>
+<span class="c1"># and is available at http://www.eclipse.org/legal/epl-v10.html</span>
+
+<span class="sd">&quot;&quot;&quot; Controller Class- All controller-related functionality is here&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">stress_test.report_gen</span>
+<span class="kn">import</span> <span class="nn">stress_test.report_spec_templates</span>
+<span class="kn">import</span> <span class="nn">stress_test.test_run</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<div class="viewcode-block" id="TestType"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_type.TestType">[docs]</a><span class="k">class</span> <span class="nc">TestType</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a TestType object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes test type coming from args (user defined in cli),</span>
+<span class="sd">        total_samples: list with dictionaries, every &quot;sample&quot; is a</span>
+<span class="sd">        dictionary containing keys/values of results gathered at the end</span>
+<span class="sd">        of every run within the for loop of every *_run function in</span>
+<span class="sd">        TestRun class..</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_type</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">test_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span> <span class="o">=</span> \
+            <span class="n">stress_test</span><span class="o">.</span><span class="n">report_spec_templates</span><span class="o">.</span><span class="n">TestReport</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">,</span>
+                                                         <span class="n">args</span><span class="o">.</span><span class="n">json_config</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TestType.load_test_conf"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_type.TestType.load_test_conf">[docs]</a>    <span class="k">def</span> <span class="nf">load_test_conf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loading test configuration for NSTAT experiment. Parsing \</span>
+<span class="sd">            configuration options from JSON input file</span>
+
+<span class="sd">        :param args: ArgumentParser object containing user specified \</span>
+<span class="sd">            parameters (i.e test type, controller base directory, generator \</span>
+<span class="sd">            base directory) when running NSTAT</span>
+<span class="sd">        :returns: json_conf:</span>
+<span class="sd">        :rtype: json_conf:  python object resulting from a deserialized file \</span>
+<span class="sd">            like object containing a json document</span>
+<span class="sd">        :type args: ArgumentParser object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">json_config</span><span class="p">)</span> <span class="k">as</span> <span class="n">conf_file</span><span class="p">:</span>
+            <span class="n">json_conf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json_conf</span></div>
+
+<div class="viewcode-block" id="TestType.set_test_log_level"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_type.TestType.set_test_log_level">[docs]</a>    <span class="k">def</span> <span class="nf">set_test_log_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setting log level for NSTAT experiment</span>
+
+<span class="sd">        :param args: ArgumentParser object containing user specified \</span>
+<span class="sd">            parameters (i.e test type, controller base directory, generator \</span>
+<span class="sd">            base directory) when running NSTAT</span>
+<span class="sd">        :type args: ArgumentParser object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging_format</span> <span class="o">=</span> <span class="s1">&#39;[</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)7s</span><span class="s1"> ] </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">logging_level</span> <span class="o">==</span> <span class="s1">&#39;INFO&#39;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+                                <span class="nb">format</span><span class="o">=</span><span class="n">logging_format</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">logging_level</span> <span class="o">==</span> <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+                                <span class="nb">format</span><span class="o">=</span><span class="n">logging_format</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span>
+                                <span class="nb">format</span><span class="o">=</span><span class="n">logging_format</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">log_file</span><span class="p">:</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">file_logging_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span>
+                                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">logging_level</span> <span class="o">==</span> <span class="s1">&#39;INFO&#39;</span><span class="p">:</span>
+                <span class="n">file_logging_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">logging_level</span> <span class="o">==</span> <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span>
+                <span class="n">file_logging_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file_logging_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestType.test_selector"><a class="viewcode-back" href="../../stress_test.html#stress_test.test_type.TestType.test_selector">[docs]</a>    <span class="k">def</span> <span class="nf">test_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Selects which test to run depending on the information coming from</span>
+<span class="sd">        the args object. nstat_test_type_run variable contains information</span>
+<span class="sd">        test_type + sb_emulatore_name, necessary to select which test to run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_test_log_level</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">json_conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_test_conf</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">nstat_test_type_run</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">test_type</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> \
+            <span class="n">json_conf</span><span class="p">[</span><span class="s1">&#39;sb_emulator_name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># Create instance of TestRun and initialize controller</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+            <span class="n">nstat_test_run</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">test_run</span><span class="o">.</span><span class="n">TestRun</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span>
+                                                          <span class="n">nstat_test_type_run</span><span class="p">)</span>
+
+        <span class="c1"># Run the test</span>
+        <span class="k">if</span> <span class="n">nstat_test_type_run</span> <span class="o">==</span> <span class="s1">&#39;sb_active_scalability_mtcbench&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] running test: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">nstat_test_type_run</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> \
+                    <span class="n">nstat_test_run</span><span class="o">.</span><span class="n">sb_active_scalability_mtcbench_run</span><span class="p">(</span>
+                        <span class="n">json_conf</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Generating results report.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">report_spec</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span><span class="o">.</span><span class="n">sb_active_scalability_mtcbench</span><span class="p">(</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">)</span>
+                <span class="n">report_gen</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_gen</span><span class="o">.</span><span class="n">ReportGen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span>
+                <span class="n">report_gen</span><span class="o">.</span><span class="n">results_report</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to generate test report.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">nstat_test_type_run</span> <span class="o">==</span> <span class="s1">&#39;sb_active_stability_mtcbench&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] running test:</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">nstat_test_type_run</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> \
+                    <span class="n">nstat_test_run</span><span class="o">.</span><span class="n">sb_active_stability_mtcbench_run</span><span class="p">(</span>
+                        <span class="n">json_conf</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Generating results report.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">report_spec</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span><span class="o">.</span><span class="n">sb_active_stability_mtcbench</span><span class="p">(</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">)</span>
+                <span class="n">report_gen</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_gen</span><span class="o">.</span><span class="n">ReportGen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span>
+                <span class="n">report_gen</span><span class="o">.</span><span class="n">results_report</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to generate test report.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">nstat_test_type_run</span> <span class="o">==</span> <span class="s1">&#39;sb_active_scalability_multinet&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] running test: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">nstat_test_type_run</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> \
+                    <span class="n">nstat_test_run</span><span class="o">.</span><span class="n">sb_active_scalability_multinet_run</span><span class="p">(</span>
+                        <span class="n">json_conf</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Generating results report.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">report_spec</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span><span class="o">.</span><span class="n">sb_active_scalability_multinet</span><span class="p">(</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">)</span>
+                <span class="n">report_gen</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_gen</span><span class="o">.</span><span class="n">ReportGen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span>
+                <span class="n">report_gen</span><span class="o">.</span><span class="n">results_report</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to generate test report.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">nstat_test_type_run</span> <span class="o">==</span> <span class="s1">&#39;sb_idle_scalability_mtcbench&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] running test: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">nstat_test_type_run</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> \
+                    <span class="n">nstat_test_run</span><span class="o">.</span><span class="n">sb_idle_scalability_mtcbench_run</span><span class="p">(</span>
+                        <span class="n">json_conf</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Generating results report.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">report_spec</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span><span class="o">.</span><span class="n">sb_idle_scalability_mtcbench</span><span class="p">(</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">)</span>
+                <span class="n">report_gen</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_gen</span><span class="o">.</span><span class="n">ReportGen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span>
+                <span class="n">report_gen</span><span class="o">.</span><span class="n">results_report</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to generate test report.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">nstat_test_type_run</span> <span class="o">==</span> <span class="s1">&#39;sb_idle_scalability_multinet&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] running test: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">nstat_test_type_run</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> \
+                    <span class="n">nstat_test_run</span><span class="o">.</span><span class="n">sb_idle_scalability_multinet_run</span><span class="p">(</span>
+                        <span class="n">json_conf</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Generating results report.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">report_spec</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span><span class="o">.</span><span class="n">sb_idle_scalability_multinet</span><span class="p">(</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">)</span>
+                <span class="n">report_gen</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_gen</span><span class="o">.</span><span class="n">ReportGen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span>
+                <span class="n">report_gen</span><span class="o">.</span><span class="n">results_report</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to generate test report.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">nstat_test_type_run</span> <span class="o">==</span> <span class="s1">&#39;sb_idle_stability_multinet&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] running test: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">nstat_test_type_run</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> \
+                    <span class="n">nstat_test_run</span><span class="o">.</span><span class="n">sb_idle_stability_multinet_run</span><span class="p">(</span>
+                        <span class="n">json_conf</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Generating results report.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">report_spec</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span><span class="o">.</span><span class="n">sb_idle_stability_multinet</span><span class="p">(</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">)</span>
+                <span class="n">report_gen</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_gen</span><span class="o">.</span><span class="n">ReportGen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span>
+                <span class="n">report_gen</span><span class="o">.</span><span class="n">results_report</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to generate test report.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">nstat_test_type_run</span> <span class="o">==</span> <span class="s1">&#39;nb_active_scalability_multinet&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">bypass_test</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] running test: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="n">nstat_test_type_run</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">=</span> \
+                    <span class="n">nstat_test_run</span><span class="o">.</span><span class="n">nb_active_scalability_multinet_run</span><span class="p">(</span>
+                        <span class="n">json_conf</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Generating results report.&#39;</span><span class="o">.</span>
+                             <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+                <span class="n">report_spec</span> <span class="o">=</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">test_report_template</span><span class="o">.</span><span class="n">nb_active_scalability_multinet_run</span><span class="p">(</span>
+                        <span class="n">args</span><span class="o">.</span><span class="n">json_output</span><span class="p">)</span>
+                <span class="n">report_gen</span> <span class="o">=</span> <span class="n">stress_test</span><span class="o">.</span><span class="n">report_gen</span><span class="o">.</span><span class="n">ReportGen</span><span class="p">(</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="n">json_conf</span><span class="p">,</span> <span class="n">report_spec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_samples</span><span class="p">)</span>
+                <span class="n">report_gen</span><span class="o">.</span><span class="n">results_report</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] Fail to generate test report.&#39;</span><span class="o">.</span>
+                              <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test_type</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;[nstat_orchestrator] not valid test configuration&#39;</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

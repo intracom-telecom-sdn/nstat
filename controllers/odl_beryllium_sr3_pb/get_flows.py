@@ -1,6 +1,7 @@
 #! /usr/bin/env python3.4
 
-"""This handler returns the number of installed flows of a topology, connected
+"""
+This handler returns the number of installed flows of a topology, connected
 to the controller. This information is extracted from controller's operational
 datastore, using RESTCONF.
 """
@@ -12,10 +13,11 @@ import sys
 
 
 def get_oper_flows():
-    """Query number of flows registered in ODL operational DS
+    """
+    Query number of flows registered in ODL operational DS
 
-    :returns: number of flows found, 0 if none exists and -1 in case of
-    error.
+    :returns: number of flows found, 0 if none exists and -1 in case of \
+        error.
     :rtype: int
     """
 
@@ -35,19 +37,20 @@ def get_flow_stats(ip, port, username, password):
     :param port: controller restconf port number
     :param username: username for restconf authorization
     :param password: password for restconf authorization
-    :returns: the number of installed flows in the topotlogy nodes
-    or a negative number in a negative case
+    :returns: the number of installed flows in the topology nodes or a \
+        negative number in a negative case
     :rtype: int
     :type ip: str
     :type port: int
     :type username: str
     :type password: str
     """
-    url = 'http://{0}:{1}/restconf/operational/opendaylight'
-    '-inventory:nodes'.format(ip, port)
+    url = ('http://{0}:{1}/restconf/operational/opendaylight'
+    '-inventory:nodes'.format(ip, port))
     headers = {'Accept': 'application/json'}
     found_flows = 0
     s = requests.Session()
+    s.trust_env = False
     auth_token = (username, password)
     try:
         req = s.get(url, headers=headers, stream=False, auth=auth_token)

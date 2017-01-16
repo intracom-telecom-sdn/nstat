@@ -1,6 +1,7 @@
 #! /usr/bin/env python3.4
 
-"""Handler disabling the percistence mode in the configuration of the controller.
+"""
+Handler disabling the percistence mode in the configuration of the controller.
 """
 
 import sys
@@ -8,9 +9,11 @@ import os
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.4.0-Beryllium'
 
+
 def change_persistence():
-    """Change the persistence attribute to false. The controller will not
-    backup datastore on the disk.
+    """
+    Change the persistence attribute to false. The controller will not backup \
+        datastore on the disk.
     """
 
     string_to_find = '#persistent=true'

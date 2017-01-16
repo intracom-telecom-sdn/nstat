@@ -17,17 +17,21 @@ import util.netutil
 
 
 class NBgen:
+    """
+    All NB-generator related functionality is here
+    """
 
     def __init__(self, nb_gen_base_dir, test_config, controller, sbemu,
                  log_level="DEBUG"):
         """Create an NB-generator object. Options from JSON input file
-        :param test_config: JSON input configuration
+
         :param nb_gen_base_dir: emulator base directory
+        :param test_config: JSON input configuration
         :param controller: object of the Controller class
         :param sbemu: object of the SBEmu subclass
         :param log_level: defines the logging level. (DEBUG, INFO, ERROR)
-        :type test_config: JSON configuration dictionary
         :type nb_gen_base_dir: str
+        :type test_config: JSON configuration dictionary
         :type controller: object
         :type sbemu: object
         :type log_level: str
@@ -73,7 +77,9 @@ class NBgen:
         self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
 
     def __error_handling(self, error_message, error_num=1):
-        """Handles custom errors of nb_generator
+        """
+        Handles custom errors of nb_generator
+
         :param error_message: message of the handled error
         :param error_num: error number of the handled error, used to define
         subcases of raised errors.
@@ -94,12 +100,14 @@ class NBgen:
         raise(stress_test.nb_generator_exceptions.NBGenError)
 
     def init_ssh(self):
-        """Initializes a new SSH client object, with the nb_generator node and
-        assigns it to the protected attribute _ssh_conn. If a connection
-        already exists it returns a new SSH client object to the controller
-        node.
-        :raises nb_generator_exceptions.NBGenNodeConnectionError: if ssh
-        connection establishment fails
+        """
+        Initializes a new SSH client object, with the nb_generator node and \
+            assigns it to the protected attribute _ssh_conn. If a connection \
+            already exists it returns a new SSH client object to the  \
+            controller node.
+
+        :raises nb_generator_exceptions.NBGenNodeConnectionError: if ssh \
+            connection establishment fails
         """
         logging.info(
             '[open_ssh_connection] Initiating SSH session with {0} node on '
@@ -121,7 +129,9 @@ class NBgen:
             self.__error_handling(e.err_msg, e.err_code)
 
     def build(self):
-        """ Wrapper to the NB-Generator build handler
+        """
+        Wrapper to the NB-Generator build handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises nb_generator_exceptions.NBGenBuildError: if build process fails
         """
@@ -162,7 +172,9 @@ class NBgen:
             self.__error_handling(e.err_msg, e.err_code)
 
     def clean(self):
-        """Wrapper to the NB-Generator clean handler
+        """
+        Wrapper to the NB-Generator clean handler
+
         :raises IOError: if the handler does not exist on the remote host
         :raises nb_generator_exceptions.NBGenCleanError: if clean process fails
         """
@@ -203,12 +215,14 @@ class NBgen:
             self.__error_handling(e.err_msg, e.err_code)
 
     def run(self):
-        """ Wrapper to the NB-Generator run handler
+        """
+        Wrapper to the NB-Generator run handler
+
         :returns: Returns the combined stdout - stderr of the executed command
         :rtype: str
         :raises IOError: if the handler does not exist on the remote host
-        :raises nb_generator_exceptions.NBGenRunError: if running nb_generator
-        fails
+        :raises nb_generator_exceptions.NBGenRunError: if running nb_generator \
+            fails
         """
         logging.info("[NB_generator] Run handler")
         self.status = 'STARTED'
@@ -274,7 +288,8 @@ class NBgen:
             self.__error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
-        """Method called when object is destroyed"""
+        """
+        Method called when object is destroyed"""
         try:
             logging.info('Closing NB-Generator ssh connection.')
             self._ssh_conn.close()

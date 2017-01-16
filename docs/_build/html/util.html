@@ -1,34 +1,35 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>util Package &mdash; NSTAT 1.1 documentation</title>
+    <title>util package &#8212; NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '1.1',
+        URL_ROOT:    './',
+        VERSION:     '1.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="NSTAT 1.1 documentation" href="index.html" /> 
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="stress_test package" href="stress_test.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -37,26 +38,29 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">NSTAT 1.1 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="stress_test.html" title="stress_test package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="util-package">
-<h1>util Package<a class="headerlink" href="#util-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="id1">
-<h2><a class="reference internal" href="#module-util" title="util"><tt class="xref py py-mod docutils literal"><span class="pre">util</span></tt></a> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-util"></span></div>
+<h1>util package<a class="headerlink" href="#util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="module-util.cpu">
-<span id="cpu-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">cpu</span></tt> Module<a class="headerlink" href="#module-util.cpu" title="Permalink to this headline">¶</a></h2>
+<span id="util-cpu-module"></span><h2>util.cpu module<a class="headerlink" href="#module-util.cpu" title="Permalink to this headline">¶</a></h2>
 <p>CPU-related utility functions</p>
 <dl class="function">
 <dt id="util.cpu.compute_cpu_shares">
-<tt class="descclassname">util.cpu.</tt><tt class="descname">compute_cpu_shares</tt><big>(</big><em>shares_list</em>, <em>num_cpus</em><big>)</big><a class="reference internal" href="_modules/util/cpu.html#compute_cpu_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.cpu.compute_cpu_shares" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.cpu.</code><code class="descname">compute_cpu_shares</code><span class="sig-paren">(</span><em>shares_list</em>, <em>num_cpus</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/cpu.html#compute_cpu_shares"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.cpu.compute_cpu_shares" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes lists of non-overlapping CPUs lists based on a list
 of CPU shares. A CPU share is a value between 1 and 99 and corresponds to
 the percentage of total system CPUs that should be allocated for a
@@ -66,24 +70,26 @@ CPUs is returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shares_list</strong> &#8211; values with the CPU percentages</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>shares_list</strong> (<em>list&lt;int&gt;</em>) &#8211; values with the CPU percentages
+for each process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple with the CPU lists for each process</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>ValueError</strong> &#8211; When input leads to an invalid CPU sharing.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple&lt;list&lt;int&gt;&gt;</td>
 </tr>
 </tbody>
 </table>
-<p>for each process
-:returns: a tuple with the CPU lists for each process
-:raises ValueError: When input leads to an invalid CPU sharing.
-:rtype: tuple&lt;list&lt;int&gt;&gt;
-:type shares_list: list&lt;int&gt;</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-util.customsubprocess">
-<span id="customsubprocess-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">customsubprocess</span></tt> Module<a class="headerlink" href="#module-util.customsubprocess" title="Permalink to this headline">¶</a></h2>
+<span id="util-customsubprocess-module"></span><h2>util.customsubprocess module<a class="headerlink" href="#module-util.customsubprocess" title="Permalink to this headline">¶</a></h2>
 <p>Extended subprocess functionality</p>
 <dl class="function">
 <dt id="util.customsubprocess.check_output_streaming">
-<tt class="descclassname">util.customsubprocess.</tt><tt class="descname">check_output_streaming</tt><big>(</big><em>cmd</em>, <em>prefix=''</em>, <em>queue=None</em><big>)</big><a class="reference internal" href="_modules/util/customsubprocess.html#check_output_streaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.customsubprocess.check_output_streaming" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.customsubprocess.</code><code class="descname">check_output_streaming</code><span class="sig-paren">(</span><em>cmd</em>, <em>prefix=''</em>, <em>queue=None</em>, <em>block_flag=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/customsubprocess.html#check_output_streaming"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.customsubprocess.check_output_streaming" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redirect output to stderr, printing it whenever a new line
 is detected (bufsize=1 denotes line buffered output). This
 can be considered as &#8220;realtime&#8221; printing.
@@ -98,32 +104,33 @@ in order e.g. to be processed by a separate thread in real-time.</p>
 <li><strong>cmd</strong> &#8211; the command line list.</li>
 <li><strong>prefix</strong> &#8211; the user defined prefix for output.</li>
 <li><strong>queue</strong> &#8211; queue to forward console output to.</li>
+<li><strong>block_flag</strong> &#8211; defines if the execution will be performed in block mode</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">return exit status of command.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name" colspan="2">Raises subprocess.CalledProcessError:</th></tr>
-<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><p class="first last">If the exit status of the executed</p>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>subprocess.CalledProcessError</strong> &#8211; If the exit status of the executed</p>
 </td>
 </tr>
 </tbody>
 </table>
 <p>command is not 0.
-:rtype: str
+:rtype: int
 :type cmd: list&lt;str&gt;
 :type prefix: str
-:type queue: multiprocessing.Queue</p>
+:type queue: multiprocessing.Queue
+:type block_flag: bool</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-util.file_ops">
-<span id="file-ops-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">file_ops</span></tt> Module<a class="headerlink" href="#module-util.file_ops" title="Permalink to this headline">¶</a></h2>
+<span id="util-file-ops-module"></span><h2>util.file_ops module<a class="headerlink" href="#module-util.file_ops" title="Permalink to this headline">¶</a></h2>
 <p>file handling utilities</p>
 <dl class="function">
 <dt id="util.file_ops.check_filelist">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_filelist</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_filelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_filelist" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.file_ops.</code><code class="descname">check_filelist</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#check_filelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_filelist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a list of files and checks if those files exist and if those
 files are executables (have execution right in their privileges). If
 something is wrong then an exception is raised</p>
@@ -139,7 +146,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.check_files_executables">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_executables</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_files_executables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_executables" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.file_ops.</code><code class="descname">check_files_executables</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#check_files_executables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_executables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if all files in a list have exe permissions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -147,8 +154,7 @@ something is wrong then an exception is raised</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> &#8211; list of filenames to check</td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">Raises Exception:</th></tr>
-<tr class="field-even field"><td>&nbsp;</td><td class="field-body">When file in file_list does not exist or is not</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>Exception</strong> &#8211; When file in file_list does not exist or is not</td>
 </tr>
 </tbody>
 </table>
@@ -160,7 +166,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.check_files_exist">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">check_files_exist</tt><big>(</big><em>file_list</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#check_files_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_exist" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.file_ops.</code><code class="descname">check_files_exist</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#check_files_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.check_files_exist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if all files in a list exist.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -178,7 +184,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.file_exists">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">file_exists</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.file_exists" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.file_ops.</code><code class="descname">file_exists</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#file_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.file_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if file exists in filesystem.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -196,7 +202,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.is_file_exe">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">is_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#is_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.is_file_exe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.file_ops.</code><code class="descname">is_file_exe</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#is_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.is_file_exe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if a file is executable.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -214,7 +220,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.file_ops.make_file_exe">
-<tt class="descclassname">util.file_ops.</tt><tt class="descname">make_file_exe</tt><big>(</big><em>fpath</em><big>)</big><a class="reference internal" href="_modules/util/file_ops.html#make_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.make_file_exe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.file_ops.</code><code class="descname">make_file_exe</code><span class="sig-paren">(</span><em>fpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#make_file_exe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.make_file_exe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives executable rights to a file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -226,13 +232,26 @@ something is wrong then an exception is raised</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="util.file_ops.merge_dict_and_avg">
+<code class="descclassname">util.file_ops.</code><code class="descname">merge_dict_and_avg</code><span class="sig-paren">(</span><em>results_add</em>, <em>results_delete</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/file_ops.html#merge_dict_and_avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.file_ops.merge_dict_and_avg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes two dictionaries...</p>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:param command_to_run: Command to execute
+:returns: the exit code of the command to be executed remotely and the
+combined stdout - stderr of the executed command
+:rtype: tuple&lt;int, str&gt;
+:type ssh_client: paramiko.SSHClient
+:type command_to_run: str</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-util.html">
-<span id="html-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">html</span></tt> Module<a class="headerlink" href="#module-util.html" title="Permalink to this headline">¶</a></h2>
+<span id="util-html-module"></span><h2>util.html module<a class="headerlink" href="#module-util.html" title="Permalink to this headline">¶</a></h2>
 <p>HTML generation utilities</p>
 <dl class="function">
 <dt id="util.html.generate_html_foot">
-<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_foot</tt><big>(</big><em>foot_content=''</em><big>)</big><a class="reference internal" href="_modules/util/html.html#generate_html_foot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_foot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.html.</code><code class="descname">generate_html_foot</code><span class="sig-paren">(</span><em>foot_content=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#generate_html_foot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_foot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the ending and the contents at the end of html page.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -248,7 +267,7 @@ something is wrong then an exception is raised</p>
 
 <dl class="function">
 <dt id="util.html.generate_html_head">
-<tt class="descclassname">util.html.</tt><tt class="descname">generate_html_head</tt><big>(</big><em>css_style=''</em>, <em>javascript_functions=''</em>, <em>head_content=''</em><big>)</big><a class="reference internal" href="_modules/util/html.html#generate_html_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_head" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.html.</code><code class="descname">generate_html_head</code><span class="sig-paren">(</span><em>css_style=''</em>, <em>javascript_functions=''</em>, <em>head_content=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#generate_html_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.generate_html_head" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the head of an html file gets as input the
 styling of the page as a css string parameter and returns a string
 value, which is the html code of the header.</p>
@@ -277,7 +296,7 @@ page and everything else we want to appear at the top.
 
 <dl class="function">
 <dt id="util.html.get_ordered_index">
-<tt class="descclassname">util.html.</tt><tt class="descname">get_ordered_index</tt><big>(</big><em>field_value</em>, <em>map_dictionary</em><big>)</big><a class="reference internal" href="_modules/util/html.html#get_ordered_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.get_ordered_index" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.html.</code><code class="descname">get_ordered_index</code><span class="sig-paren">(</span><em>field_value</em>, <em>map_dictionary</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#get_ordered_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.get_ordered_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the index of a key in map_dictionary, which is defined by the
 field_value. If no match is found None is returned</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -303,7 +322,7 @@ the ordering inside the map_dictionary
 
 <dl class="function">
 <dt id="util.html.isalistofdictionaries">
-<tt class="descclassname">util.html.</tt><tt class="descname">isalistofdictionaries</tt><big>(</big><em>lst</em><big>)</big><a class="reference internal" href="_modules/util/html.html#isalistofdictionaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.isalistofdictionaries" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.html.</code><code class="descname">isalistofdictionaries</code><span class="sig-paren">(</span><em>lst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#isalistofdictionaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.isalistofdictionaries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a list as argument and checks if all the
 elements of this list are dictionaries. If they are then it returns true,
 else it returns false. If the input argument type is not list then it
@@ -325,7 +344,7 @@ also returns false.</p>
 
 <dl class="function">
 <dt id="util.html.multi_dict_to_html">
-<tt class="descclassname">util.html.</tt><tt class="descname">multi_dict_to_html</tt><big>(</big><em>data</em>, <em>table_title=''</em>, <em>map_dictionary=None</em>, <em>row_ordering_key=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#multi_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.multi_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.html.</code><code class="descname">multi_dict_to_html</code><span class="sig-paren">(</span><em>data</em>, <em>table_title=''</em>, <em>map_dictionary=None</em>, <em>row_ordering_key=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#multi_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.multi_dict_to_html" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates html tables according to the input it gets from
 the input arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -352,7 +371,7 @@ dictionary and how their value will be translated in the HTML table.
 
 <dl class="function">
 <dt id="util.html.single_dict_table_data">
-<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_table_data</tt><big>(</big><em>data_values</em>, <em>td_style=None</em>, <em>td_class=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#single_dict_table_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_table_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.html.</code><code class="descname">single_dict_table_data</code><span class="sig-paren">(</span><em>data_values</em>, <em>td_style=None</em>, <em>td_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#single_dict_table_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_table_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a &lt;td&gt; ... &lt;/td&gt; html element for the single_dict_to_html()
 type of tables, data columns. In case that the input data_values is a
 list of dictionaries, this function calls recursively
@@ -380,7 +399,7 @@ tables
 
 <dl class="function">
 <dt id="util.html.single_dict_to_html">
-<tt class="descclassname">util.html.</tt><tt class="descname">single_dict_to_html</tt><big>(</big><em>data</em>, <em>key_title</em>, <em>data_title</em>, <em>table_title=''</em>, <em>map_dictionary=None</em><big>)</big><a class="reference internal" href="_modules/util/html.html#single_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_to_html" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.html.</code><code class="descname">single_dict_to_html</code><span class="sig-paren">(</span><em>data</em>, <em>key_title</em>, <em>data_title</em>, <em>table_title=''</em>, <em>map_dictionary=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/html.html#single_dict_to_html"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.html.single_dict_to_html" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates html tables according to the input it gets
 from the input arguments. The table generated is by row, which means that
 on each row the first element is the key value of the dictionary, the
@@ -417,61 +436,73 @@ input dictionary and how their value will be translated in the HTML table.
 
 </div>
 <div class="section" id="module-util.netutil">
-<span id="netutil-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">netutil</span></tt> Module<a class="headerlink" href="#module-util.netutil" title="Permalink to this headline">¶</a></h2>
+<span id="util-netutil-module"></span><h2>util.netutil module<a class="headerlink" href="#module-util.netutil" title="Permalink to this headline">¶</a></h2>
 <p>General network utilities</p>
 <dl class="function">
-<dt id="util.netutil.copy_directory_to_target">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">copy_directory_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_path</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#copy_directory_to_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.copy_directory_to_target" title="Permalink to this definition">¶</a></dt>
+<dt id="util.netutil.copy_dir_local_to_remote">
+<code class="descclassname">util.netutil.</code><code class="descname">copy_dir_local_to_remote</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em>, <em>local_path</em>, <em>remote_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#copy_dir_local_to_remote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.copy_dir_local_to_remote" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy a local directory on a remote machine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> &#8211; IP adress of the remote machine</li>
-<li><strong>user</strong> &#8211; username of the remote user</li>
-<li><strong>passwd</strong> &#8211; password of the remote user</li>
-<li><strong>local_path</strong> &#8211; directory path from local machine to copy, full location</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> &#8211; A named tuple with all the connection information.</td>
 </tr>
 </tbody>
 </table>
-<p>required
-:param remote_path: remote destination, full location required
-:param remote_port: port to perform sftp from
-:type ipaddr: str
-:type user: str
-:type passwd: str
+<p>It must have the following elements:
+[&#8216;name&#8217;, &#8216;ip&#8217;, &#8216;ssh_port&#8217;, &#8216;username&#8217;, &#8216;password&#8217;]
+:param local_path: directory path from local machine to be copied, full
+location required
+:param remote_path: directory path on the remote node, full location
+required
+:type connection: namedtuple&lt;&gt;
 :type local_path: str
-:type remote_path: str
-:type remote_port: int</p>
+:type remote_path: str</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="util.netutil.create_remote_directory">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">create_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#create_remote_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.create_remote_directory" title="Permalink to this definition">¶</a></dt>
+<dt id="util.netutil.copy_dir_remote_to_local">
+<code class="descclassname">util.netutil.</code><code class="descname">copy_dir_remote_to_local</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em>, <em>remote_path</em>, <em>local_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#copy_dir_remote_to_local"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.copy_dir_remote_to_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy recursively remote directories (Copies all files and other
+sub-directories).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> &#8211; named tuple with connection information: [&#8216;name&#8217;, &#8216;ip&#8217;,</td>
+</tr>
+</tbody>
+</table>
+<p>&#8216;ssh_port&#8217;, &#8216;username&#8217;, &#8216;password&#8217;]
+:param remote_path: full remote path we want to copy
+:param local_path: full local path we want to copy
+:type connection: namedtuple&lt;&gt;
+:type remote_path: str
+:type local_path: str</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.create_dir_remote">
+<code class="descclassname">util.netutil.</code><code class="descname">create_dir_remote</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em>, <em>remote_path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#create_dir_remote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.create_dir_remote" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens an ssh connection to a remote machine and creates a new directory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
-<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
-<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
-<li><strong>remote_path</strong> (<em>str</em>) &#8211; maximum number of times to connect</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> &#8211; named tuple with connection information: [&#8216;name&#8217;, &#8216;ip&#8217;,</td>
 </tr>
 </tbody>
 </table>
+<p>&#8216;ssh_port&#8217;, &#8216;username&#8217;, &#8216;password&#8217;]
+:param remote_path:
+:type connection: namedtuple&lt;&gt;
+:type remote_path: str</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.netutil.isdir">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">isdir</tt><big>(</big><em>path</em>, <em>sftp</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#isdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.isdir" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.netutil.</code><code class="descname">isdir</code><span class="sig-paren">(</span><em>path</em>, <em>sftp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#isdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.isdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if a given remote path is a directory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -479,7 +510,7 @@ input dictionary and how their value will be translated in the HTML table.
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>path</strong> (<em>str</em>) &#8211; A string with the full path we want to check</li>
-<li><strong>sftp</strong> (<em>paramiko.SSHClient</em>) &#8211; An sftp connection object (paramico)</li>
+<li><strong>sftp</strong> (<em>paramiko.SFTPClient</em>) &#8211; An sftp connection object (paramiko)</li>
 </ul>
 </td>
 </tr>
@@ -494,51 +525,64 @@ input dictionary and how their value will be translated in the HTML table.
 </dd></dl>
 
 <dl class="function">
+<dt id="util.netutil.isfile">
+<code class="descclassname">util.netutil.</code><code class="descname">isfile</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>username</em>, <em>password</em>, <em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#isfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.isfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if all files in a given list exist. All files are
+located remotely
+:param ip: ip address of the remote host
+:param port: port number of the remote host
+:param username: username of the remote host
+:param password: password of the remote host
+:param file_list: list of filenames to be checked
+:returns: True if the given path is a directory false otherwise.
+:rtype: bool
+:type ip: str
+:type port: int
+:type username: str
+:type password: str
+:type file_list: list&lt;str&gt;</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="util.netutil.make_remote_file_executable">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">make_remote_file_executable</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#make_remote_file_executable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.make_remote_file_executable" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.netutil.</code><code class="descname">make_remote_file_executable</code><span class="sig-paren">(</span><em>ip</em>, <em>port</em>, <em>username</em>, <em>password</em>, <em>remote_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#make_remote_file_executable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.make_remote_file_executable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes the remote file executable.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
-<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
-<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
-<li><strong>remote_file</strong> (<em>str</em>) &#8211; remote file to make executable</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> &#8211; named tuple with connection information: [&#8216;name&#8217;, &#8216;ip&#8217;,</td>
 </tr>
 </tbody>
 </table>
+<p>&#8216;ssh_port&#8217;, &#8216;username&#8217;, &#8216;password&#8217;]
+:param remote_file: remote file to make executable
+:type connection: namedtuple&lt;&gt;
+:type remote_file: str</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.netutil.remove_remote_directory">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">remove_remote_directory</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>path</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#remove_remote_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.remove_remote_directory" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.netutil.</code><code class="descname">remove_remote_directory</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#remove_remote_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.remove_remote_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes recursively remote directories (removes all files and
 other sub-directories).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
-<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
-<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
-<li><strong>remote_file</strong> (<em>str</em>) &#8211; remote file to make executable</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> &#8211; named tuple with connection information: [&#8216;name&#8217;, &#8216;ip&#8217;,</td>
 </tr>
 </tbody>
 </table>
+<p>&#8216;ssh_port&#8217;, &#8216;username&#8217;, &#8216;password&#8217;]
+:param path: A string with the full path we want to remove
+:type connection: namedtuple&lt;&gt;
+:type path: str</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.netutil.ssh_connect_or_return">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_connect_or_return</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>maxretries</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_connect_or_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_connect_or_return" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.netutil.</code><code class="descname">ssh_connect_or_return</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em>, <em>maxretries</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#ssh_connect_or_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_connect_or_return" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens a connection and returns a connection object. If it fails to open
 a connection after a specified number of tries, it returns -1.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -546,14 +590,15 @@ a connection after a specified number of tries, it returns -1.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
-<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
-<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
+<li><strong>ip</strong> (<em>str</em>) &#8211; controller IP address</li>
+<li><strong>ssh_port</strong> (<em>int</em>) &#8211; controller port</li>
+<li><strong>username</strong> (<em>str</em>) &#8211; username of the remote user</li>
+<li><strong>password</strong> (<em>str</em>) &#8211; password of the remote user</li>
 <li><strong>maxretries</strong> (<em>int</em>) &#8211; maximum number of times to connect</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">an ssh connection handle or -1</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">an ssh connection handle or -1 on failure</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">paramiko.SSHClient (or -1 when failure)</p>
@@ -564,17 +609,62 @@ a connection after a specified number of tries, it returns -1.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="util.netutil.ssh_connection_close">
+<code class="descclassname">util.netutil.</code><code class="descname">ssh_connection_close</code><span class="sig-paren">(</span><em>sftp</em>, <em>transport_layer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#ssh_connection_close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_connection_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes an ssh connection with a remote node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sftp</strong> (<em>paramiko.SFTPClient</em>) &#8211; </li>
+<li><strong>transport_layer</strong> (<em>paramiko.Transport</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="util.netutil.ssh_connection_open">
+<code class="descclassname">util.netutil.</code><code class="descname">ssh_connection_open</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#ssh_connection_open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_connection_open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens an ssh connection on a remote node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip</strong> &#8211; ip address of the remote host</li>
+<li><strong>ssh_port</strong> &#8211; port number of the remote host</li>
+<li><strong>username</strong> &#8211; username of the remote host</li>
+<li><strong>password</strong> &#8211; password of the remote host</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:returns sftp, transport_layer
+:rtype tuple&lt;paramiko.SFTPClient, paramiko.Transport&gt;
+:type ip: str
+:type ssh_port: int
+:type username: str
+:type password: str</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="util.netutil.ssh_copy_file_to_target">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_copy_file_to_target</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>local_file</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_copy_file_to_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_copy_file_to_target" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.netutil.</code><code class="descname">ssh_copy_file_to_target</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em>, <em>local_file</em>, <em>remote_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#ssh_copy_file_to_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_copy_file_to_target" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies local file on a remote machine target.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> &#8211; Ip adress of the remote machine</li>
-<li><strong>user</strong> &#8211; username of the remote user</li>
-<li><strong>passwd</strong> &#8211; password of the remote user</li>
+<li><strong>ip</strong> &#8211; ip address of the remote host</li>
+<li><strong>ssh_port</strong> &#8211; port number of the remote host</li>
+<li><strong>username</strong> &#8211; username of the remote host</li>
+<li><strong>password</strong> &#8211; password of the remote host</li>
 <li><strong>local_file</strong> &#8211; file from local machine to copy,full location required</li>
 <li><strong>remote_file</strong> &#8211; remote destination, full location required</li>
 </ul>
@@ -583,55 +673,65 @@ a connection after a specified number of tries, it returns -1.</p>
 </tbody>
 </table>
 <p>i.e /tmp/foo.txt
-:param remote_port: port to perform sftp from
-:type ipaddr: str
-:type user: str
-:type passwd: str
+:type ip: str
+:type ssh_port: int
+:type username: str
+:type password: str
 :type local_file: str
-:type remote_file: str
-:type remote_port: int</p>
+:type remote_file: str</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.netutil.ssh_delete_file_if_exists">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_delete_file_if_exists</tt><big>(</big><em>ipaddr</em>, <em>user</em>, <em>passwd</em>, <em>remote_file</em>, <em>remote_port=22</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_delete_file_if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_delete_file_if_exists" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes the file on e remote machine, if it exists</p>
+<code class="descclassname">util.netutil.</code><code class="descname">ssh_delete_file_if_exists</code><span class="sig-paren">(</span><em>ip</em>, <em>ssh_port</em>, <em>username</em>, <em>password</em>, <em>remote_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#ssh_delete_file_if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_delete_file_if_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the file on a remote machine, if exists</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ipaddr</strong> (<em>str</em>) &#8211; Ip adress of the remote machine</li>
-<li><strong>user</strong> (<em>str</em>) &#8211; username of the remote user</li>
-<li><strong>passwd</strong> (<em>str</em>) &#8211; password of the remote user</li>
-<li><strong>remote_file</strong> (<em>str</em>) &#8211; remote file to remove, full path must be used.</li>
-<li><strong>remote_port</strong> (<em>int</em>) &#8211; port to perform sftp from</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>connection</strong> &#8211; named tuple with connection information: [&#8216;name&#8217;, &#8216;ip&#8217;,</td>
 </tr>
 </tbody>
 </table>
+<p>&#8216;ssh_port&#8217;, &#8216;username&#8217;, &#8216;password&#8217;]
+:param remote_file: remote file to remove, full path must be used.
+:type connection: collections.namedtuple
+:type remote_file: str</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.netutil.ssh_run_command">
-<tt class="descclassname">util.netutil.</tt><tt class="descname">ssh_run_command</tt><big>(</big><em>ssh_session</em>, <em>command_to_run</em><big>)</big><a class="reference internal" href="_modules/util/netutil.html#ssh_run_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_run_command" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.netutil.</code><code class="descname">ssh_run_command</code><span class="sig-paren">(</span><em>ssh_client</em>, <em>command_to_run</em>, <em>prefix=''</em>, <em>lines_queue=None</em>, <em>print_flag=True</em>, <em>block_flag=True</em>, <em>getpty_flag=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/netutil.html#ssh_run_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.netutil.ssh_run_command" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the specified command on a remote machine</p>
-<p>:param ssh_session : SSH session provided by paramiko to run the command
+<p>:param ssh_client : SSH client provided by paramiko to run the command
 :param command_to_run: Command to execute
-:returns: the output of the remotely executed command
-:rtype: tuple (stdin, stdout, stderr)
-:type ssh_session: paramiko.SSHClient
-:type command_to_run: str</p>
+:param prefix: prefix of log message
+:param lines_queue: Queue datastructure to buffer the result of execution
+:param print_flag: Flag that defines if the output of the command will be
+printed on screen
+:param block_flag: Defines if we block execution waiting for the running
+command to return its exit status
+:param getpty_flag: add a pseudo-terminal console (pty console) to the
+channel
+:returns: the exit code of the command to be executed remotely and the
+combined stdout - stderr of the executed command
+:rtype: tuple&lt;int, str&gt;
+:type ssh_client: paramiko.SSHClient
+:type command_to_run: str
+:type prefix: str
+:type lines_queue: queue&lt;str&gt;
+:type print_flag: bool
+:type block_flag: bool
+:type getpty_flag: bool</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-util.numeric">
-<span id="numeric-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">numeric</span></tt> Module<a class="headerlink" href="#module-util.numeric" title="Permalink to this headline">¶</a></h2>
+<span id="util-numeric-module"></span><h2>util.numeric module<a class="headerlink" href="#module-util.numeric" title="Permalink to this headline">¶</a></h2>
 <p>Numeric utilities</p>
 <dl class="function">
 <dt id="util.numeric.tonum">
-<tt class="descclassname">util.numeric.</tt><tt class="descname">tonum</tt><big>(</big><em>str2cast</em><big>)</big><a class="reference internal" href="_modules/util/numeric.html#tonum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.numeric.tonum" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.numeric.</code><code class="descname">tonum</code><span class="sig-paren">(</span><em>str2cast</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/numeric.html#tonum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.numeric.tonum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Casts a string to the appropriate numeric type, i.e. int or float.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -650,11 +750,11 @@ a connection after a specified number of tries, it returns -1.</p>
 
 </div>
 <div class="section" id="module-util.plot_json">
-<span id="plot-json-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">plot_json</span></tt> Module<a class="headerlink" href="#module-util.plot_json" title="Permalink to this headline">¶</a></h2>
+<span id="util-plot-json-module"></span><h2>util.plot_json module<a class="headerlink" href="#module-util.plot_json" title="Permalink to this headline">¶</a></h2>
 <p>Methods that implement plotting functionality in NSTAT</p>
 <dl class="function">
 <dt id="util.plot_json.multiplot_errorbar_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_errorbar_json" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_json.</code><code class="descname">multiplot_errorbar_json</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_json.html#multiplot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_errorbar_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw multiple collection of errorbars over a set of samples from a
 JSON file.</p>
 <p>For each different z value do the following:
@@ -706,7 +806,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.multiplot_scatter_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">multiplot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#multiplot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_scatter_json" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_json.</code><code class="descname">multiplot_scatter_json</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_json.html#multiplot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.multiplot_scatter_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw multiple scatter-plots over a set of samples from a JSON file.
 Each scatter-plot is determined by a specific value of the z_axis_key</p>
 <p>For each different z value do the following:
@@ -758,7 +858,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.plot_errorbar_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_errorbar_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_errorbar_json" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_json.</code><code class="descname">plot_errorbar_json</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_json.html#plot_errorbar_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_errorbar_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a single collection of errorbars over a set of samples from a
 JSON file.</p>
 <p>For each different x value, the function finds one or more
@@ -806,7 +906,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.plot_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_type</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_json" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_json.</code><code class="descname">plot_json</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em>, <em>plot_type</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_json.html#plot_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Acts as a wrapper method for plotting a set of samples from a
 JSON file. The method ends up calling specific methods for one of the
 following plot types: errorbar plots, scatter plots</p>
@@ -861,7 +961,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.plot_scatter_json">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">plot_scatter_json</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#plot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_scatter_json" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_json.</code><code class="descname">plot_scatter_json</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>plot_subtitle_keys</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_json.html#plot_scatter_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.plot_scatter_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a single scatter-plot over a set of samples from a JSON file.</p>
 <p>For each different x value, the function plots a point for every
 corresponding y values it finds.
@@ -909,24 +1009,24 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_json.self_test">
-<tt class="descclassname">util.plot_json.</tt><tt class="descname">self_test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/plot_json.html#self_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.self_test" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_json.</code><code class="descname">self_test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_json.html#self_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_json.self_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function used for self testing purposes</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-util.plot_utils">
-<span id="plot-utils-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">plot_utils</span></tt> Module<a class="headerlink" href="#module-util.plot_utils" title="Permalink to this headline">¶</a></h2>
+<span id="util-plot-utils-module"></span><h2>util.plot_utils module<a class="headerlink" href="#module-util.plot_utils" title="Permalink to this headline">¶</a></h2>
 <p>Module to facilitate plotting and promote code re-use</p>
 <dl class="class">
 <dt id="util.plot_utils.PlotOptions">
-<em class="property">class </em><tt class="descclassname">util.plot_utils.</tt><tt class="descname">PlotOptions</tt><a class="reference internal" href="_modules/util/plot_utils.html#PlotOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.PlotOptions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<em class="property">class </em><code class="descclassname">util.plot_utils.</code><code class="descname">PlotOptions</code><a class="reference internal" href="_modules/util/plot_utils.html#PlotOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.PlotOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Contains the various plot options attributes.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.plot_utils.create_xy_dict_from_file">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xy_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#create_xy_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xy_dict_from_file" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">create_xy_dict_from_file</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#create_xy_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xy_dict_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a json file and returns the contents of the file as a
 dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -954,7 +1054,7 @@ values defined by x_axis_key and y_axis_key.
 
 <dl class="function">
 <dt id="util.plot_utils.create_xyz_dict_from_file">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">create_xyz_dict_from_file</tt><big>(</big><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#create_xyz_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xyz_dict_from_file" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">create_xyz_dict_from_file</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#create_xyz_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xyz_dict_from_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a json file and returns the contents of the file as a
 dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys
 that in turn map to z_axis_keys</p>
@@ -986,7 +1086,7 @@ values defined by x_axis_key and y_axis_key
 
 <dl class="function">
 <dt id="util.plot_utils.finish_plotting">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">finish_plotting</tt><big>(</big><em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#finish_plotting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.finish_plotting" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">finish_plotting</code><span class="sig-paren">(</span><em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#finish_plotting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.finish_plotting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configures the plots axis and saves the figure to file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1002,7 +1102,7 @@ values defined by x_axis_key and y_axis_key
 
 <dl class="function">
 <dt id="util.plot_utils.plot_errorbar">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">plot_errorbar</code><span class="sig-paren">(</span><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a single errorbar figure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1033,7 +1133,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_errorbar_helper">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_errorbar_helper</tt><big>(</big><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar_helper" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">plot_errorbar_helper</code><span class="sig-paren">(</span><em>x_keys_sorted</em>, <em>y_mean</em>, <em>y_diff_minus</em>, <em>y_diff_plus</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#plot_errorbar_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_errorbar_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws a single errorbar.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1066,7 +1166,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_multi_errorbar">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_errorbar</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_errorbar" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">plot_multi_errorbar</code><span class="sig-paren">(</span><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_errorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_errorbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a multiple errorbars figure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1089,7 +1189,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_multi_scatter">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_multi_scatter</tt><big>(</big><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_scatter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">plot_multi_scatter</code><span class="sig-paren">(</span><em>y_values</em>, <em>z_axis_key</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#plot_multi_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_multi_scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a multiple scatter plots figure</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1112,7 +1212,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_scatter">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">plot_scatter</code><span class="sig-paren">(</span><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a single scatter plot figure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1135,7 +1235,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.plot_scatter_helper">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">plot_scatter_helper</tt><big>(</big><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em>, <em>marker_arg='o'</em>, <em>color='b'</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter_helper" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">plot_scatter_helper</code><span class="sig-paren">(</span><em>x_coords</em>, <em>y_coords</em>, <em>plot_options</em>, <em>marker_arg='o'</em>, <em>color='b'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#plot_scatter_helper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.plot_scatter_helper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces a single scatter plot with a specific color.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1144,7 +1244,7 @@ produced plot.
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x_coords</strong> &#8211; values of x axis.</li>
 <li><strong>y_coords</strong> &#8211; Values of y axis.</li>
-<li><strong>marker_arg=&#8217;o&#8217;</strong> &#8211; Marker type of a point on the graph.</li>
+<li><strong>marker_arg='o'</strong> &#8211; Marker type of a point on the graph.</li>
 <li><strong>color</strong> (<em>str</em>) &#8211; The color of the markers.</li>
 </ul>
 </td>
@@ -1161,7 +1261,7 @@ produced plot.
 
 <dl class="function">
 <dt id="util.plot_utils.setup_plot">
-<tt class="descclassname">util.plot_utils.</tt><tt class="descname">setup_plot</tt><big>(</big><em>plot_options</em><big>)</big><a class="reference internal" href="_modules/util/plot_utils.html#setup_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.setup_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.plot_utils.</code><code class="descname">setup_plot</code><span class="sig-paren">(</span><em>plot_options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#setup_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.setup_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets axis labels, title and subtitle of a plot.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1177,11 +1277,11 @@ produced plot.
 
 </div>
 <div class="section" id="module-util.process">
-<span id="process-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">process</span></tt> Module<a class="headerlink" href="#module-util.process" title="Permalink to this headline">¶</a></h2>
+<span id="util-process-module"></span><h2>util.process module<a class="headerlink" href="#module-util.process" title="Permalink to this headline">¶</a></h2>
 <p>Process-related utilities</p>
 <dl class="function">
 <dt id="util.process.getpid_listeningonport">
-<tt class="descclassname">util.process.</tt><tt class="descname">getpid_listeningonport</tt><big>(</big><em>port</em><big>)</big><a class="reference internal" href="_modules/util/process.html#getpid_listeningonport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.getpid_listeningonport" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.process.</code><code class="descname">getpid_listeningonport</code><span class="sig-paren">(</span><em>port</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/process.html#getpid_listeningonport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.getpid_listeningonport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds if there is a running process listening for network
 connections on a specific port.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1190,88 +1290,60 @@ connections on a specific port.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port</strong> &#8211; the port number that we investigate.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">-1, if no process is listening on port</td>
-</tr>
 </tbody>
 </table>
-<p>0, if some process is listening on port but we are not owner of
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: -1, if no process is listening on port
+0, if some process is listening on port but we are not owner of
 it &lt;pid&gt; of the process listening on port and we are owner of it
 :rtype: int
-:type port: int</p>
+:type port: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.process.is_process_running">
-<tt class="descclassname">util.process.</tt><tt class="descname">is_process_running</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/process.html#is_process_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.is_process_running" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.process.</code><code class="descname">is_process_running</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/process.html#is_process_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.is_process_running" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds if a process is running, using its process ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; The process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True, if the process is running False, otherwise</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; The process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: True, if the process is running False, otherwise
+:rtype: bool
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.process.wait_until_process_finishes">
-<tt class="descclassname">util.process.</tt><tt class="descname">wait_until_process_finishes</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/process.html#wait_until_process_finishes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.wait_until_process_finishes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.process.</code><code class="descname">wait_until_process_finishes</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/process.html#wait_until_process_finishes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.wait_until_process_finishes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waits until the process with the specified ID finishes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; process id</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; process id</td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-util.remote">
-<span id="remote-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">remote</span></tt> Module<a class="headerlink" href="#module-util.remote" title="Permalink to this headline">¶</a></h2>
-<p>Utilities for remote execution over SSH</p>
-<dl class="function">
-<dt id="util.remote.remote_exec">
-<tt class="descclassname">util.remote.</tt><tt class="descname">remote_exec</tt><big>(</big><em>cmd</em>, <em>transport</em>, <em>lines_queue=None</em><big>)</big><a class="reference internal" href="_modules/util/remote.html#remote_exec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.remote.remote_exec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remotely executes a shell command over SSH.</p>
-<p>Executes the command and combines the stdout and stderr into a single
-output stream. The stream is dynamically splitted at newline boundaries and
-lines are posted into a queue for online processing. The combined output is
-returned as a string, and the command exit status is returned.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>cmd</strong> &#8211; shell command</li>
-<li><strong>transport</strong> &#8211; SSH transport</li>
-<li><strong>lines_queue</strong> &#8211; message queue to post stdout/stderr data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>:returns shell command exit status and shell command output
-:raises: paramiko.SSHException
-:rtype tuple(int,str)
-:type cmd: str
-:type transport: paramiko.Transport
-:type lines_queue: multiprocessing.Queue</p>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-util.stats">
-<span id="stats-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">stats</span></tt> Module<a class="headerlink" href="#module-util.stats" title="Permalink to this headline">¶</a></h2>
+<span id="util-stats-module"></span><h2>util.stats module<a class="headerlink" href="#module-util.stats" title="Permalink to this headline">¶</a></h2>
 <p>Module that computes statistic properties given a list of samples</p>
 <dl class="function">
 <dt id="util.stats.coefvariance">
-<tt class="descclassname">util.stats.</tt><tt class="descname">coefvariance</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#coefvariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.coefvariance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.stats.</code><code class="descname">coefvariance</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#coefvariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.coefvariance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the co-efficient of variation of a number list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1290,7 +1362,7 @@ returned as a string, and the command exit status is returned.</p>
 
 <dl class="function">
 <dt id="util.stats.mean">
-<tt class="descclassname">util.stats.</tt><tt class="descname">mean</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.mean" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.stats.</code><code class="descname">mean</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the mean of a number list</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1308,7 +1380,7 @@ returned as a string, and the command exit status is returned.</p>
 
 <dl class="function">
 <dt id="util.stats.stddev">
-<tt class="descclassname">util.stats.</tt><tt class="descname">stddev</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#stddev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.stddev" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.stats.</code><code class="descname">stddev</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#stddev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.stddev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the standard deviation of a number list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1326,7 +1398,7 @@ returned as a string, and the command exit status is returned.</p>
 
 <dl class="function">
 <dt id="util.stats.variance">
-<tt class="descclassname">util.stats.</tt><tt class="descname">variance</tt><big>(</big><em>samples</em><big>)</big><a class="reference internal" href="_modules/util/stats.html#variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.variance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.stats.</code><code class="descname">variance</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#variance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.variance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the variance of a number list</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1344,304 +1416,268 @@ returned as a string, and the command exit status is returned.</p>
 
 </div>
 <div class="section" id="module-util.sysstats">
-<span id="sysstats-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">sysstats</span></tt> Module<a class="headerlink" href="#module-util.sysstats" title="Permalink to this headline">¶</a></h2>
+<span id="util-sysstats-module"></span><h2>util.sysstats module<a class="headerlink" href="#module-util.sysstats" title="Permalink to this headline">¶</a></h2>
 <p>Module with functions for getting system and process statistics</p>
 <dl class="function">
+<dt id="util.sysstats.command_exec_wrapper">
+<code class="descclassname">util.sysstats.</code><code class="descname">command_exec_wrapper</code><span class="sig-paren">(</span><em>cmd</em>, <em>ssh_client=None</em>, <em>return_type='str'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#command_exec_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.command_exec_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a command either locally or remotely and returns the result</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cmd</strong> &#8211; the command to be executed</td>
+</tr>
+</tbody>
+</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:param return_type: Defines the return type of the command output
+:returns: The commands execution result as string
+:rtype: str, int, float
+:type cmd: str
+:type ssh_client: paramiko.SSHClient
+:type return_type: str</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="util.sysstats.get_java_options">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">get_java_options</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#get_java_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.get_java_options" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">get_java_options</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#get_java_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.get_java_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list with all java options of a process defined by its
 process ID.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; process id of the process we want to get the javaopts</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list with all java options</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list&lt;str&gt;</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; process id of the process we want to get the javaopts</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: a list with all java options
+:rtype: list&lt;str&gt;
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cmdline">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cmdline</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cmdline" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">proc_cmdline</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cmdline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the command line of a process as a string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The command execution output</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: The command execution output
+:rtype: str
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cpu_system_time">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_system_time</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_system_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_system_time" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">proc_cpu_system_time</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_system_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_system_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the CPU system time of a process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the CPU system time of a process</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the CPU system time of a process
+:rtype: float
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cpu_user_time">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cpu_user_time</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_user_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_user_time" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">proc_cpu_user_time</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_user_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_user_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the CPU user time of a process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the CPU user time of a process</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the CPU user time of a process
+:rtype: float
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.proc_cwd">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_cwd</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cwd" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">proc_cwd</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cwd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the process current working directory.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the full path of working directory</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the full path of working directory
+:rtype: str
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.proc_num_fds">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_fds</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_num_fds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_fds" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">proc_num_fds</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_num_fds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_fds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of file descriptors opened by this process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">total amount of open files for the specific process ID</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: total amount of open files for the specific process ID
+:rtype: int
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.proc_num_threads">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_num_threads</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_num_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_threads" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">proc_num_threads</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_num_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_threads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of threads used by this process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the number of threads for the specific pid</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the number of threads for the specific pid
+:rtype: int
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.proc_vm_size">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">proc_vm_size</tt><big>(</big><em>pid</em><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#proc_vm_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_vm_size" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">proc_vm_size</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_vm_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_vm_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that returns the virtual memory size of a process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> (<em>int</em>) &#8211; the process ID of the target process</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the virtual memory size of a process</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
 </tr>
 </tbody>
 </table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the virtual memory size of a process
+:rtype: int
+:type pid: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_free_memory_bytes">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_free_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_free_memory_bytes</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_free_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_memory_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system free memory in bytes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of free RAM memory in the system in bytes</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the amount of free RAM memory in the system in bytes
+:rtype: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_free_ram_mb">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_free_ram_mb</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_free_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_ram_mb" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_free_ram_mb</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_free_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_free_ram_mb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system free memory in MB.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of free RAM memory in the system in MB.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the amount of free RAM memory in the system in MB.
+:rtype: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_iowait_time">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_iowait_time</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_iowait_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_iowait_time" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_iowait_time</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_iowait_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_iowait_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>For a given CPU, the I/O wait time is the time during which that CPU
 was idle (i.e. didn&#8217;t execute any tasks) and there was at least one
 outstanding disk I/O operation requested by a task scheduled on that
 CPU (at the time it generated that I/O request).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the I/O wait time</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the I/O wait time
+:rtype: float
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_load_average">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_load_average</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_load_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_load_average" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_load_average</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_load_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_load_average" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the system load average.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple of floats with the 1-,5- and 15-min load average</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple&lt;float&gt;</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: tuple of floats with the 1-,5- and 15-min load average
+:rtype: tuple&lt;float&gt;
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_nprocs">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_nprocs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_nprocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_nprocs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_nprocs</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_nprocs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_nprocs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of CPUs in the system.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the number of CPUs in the system</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the number of CPUs in the system
+:rtype: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_total_memory_bytes">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_total_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_total_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_total_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_total_memory_bytes</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_total_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_total_memory_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system total memory in bytes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">total system memory in bytes</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: total system memory in bytes
+:rtype: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_used_memory_bytes">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_memory_bytes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_used_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_memory_bytes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_used_memory_bytes</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_used_memory_bytes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_memory_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system used memory in bytes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The amount of used RAM memory in the system in bytes.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: The amount of used RAM memory in the system in bytes.
+:rtype: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="util.sysstats.sys_used_ram_mb">
-<tt class="descclassname">util.sysstats.</tt><tt class="descname">sys_used_ram_mb</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/util/sysstats.html#sys_used_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_ram_mb" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">util.sysstats.</code><code class="descname">sys_used_ram_mb</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_used_ram_mb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_used_ram_mb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns system used memory in MB.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the amount of used RAM memory in the system in MB.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
-</tr>
-</tbody>
-</table>
+<p>:param ssh_client : SSH client provided by paramiko to run the command
+:returns: the amount of used RAM memory in the system in MB.
+:rtype: int
+:type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
 
 </div>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="util.unittests.html">unittests Package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.cpu_test"><tt class="docutils literal"><span class="pre">cpu_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#customsubprocess-test-module"><tt class="docutils literal"><span class="pre">customsubprocess_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.file_test"><tt class="docutils literal"><span class="pre">file_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.html_test"><tt class="docutils literal"><span class="pre">html_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.netutil_test"><tt class="docutils literal"><span class="pre">netutil_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.numeric_test"><tt class="docutils literal"><span class="pre">numeric_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.plot_json_test"><tt class="docutils literal"><span class="pre">plot_json_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.process_test"><tt class="docutils literal"><span class="pre">process_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.stats_test"><tt class="docutils literal"><span class="pre">stats_test</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.unittests.html#module-util.unittests.sysstats_test"><tt class="docutils literal"><span class="pre">sysstats_test</span></tt> Module</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<div class="section" id="module-util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-util" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -1649,54 +1685,56 @@ CPU (at the time it generated that I/O request).</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/intracom_logo.png" alt="Logo"/>
+            </a></p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">util Package</a><ul>
-<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">util</span></tt> Package</a></li>
-<li><a class="reference internal" href="#module-util.cpu"><tt class="docutils literal"><span class="pre">cpu</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.customsubprocess"><tt class="docutils literal"><span class="pre">customsubprocess</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.file_ops"><tt class="docutils literal"><span class="pre">file_ops</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.html"><tt class="docutils literal"><span class="pre">html</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.netutil"><tt class="docutils literal"><span class="pre">netutil</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.numeric"><tt class="docutils literal"><span class="pre">numeric</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.plot_json"><tt class="docutils literal"><span class="pre">plot_json</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.plot_utils"><tt class="docutils literal"><span class="pre">plot_utils</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.process"><tt class="docutils literal"><span class="pre">process</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.remote"><tt class="docutils literal"><span class="pre">remote</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.stats"><tt class="docutils literal"><span class="pre">stats</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-util.sysstats"><tt class="docutils literal"><span class="pre">sysstats</span></tt> Module</a></li>
-<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-</ul>
-</li>
+<li><a class="reference internal" href="#">util package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-util.cpu">util.cpu module</a></li>
+<li><a class="reference internal" href="#module-util.customsubprocess">util.customsubprocess module</a></li>
+<li><a class="reference internal" href="#module-util.file_ops">util.file_ops module</a></li>
+<li><a class="reference internal" href="#module-util.html">util.html module</a></li>
+<li><a class="reference internal" href="#module-util.netutil">util.netutil module</a></li>
+<li><a class="reference internal" href="#module-util.numeric">util.numeric module</a></li>
+<li><a class="reference internal" href="#module-util.plot_json">util.plot_json module</a></li>
+<li><a class="reference internal" href="#module-util.plot_utils">util.plot_utils module</a></li>
+<li><a class="reference internal" href="#module-util.process">util.process module</a></li>
+<li><a class="reference internal" href="#module-util.stats">util.stats module</a></li>
+<li><a class="reference internal" href="#module-util.sysstats">util.sysstats module</a></li>
+<li><a class="reference internal" href="#module-util">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/util.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="stress_test.html"
+                        title="previous chapter">stress_test package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/util.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1705,12 +1743,15 @@ CPU (at the time it generated that I/O request).</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">NSTAT 1.1 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="stress_test.html" title="stress_test package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">NSTAT: Network Stress Test Automation Toolkit 1.4.1 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2015, NSTAT Team.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Intracom S.A. Telecom Solutions.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>

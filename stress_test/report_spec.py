@@ -4,10 +4,8 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Contains data structure of report element and tables inside the report.
-These are used to generate the html report """
-
 import collections
+
 
 class ReportSpec(object):
     """Contains the specification of the html report, the title of the
@@ -18,6 +16,8 @@ class ReportSpec(object):
     def __init__(self, config_json, results_json, title, config_tables,
                  results_table):
         """
+        Creates a ReportSpec object
+
         :param config_json: string containing the file path to the
         json file containing the configuration parameters of the test.
         :param results_json: string containing the file path to the json file
@@ -54,6 +54,8 @@ class TableSpec(object):
     def __init__(self, table_type, title, keys, source_json,
                  ordering_key=None):
         """
+        Creates a TabelSpec class
+
         :param table_type: A string describing the type of table that
         we want to generate. It can have one of the following values '1d' for a
         one dimensional table with keys and values, or '2d' for a

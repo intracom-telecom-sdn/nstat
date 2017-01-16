@@ -1,6 +1,7 @@
 #! /usr/bin/env python3.4
 
-"""This handler returns the number of links of a topology, connected
+"""
+This handler returns the number of links of a topology, connected
 to the controller. This information is extracted from controller's operational
 datastore, using RESTCONF.
 """
@@ -11,10 +12,11 @@ import requests
 
 
 def get_oper_links():
-    """Query number of links registered in ODL operational DS
+    """
+    Query number of links registered in ODL operational DS
 
-    :returns: number of links found, 0 if none exists and -1 in case of
-    error.
+    :returns: number of links found, 0 if none exists and -1 in case of \
+        error.
     :rtype: int
     """
 
@@ -26,11 +28,12 @@ def get_oper_links():
     url = ('http://{0}:{1}/restconf/operational/network-topology:'
            'network-topology/network-topology:topology/flow:1/'.
            format(ip, port))
-
+    s = requests.Session()
+    s.trust_env = False
     auth_token = (username, password)
     try:
-        datastore = requests.get(url=url,
-                                 auth=auth_token).json()['topology'][0]
+        datastore = s.get(url=url,
+                          auth=auth_token).json()['topology'][0]
     except:
         logging.error('[get_oper_links] Fail response from operational DS')
         return -1

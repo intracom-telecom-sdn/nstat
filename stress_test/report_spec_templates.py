@@ -8,28 +8,24 @@ import stress_test.report_spec
 
 
 class TestReport:
-
+    """
+    Creates a class for each test includeing the key to be demonstrated
+    """
     def __init__(self, test_type, config_json_file):
         """
+        Initializes the test_type and json configuration file attributes
         """
         self.test_type = test_type
         self.config_json_file = config_json_file
 
     def sb_active_scalability_mtcbench(self, results_json_file):
-        """It returns all the information that is needed for the generation of the
-        report for the specific test.
+        """
+        Returns the report specification for the Southbound active scalability
+        test with MT-Cbench
 
-        :param test_type: describes the type of the specific test. This value
-        defines the title of the html report.
-        :param config_json: This is the filepath to the configuration json
-        file.
-        :param results_json_file: This is the filepath to the results json file.
-        :returns: A ReportSpec object that holds all the test report
-        information and is passed as input to the generate_html() function in
-        the html_generation.py, that is responsible for the report generation.
-        :rtype: ReportSpec object
-        :type: test_type: str
-        :type: config_json: str
+        :param results_json_file: This is the filepath to the results json file
+        :returns: report specification object
+        :rtype: ReportSpec
         :type: results_json_file: str
         """
 
@@ -118,19 +114,13 @@ class TestReport:
         return report_spec_obj
 
     def sb_active_stability_mtcbench(self, results_json_file):
-        """It returns all the information that is needed for the generation of the
-        report for the specific test.
+        """
+        Returns the report specification object for SouthBound active
+        stabiility test with MT-Cbench.
 
-        :param test_type: describes the type of the specific test. This value
-        defines the title of the html report.
-        :param config_json: This is the filepath to the configuration json file.
         :param results_json_file: This is the filepath to the results json file.
-        :returns: A ReportSpec object that holds all the test report information
-        and is passed as input to the generate_html() function in the
-        html_generation.py, that is responsible for the report generation.
-        :rtype: ReportSpec object
-        :type: test_type: str
-        :type: config_json: str
+        :returns: report specification object
+        :rtype: ReportSpec
         :type: results_json_file: str
         """
 
@@ -220,19 +210,13 @@ class TestReport:
         return report_spec_obj
 
     def sb_idle_scalability_mtcbench(self, results_json_file):
-        """It returns all the information that is needed for the generation of the
-        report for the specific test.
+        """
+        Returns the report specification object for SouthBound idle
+        scalability test with MT-Cbench
 
-        :param test_type: describes the type of the specific test. This value
-        defines the title of the html report.
-        :param config_json: this is the filepath to the configuration json file.
-        :param results_json_file: this is the filepath to the results json file.
-        :returns: A ReportSpec object that holds all the test report information
-        and is passed as input to the generate_html() function in the
-        html_generation.py, that is responsible for the report generation.
-        :rtype: ReportSpec object
-        :type: test_type: str
-        :type: config_json: str
+        :param results_json_file: JSON results path
+        :returns: report specification object
+        :rtype: ReportSpec
         :type: results_json_file: str
         """
 
@@ -338,19 +322,13 @@ class TestReport:
         return report_spec_obj
 
     def sb_active_scalability_multinet(self, results_json_file):
-        """It returns all the information that is needed for the generation of the
-        report for the specific test.
+        """
+        Returns the report specification object for SouthBound active
+        scalability test with Multinet
 
-        :param test_type: Describes the type of the specific test. This value
-        defines the title of the html report.
-        :param config_json: this is the filepath to the configuration json file.
-        :param results_json_file: this is the filepath to the results json file.
-        :returns: A ReportSpec object that holds all the test report information
-        and is passed as input to the generate_html() function in the
-        html_generation.py, that is responsible for the report generation.
-        :rtype: ReportSpec object
-        :type: test_type: str
-        :type: config_json: str
+        :param results_json_file: This is the filepath to the results json file.
+        :returns: report specification object
+        :rtype: ReportSpec
         :type: results_json_file: str
         """
         report_spec_obj = stress_test.report_spec.ReportSpec(
@@ -440,19 +418,13 @@ class TestReport:
         return report_spec_obj
 
     def sb_idle_scalability_multinet(self, results_json_file):
-        """It returns all the information that is needed for the generation of the
-        report for the specific test.
+        """
+        Returns the report specification object for SouthBound idle
+        scalability test with Multinet
 
-        :param test_type: Describes the type of the specific test. This value
-        defines the title of the html report.
-        :param config_json: this is the filepath to the configuration json file.
-        :param results_json_file: this is the filepath to the results json file.
-        :returns: A ReportSpec object that holds all the test report information
-        and is passed as input to the generate_html() function in the
-        html_generation.py, that is responsible for the report generation.
-        :rtype: ReportSpec object
-        :type: test_type: str
-        :type: config_json: str
+        :param results_json_file: JSON results path
+        :returns: report specification object
+        :rtype: ReportSpec
         :type: results_json_file: str
         """
 
@@ -534,19 +506,13 @@ class TestReport:
         return report_spec_obj
 
     def sb_idle_stability_multinet(self, results_json_file):
-        """It returns all the information that is needed for the generation of the
-        report for the specific test.
+        """
+        Returns the report specification object for SouthBound idle
+        stability test with Multinet
 
-        :param test_type: Describes the type of the specific test. This value
-        defines the title of the html report.
-        :param config_json: this is the filepath to the configuration json file.
-        :param results_json_file: this is the filepath to the results json file.
-        :returns: A ReportSpec object that holds all the test report information
-        and is passed as input to the generate_html() function in the
-        html_generation.py, that is responsible for the report generation.
-        :rtype: ReportSpec object
-        :type: test_type: str
-        :type: config_json: str
+        :param results_json_file: JSON results path
+        :returns: report specification object
+        :rtype: ReportSpec
         :type: results_json_file: str
         """
 
@@ -639,15 +605,12 @@ class TestReport:
 
     def nb_active_scalability_multinet(self, results_json_file):
         """
-        Return the report specification for this test
+        Returns the report specification object for NorthBound active
+        scalability test with Multinet
 
-        :param test_type: test short description (title)
-        :param config_json: JSON config path
         :param results_json_file: JSON results path
-        :returns: report specification for this test
+        :returns: report specification object
         :rtype: ReportSpec
-        :type: test_type: str
-        :type: config_json: str
         :type: results_json_file: str
         """
 

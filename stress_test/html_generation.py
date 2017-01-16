@@ -4,7 +4,8 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" HTML generation functions """
+"""
+HTML generation functions """
 import json
 import optparse
 import stress_test.report_spec
@@ -291,11 +292,12 @@ table {
 
 
 def generate_table(tables_specs):
-    """ Gets a dictionary with tables specifications and generates the
-    corresponded html code.
+    """
+    Gets a dictionary with tables specifications and generates the \
+        corresponded html code.
 
-    :param tables_specs: Dictionary containing the specifications of a group
-    of tables.
+    :param tables_specs: Dictionary containing the specifications of a group \
+        of tables.
     :returns: html code of the table.
     :rtype: str
     :type tables_specs: <dictionary>
@@ -317,7 +319,8 @@ def generate_table(tables_specs):
 
 
 def insert_plots(plots_list):
-    """ Gets a list of dictionaries that describes the plots of the report,
+    """
+    Gets a list of dictionaries that describes the plots of the report,
     and generates the corresponded html code.
 
     :param plots_list: A list of dictionaries with the plots description.
@@ -338,7 +341,7 @@ def insert_plots(plots_list):
                 # Adding a graph image in document.
                 plots_html = plots_html + \
                     '<img class=\"graph-' + graph_float + '\" src=\"' + \
-                str(plots_list[plot_id]['plot_filename']) + \
+                    str(plots_list[plot_id]['plot_filename']) + \
                     '.png\" alt=\"result graph\" />'
 
                 # Changing the page alignment of the next inserted graph image.
