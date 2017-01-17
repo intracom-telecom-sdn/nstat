@@ -747,8 +747,13 @@ class TestRun:
                 failed_flows_del = 0
                 result_metrics_add = {}
                 result_metrics_del = {}
-
+                print('-----------------------------------------------------')
+                print('-----------------------ADD-------------------------')
+                print('-----------------------------------------------------')
                 print(result_metrics_add)
+                print('-----------------------------------------------------')
+                print('-----------------------DEL---------------------------')
+                print('-----------------------------------------------------')
                 print(result_metrics_del)
                 # start NORTHBOUND generator flow_delete_flag NOT SET
                 # --------------------------------------------------------------
@@ -810,7 +815,13 @@ class TestRun:
                 self.sb_emu.cleanup()
                 results = util.file_ops.merge_dict_and_avg(result_metrics_add,
                                                            result_metrics_del)
+                print('-----------------------------------------------------')
+                print('-----------------------------------------------------')
+                print('-----------------------------------------------------')
                 print(results)
+                print('-----------------------------------------------------')
+                print('-----------------------------------------------------')
+                print('-----------------------------------------------------')
                 global_sample_id = results['global_sample_id'] + 1
                 self.total_samples += [results]
 
