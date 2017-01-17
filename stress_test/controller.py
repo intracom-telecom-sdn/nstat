@@ -97,8 +97,8 @@ class Controller:
         Handles custom errors of controller
 
         :param error_message: message of the handled error
-        :param error_num: error number of the handled error, used to define
-        subcases of raised errors.
+        :param error_num: error number of the handled error, used to define \
+            subcases of raised errors.
         :type error_message: str
         :type error_num: int
         :raises controller_exceptions.CtrlError: to terminate execution of
@@ -426,7 +426,7 @@ class Controller:
 
     def wait_until_listens(self, timeout_ms):
         """
-        Waits for controller to start listening on specified port.
+        Waits for controller to start listening on specified port. \
 
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :returns: the process ID PID of the controller.

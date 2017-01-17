@@ -4,12 +4,15 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Module that computes statistic properties given a list of samples """
+"""
+Module that computes statistic properties given a list of samples
+"""
 
 import math
 
 def mean(samples):
-    """Computes the mean of a number list
+    """
+    Computes the mean of a number list
 
     :param s: a list of float number, to calculate their mean.
     :returns: the mean of the float numbers in the list
@@ -21,7 +24,8 @@ def mean(samples):
 
 
 def variance(samples):
-    """Computes the variance of a number list
+    """
+    Computes the variance of a number list
 
     :param s: a list of float numbers, to calculate their variance.
     :returns: the variance of the float numbers in the list
@@ -34,7 +38,8 @@ def variance(samples):
 
 
 def stddev(samples):
-    """Computes the standard deviation of a number list.
+    """
+    Computes the standard deviation of a number list.
 
     :param s: a list of float numbers, to calculate their standard deviation.
     :returns: the standard deviation of the float numbers in the list.
@@ -46,7 +51,8 @@ def stddev(samples):
 
 
 def coefvariance(samples):
-    """Computes the co-efficient of variation of a number list.
+    """
+    Computes the co-efficient of variation of a number list. \
 
     :param s: a list of float numbers, to calculate their coefficient.
     :returns: the co-efficient of variation of the float numbers
