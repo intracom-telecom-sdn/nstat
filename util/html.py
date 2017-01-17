@@ -79,7 +79,7 @@ def get_ordered_index(field_value, map_dictionary):
 def isalistofdictionaries(lst):
     """
     Takes a list as argument and checks if all the elements of this list \
-        are dictionaries. If they are then it returns true, else it returns
+        are dictionaries. If they are then it returns true, else it returns \
         false. If the input argument type is not list then it also returns \
         false.
 
@@ -218,7 +218,7 @@ def single_dict_to_html(data, key_title, data_title, table_title='',
         the first element is the key value of the dictionary, the second \
         element is the data value of the dictionary for the correspondent key. \
         The columns are always 2 and their title are defined in the input \
-        arguments \
+        arguments
 
     :param data: this data structure is a dictionary of strings that contains \
         the pair of field_name:value for all the data we want to convert to \

@@ -90,15 +90,18 @@ def make_file_exe(fpath):
 
 
 def merge_dict_and_avg(results_add, results_delete):
-    """Takes two dictionaries...
+    """
+    Takes two dictionaries results_add, results_delete and returns a merged \
+        dictionary. Special purpose method for the NSTAT NorthBound \
+        stress test.
 
-    :param ssh_client : SSH client provided by paramiko to run the command
-    :param command_to_run: Command to execute
+    :param results_add :
+    :param results_delete:
     :returns: the exit code of the command to be executed remotely and the \
         combined stdout - stderr of the executed command
-    :rtype: tuple<int, str>
-    :type ssh_client: paramiko.SSHClient
-    :type command_to_run: str
+    :rtype: dict<str or int depending on the value type>
+    :type dict
+    :type dict
     """
     dict_merged = collections.defaultdict(list)
     for d in (results_delete, results_add):
