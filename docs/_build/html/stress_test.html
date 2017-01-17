@@ -218,18 +218,10 @@ controller name</p>
 <dl class="method">
 <dt id="stress_test.controller.Controller.wait_until_listens">
 <code class="descname">wait_until_listens</code><span class="sig-paren">(</span><em>timeout_ms</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/controller.html#Controller.wait_until_listens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.controller.Controller.wait_until_listens" title="Permalink to this definition">¶</a></dt>
-<dd><p>Waits for controller to start listening on specified port.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timeout_ms</strong> &#8211; milliseconds to wait (in milliseconds).</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the process ID PID of the controller.</td>
-</tr>
-</tbody>
-</table>
-<p>:rtype int
+<dd><p>Waits for controller to start listening on specified port. 
+:param timeout_ms: milliseconds to wait (in milliseconds).
+:returns: the process ID PID of the controller.
+:rtype int
 :type timeout_ms: int
 :raises controller_exceptions.CtrlReadyStateError: If controller fails             to start
 :raises controller_exceptions.CtrlPortConflictError: if another             process listens on controllers port.</p>
@@ -1809,16 +1801,9 @@ results in it
 <dl class="method">
 <dt id="stress_test.report_gen.ReportGen.generate_plots">
 <code class="descname">generate_plots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stress_test/report_gen.html#ReportGen.generate_plots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#stress_test.report_gen.ReportGen.generate_plots" title="Permalink to this definition">¶</a></dt>
-<dd><p>NSTAT post test actions</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> &#8211; argparse.ArgumentParser object containing user specified             parameters (i.e test type, controller base directory, generator             base directory) when running NSTAT</td>
-</tr>
-</tbody>
-</table>
-<p>:param test_config : JSON input configuration
+<dd><p>NSTAT post test actions 
+:param args: argparse.ArgumentParser object containing user specified             parameters (i.e test type, controller base directory, generator             base directory) when running NSTAT
+:param test_config : JSON input configuration
 :param report_spec : A ReportSpec object that holds all the test             report information and is passed as input to the generate_html()             function in the html_generation.py, that is responsible for the             report generation.
 :type args: ArgumentParser object
 :type test_config: python object resulting from a deserialized file             like object containing a json document

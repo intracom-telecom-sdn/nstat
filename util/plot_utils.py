@@ -4,7 +4,9 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-"""Module to facilitate plotting and promote code re-use"""
+"""
+Module to facilitate plotting and promote code re-use
+"""
 
 import matplotlib as mpl
 mpl.use('Agg')
@@ -16,7 +18,8 @@ import json
 
 
 class PlotOptions(object):
-    """Contains the various plot options attributes.
+    """
+        Contains the various plot options attributes.
     """
 
     def __init__(self):
@@ -43,10 +46,11 @@ class PlotOptions(object):
 
 
 def setup_plot(plot_options):
-    """Sets axis labels, title and subtitle of a plot.
+    """
+    Sets axis labels, title and subtitle of a plot.
 
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type plot_options: PlotOptions
     """
 
@@ -64,10 +68,11 @@ def setup_plot(plot_options):
 
 
 def finish_plotting(plot_options):
-    """Configures the plots axis and saves the figure to file
+    """
+    Configures the plots axis and saves the figure to file
 
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type plot_options: PlotOptions
     """
 
@@ -83,18 +88,19 @@ def finish_plotting(plot_options):
 
 def plot_errorbar_helper(x_keys_sorted, y_mean, y_diff_minus, y_diff_plus,
                          plot_options):
-    """Draws a single errorbar.
+    """
+    Draws a single errorbar.
 
     :param x_keys_sorted: values of x axis
     :param y_mean: values of y mean (one value for each x_key)
-    :param y_diff_minus: values of y_diff_minus (one value for each x_key,
-    y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
-    diff_minus at plot_json, plot_errorbar_json()
-    :param y_diff_plus: values of y_diff_mplus (one value for each x_key,
-    y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
-    diff_plus at plot_json, plot_errorbar_json()
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param y_diff_minus: values of y_diff_minus (one value for each x_key, \
+        y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of \
+        diff_minus at plot_json, plot_errorbar_json()
+    :param y_diff_plus: values of y_diff_mplus (one value for each x_key, \
+        y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of \
+        diff_plus at plot_json, plot_errorbar_json()
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :returns: An errorbar plot.
     :rtype: depends on the input of [z_values]
     :type x_keys_sorted: list<int>
@@ -115,18 +121,19 @@ def plot_errorbar_helper(x_keys_sorted, y_mean, y_diff_minus, y_diff_plus,
 
 def plot_errorbar(x_keys_sorted, y_mean, y_diff_minus, y_diff_plus,
                   plot_options):
-    """Creates a single errorbar figure.
+    """
+    Creates a single errorbar figure.
 
     :param x_keys_sorted: values of x axis.
     :param y_mean: values of y mean (one value for each x_key)
-    :param y_diff_minus: values of y_diff_minus (one value for each x_key,
-    y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
-    diff_minus at plot_json, plot_errorbar_json()
-    :param y_diff_plus: values of y_diff_mplus (one value for each x_key,
-    y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
-    diff_plus at plot_json, plot_errorbar_json()
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param y_diff_minus: values of y_diff_minus (one value for each x_key, \
+        y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of \
+        diff_minus at plot_json, plot_errorbar_json() \
+    :param y_diff_plus: values of y_diff_mplus (one value for each x_key, \
+        y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of \
+        diff_plus at plot_json, plot_errorbar_json() \
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type x_keys_sorted: list<int>
     :type y_mean: list<float>
     :type y_diff_minus: list<float>
@@ -141,12 +148,13 @@ def plot_errorbar(x_keys_sorted, y_mean, y_diff_minus, y_diff_plus,
 
 
 def plot_multi_errorbar(y_values, z_axis_key, plot_options):
-    """Creates a multiple errorbars figure.
+    """
+    Creates a multiple errorbars figure.
 
     :param y_values: values of y axis.
     :param z_axis_key: field names from results to be used for z axis.
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type y_values: list<float>
     :type z_axis_key: str
     :type plot_options: PlotOptions
@@ -189,7 +197,8 @@ def plot_multi_errorbar(y_values, z_axis_key, plot_options):
 
 def plot_scatter_helper(x_coords, y_coords, plot_options, marker_arg='o',
                         color='b'):
-    """Produces a single scatter plot with a specific color.
+    """
+    Produces a single scatter plot with a specific color.
 
     :param x_coords: values of x axis.
     :param y_coords: Values of y axis.
@@ -210,12 +219,13 @@ def plot_scatter_helper(x_coords, y_coords, plot_options, marker_arg='o',
 
 
 def plot_scatter(x_coords, y_coords, plot_options):
-    """Creates a single scatter plot figure.
+    """
+    Creates a single scatter plot figure.
 
     :param x_coords: values of x axis.
     :param y_coords: Values of y axis.
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type x_coor: list<int>
     :type y_coor: list<int>
     :type plot_options: PlotOptions
@@ -227,12 +237,13 @@ def plot_scatter(x_coords, y_coords, plot_options):
 
 
 def plot_multi_scatter(y_values, z_axis_key, plot_options):
-    """Creates a multiple scatter plots figure
+    """
+    Creates a multiple scatter plots figure
 
     :param y_values: list<float>
     :param z_axis_key: field names from results to be used for z axis.
-    :param plot_options: object containing configuration parameters of the
-    produced plot.
+    :param plot_options: object containing configuration parameters of the \
+        produced plot.
     :type y_values: list<float>
     :type z_axis_key: list<str>
     :type plot_options: PlotOptions
@@ -262,16 +273,17 @@ def plot_multi_scatter(y_values, z_axis_key, plot_options):
 
 
 def create_xy_dict_from_file(results_file, x_axis_key, y_axis_key):
-    """Reads a json file and returns the contents of the file as a
-    dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys
+    """
+    Reads a json file and returns the contents of the file as a dictionary \
+        as well as a dictionary that maps y_axis_keys to x_axis_keys \
 
     :param results_file: filepath of json file that contains the results
-    :param x_axis_key: field name from the result json that has the data for x
-    axis
-    :param y_axis_key: field name from the result json that has the data for y
-    axis
-    :returns contents of results json files and x,y coordinations of the
-    values defined by x_axis_key and y_axis_key.
+    :param x_axis_key: field name from the result json that has the data for \
+        x axis
+    :param y_axis_key: field name from the result json that has the data for \
+        y axis
+    :returns contents of results json files and x,y coordinations of the \
+        values defined by x_axis_key and y_axis_key.
     :rtype: tuple<dictionary>
     :type results_file: str
     :type x_axis_key: str
@@ -294,19 +306,20 @@ def create_xy_dict_from_file(results_file, x_axis_key, y_axis_key):
 
 def create_xyz_dict_from_file(results_file, x_axis_key, y_axis_key,
                               z_axis_key):
-    """Reads a json file and returns the contents of the file as a
-    dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys
-    that in turn map to z_axis_keys
+    """
+    Reads a json file and returns the contents of the file as a \
+        dictionary as well as a dictionary that maps y_axis_keys to \
+        x_axis_keys that in turn map to z_axis_keys \
 
     :param results_file: filepath of json file that contains the results
-    :param x_axis_key: field name from the result json that has the data for x
-    axis
-    :param y_axis_key: field name from the result json that has the data for y
-    axis
-    :param z_axis_key: field name from the result json that has the data for z
-    axis
-    :returns contents of results json files and x,y coordinations of the
-    values defined by x_axis_key and y_axis_key
+    :param x_axis_key: field name from the result json that has the data for \
+        x axis
+    :param y_axis_key: field name from the result json that has the data for \
+        y axis
+    :param z_axis_key: field name from the result json that has the data for \
+        z axis
+    :returns contents of results json files and x,y coordinations of the \
+        values defined by x_axis_key and y_axis_key
     :rtype: tuple<dict>
     :type results_file: str
     :type x_axis_key: str

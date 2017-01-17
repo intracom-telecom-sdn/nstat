@@ -11,7 +11,8 @@ import math
 
 
 def compute_cpu_shares(shares_list, num_cpus):
-    """Computes lists of non-overlapping CPUs lists based on a list
+    """
+    Computes lists of non-overlapping CPUs lists based on a list
     of CPU shares. A CPU share is a value between 1 and 99 and corresponds to
     the percentage of total system CPUs that should be allocated for a
     process. When a share of 0 or 100 is specified, a list with all system

@@ -814,25 +814,11 @@ tables</p>
 <dl class="function">
 <dt id="util.plot_utils.create_xy_dict_from_file">
 <code class="descclassname">util.plot_utils.</code><code class="descname">create_xy_dict_from_file</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#create_xy_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xy_dict_from_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads a json file and returns the contents of the file as a
-dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>results_file</strong> &#8211; filepath of json file that contains the results</li>
-<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>axis
-:param y_axis_key: field name from the result json that has the data for y
-axis
-:returns contents of results json files and x,y coordinations of the
-values defined by x_axis_key and y_axis_key.
+<dd><p>Reads a json file and returns the contents of the file as a dictionary         as well as a dictionary that maps y_axis_keys to x_axis_keys 
+:param results_file: filepath of json file that contains the results
+:param x_axis_key: field name from the result json that has the data for         x axis
+:param y_axis_key: field name from the result json that has the data for         y axis
+:returns contents of results json files and x,y coordinations of the         values defined by x_axis_key and y_axis_key.
 :rtype: tuple&lt;dictionary&gt;
 :type results_file: str
 :type x_axis_key: str
@@ -842,28 +828,12 @@ values defined by x_axis_key and y_axis_key.
 <dl class="function">
 <dt id="util.plot_utils.create_xyz_dict_from_file">
 <code class="descclassname">util.plot_utils.</code><code class="descname">create_xyz_dict_from_file</code><span class="sig-paren">(</span><em>results_file</em>, <em>x_axis_key</em>, <em>y_axis_key</em>, <em>z_axis_key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/plot_utils.html#create_xyz_dict_from_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.plot_utils.create_xyz_dict_from_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads a json file and returns the contents of the file as a
-dictionary as well as a dictionary that maps y_axis_keys to x_axis_keys
-that in turn map to z_axis_keys</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>results_file</strong> &#8211; filepath of json file that contains the results</li>
-<li><strong>x_axis_key</strong> &#8211; field name from the result json that has the data for x</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>axis
-:param y_axis_key: field name from the result json that has the data for y
-axis
-:param z_axis_key: field name from the result json that has the data for z
-axis
-:returns contents of results json files and x,y coordinations of the
-values defined by x_axis_key and y_axis_key
+<dd><p>Reads a json file and returns the contents of the file as a         dictionary as well as a dictionary that maps y_axis_keys to         x_axis_keys that in turn map to z_axis_keys 
+:param results_file: filepath of json file that contains the results
+:param x_axis_key: field name from the result json that has the data for         x axis
+:param y_axis_key: field name from the result json that has the data for         y axis
+:param z_axis_key: field name from the result json that has the data for         z axis
+:returns contents of results json files and x,y coordinations of the         values defined by x_axis_key and y_axis_key
 :rtype: tuple&lt;dict&gt;
 :type results_file: str
 :type x_axis_key: str
@@ -879,12 +849,10 @@ values defined by x_axis_key and y_axis_key
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> &#8211; object containing configuration parameters of the</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> (<a class="reference internal" href="#util.plot_utils.PlotOptions" title="util.plot_utils.PlotOptions"><em>PlotOptions</em></a>) &#8211; object containing configuration parameters of the         produced plot.</td>
 </tr>
 </tbody>
 </table>
-<p>produced plot.
-:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -896,26 +864,14 @@ values defined by x_axis_key and y_axis_key
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x_keys_sorted</strong> &#8211; values of x axis.</li>
-<li><strong>y_mean</strong> &#8211; values of y mean (one value for each x_key)</li>
-<li><strong>y_diff_minus</strong> &#8211; values of y_diff_minus (one value for each x_key,</li>
+<li><strong>x_keys_sorted</strong> (<em>list&lt;int&gt;</em>) &#8211; values of x axis.</li>
+<li><strong>y_mean</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y mean (one value for each x_key)</li>
+<li><strong>y_diff_minus</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y_diff_minus (one value for each x_key,         y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of         diff_minus at plot_json, plot_errorbar_json()     :param y_diff_plus: values of y_diff_mplus (one value for each x_key,         y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of         diff_plus at plot_json, plot_errorbar_json()     :param plot_options: object containing configuration parameters of the         produced plot.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
-diff_minus at plot_json, plot_errorbar_json()
-:param y_diff_plus: values of y_diff_mplus (one value for each x_key,
-y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
-diff_plus at plot_json, plot_errorbar_json()
-:param plot_options: object containing configuration parameters of the
-produced plot.
-:type x_keys_sorted: list&lt;int&gt;
-:type y_mean: list&lt;float&gt;
-:type y_diff_minus: list&lt;float&gt;
-:type y_diff_plus: list&lt;float&gt;
-:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -926,29 +882,23 @@ produced plot.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x_keys_sorted</strong> &#8211; values of x axis</li>
-<li><strong>y_mean</strong> &#8211; values of y mean (one value for each x_key)</li>
-<li><strong>y_diff_minus</strong> &#8211; values of y_diff_minus (one value for each x_key,</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_keys_sorted</strong> (<em>list&lt;int&gt;</em>) &#8211; values of x axis</li>
+<li><strong>y_mean</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y mean (one value for each x_key)</li>
+<li><strong>y_diff_minus</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y_diff_minus (one value for each x_key,         y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of         diff_minus at plot_json, plot_errorbar_json()</li>
+<li><strong>y_diff_plus</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y_diff_mplus (one value for each x_key,         y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of         diff_plus at plot_json, plot_errorbar_json()</li>
+<li><strong>plot_options</strong> (<a class="reference internal" href="#util.plot_utils.PlotOptions" title="util.plot_utils.PlotOptions"><em>PlotOptions</em></a>) &#8211; object containing configuration parameters of the         produced plot.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An errorbar plot.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">depends on the input of [z_values]</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>y_diff_minus[i] = y_mean[i] - diff_minus). See calculation of
-diff_minus at plot_json, plot_errorbar_json()
-:param y_diff_plus: values of y_diff_mplus (one value for each x_key,
-y_diff_plus[i] = y_mean[i] + diff_plus). See calculation of
-diff_plus at plot_json, plot_errorbar_json()
-:param plot_options: object containing configuration parameters of the
-produced plot.
-:returns: An errorbar plot.
-:rtype: depends on the input of [z_values]
-:type x_keys_sorted: list&lt;int&gt;
-:type y_mean: list&lt;float&gt;
-:type y_diff_minus: list&lt;float&gt;
-:type y_diff_plus: list&lt;float&gt;
-:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -960,18 +910,14 @@ produced plot.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>y_values</strong> &#8211; values of y axis.</li>
-<li><strong>z_axis_key</strong> &#8211; field names from results to be used for z axis.</li>
-<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
+<li><strong>y_values</strong> (<em>list&lt;float&gt;</em>) &#8211; values of y axis.</li>
+<li><strong>z_axis_key</strong> (<em>str</em>) &#8211; field names from results to be used for z axis.</li>
+<li><strong>plot_options</strong> (<a class="reference internal" href="#util.plot_utils.PlotOptions" title="util.plot_utils.PlotOptions"><em>PlotOptions</em></a>) &#8211; object containing configuration parameters of the         produced plot.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>produced plot.
-:type y_values: list&lt;float&gt;
-:type z_axis_key: str
-:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -983,18 +929,14 @@ produced plot.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>y_values</strong> &#8211; list&lt;float&gt;</li>
-<li><strong>z_axis_key</strong> &#8211; field names from results to be used for z axis.</li>
-<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
+<li><strong>y_values</strong> (<em>list&lt;float&gt;</em>) &#8211; list&lt;float&gt;</li>
+<li><strong>z_axis_key</strong> (<em>list&lt;str&gt;</em>) &#8211; field names from results to be used for z axis.</li>
+<li><strong>plot_options</strong> (<a class="reference internal" href="#util.plot_utils.PlotOptions" title="util.plot_utils.PlotOptions"><em>PlotOptions</em></a>) &#8211; object containing configuration parameters of the         produced plot.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>produced plot.
-:type y_values: list&lt;float&gt;
-:type z_axis_key: list&lt;str&gt;
-:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -1008,16 +950,12 @@ produced plot.
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>x_coords</strong> &#8211; values of x axis.</li>
 <li><strong>y_coords</strong> &#8211; Values of y axis.</li>
-<li><strong>plot_options</strong> &#8211; object containing configuration parameters of the</li>
+<li><strong>plot_options</strong> (<a class="reference internal" href="#util.plot_utils.PlotOptions" title="util.plot_utils.PlotOptions"><em>PlotOptions</em></a>) &#8211; object containing configuration parameters of the         produced plot.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<p>produced plot.
-:type x_coor: list&lt;int&gt;
-:type y_coor: list&lt;int&gt;
-:type plot_options: PlotOptions</p>
 </dd></dl>
 
 <dl class="function">
@@ -1054,12 +992,10 @@ produced plot.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> &#8211; object containing configuration parameters of the</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot_options</strong> (<a class="reference internal" href="#util.plot_utils.PlotOptions" title="util.plot_utils.PlotOptions"><em>PlotOptions</em></a>) &#8211; object containing configuration parameters of the         produced plot.</td>
 </tr>
 </tbody>
 </table>
-<p>produced plot.
-:type plot_options: PlotOptions</p>
 </dd></dl>
 
 </div>
@@ -1069,20 +1005,10 @@ produced plot.
 <dl class="function">
 <dt id="util.process.getpid_listeningonport">
 <code class="descclassname">util.process.</code><code class="descname">getpid_listeningonport</code><span class="sig-paren">(</span><em>port</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/process.html#getpid_listeningonport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.getpid_listeningonport" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds if there is a running process listening for network
-connections on a specific port.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>port</strong> &#8211; the port number that we investigate.</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
-:returns: -1, if no process is listening on port
-0, if some process is listening on port but we are not owner of
-it &lt;pid&gt; of the process listening on port and we are owner of it
+<dd><p>Finds if there is a running process listening for network connections         on a specific port. 
+:param port: the port number that we investigate.
+:param ssh_client : SSH client provided by paramiko to run the command
+:returns: -1, if no process is listening on port        0, if some process is listening on port but we are not owner of         it &lt;pid&gt; of the process listening on port and we are owner of it
 :rtype: int
 :type port: int
 :type ssh_client: paramiko.SSHClient</p>
@@ -1091,16 +1017,9 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 <dl class="function">
 <dt id="util.process.is_process_running">
 <code class="descclassname">util.process.</code><code class="descname">is_process_running</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/process.html#is_process_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.is_process_running" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds if a process is running, using its process ID.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; The process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Finds if a process is running, using its process ID. 
+:param pid: The process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: True, if the process is running False, otherwise
 :rtype: bool
 :type pid: int
@@ -1110,16 +1029,9 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 <dl class="function">
 <dt id="util.process.wait_until_process_finishes">
 <code class="descclassname">util.process.</code><code class="descname">wait_until_process_finishes</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/process.html#wait_until_process_finishes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.process.wait_until_process_finishes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Waits until the process with the specified ID finishes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; process id</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Waits until the process with the specified ID finishes 
+:param pid: process id
+:param ssh_client : SSH client provided by paramiko to run the command
 :type pid: int
 :type ssh_client: paramiko.SSHClient</p>
 </dd></dl>
@@ -1131,18 +1043,10 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 <dl class="function">
 <dt id="util.stats.coefvariance">
 <code class="descclassname">util.stats.</code><code class="descname">coefvariance</code><span class="sig-paren">(</span><em>samples</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/stats.html#coefvariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.stats.coefvariance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the co-efficient of variation of a number list.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; a list of float numbers, to calculate their coefficient.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the co-efficient of variation of the float numbers</td>
-</tr>
-</tbody>
-</table>
-<p>in the list
+<dd><p>Computes the co-efficient of variation of a number list. 
+:param s: a list of float numbers, to calculate their coefficient.
+:returns: the co-efficient of variation of the float numbers
+in the list
 :rtype: float
 :type samples: list&lt;float&gt;</p>
 </dd></dl>
@@ -1208,16 +1112,9 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 <dl class="function">
 <dt id="util.sysstats.command_exec_wrapper">
 <code class="descclassname">util.sysstats.</code><code class="descname">command_exec_wrapper</code><span class="sig-paren">(</span><em>cmd</em>, <em>ssh_client=None</em>, <em>return_type='str'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#command_exec_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.command_exec_wrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes a command either locally or remotely and returns the result</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cmd</strong> &#8211; the command to be executed</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Executes a command either locally or remotely and returns the result 
+:param cmd: the command to be executed
+:param ssh_client : SSH client provided by paramiko to run the command
 :param return_type: Defines the return type of the command output
 :returns: The commands execution result as string
 :rtype: str, int, float
@@ -1229,17 +1126,9 @@ it &lt;pid&gt; of the process listening on port and we are owner of it
 <dl class="function">
 <dt id="util.sysstats.get_java_options">
 <code class="descclassname">util.sysstats.</code><code class="descname">get_java_options</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#get_java_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.get_java_options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list with all java options of a process defined by its
-process ID.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; process id of the process we want to get the javaopts</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Returns a list with all java options of a process defined by its process         ID 
+:param pid: process id of the process we want to get the javaopts
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: a list with all java options
 :rtype: list&lt;str&gt;
 :type pid: int
@@ -1249,16 +1138,9 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.proc_cmdline">
 <code class="descclassname">util.sysstats.</code><code class="descname">proc_cmdline</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cmdline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cmdline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the command line of a process as a string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Returns the command line of a process as a string. 
+:param pid: the process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: The command execution output
 :rtype: str
 :type pid: int
@@ -1268,16 +1150,9 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.proc_cpu_system_time">
 <code class="descclassname">util.sysstats.</code><code class="descname">proc_cpu_system_time</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_system_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_system_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that returns the CPU system time of a process.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Method that returns the CPU system time of a process. 
+:param pid: the process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: the CPU system time of a process
 :rtype: float
 :type pid: int
@@ -1287,16 +1162,9 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.proc_cpu_user_time">
 <code class="descclassname">util.sysstats.</code><code class="descname">proc_cpu_user_time</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cpu_user_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cpu_user_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that returns the CPU user time of a process.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Method that returns the CPU user time of a process. 
+:param pid: the process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: the CPU user time of a process
 :rtype: float
 :type pid: int
@@ -1306,16 +1174,9 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.proc_cwd">
 <code class="descclassname">util.sysstats.</code><code class="descname">proc_cwd</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_cwd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_cwd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that returns the process current working directory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Method that returns the process current working directory. 
+:param pid: the process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: the full path of working directory
 :rtype: str
 :type pid: int
@@ -1325,16 +1186,9 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.proc_num_fds">
 <code class="descclassname">util.sysstats.</code><code class="descname">proc_num_fds</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_num_fds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_fds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of file descriptors opened by this process.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Returns the number of file descriptors opened by this process. 
+:param pid: the process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: total amount of open files for the specific process ID
 :rtype: int
 :type pid: int
@@ -1344,16 +1198,9 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.proc_num_threads">
 <code class="descclassname">util.sysstats.</code><code class="descname">proc_num_threads</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_num_threads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_num_threads" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of threads used by this process.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Returns the number of threads used by this process. 
+:param pid: the process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: the number of threads for the specific pid
 :rtype: int
 :type pid: int
@@ -1363,16 +1210,9 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.proc_vm_size">
 <code class="descclassname">util.sysstats.</code><code class="descname">proc_vm_size</code><span class="sig-paren">(</span><em>pid</em>, <em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#proc_vm_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.proc_vm_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that returns the virtual memory size of a process.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid</strong> &#8211; the process ID of the target process</td>
-</tr>
-</tbody>
-</table>
-<p>:param ssh_client : SSH client provided by paramiko to run the command
+<dd><p>Method that returns the virtual memory size of a process. 
+:param pid: the process ID of the target process
+:param ssh_client : SSH client provided by paramiko to run the command
 :returns: the virtual memory size of a process
 :rtype: int
 :type pid: int
@@ -1402,10 +1242,7 @@ process ID.</p>
 <dl class="function">
 <dt id="util.sysstats.sys_iowait_time">
 <code class="descclassname">util.sysstats.</code><code class="descname">sys_iowait_time</code><span class="sig-paren">(</span><em>ssh_client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/util/sysstats.html#sys_iowait_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#util.sysstats.sys_iowait_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>For a given CPU, the I/O wait time is the time during which that CPU
-was idle (i.e. didn&#8217;t execute any tasks) and there was at least one
-outstanding disk I/O operation requested by a task scheduled on that
-CPU (at the time it generated that I/O request).</p>
+<dd><p>For a given CPU, the I/O wait time is the time during which that CPU         was idle (i.e. didn&#8217;t execute any tasks) and there was at least one         outstanding disk I/O operation requested by a task scheduled on that         CPU (at the time it generated that I/O request).</p>
 <p>:param ssh_client : SSH client provided by paramiko to run the command
 :returns: the I/O wait time
 :rtype: float

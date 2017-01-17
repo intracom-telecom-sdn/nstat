@@ -102,7 +102,7 @@ class ReportGen:
 
     def generate_plots(self):
         """
-        NSTAT post test actions
+        NSTAT post test actions \
 
         :param args: argparse.ArgumentParser object containing user specified \
             parameters (i.e test type, controller base directory, generator \
