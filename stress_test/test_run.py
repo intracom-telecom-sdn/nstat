@@ -747,7 +747,6 @@ class TestRun:
                 failed_flows_del = 0
                 result_metrics_add = {}
                 result_metrics_del = {}
-
                 # start NORTHBOUND generator flow_delete_flag NOT SET
                 # --------------------------------------------------------------
                 if flow_delete_flag is False:

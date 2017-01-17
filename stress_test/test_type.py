@@ -242,7 +242,7 @@ class TestType:
                 logging.info('[{0}] Generating results report.'.
                              format(self.test_type))
                 report_spec = \
-                    self.test_report_template.nb_active_scalability_multinet_run(
+                    self.test_report_template.nb_active_scalability_multinet(
                         args.json_output)
                 report_gen = stress_test.report_gen.ReportGen(
                     args, json_conf, report_spec, self.total_samples)
