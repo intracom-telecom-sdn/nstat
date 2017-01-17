@@ -213,20 +213,20 @@ class ReportGen:
         this class.
         """
         if self.total_samples is not None:
-            try:
-                self.generate_json_results()
-            except:
-                self.__error_handling('Error in generation of JSON results.')
-        try:
-            self.generate_plots()
-        except:
-            self.__error_handling('Error in generation of plots.')
-        try:
-            self.generate_html_report()
-        except:
-            self.__error_handling('Error in generation of HTML report.')
-        try:
-            shutil.copy(self.args.json_config, self.args.output_dir)
-        except:
-            self.__error_handling('Error in copy of results in results '
-                                  'folder.')
+            #try:
+            self.generate_json_results()
+            #except:
+            # self.__error_handling('Error in generation of JSON results.')
+        #try:
+        self.generate_plots()
+        #except:
+        #    self.__error_handling('Error in generation of plots.')
+        #try:
+        self.generate_html_report()
+        #except:
+        # self.__error_handling('Error in generation of HTML report.')
+        #try:
+        shutil.copy(self.args.json_config, self.args.output_dir)
+        #except:
+        #    self.__error_handling('Error in copy of results in results '
+        #                          'folder.')
