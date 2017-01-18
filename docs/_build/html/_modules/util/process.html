@@ -63,14 +63,15 @@
 
 
 <div class="viewcode-block" id="getpid_listeningonport"><a class="viewcode-back" href="../../util.html#util.process.getpid_listeningonport">[docs]</a><span class="k">def</span> <span class="nf">getpid_listeningonport</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Finds if there is a running process listening for network</span>
-<span class="sd">    connections on a specific port.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds if there is a running process listening for network connections \</span>
+<span class="sd">        on a specific port. \</span>
 
 <span class="sd">    :param port: the port number that we investigate.</span>
 <span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
-<span class="sd">    :returns: -1, if no process is listening on port</span>
-<span class="sd">    0, if some process is listening on port but we are not owner of</span>
-<span class="sd">    it &lt;pid&gt; of the process listening on port and we are owner of it</span>
+<span class="sd">    :returns: -1, if no process is listening on port\</span>
+<span class="sd">        0, if some process is listening on port but we are not owner of \</span>
+<span class="sd">        it &lt;pid&gt; of the process listening on port and we are owner of it</span>
 <span class="sd">    :rtype: int</span>
 <span class="sd">    :type port: int</span>
 <span class="sd">    :type ssh_client: paramiko.SSHClient</span>
@@ -98,7 +99,7 @@
 
 
 <div class="viewcode-block" id="is_process_running"><a class="viewcode-back" href="../../util.html#util.process.is_process_running">[docs]</a><span class="k">def</span> <span class="nf">is_process_running</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Finds if a process is running, using its process ID.</span>
+    <span class="sd">&quot;&quot;&quot;Finds if a process is running, using its process ID. \</span>
 
 <span class="sd">    :param pid: The process ID of the target process</span>
 <span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>
@@ -128,7 +129,7 @@
             <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="wait_until_process_finishes"><a class="viewcode-back" href="../../util.html#util.process.wait_until_process_finishes">[docs]</a><span class="k">def</span> <span class="nf">wait_until_process_finishes</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ssh_client</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Waits until the process with the specified ID finishes</span>
+    <span class="sd">&quot;&quot;&quot;Waits until the process with the specified ID finishes \</span>
 
 <span class="sd">    :param pid: process id</span>
 <span class="sd">    :param ssh_client : SSH client provided by paramiko to run the command</span>

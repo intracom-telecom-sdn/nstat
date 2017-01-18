@@ -70,13 +70,13 @@
                              <span class="n">local_path</span><span class="p">,</span> <span class="n">remote_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Copy a local directory on a remote machine.</span>
 
-<span class="sd">    :param connection: A named tuple with all the connection information.</span>
-<span class="sd">    It must have the following elements:</span>
-<span class="sd">    [&#39;name&#39;, &#39;ip&#39;, &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
-<span class="sd">    :param local_path: directory path from local machine to be copied, full</span>
-<span class="sd">    location required</span>
-<span class="sd">    :param remote_path: directory path on the remote node, full location</span>
-<span class="sd">    required</span>
+<span class="sd">    :param connection: A named tuple with all the connection information. \</span>
+<span class="sd">        It must have the following elements: \</span>
+<span class="sd">        [&#39;name&#39;, &#39;ip&#39;, &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;] \</span>
+<span class="sd">    :param local_path: directory path from local machine to be copied, full \</span>
+<span class="sd">        location required</span>
+<span class="sd">    :param remote_path: directory path on the remote node, full location \</span>
+<span class="sd">        required</span>
 <span class="sd">    :type connection: namedtuple&lt;&gt;</span>
 <span class="sd">    :type local_path: str</span>
 <span class="sd">    :type remote_path: str</span>
@@ -105,11 +105,12 @@
 
 <div class="viewcode-block" id="copy_dir_remote_to_local"><a class="viewcode-back" href="../../util.html#util.netutil.copy_dir_remote_to_local">[docs]</a><span class="k">def</span> <span class="nf">copy_dir_remote_to_local</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">ssh_port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span>
                              <span class="n">remote_path</span><span class="p">,</span> <span class="n">local_path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Copy recursively remote directories (Copies all files and other</span>
-<span class="sd">    sub-directories).</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copy recursively remote directories (Copies all files and other \</span>
+<span class="sd">        sub-directories).</span>
 
-<span class="sd">    :param connection: named tuple with connection information: [&#39;name&#39;, &#39;ip&#39;,</span>
-<span class="sd">    &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
+<span class="sd">    :param connection: named tuple with connection information: \</span>
+<span class="sd">        [&#39;name&#39;, &#39;ip&#39;, &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
 <span class="sd">    :param remote_path: full remote path we want to copy</span>
 <span class="sd">    :param local_path: full local path we want to copy</span>
 <span class="sd">    :type connection: namedtuple&lt;&gt;</span>
@@ -144,8 +145,8 @@
 <div class="viewcode-block" id="create_dir_remote"><a class="viewcode-back" href="../../util.html#util.netutil.create_dir_remote">[docs]</a><span class="k">def</span> <span class="nf">create_dir_remote</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">ssh_port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">remote_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Opens an ssh connection to a remote machine and creates a new directory.</span>
 
-<span class="sd">    :param connection: named tuple with connection information: [&#39;name&#39;, &#39;ip&#39;,</span>
-<span class="sd">    &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
+<span class="sd">    :param connection: named tuple with connection information: \</span>
+<span class="sd">        [&#39;name&#39;, &#39;ip&#39;, &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
 <span class="sd">    :param remote_path:</span>
 <span class="sd">    :type connection: namedtuple&lt;&gt;</span>
 <span class="sd">    :type remote_path: str</span>
@@ -183,8 +184,8 @@
 <div class="viewcode-block" id="make_remote_file_executable"><a class="viewcode-back" href="../../util.html#util.netutil.make_remote_file_executable">[docs]</a><span class="k">def</span> <span class="nf">make_remote_file_executable</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">remote_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Makes the remote file executable.</span>
 
-<span class="sd">    :param connection: named tuple with connection information: [&#39;name&#39;, &#39;ip&#39;,</span>
-<span class="sd">    &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
+<span class="sd">    :param connection: named tuple with connection information: \</span>
+<span class="sd">        [&#39;name&#39;, &#39;ip&#39;, &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
 <span class="sd">    :param remote_file: remote file to make executable</span>
 <span class="sd">    :type connection: namedtuple&lt;&gt;</span>
 <span class="sd">    :type remote_file: str</span>
@@ -200,11 +201,12 @@
 
 
 <div class="viewcode-block" id="remove_remote_directory"><a class="viewcode-back" href="../../util.html#util.netutil.remove_remote_directory">[docs]</a><span class="k">def</span> <span class="nf">remove_remote_directory</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">ssh_port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Removes recursively remote directories (removes all files and</span>
-<span class="sd">    other sub-directories).</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes recursively remote directories (removes all files and other \</span>
+<span class="sd">        sub-directories).</span>
 
-<span class="sd">    :param connection: named tuple with connection information: [&#39;name&#39;, &#39;ip&#39;,</span>
-<span class="sd">    &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
+<span class="sd">    :param connection: named tuple with connection information: \</span>
+<span class="sd">        [&#39;name&#39;, &#39;ip&#39;, &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
 <span class="sd">    :param path: A string with the full path we want to remove</span>
 <span class="sd">    :type connection: namedtuple&lt;&gt;</span>
 <span class="sd">    :type path: str</span>
@@ -226,8 +228,10 @@
 
 
 <div class="viewcode-block" id="isfile"><a class="viewcode-back" href="../../util.html#util.netutil.isfile">[docs]</a><span class="k">def</span> <span class="nf">isfile</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">file_list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Checks if all files in a given list exist. All files are</span>
-<span class="sd">    located remotely</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if all files in a given list exist. All files are located \</span>
+<span class="sd">        remotely</span>
+
 <span class="sd">    :param ip: ip address of the remote host</span>
 <span class="sd">    :param port: port number of the remote host</span>
 <span class="sd">    :param username: username of the remote host</span>
@@ -255,8 +259,9 @@
 
 
 <div class="viewcode-block" id="ssh_connect_or_return"><a class="viewcode-back" href="../../util.html#util.netutil.ssh_connect_or_return">[docs]</a><span class="k">def</span> <span class="nf">ssh_connect_or_return</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">ssh_port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">maxretries</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Opens a connection and returns a connection object. If it fails to open</span>
-<span class="sd">    a connection after a specified number of tries, it returns -1.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Opens a connection and returns a connection object. If it fails to open \</span>
+<span class="sd">        a connection after a specified number of tries, it returns -1.</span>
 
 <span class="sd">    :param ip: controller IP address</span>
 <span class="sd">    :param ssh_port: controller port</span>
@@ -306,7 +311,8 @@
 
 
 <div class="viewcode-block" id="ssh_connection_close"><a class="viewcode-back" href="../../util.html#util.netutil.ssh_connection_close">[docs]</a><span class="k">def</span> <span class="nf">ssh_connection_close</span><span class="p">(</span><span class="n">sftp</span><span class="p">,</span> <span class="n">transport_layer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Closes an ssh connection with a remote node</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Closes an ssh connection with a remote node</span>
 
 <span class="sd">    :param sftp:</span>
 <span class="sd">    :param transport_layer:</span>
@@ -321,7 +327,8 @@
 
 
 <div class="viewcode-block" id="ssh_connection_open"><a class="viewcode-back" href="../../util.html#util.netutil.ssh_connection_open">[docs]</a><span class="k">def</span> <span class="nf">ssh_connection_open</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">ssh_port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Opens an ssh connection on a remote node</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Opens an ssh connection on a remote node \</span>
 
 <span class="sd">    :param ip: ip address of the remote host</span>
 <span class="sd">    :param ssh_port: port number of the remote host</span>
@@ -347,15 +354,16 @@
 
 <div class="viewcode-block" id="ssh_copy_file_to_target"><a class="viewcode-back" href="../../util.html#util.netutil.ssh_copy_file_to_target">[docs]</a><span class="k">def</span> <span class="nf">ssh_copy_file_to_target</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">ssh_port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">local_file</span><span class="p">,</span>
                             <span class="n">remote_file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Copies local file on a remote machine target.</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copies local file on a remote machine target.</span>
 
 <span class="sd">    :param ip: ip address of the remote host</span>
 <span class="sd">    :param ssh_port: port number of the remote host</span>
 <span class="sd">    :param username: username of the remote host</span>
 <span class="sd">    :param password: password of the remote host</span>
 <span class="sd">    :param local_file: file from local machine to copy,full location required</span>
-<span class="sd">    :param remote_file: remote destination, full location required</span>
-<span class="sd">    i.e /tmp/foo.txt</span>
+<span class="sd">    :param remote_file: remote destination, full location required \</span>
+<span class="sd">        i.e /tmp/foo.txt</span>
 <span class="sd">    :type ip: str</span>
 <span class="sd">    :type ssh_port: int</span>
 <span class="sd">    :type username: str</span>
@@ -370,10 +378,11 @@
 
 
 <div class="viewcode-block" id="ssh_delete_file_if_exists"><a class="viewcode-back" href="../../util.html#util.netutil.ssh_delete_file_if_exists">[docs]</a><span class="k">def</span> <span class="nf">ssh_delete_file_if_exists</span><span class="p">(</span><span class="n">ip</span><span class="p">,</span> <span class="n">ssh_port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">remote_file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Deletes the file on a remote machine, if exists</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes the file on a remote machine, if exists</span>
 
-<span class="sd">    :param connection: named tuple with connection information: [&#39;name&#39;, &#39;ip&#39;,</span>
-<span class="sd">    &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
+<span class="sd">    :param connection: named tuple with connection information: \</span>
+<span class="sd">        [&#39;name&#39;, &#39;ip&#39;, &#39;ssh_port&#39;, &#39;username&#39;, &#39;password&#39;]</span>
 <span class="sd">    :param remote_file: remote file to remove, full path must be used.</span>
 <span class="sd">    :type connection: collections.namedtuple</span>
 <span class="sd">    :type remote_file: str</span>
@@ -405,14 +414,14 @@
 <span class="sd">    :param command_to_run: Command to execute</span>
 <span class="sd">    :param prefix: prefix of log message</span>
 <span class="sd">    :param lines_queue: Queue datastructure to buffer the result of execution</span>
-<span class="sd">    :param print_flag: Flag that defines if the output of the command will be</span>
-<span class="sd">    printed on screen</span>
-<span class="sd">    :param block_flag: Defines if we block execution waiting for the running</span>
-<span class="sd">    command to return its exit status</span>
-<span class="sd">    :param getpty_flag: add a pseudo-terminal console (pty console) to the</span>
-<span class="sd">    channel</span>
-<span class="sd">    :returns: the exit code of the command to be executed remotely and the</span>
-<span class="sd">    combined stdout - stderr of the executed command</span>
+<span class="sd">    :param print_flag: Flag that defines if the output of the command will be \</span>
+<span class="sd">        printed on screen</span>
+<span class="sd">    :param block_flag: Defines if we block execution waiting for the running \</span>
+<span class="sd">        command to return its exit status</span>
+<span class="sd">    :param getpty_flag: add a pseudo-terminal console (pty console) to the \</span>
+<span class="sd">        channel</span>
+<span class="sd">    :returns: the exit code of the command to be executed remotely and the \</span>
+<span class="sd">        combined stdout - stderr of the executed command</span>
 <span class="sd">    :rtype: tuple&lt;int, str&gt;</span>
 <span class="sd">    :type ssh_client: paramiko.SSHClient</span>
 <span class="sd">    :type command_to_run: str</span>

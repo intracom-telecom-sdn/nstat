@@ -97,8 +97,8 @@ class Controller:
         Handles custom errors of controller
 
         :param error_message: message of the handled error
-        :param error_num: error number of the handled error, used to define
-        subcases of raised errors.
+        :param error_num: error number of the handled error, used to define \
+            subcases of raised errors.
         :type error_message: str
         :type error_num: int
         :raises controller_exceptions.CtrlError: to terminate execution of
@@ -473,7 +473,7 @@ class Controller:
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :type timeout_ms: int
         :raises controller_exceptions.CtrlReadyStateError: If controller fails \
-         to reach a ready state within a certain period of time.
+             to reach a ready state within a certain period of time.
         """
 
         logging.info('[Controller] Waiting to be started')
