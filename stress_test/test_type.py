@@ -250,6 +250,29 @@ class TestType:
             except:
                 logging.error('[{0}] Fail to generate test report.'.
                               format(self.test_type))
+
+        elif nstat_test_type_run == 'mef_stability_test':
+            if not args.bypass_test:
+                logging.info('[nstat_orchestrator] running test: {0}'.
+                             format(nstat_test_type_run))
+                self.total_samples = \
+                    nstat_test_run.mef_stability_test_run(
+                        json_conf,
+                        args.json_output,
+                        args.output_dir)
+            try:
+                logging.info('[{0}] Generating results report.'.
+                             format(self.test_type))
+                report_spec = \
+                    self.test_report_template.mef_stability_test(
+                        args.json_output)
+                report_gen = stress_test.report_gen.ReportGen(
+                    args, json_conf, report_spec, self.total_samples)
+                report_gen.results_report()
+            except:
+                logging.error('[{0}] Fail to generate test report.'.
+                              format(self.test_type))
+
         else:
             logging.error('[nstat_orchestrator] not valid test configuration')
             exit(0)

@@ -15,6 +15,7 @@ import queue
 import subprocess
 import time
 import util.sysstats
+import multiprocessing
 
 
 class Monitor:
@@ -1106,33 +1107,31 @@ class NBgen(Monitor):
 
 class MEF(Monitor):
 
-    def __init__(self, controller, emulator):
+    def __init__(self, controller, emulator, test_repeats):
         super(self.__class__, self).__init__(controller)
         self.emulator = emulator
+        self.test_repeats = test_repeats
+        self.repeat_id = 0
         self.result_queue = gevent.queue.Queue()
-        self.term_success = '__successful_termination__'
-        self.term_fail = '__failed_termination__'
         self.data_queue = gevent.queue.Queue()
+        self.total_monitor_samples = []
 
-    def monitor_thread_topo_bootup(self, boot_start_time):
+    def monitor_thread_topo_bootup(self):
         """
         This monitor function is used from idle tests.
         Poll operational DS to discover installed switches.
         It is used for idle tests from mtcbench and multinet emulators.
         """
 
-        discovery_deadline = 120
+        discovery_deadline = 240
         expected_switches = self.emulator.get_overall_topo_size()
-        topology_bootup_time_ms = self.emulator.get_topo_bootup_ms()
-        sleep_before_discovery = float(topology_bootup_time_ms) / 1000
-        logging.info('[monitor_thread_idle] Monitor thread started')
-        t_start = boot_start_time
-        logging.info('[monitor_thread_idle] Starting discovery')
+        logging.info('[monitor_thread_MEF] Monitor thread started')
+        t_start = time.time()
+        logging.info('[monitor_thread_MEF] Starting discovery')
         previous_discovered_switches = 0
         discovered_switches = 0
         previous_discovered_links = 0
         discovered_links = 0
-        time.sleep(sleep_before_discovery)
         t_discovery_start = time.time()
         error_code = 0
         max_discovered_switches = 0
@@ -1142,6 +1141,9 @@ class MEF(Monitor):
             results = self.system_results()
             results['global_sample_id'] = self.global_sample_id
             self.global_sample_id += 1
+            # We do not increase repeat id here. This will be increased when
+            # we enter the stability test section
+            results['repeat_id'] = self.repeat_id
             results['multinet_workers'] = len(self.emulator.workers_ips)
             results['multinet_worker_topo_size'] = self.emulator.topo_size
             results['multinet_topology_type'] = self.emulator.topo_type
@@ -1158,12 +1160,11 @@ class MEF(Monitor):
             if (time.time() - t_discovery_start) > discovery_deadline:
                 error_code = 201
                 logging.info(
-                    '[monitor_thread_idle] Deadline of {0} seconds passed, '
+                    '[monitor_thread_MEF] Deadline of {0} seconds passed, '
                     'discovered {1} switches.'.format(discovery_deadline,
                                                       discovered_switches))
                 discovery_time = time.time() - t_start - discovery_deadline
-                results['multinet_size'] = \
-                    self.emulator.topo_size * len(self.emulator.workers_ips)
+                results['multinet_size'] = expected_switches
                 results['bootup_time_secs'] = discovery_time
                 results['discovered_switches'] = discovered_switches
                 results['max_discovered_switches'] = max_discovered_switches
@@ -1205,11 +1206,10 @@ class MEF(Monitor):
                 if discovered_switches == expected_switches == discovered_links:
                     delta_t = time.time() - t_start
                     logging.info(
-                        '[monitor_thread_idle] {0} switches found in '
+                        '[monitor_thread_MEF] {0} switches found in '
                         '{1} seconds'.
                         format(discovered_switches, delta_t))
-                    results['multinet_size'] = \
-                        self.emulator.topo_size * len(self.emulator.workers_ips)
+                    results['multinet_size'] = expected_switches
                     results['bootup_time_secs'] = delta_t
                     results['discovered_switches'] = discovered_switches
                     results['max_discovered_switches'] = \
@@ -1219,3 +1219,58 @@ class MEF(Monitor):
                     self.result_queue.put([results])
                     return 0
             gevent.sleep(1)
+
+    def monitor_run(self):
+        threads = []
+        # Run start handler in non blocking mode
+        self.emulator.start_topos(None, False, False, False)
+        topo_bootup_thread = gevent.spawn(self.monitor_thread_topo_bootup)
+        threads.append(topo_bootup_thread)
+        # topo_start_thread = gevent.spawn(self.emulator.start_topos,
+        #                                 self.data_queue, False, True, True)
+        # threads.append(topo_start_thread)
+        self.joinall(threads)
+        self.total_monitor_samples += self.result_queue.get()
+        gevent.killall(threads)
+
+        bootup_time_secs = self.total_monitor_samples[-1]['bootup_time_secs']
+        max_discovered_switches = self.total_monitor_samples[-1]['max_discovered_switches']
+        max_discovered_links = self.total_monitor_samples[-1]['max_discovered_links']
+        successful_bootup_time = self.total_monitor_samples[-1]['successful_bootup_time']
+        expected_switches = self.emulator.get_overall_topo_size()
+        discovered_switches = self.controller.get_oper_switches()
+        discovered_links = self.controller.get_oper_links()
+        # If not expected switches found after topology discovery do not
+        # continue return results
+        if expected_switches != discovered_switches or expected_switches != discovered_links:
+            logging.info('[MEF_monitor] Controller is not in stable state. '
+                         'Return results and exit.')
+            return self.total_monitor_samples
+        for self.repeat_id in list(range(self.test_repeats)):
+            discovered_switches = self.controller.get_oper_switches()
+            discovered_links = self.controller.get_oper_links()
+            logging.info('[MEF_monitor] Stability test | repeat_id: {0} | '
+                         'discovered_switches: {1} | discovered_links: {2} | '
+                         'expected_switches: {3}'.format(self.repeat_id,
+                                                         discovered_switches,
+                                                         discovered_links,
+                                                         expected_switches))
+            if expected_switches == discovered_switches == discovered_links:
+                error_code = 0
+            else:
+                error_code = 201
+            test_sample = self.system_results()
+            test_sample['global_sample_id'] = self.global_sample_id
+            self.global_sample_id += 1
+            test_sample['repeat_id'] = self.repeat_id
+            test_sample['discovered_switches'] = discovered_switches
+            test_sample['discovered_links'] = discovered_links
+            test_sample['bootup_time_secs'] = bootup_time_secs
+            test_sample['max_discovered_switches'] = max_discovered_switches
+            test_sample['discovered_switches_error_code'] = error_code
+            test_sample['max_discovered_links'] = max_discovered_links
+            test_sample['successful_bootup_time'] = successful_bootup_time
+            self.total_monitor_samples.append(test_sample)
+            time.sleep(1)
+        return self.total_monitor_samples
+

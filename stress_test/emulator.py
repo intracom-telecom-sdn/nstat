@@ -746,7 +746,8 @@ class Multinet(SBEmu):
         except stress_test.emulator_exceptions.SBEmuError as e:
             self.__error_handling(e.err_msg, e.err_code)
 
-    def start_topos(self):
+    def start_topos(self, lines_queue=None,
+                    print_flag=True, block_flag=True, getpty_flag=False):
         """
         Wrapper to the Multinet SB-Emulator start_topos handler
 
@@ -772,7 +773,8 @@ class Multinet(SBEmu):
                     self._ssh_conn, ' '.join(
                         [self.venv_hnd, self.base_dir, self.start_topos_hnd,
                          self.__multinet_config_file_remote_path]),
-                    '[Multinet.start_topos_hnd]')
+                    '[Multinet.start_topos_hnd]', lines_queue, print_flag,
+                    block_flag, getpty_flag)
                 if exit_status == 0:
                     self.status = 'TOPOS_STARTED'
                     logging.info('[Multinet] Successful start '

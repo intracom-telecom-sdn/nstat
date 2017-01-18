@@ -859,3 +859,95 @@ class TestRun:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
             return self.total_samples
+
+    def mef_stability_test_run(self,
+                               json_conf,
+                               json_output,
+                               output_dir):
+        try:
+
+            test_repeats = json_conf['test_repeats']
+            mef_monitor = stress_test.monitor.MEF(self.ctrl, self.sb_emu,
+                                                  test_repeats)
+            self.sb_emu.topo_size = json_conf['multinet_topo_size']
+            self.sb_emu.topo_type = json_conf['multinet_topo_type']
+            self.sb_emu.topo_hosts_per_switch = json_conf['multinet_topo_'
+                                                          'hosts_per_switch']
+            self.sb_emu.topo_group_size = json_conf['multinet_topo_group_size']
+            self.sb_emu.topo_group_delay_ms = json_conf['multinet_topo_group_'
+                                                        'delay_ms']
+            self.ctrl.stat_period_ms = json_conf['controller_statistics_'
+                                                 'period_ms']
+
+            if self.ctrl.persistence_hnd:
+                logging.info('[mef_stability_test] Disable controller '
+                             'persistence')
+                self.ctrl.disable_persistence()
+
+            self.ctrl.check_status()
+            self.ctrl.change_stats()
+            self.ctrl.start()
+
+            # start a MULTINET topology
+            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+            self.sb_emu.init_topos()
+            # Run the Mef monitor and collect the results
+            self.total_samples += mef_monitor.monitor_run()
+
+            # stop/clean nodes
+            # ---------------------------------------------------------
+            self.ctrl.stop()
+            self.sb_emu.stop_topos()
+            self.sb_emu.cleanup()
+
+            logging.info('[Testing] All done!')
+        except:
+            logging.error('{0} ::::::: Exception ::::::::'.
+                          format(self.test_type))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            logging.error('{0} Exception: {1}, {2}'.
+                          format(self.test_type, exc_type, exc_tb.tb_lineno))
+            errors = str(exc_obj).rstrip().split('\n')
+            for error in errors:
+                logging.error('{0} {1}'.format(self.test_type, error))
+            logging.exception('')
+
+        finally:
+            if not self.total_samples:
+                self.total_samples += mef_monitor.total_monitor_samples
+            try:
+                logging.info('[{0}] Clean Multinet Monitor'.
+                             format(self.test_type))
+                del self.mon
+            except:
+                logging.error('[{0}] Fail to clean Multinet Monitor.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean Oftraf.'.
+                             format(self.test_type))
+                del self.of
+            except:
+                logging.error('[{0}] Fail to clean oftraf.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Save controller logs'.
+                             format(self.test_type))
+                self.ctrl.save_log(output_dir)
+            except:
+                logging.error('[{0}] Fail to save controller logs'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean controller.'.
+                             format(self.test_type))
+                del self.ctrl
+            except:
+                logging.error('[{0}] Fail to cleanup controller.'.
+                              format(self.test_type))
+            try:
+                logging.info('[{0}] Clean multinet.'.
+                             format(self.test_type))
+                del self.sb_emu
+            except:
+                logging.error('[{0}] Fail to clean multinet.'.
+                              format(self.test_type))
+            return self.total_samples
