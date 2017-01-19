@@ -1107,10 +1107,12 @@ class NBgen(Monitor):
 
 class MEF(Monitor):
 
-    def __init__(self, controller, emulator, test_repeats):
+    def __init__(self, controller, emulator, test_repeats,
+                 test_repeat_interval_ms):
         super(self.__class__, self).__init__(controller)
         self.emulator = emulator
         self.test_repeats = test_repeats
+        self.test_repeat_interval_sec = float(test_repeat_interval_ms) / 1000
         self.repeat_id = 0
         self.result_queue = gevent.queue.Queue()
         self.data_queue = gevent.queue.Queue()
@@ -1177,7 +1179,7 @@ class MEF(Monitor):
             else:
 
                 discovered_switches = \
-                    self.controller.get_oper_switches(self.controller.init_ssh())
+                    int(self.controller.get_oper_switches(self.controller.init_ssh()))
                 logging.info('Discovered switches: ='
                              .format(discovered_switches))
                 discovered_links = \
@@ -1264,13 +1266,13 @@ class MEF(Monitor):
             test_sample['max_discovered_links'] = max_discovered_links
             test_sample['successful_bootup_time'] = successful_bootup_time
             self.total_monitor_samples.append(test_sample)
-            time.sleep(1)
+            time.sleep(self.test_repeat_interval_sec)
 
     def monitor_run(self):
         self.bootup_monitor()
         expected_switches = self.emulator.get_overall_topo_size()
-        discovered_switches = self.controller.get_oper_switches()
-        discovered_links = self.controller.get_oper_links()
+        discovered_switches = int(self.controller.get_oper_switches())
+        discovered_links = int(self.controller.get_oper_links()) / 2
         logging.info('[MEF_monitor] Check if stable after topo bootup | '
                          'discovered_switches: {0} | discovered_links: {1} | '
                          'expected_switches: {2}'.format(discovered_switches,

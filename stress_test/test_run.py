@@ -866,8 +866,10 @@ class TestRun:
         try:
 
             test_repeats = json_conf['test_repeats']
+            test_repeat_interval_ms = json_conf['test_repeat_interval_ms']
             mef_monitor = stress_test.monitor.MEF(self.ctrl, self.sb_emu,
-                                                  test_repeats)
+                                                  test_repeats,
+                                                  test_repeat_interval_ms)
             self.sb_emu.topo_size = json_conf['multinet_topo_size']
             self.sb_emu.topo_type = json_conf['multinet_topo_type']
             self.sb_emu.topo_hosts_per_switch = json_conf['multinet_topo_'
