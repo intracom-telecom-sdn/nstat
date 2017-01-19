@@ -783,7 +783,10 @@ class ODL(Controller):
                     '[controller.get_oper_switches]')[1]
                 if new_ssh_conn is not None:
                     used_ssh_conn.close()
-                return int(ret)
+                try:
+                    return int(ret)
+                except:
+                    return -1
             except:
                 raise(stress_test.controller_exceptions.
                       ODLGetOperSwitchesError)
