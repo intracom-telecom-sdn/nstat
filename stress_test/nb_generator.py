@@ -76,7 +76,7 @@ class NBgen:
 
         self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
 
-    def __error_handling(self, error_message, error_num=1):
+    def _error_handling(self, error_message, error_num=1):
         """
         Handles custom errors of nb_generator
 
@@ -126,7 +126,7 @@ class NBgen:
             except:
                 raise(stress_test.nb_generator_exceptions.NBGenNodeConnectionError)
         except stress_test.nb_generator_exceptions.NBGenError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def build(self):
         """
@@ -163,13 +163,13 @@ class NBgen:
                         'exited with no zero exit status. \n '
                         'Handler output: {0}'.format(cmd_output), exit_status))
             except stress_test.nb_generator_exceptions.NBGenError as e:
-                self.__error_handling(e.err_msg, e.err_code)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.nb_generator_exceptions.NBGenBuildError(
                     '[NB_generator] Build handler was not executed at all. '
                     'Failure running the handler.'))
         except stress_test.nb_generator_exceptions.NBGenError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def clean(self):
         """
@@ -206,13 +206,13 @@ class NBgen:
                         'exited with no zero exit status. \n '
                         'Handler output: {0}'.format(cmd_output), exit_status))
             except stress_test.nb_generator_exceptions.NBGenError as e:
-                self.__error_handling(e.err_msg, e.err_code)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.nb_generator_exceptions.NBGenCleanError(
                     '[NB_generator] Clean handler was not executed at all. '
                     'Failure running the handler.'))
         except stress_test.nb_generator_exceptions.NBGenError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def run(self):
         """
@@ -267,11 +267,11 @@ class NBgen:
                         format(cmd_output), exit_status))
                 return cmd_output
             except stress_test.nb_generator_exceptions.NBGenError as e:
-                self.__error_handling(e.err_msg, e.err_code)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.nb_generator_exceptions.NBGenRunError)
         except stress_test.nb_generator_exceptions.NBGenError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
         """
