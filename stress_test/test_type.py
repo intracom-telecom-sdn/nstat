@@ -251,7 +251,7 @@ class TestType:
                 logging.error('[{0}] Fail to generate test report.'.
                               format(self.test_type))
 
-        elif nstat_test_type_run == 'mef_stability_test':
+        elif nstat_test_type_run == 'mef_stability_test_multinet':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))

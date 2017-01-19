@@ -1220,7 +1220,7 @@ class MEF(Monitor):
                     return 0
             gevent.sleep(1)
 
-    def monitor_run(self):
+    def bootup_monitor(self):
         threads = []
         # Run start handler in non blocking mode
         self.emulator.start_topos(None, False, False, False)
@@ -1233,19 +1233,12 @@ class MEF(Monitor):
         self.total_monitor_samples += self.result_queue.get()
         gevent.killall(threads)
 
+    def stability_monitor(self):
         bootup_time_secs = self.total_monitor_samples[-1]['bootup_time_secs']
         max_discovered_switches = self.total_monitor_samples[-1]['max_discovered_switches']
         max_discovered_links = self.total_monitor_samples[-1]['max_discovered_links']
         successful_bootup_time = self.total_monitor_samples[-1]['successful_bootup_time']
         expected_switches = self.emulator.get_overall_topo_size()
-        discovered_switches = self.controller.get_oper_switches()
-        discovered_links = self.controller.get_oper_links()
-        # If not expected switches found after topology discovery do not
-        # continue return results
-        if expected_switches != discovered_switches or expected_switches != discovered_links:
-            logging.info('[MEF_monitor] Controller is not in stable state. '
-                         'Return results and exit.')
-            return self.total_monitor_samples
         for self.repeat_id in list(range(self.test_repeats)):
             discovered_switches = self.controller.get_oper_switches()
             discovered_links = self.controller.get_oper_links()
@@ -1272,5 +1265,17 @@ class MEF(Monitor):
             test_sample['successful_bootup_time'] = successful_bootup_time
             self.total_monitor_samples.append(test_sample)
             time.sleep(1)
-        return self.total_monitor_samples
 
+    def monitor_run(self):
+        self.bootup_monitor()
+        expected_switches = self.emulator.get_overall_topo_size()
+        discovered_switches = self.controller.get_oper_switches()
+        discovered_links = self.controller.get_oper_links()
+        # If not expected switches found after topology discovery do not
+        # continue return results
+        if expected_switches != discovered_switches or expected_switches != discovered_links:
+            logging.info('[MEF_monitor] Controller is not in stable state. '
+                         'Return results and exit.')
+            return self.total_monitor_samples
+        self.stability_monitor()
+        return self.total_monitor_samples
