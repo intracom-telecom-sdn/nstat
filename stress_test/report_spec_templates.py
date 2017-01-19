@@ -712,3 +712,94 @@ class TestReport:
                  ('controller_statistics_period_ms',
                   'Controller statistics period (ms)')], results_json_file)])
         return report_spec_obj
+
+
+
+
+    def mef_stability_test(self, results_json_file):
+        """
+        Returns the report specification object for SouthBound idle
+        scalability test with Multinet
+
+        :param results_json_file: JSON results path
+        :returns: report specification object
+        :rtype: ReportSpec
+        :type: results_json_file: str
+        """
+
+        report_spec_obj = stress_test.report_spec.ReportSpec(
+            self.config_json_file,
+            results_json_file,
+            '{0}'.format(self.test_type),
+            [stress_test.report_spec.TableSpec(
+                '1d',
+                'Test configuration parameters (detailed)',
+                [('controller_name', 'Controller name'),
+                 ('controller_build_handler', 'Controller build script'),
+                 ('controller_start_handler', 'Controller start script'),
+                 ('controller_stop_handler', 'Controller stop script'),
+                 ('controller_status_handler', 'Controller status script'),
+                 ('controller_clean_handler', 'Controller cleanup script'),
+                 ('controller_statistics_handler',
+                  'Controller statistics script'),
+                 ('controller_node_ip', 'Controller IP node address'),
+                 ('controller_node_ssh_port', 'Controller node ssh port'),
+                 ('controller_node_username', 'Controller node username'),
+                 ('controller_node_password', 'Controller node password'),
+                 ('controller_port', 'Controller listening port'),
+                 ('controller_logs_dir',
+                  'Controller log save directory'),
+                 ('controller_restconf_port', 'Controller RESTconf port'),
+                 ('topology_rest_server_boot', 'Multinet boot handler'),
+                 ('topology_stop_switches_handler',
+                  'Multinet stop switches handler'),
+                 ('topology_get_switches_handler',
+                  'Multinet get switches handler'),
+                 ('topology_init_handler',
+                  'Multinet initialize topology handler'),
+                 ('topology_start_switches_handler',
+                  'Multinet start topology handler'),
+                 ('sb_emulator_node_ip', 'Multinet IP address'),
+                 ('topology_rest_server_port', 'Multinet port'),
+                 ('multinet_topo_size', 'Multinet network size per worker'),
+                 ('multinet_topo_type', 'Multinet topology type'),
+                 ('multinet_topo_hosts_per_switch',
+                  'Multinet hosts per switch'),
+                 ('multinet_topo_group_size', 'Multinet topology group size'),
+                 ('multinet_topo_group_delay_ms',
+                  'Multinet topology group delay ms'),
+                 ('java_opts', 'JVM options')], self.config_json_file)],
+            [stress_test.report_spec.TableSpec(
+                '2d', 'Test results',
+                [('global_sample_id', 'Sample ID'),
+                 ('timestamp', 'Sample timestamp (seconds)'),
+                 ('date', 'Sample timestamp (date)'),
+                 ('discovered_switches_error_code', 'Error code'),
+                 ('successful_bootup_time',
+                  'Successful bootup time (seconds)'),
+                 ('bootup_time_secs', 'Time to discover switches (seconds)'),
+                 ('max_discovered_switches', 'Max discovered switches'),
+                 ('discovered_switches', 'Discovered switches'),
+                 ('multinet_size', 'Multinet Size'),
+                 ('multinet_worker_topo_size',
+                  'Topology size per Multinet worker'),
+                 ('multinet_workers', 'number of Multinet workers'),
+                 ('multinet_topology_type', 'Multinet topology Type'),
+                 ('multinet_hosts_per_switch', 'Multinet hosts per Switch'),
+                 ('multinet_group_size', 'Multinet group size'),
+                 ('multinet_group_delay_ms', 'Multinet group delay (ms)'),
+                 ('controller_node_ip', 'Controller IP'),
+                 ('controller_port', 'Controller port'),
+                 ('controller_java_xopts', 'Java options'),
+                 ('one_minute_load', 'One minute load'),
+                 ('five_minute_load', 'five minutes load'),
+                 ('fifteen_minute_load', 'fifteen minutes load'),
+                 ('used_memory_bytes', 'System used memory (Bytes)'),
+                 ('total_memory_bytes', 'Total system memory'),
+                 ('controller_cpu_system_time', 'Controller CPU system time'),
+                 ('controller_cpu_user_time', 'Controller CPU user time'),
+                 ('controller_num_threads', 'Controller threads'),
+                 ('controller_num_fds', 'Controller num of fds'),
+                 ('controller_statistics_period_ms',
+                  'Controller Statistics Period (ms)')], results_json_file)])
+        return report_spec_obj
