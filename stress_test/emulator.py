@@ -938,13 +938,19 @@ class Multinet(SBEmu):
         time.sleep(int(expected_switches/self.topo_group_size) *
                    mininet_group_delay + 15)
 
+        discovered_switches = self.get_switches()
+        print("**********discovered_switches:**************")
+        print(discovered_switches)
+        return discovered_switches
+
+
+        """
         result_get_sw = self.get_switches()
         print("**********************result_get_sw****************")
         print(result_get_sw)
         # get Multinet switches number
         regex_result = \
-            re.search(r'INFO:root:\[get_switches_topology_'
-                      'handler\]\[response data\].*', result_get_sw)
+            re.search(r'INFO:root:\[get_switches_topology_handler\]\[response data\].*', result_get_sw)
         if regex_result is None:
             result_get_sw = ''
         else:
@@ -961,6 +967,7 @@ class Multinet(SBEmu):
         logging.info('[Multinet] Discovered {0} switches at the Multinet side'.
                      format(discovered_switches))
         return discovered_switches
+        """
 
     def __del__(self):
         """
