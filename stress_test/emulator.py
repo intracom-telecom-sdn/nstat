@@ -950,11 +950,12 @@ class Multinet(SBEmu):
                 regex_result.group(0).replace('INFO:root:[get_switches'
                                               '_topology_handler]'
                                               '[response data] ', '')
-
         discovered_switches = \
             sum([list(json.loads(v).values())[0]
                 for v in json.loads(result_get_sw)])
-
+        print("**********discovered_switches:**************")
+        print(discovered_switches)
+        exit()
         logging.info('[Multinet] Discovered {0} switchesat the Multinet side'.
                      format(discovered_switches))
         return discovered_switches
