@@ -14,6 +14,7 @@ import os
 import re
 import stress_test.emulator_exceptions
 import sys
+import time
 import traceback
 import util.netutil
 import util.file_ops
@@ -907,15 +908,56 @@ class Multinet(SBEmu):
                                  'from switches')
                 else:
                     self.status = 'TRAFFIC_DOWN'
-                    raise(stress_test.emulator_exceptions.MultinetTraffigGenError(
-                        '[Multinet] Failure during traffic generation '
-                        'from switches: {0}'.format(cmd_output), exit_status))
+                    raise(stress_test.emulator_exceptions.
+                          MultinetTraffigGenError(
+                              '[Multinet] Failure during traffic generation '
+                              'from switches: {0}'.
+                              format(cmd_output), exit_status))
             except stress_test.emulator_exceptions.SBEmuError as e:
                 self.__error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.emulator_exceptions.MultinetTraffigGenError)
         except stress_test.emulator_exceptions.SBEmuError as e:
             self.__error_handling(e.err_msg, e.err_code)
+
+    def check_topo_booted(self, num_tries=3):
+        """
+        Check if a topology has been booted from Multinet side
+
+        :returns: total number of discovered booted switches in Muntinet side
+        :rtype: int
+        """
+
+        mininet_group_delay = float(self.topo_group_delay_ms)/1000
+        expected_switches = self.get_overall_topo_size()
+
+        logging.info('[Multinet] Check if topology is up.')
+
+        # Here we sleep in order to give time to the controller to discover
+        # topology through the LLDP protocol.
+        time.sleep(int(expected_switches/self.topo_group_size) *
+                   mininet_group_delay + 15)
+
+        result_get_sw = self.get_switches()
+        # get Multinet switches number
+        regex_result = \
+            re.search(r'INFO:root:\[get_switches_topology_'
+                      'handler\]\[response data\].*', result_get_sw)
+        if regex_result is None:
+            result_get_sw = ''
+        else:
+            result_get_sw = \
+                regex_result.group(0).replace('INFO:root:[get_switches'
+                                              '_topology_handler]'
+                                              '[response data] ', '')
+
+        discovered_switches = \
+            sum([list(json.loads(v).values())[0]
+                for v in json.loads(result_get_sw)])
+
+        logging.info('[Multinet] Discovered {0} switchesat the Multinet side'.
+                     format(discovered_switches))
+        return discovered_switches
 
     def __del__(self):
         """

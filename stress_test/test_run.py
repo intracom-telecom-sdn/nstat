@@ -743,6 +743,29 @@ class TestRun:
                     raise ValueError('Initial installed flows '
                                      'were not equal to 0.')
 
+                tries = 0
+                num_tries = 3
+                while tries < num_tries:
+                    expected_switches = self.sb_emu.get_overall_topo_size()
+                    discovered_switches = self.sb_emu.check_topo_booted()
+                    ds_switches = self.ctrl.get_oper_switches()
+                    if discovered_switches == expected_switches and \
+                        ds_switches == expected_switches and \
+                            expected_switches != 0:
+                        break
+                    elif tries == num_tries-1:
+                        raise Exception('Topology did not fully '
+                                        'initialize. Expected {0} '
+                                        'switches, but found {1} at the '
+                                        'Mininet side and {2} at the '
+                                        'controller side.'.
+                                        format(expected_switches,
+                                               discovered_switches,
+                                               ds_switches))
+                    else:
+                        continue
+                    tries += 1
+
                 failed_flows_add = 0
                 failed_flows_del = 0
                 result_metrics_add = {}
