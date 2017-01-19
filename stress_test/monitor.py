@@ -1271,11 +1271,18 @@ class MEF(Monitor):
         expected_switches = self.emulator.get_overall_topo_size()
         discovered_switches = self.controller.get_oper_switches()
         discovered_links = self.controller.get_oper_links()
+        logging.info('[MEF_monitor] Check if stable after topo bootup | '
+                         'discovered_switches: {0} | discovered_links: {1} | '
+                         'expected_switches: {2}'.format(discovered_switches,
+                                                         discovered_links,
+                                                         expected_switches))
         # If not expected switches found after topology discovery do not
         # continue return results
-        if expected_switches != discovered_switches or expected_switches != discovered_links:
+        if expected_switches == discovered_switches == discovered_links:
+            logging.info('[MEF_monitor] Controller is in stable state after '
+                         'bootup. Continue with stability test.')
+            self.stability_monitor()
+        else:
             logging.info('[MEF_monitor] Controller is not in stable state. '
                          'Return results and exit.')
-            return self.total_monitor_samples
-        self.stability_monitor()
         return self.total_monitor_samples
