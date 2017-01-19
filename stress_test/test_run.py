@@ -777,8 +777,12 @@ class TestRun:
                     expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
                     nb_gen_start_json_output_add = self.nb_emu.run()
+                    print("**********nb_gen_start_json_output_add***")
+                    print(nb_gen_start_json_output_add)
                     nb_gen_start_output_add = \
                         json.loads(nb_gen_start_json_output_add)
+                    print("**********nb_gen_start_output_add[0]***")
+                    print(nb_gen_start_output_add[0])
                     failed_flows_add = nb_gen_start_output_add[0]
 
                     result_metrics_add = \
