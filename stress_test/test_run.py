@@ -742,7 +742,7 @@ class TestRun:
                 if (initial_oper_ds_flows != 0 or initial_topo_flows != 0):
                     raise ValueError('Initial installed flows '
                                      'were not equal to 0.')
-
+                """
                 tries = 0
                 num_tries = 3
                 while tries < num_tries:
@@ -765,6 +765,7 @@ class TestRun:
                     else:
                         continue
                     tries += 1
+                """
 
                 failed_flows_add = 0
                 failed_flows_del = 0
