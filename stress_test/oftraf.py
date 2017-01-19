@@ -47,7 +47,7 @@ class Oftraf:
         self._ssh_conn = controller.init_ssh()
         self.traceback_enabled = False
 
-    def __error_handling(self, error_message, error_num=1):
+    def _error_handling(self, error_message, error_num=1):
         """
         Handles custom errors of oftraf
 
@@ -127,11 +127,11 @@ class Oftraf:
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.__error_handling(e.err_msg, e.err_code)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafBuildError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def clean(self):
         """
@@ -171,11 +171,11 @@ class Oftraf:
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.__error_handling(e.err_msg, e.err_code)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafCleanError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def start(self):
         """
@@ -222,11 +222,11 @@ class Oftraf:
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.__error_handling(e.err_msg, e.err_code)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafStartError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def stop(self):
         """ Wrapper to the oftraf monitor stop handler
@@ -268,11 +268,11 @@ class Oftraf:
                         'Command-line output: {0} \n Exit status code: {1}'.
                         format(cmd_output, exit_status), 2))
             except stress_test.oftraf_exceptions.OftrafError as e:
-                self.__error_handling(e.err_msg, e.err_code)
+                self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.oftraf_exceptions.OftrafStopError)
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def oftraf_get_of_counts(self):
         """
@@ -300,7 +300,7 @@ class Oftraf:
                     'data: {1}'.format(req.status_code,
                                        req.content.decode('utf-8'))))
         except stress_test.oftraf_exceptions.OftrafError as e:
-            self.__error_handling(e.err_msg, e.err_code)
+            self._error_handling(e.err_msg, e.err_code)
 
     def __del__(self):
         """
