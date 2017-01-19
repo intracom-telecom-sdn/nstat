@@ -1244,8 +1244,8 @@ class MEF(Monitor):
         successful_bootup_time = self.total_monitor_samples[-1]['successful_bootup_time']
         expected_switches = self.emulator.get_overall_topo_size()
         for self.repeat_id in list(range(self.test_repeats)):
-            discovered_switches = self.controller.get_oper_switches()
-            discovered_links = self.controller.get_oper_links()
+            discovered_switches = int(self.controller.get_oper_switches())
+            discovered_links = int(self.controller.get_oper_links()) / 2
             logging.info('[MEF_monitor] Stability test | repeat_id: {0} | '
                          'discovered_switches: {1} | discovered_links: {2} | '
                          'expected_switches: {3}'.format(self.repeat_id,
