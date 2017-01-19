@@ -1217,6 +1217,8 @@ class MEF(Monitor):
                     results['max_discovered_switches'] = \
                         max_discovered_switches
                     results['discovered_switches_error_code'] = error_code
+                    results['discovered_links'] = discovered_links
+                    results['max_discovered_links'] = max_discovered_links
                     results['successful_bootup_time'] = delta_t
                     self.result_queue.put([results])
                     return 0
