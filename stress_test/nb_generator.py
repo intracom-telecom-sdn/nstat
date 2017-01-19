@@ -256,7 +256,10 @@ class NBgen:
                                   str(self.flows_per_request),
                                   str(self.log_level)]),
                         '[NB_generator] run_handler')
-
+                print("################ exit_status#############")
+                print(exit_status)
+                print("$$$$$$$$$$$$$$$$$$$$$$$$cmd_output$$$$$$$$$$$$$$$$$$")
+                print(cmd_output)
                 if exit_status == 0:
                     self.status = 'NB_GEN_RUNNING'
                     logging.info("[NB_generator] up and running")

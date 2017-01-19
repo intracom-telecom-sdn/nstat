@@ -776,6 +776,7 @@ class TestRun:
                 if flow_delete_flag is False:
                     expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
+                    print("**********self.nb_emu.run()**********")
                     nb_gen_start_json_output_add = self.nb_emu.run()
                     print("**********nb_gen_start_json_output_add***")
                     print(nb_gen_start_json_output_add)
