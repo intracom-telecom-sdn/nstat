@@ -1118,6 +1118,27 @@ class MEF(Monitor):
         self.data_queue = gevent.queue.Queue()
         self.total_monitor_samples = []
 
+    def monitor_mef_stability_results(self):
+            results = self.system_results()
+            results['global_sample_id'] = self.global_sample_id
+            self.global_sample_id += 1
+            # We do not increase repeat id here. This will be increased when
+            # we enter the stability test section
+            results['repeat_id'] = self.repeat_id
+            results['multinet_workers'] = len(self.emulator.workers_ips)
+            results['multinet_worker_topo_size'] = self.emulator.topo_size
+            results['multinet_topology_type'] = self.emulator.topo_type
+            results['multinet_hosts_per_switch'] = \
+                self.emulator.topo_hosts_per_switch
+            results['multinet_group_size'] = self.emulator.topo_group_size
+            results['multinet_group_delay_ms'] = \
+                self.emulator.topo_group_delay_ms
+            results['controller_statistics_period_ms'] = \
+                self.controller.stat_period_ms
+            results['controller_node_ip'] = self.controller.ip
+            results['controller_port'] = str(self.controller.of_port)
+            return results
+
     def monitor_thread_topo_bootup(self):
         """
         This monitor function is used from idle tests.
@@ -1140,24 +1161,7 @@ class MEF(Monitor):
         max_discovered_links = 0
 
         while True:
-            results = self.system_results()
-            results['global_sample_id'] = self.global_sample_id
-            self.global_sample_id += 1
-            # We do not increase repeat id here. This will be increased when
-            # we enter the stability test section
-            results['repeat_id'] = self.repeat_id
-            results['multinet_workers'] = len(self.emulator.workers_ips)
-            results['multinet_worker_topo_size'] = self.emulator.topo_size
-            results['multinet_topology_type'] = self.emulator.topo_type
-            results['multinet_hosts_per_switch'] = \
-                self.emulator.topo_hosts_per_switch
-            results['multinet_group_size'] = self.emulator.topo_group_size
-            results['multinet_group_delay_ms'] = \
-                self.emulator.topo_group_delay_ms
-            results['controller_statistics_period_ms'] = \
-                self.controller.stat_period_ms
-            results['controller_node_ip'] = self.controller.ip
-            results['controller_port'] = str(self.controller.of_port)
+            results = self.monitor_mef_stability_results()
             # case of failure
             if (time.time() - t_discovery_start) > discovery_deadline:
                 error_code = 201
@@ -1244,6 +1248,7 @@ class MEF(Monitor):
         successful_bootup_time = self.total_monitor_samples[-1]['successful_bootup_time']
         expected_switches = self.emulator.get_overall_topo_size()
         for self.repeat_id in list(range(self.test_repeats)):
+            test_sample = self.monitor_mef_stability_results()
             discovered_switches = int(self.controller.get_oper_switches())
             discovered_links = int(self.controller.get_oper_links()) / 2
             logging.info('[MEF_monitor] Stability test | repeat_id: {0} | '
@@ -1256,10 +1261,7 @@ class MEF(Monitor):
                 error_code = 0
             else:
                 error_code = 201
-            test_sample = self.system_results()
-            test_sample['global_sample_id'] = self.global_sample_id
-            self.global_sample_id += 1
-            test_sample['repeat_id'] = self.repeat_id
+            test_sample['multinet_size'] = expected_switches
             test_sample['discovered_switches'] = discovered_switches
             test_sample['discovered_links'] = discovered_links
             test_sample['bootup_time_secs'] = bootup_time_secs
