@@ -1229,7 +1229,7 @@ class MEF(Monitor):
         # topo_start_thread = gevent.spawn(self.emulator.start_topos,
         #                                 self.data_queue, False, True, True)
         # threads.append(topo_start_thread)
-        self.joinall(threads)
+        gevent.joinall(threads)
         self.total_monitor_samples += self.result_queue.get()
         gevent.killall(threads)
 
