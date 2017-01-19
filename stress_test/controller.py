@@ -732,7 +732,10 @@ class ODL(Controller):
                     '[controller.get_oper_hosts]')[1]
                 if new_ssh_conn is not None:
                     used_ssh_conn.close()
-                return int(ret)
+                try:
+                    return int(ret)
+                except:
+                    return -1
             except:
                 raise(stress_test.controller_exceptions.ODLGetOperHostsError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -829,7 +832,10 @@ class ODL(Controller):
                     '[controller.get_oper_links]')[1]
                 if new_ssh_conn is not None:
                     used_ssh_conn.close()
-                return int(ret)
+                try:
+                    return int(ret)
+                except:
+                    return -1
             except:
                 raise(stress_test.controller_exceptions.ODLGetOperLinksError)
         except stress_test.controller_exceptions.CtrlError as e:
@@ -877,7 +883,10 @@ class ODL(Controller):
                     '[controller.operational_flows_handler]')[1]
                 if new_ssh_conn is not None:
                     used_ssh_conn.close()
-                return int(ret)
+                try:
+                    return int(ret)
+                except:
+                    return -1
             except:
                 raise(stress_test.controller_exceptions.ODLGetOperFlowsError)
         except stress_test.controller_exceptions.CtrlError as e:
