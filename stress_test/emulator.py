@@ -775,7 +775,8 @@ class Multinet(SBEmu):
                                            handlers_list):
                     self.status = 'TOPOS_NOT_STARTED'
                     raise(IOError(
-                        '[Multinet] Start_topos handler does not exist'))
+                        '[Multinet] One handler path is invalid or handler '
+                        'does not exist'))
                 else:
                     for handler in handlers_list:
                         util.netutil.make_remote_file_executable(
