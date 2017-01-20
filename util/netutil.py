@@ -285,7 +285,7 @@ def ssh_connection_open(ip, ssh_port, username, password):
     :param username: username of the remote host
     :param password: password of the remote host
     :returns: sftp, transport_layer
-    :rtype tuple<paramiko.SFTPClient, paramiko.Transport>
+    :rtype: tuple<paramiko.SFTPClient, paramiko.Transport>
     :type ip: str
     :type ssh_port: int
     :type username: str
