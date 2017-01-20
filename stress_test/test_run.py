@@ -891,39 +891,44 @@ class TestRun:
 
             test_repeats = json_conf['test_repeats']
             test_repeat_interval_ms = json_conf['test_repeat_interval_ms']
+            self.ctrl.stat_period_ms = json_conf['controller_statistics_'
+                                                 'period_ms']
             mef_monitor = stress_test.monitor.MEF(self.ctrl, self.sb_emu,
                                                   test_repeats,
                                                   test_repeat_interval_ms)
-            self.sb_emu.topo_size = json_conf['multinet_topo_size']
-            self.sb_emu.topo_type = json_conf['multinet_topo_type']
-            self.sb_emu.topo_hosts_per_switch = json_conf['multinet_topo_'
-                                                          'hosts_per_switch']
-            self.sb_emu.topo_group_size = json_conf['multinet_topo_group_size']
-            self.sb_emu.topo_group_delay_ms = json_conf['multinet_topo_group_'
-                                                        'delay_ms']
-            self.ctrl.stat_period_ms = json_conf['controller_statistics_'
-                                                 'period_ms']
 
-            if self.ctrl.persistence_hnd:
-                logging.info('[mef_stability_test] Disable controller '
-                             'persistence')
-                self.ctrl.disable_persistence()
+            for(self.sb_emu.topo_size,
+                self.sb_emu.topo_type,
+                self.sb_emu.topo_hosts_per_switch,
+                self.sb_emu.topo_group_size,
+                self.sb_emu.topo_group_delay_ms
+                ) in itertools.product(
+                    json_conf['multinet_topo_size'],
+                    json_conf['multinet_topo_type'],
+                    json_conf['multinet_topo_hosts_per_switch'],
+                    json_conf['multinet_topo_group_size'],
+                    json_conf['multinet_topo_group_delay_ms']):
 
-            self.ctrl.check_status()
-            self.ctrl.change_stats()
-            self.ctrl.start()
+                if self.ctrl.persistence_hnd:
+                    logging.info('[mef_stability_test] Disable controller '
+                                 'persistence')
+                    self.ctrl.disable_persistence()
 
-            # start a MULTINET topology
-            self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
-            self.sb_emu.init_topos()
-            # Run the Mef monitor and collect the results
-            self.total_samples += mef_monitor.monitor_run()
+                self.ctrl.check_status()
+                self.ctrl.change_stats()
+                self.ctrl.start()
 
-            # stop/clean nodes
-            # ---------------------------------------------------------
-            self.ctrl.stop()
-            self.sb_emu.stop_topos()
-            self.sb_emu.cleanup()
+                # start a MULTINET topology
+                self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
+                self.sb_emu.init_topos()
+                # Run the Mef monitor and collect the results
+                self.total_samples += mef_monitor.monitor_run()
+
+                # stop/clean nodes
+                # ---------------------------------------------------------
+                self.ctrl.stop()
+                self.sb_emu.stop_topos()
+                self.sb_emu.cleanup()
 
             logging.info('[Testing] All done!')
         except:
