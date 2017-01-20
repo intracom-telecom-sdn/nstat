@@ -12,7 +12,8 @@ import stat
 
 
 def check_files_exist(file_list):
-    """Checks if all files in a list exist.
+    """
+    Checks if all files in a list exist.
 
     :param file_list: list of filenames to check
     :type file_list: list<str>
@@ -24,7 +25,8 @@ def check_files_exist(file_list):
 
 
 def check_files_executables(file_list):
-    """Checks if all files in a list have exe permissions.
+    """
+    Checks if all files in a list have exe permissions.
 
     :param file_list: list of filenames to check
     :raises Exception: When file in file_list does not exist or is not \
@@ -38,7 +40,8 @@ def check_files_executables(file_list):
 
 
 def check_filelist(file_list):
-    """Takes a list of files and checks if those files exist and if those \
+    """
+    Takes a list of files and checks if those files exist and if those \
         files are executables (have execution right in their privileges). If \
         something is wrong then an exception is raised
 
@@ -55,7 +58,8 @@ def check_filelist(file_list):
 
 
 def file_exists(fpath):
-    """Checks if file exists in filesystem.
+    """
+    Checks if file exists in filesystem.
 
     :param fpath: file path to check
     :type fpath: str
@@ -67,7 +71,8 @@ def file_exists(fpath):
 
 
 def is_file_exe(fpath):
-    """Checks if a file is executable.
+    """
+    Checks if a file is executable.
 
     :param fpath: file path to check
     :type fpath: str
@@ -79,7 +84,8 @@ def is_file_exe(fpath):
 
 
 def make_file_exe(fpath):
-    """Gives executable rights to a file.
+    """
+    Gives executable rights to a file.
 
     :param fpath: file path to handle
     :type fpath: str
@@ -95,8 +101,8 @@ def merge_dict_and_avg(results_add, results_delete):
         dictionary. Special purpose method for the NSTAT NorthBound \
         stress test.
 
-    :param results_add :
-    :param results_delete:
+    :param results_add: Includes the add functionality results
+    :param results_delete: Includes the delete functionality results
     :returns: the exit code of the command to be executed remotely and the \
         combined stdout - stderr of the executed command
     :rtype: dict<str or int depending on the value type>

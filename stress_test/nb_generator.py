@@ -221,8 +221,8 @@ class NBgen:
         :returns: Returns the combined stdout - stderr of the executed command
         :rtype: str
         :raises IOError: if the handler does not exist on the remote host
-        :raises nb_generator_exceptions.NBGenRunError: if running nb_generator \
-            fails
+        :raises nb_generator_exceptions.NBGenRunError: if running \
+            nb_generator fails
         """
         logging.info("[NB_generator] Run handler")
         self.status = 'STARTED'

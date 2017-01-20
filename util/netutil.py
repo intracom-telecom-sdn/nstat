@@ -278,7 +278,7 @@ def ssh_connection_close(sftp, transport_layer):
 
 def ssh_connection_open(ip, ssh_port, username, password):
     """
-    Opens an ssh connection on a remote node \
+    Opens an ssh connection on a remote node
 
     :param ip: ip address of the remote host
     :param ssh_port: port number of the remote host
@@ -358,9 +358,10 @@ def ssh_delete_file_if_exists(ip, ssh_port, username, password, remote_file):
 
 def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
                     print_flag=True, block_flag=True, getpty_flag=False):
-    """Runs the specified command on a remote machine
+    """
+    Runs the specified command on a remote machine
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :param command_to_run: Command to execute
     :param prefix: prefix of log message
     :param lines_queue: Queue datastructure to buffer the result of execution
@@ -372,7 +373,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
         channel
     :returns: the exit code of the command to be executed remotely and the \
         combined stdout - stderr of the executed command
-    :rtype: tuple<int, str>
+    :rtype: tuple
     :type ssh_client: paramiko.SSHClient
     :type command_to_run: str
     :type prefix: str

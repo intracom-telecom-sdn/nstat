@@ -238,7 +238,7 @@ def single_dict_to_html(data, key_title, data_title, table_title='',
     :type data: dict
     :type key_title: str
     :type data_title: str
-    :type table_tytle:str
+    :type table_title: str
     :type map_dictionary: collections.OrderedDict
     """
 

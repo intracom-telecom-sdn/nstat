@@ -15,7 +15,7 @@ import util.netutil
 def getpid_listeningonport(port, ssh_client=None):
     """
     Finds if there is a running process listening for network connections \
-        on a specific port. \
+        on a specific port.
 
     :param port: the port number that we investigate.
     :param ssh_client : SSH client provided by paramiko to run the command
@@ -49,10 +49,10 @@ def getpid_listeningonport(port, ssh_client=None):
 
 
 def is_process_running(pid, ssh_client=None):
-    """Finds if a process is running, using its process ID. \
+    """Finds if a process is running, using its process ID.
 
     :param pid: The process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: True, if the process is running False, otherwise
     :rtype: bool
     :type pid: int
@@ -79,10 +79,10 @@ def is_process_running(pid, ssh_client=None):
             return False
 
 def wait_until_process_finishes(pid, ssh_client=None):
-    """Waits until the process with the specified ID finishes \
+    """Waits until the process with the specified ID finishes
 
     :param pid: process id
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :type pid: int
     :type ssh_client: paramiko.SSHClient
     """
