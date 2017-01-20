@@ -1114,6 +1114,7 @@ class MEF(Monitor):
         self.test_repeats = test_repeats
         self.test_repeat_interval_sec = float(test_repeat_interval_ms) / 1000
         self.repeat_id = 0
+        self.global_sample_id = 0
         self.result_queue = gevent.queue.Queue()
         self.data_queue = gevent.queue.Queue()
         self.total_monitor_samples = []
@@ -1231,7 +1232,7 @@ class MEF(Monitor):
     def bootup_monitor(self):
         threads = []
         # Run start handler in non blocking mode
-        self.emulator.start_topos(None, False, False, False)
+        self.emulator.start_topos(None, False, False, False, True)
         topo_bootup_thread = gevent.spawn(self.monitor_thread_topo_bootup)
         threads.append(topo_bootup_thread)
         # topo_start_thread = gevent.spawn(self.emulator.start_topos,
@@ -1242,6 +1243,7 @@ class MEF(Monitor):
         gevent.killall(threads)
 
     def stability_monitor(self):
+        self.global_sample_id = 1
         bootup_time_secs = self.total_monitor_samples[-1]['bootup_time_secs']
         max_discovered_switches = self.total_monitor_samples[-1]['max_discovered_switches']
         max_discovered_links = self.total_monitor_samples[-1]['max_discovered_links']

@@ -747,8 +747,8 @@ class Multinet(SBEmu):
         except stress_test.emulator_exceptions.SBEmuError as e:
             self._error_handling(e.err_msg, e.err_code)
 
-    def start_topos(self, lines_queue=None,
-                    print_flag=True, block_flag=True, getpty_flag=False):
+    def start_topos(self, lines_queue=None, print_flag=True, block_flag=True,
+                    getpty_flag=False, serial_requests=False):
         """
         Wrapper to the Multinet SB-Emulator start_topos handler
 
@@ -760,22 +760,30 @@ class Multinet(SBEmu):
         self.status = 'START_MININET_TOPOS'
         try:
             try:
+                handlers_list = [self.start_topos_hnd, self.venv_hnd]
+                if serial_requests:
+                    cmd_to_run = ' '.join(
+                        [self.venv_hnd, self.base_dir, self.start_topos_hnd,
+                         self.__multinet_config_file_remote_path,
+                         '--serial-requests'])
+                else:
+                    cmd_to_run = ' '.join(
+                        [self.venv_hnd, self.base_dir, self.start_topos_hnd,
+                         self.__multinet_config_file_remote_path])
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
-                                           [self.start_topos_hnd]):
+                                           handlers_list):
                     self.status = 'TOPOS_NOT_STARTED'
                     raise(IOError(
                         '[Multinet] Start_topos handler does not exist'))
                 else:
-                    util.netutil.make_remote_file_executable(
-                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
-                        self.start_topos_hnd)
+                    for handler in handlers_list:
+                        util.netutil.make_remote_file_executable(
+                            self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                            handler)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
-                    self._ssh_conn, ' '.join(
-                        [self.venv_hnd, self.base_dir, self.start_topos_hnd,
-                         self.__multinet_config_file_remote_path]),
-                    '[Multinet.start_topos_hnd]', lines_queue, print_flag,
-                    block_flag, getpty_flag)
+                    self._ssh_conn, cmd_to_run, '[Multinet.start_topos_hnd]',
+                    lines_queue, print_flag, block_flag, getpty_flag)
                 if exit_status == 0:
                     self.status = 'TOPOS_STARTED'
                     logging.info('[Multinet] Successful start '
