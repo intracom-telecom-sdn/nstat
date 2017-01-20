@@ -742,18 +742,18 @@ class TestRun:
                 if (initial_oper_ds_flows != 0 or initial_topo_flows != 0):
                     raise ValueError('Initial installed flows '
                                      'were not equal to 0.')
-                """
+
                 tries = 0
                 num_tries = 3
                 while tries < num_tries:
                     expected_switches = self.sb_emu.get_overall_topo_size()
-                    discovered_switches = self.sb_emu.check_topo_booted()
+                    discovered_switches = self.sb_emu.get_switches()
                     ds_switches = self.ctrl.get_oper_switches()
                     if discovered_switches == expected_switches and \
                         ds_switches == expected_switches and \
                             expected_switches != 0:
                         break
-                    elif tries == num_tries-1:
+                    elif tries == num_tries:
                         raise Exception('Topology did not fully '
                                         'initialize. Expected {0} '
                                         'switches, but found {1} at the '
@@ -765,7 +765,6 @@ class TestRun:
                     else:
                         continue
                     tries += 1
-                """
 
                 failed_flows_add = 0
                 failed_flows_del = 0
@@ -776,14 +775,9 @@ class TestRun:
                 if flow_delete_flag is False:
                     expected_flows = self.nb_emu.total_flows
                     start_rest_request_time_add = time.time()
-                    print("**********self.nb_emu.run()**********")
                     nb_gen_start_json_output_add = self.nb_emu.run()
-                    print("**********nb_gen_start_json_output_add***")
-                    print(nb_gen_start_json_output_add)
                     nb_gen_start_output_add = \
                         json.loads(nb_gen_start_json_output_add)
-                    print("**********nb_gen_start_output_add[0]***")
-                    print(nb_gen_start_output_add[0])
                     failed_flows_add = nb_gen_start_output_add[0]
 
                     result_metrics_add = \
