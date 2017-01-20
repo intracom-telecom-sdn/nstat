@@ -752,11 +752,11 @@ class TestRun:
                     if discovered_switches == expected_switches and \
                         ds_switches == expected_switches and \
                             expected_switches != 0:
-                        logging.info('Switches topology is confirmed: {0}'
-                                     ' found at Controller DS up and '
+                        logging.info('Switches topology is confirmed: ')
+                        logging.info('{0} found at Controller DS up and '
                                      'running'.
                                      format(ds_switches))
-                        logging.info('{1} of started switches found '
+                        logging.info('{0} of started switches found '
                                      'within the distributed topologies'.
                                      format(discovered_switches))
                         break
