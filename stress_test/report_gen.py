@@ -47,7 +47,7 @@ class ReportGen:
                 '[ReportGen] Fail to create output directory for the report')
             raise(IOError)
 
-    def __error_handling(self, error_message):
+    def _error_handling(self, error_message):
         """
         Prints a detailed message traceback of the error in plotting
 
@@ -218,17 +218,17 @@ class ReportGen:
             try:
                 self.generate_json_results()
             except:
-                self.__error_handling('Error in generation of JSON results.')
+                self._error_handling('Error in generation of JSON results.')
         try:
             self.generate_plots()
         except:
-            self.__error_handling('Error in generation of plots.')
+            self._error_handling('Error in generation of plots.')
         try:
             self.generate_html_report()
         except:
-            self.__error_handling('Error in generation of HTML report.')
+            self._error_handling('Error in generation of HTML report.')
         try:
             shutil.copy(self.args.json_config, self.args.output_dir)
         except:
-            self.__error_handling('Error in copy of results in results '
+            self._error_handling('Error in copy of results in results '
                                   'folder.')
