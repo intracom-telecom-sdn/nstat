@@ -4,7 +4,7 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-""" Controller Class- All controller-related functionality is here"""
+""" Monitor Class- All monitoring-related functionality is here"""
 
 import gevent
 import gevent.queue
@@ -35,6 +35,7 @@ class Monitor:
     def system_results(self):
         """
         Collect runtime statistics
+
         :returns: experiment statistics in dictionary
         :rtype: dict
         """
@@ -246,8 +247,8 @@ class Mtcbench(Monitor):
 
     def monitor_thread_idle(self, boot_start_time):
         """
-        This monitor function is used from south bound idle mtcbench
-        tests to put into gevent queue the results during test running
+        This monitor function is used from south bound idle mtcbench \
+            tests to put into gevent queue the results during test running
 
         :param boot_start_time: The time we begin starting topology switches
         :type boot_start_time: int
@@ -316,8 +317,8 @@ class Mtcbench(Monitor):
 
     def monitor_thread_active(self):
         """
-        This monitor function is used from south bound active mtcbench
-        tests to put into gevent queue the results during test running
+        This monitor function is used from south bound active mtcbench \
+            tests to put into gevent queue the results during test running
         """
 
         internal_repeat_id = 0
@@ -433,7 +434,8 @@ class Mtcbench(Monitor):
 
 
 class Multinet(Monitor):
-    """ Multinet- related monitoring. Subclass of Monitor superclass
+    """
+    Multinet- related monitoring. Subclass of Monitor superclass
     """
     def __init__(self, controller, oftraf, emulator):
         """
@@ -458,10 +460,10 @@ class Multinet(Monitor):
         This monitor function is used from both south bound active and idle \
             multinet tests to get the results from gevent queue
 
-        :param: reference_results: The results returned from the just previous \
+        :param reference_results: The results returned from the just previous \
             iteration of the test. Used in the frame of a stability test
-        :param sample_id: The id of the sample running. Used in the frame of a \
-            stability test
+        :param sample_id: The id of the sample running. Used in the frame of \
+            a stability test
         :param boot_start_time: The time we begin starting topology switches
         :returns: Returns a dictionary, including all the results
         :rtype: dict
@@ -597,7 +599,7 @@ class Multinet(Monitor):
         This monitor function is used from idle stability multinet tests \
             to put the results into gevent queue
 
-        :param: reference_results: The results returned from the just previous \
+        :param reference_results: The results returned from the just previous \
             iteration of the test. Used in the frame of a stability test
         :param sample_id: The id of the sample running. Used in the frame of a \
             stability test
@@ -909,7 +911,7 @@ class NBgen(Monitor):
         This monitor function is used from  north bound tests to get the \
             results from gevent queue
 
-        :param: t_start: timestamp for beginning of discovery iteration of \
+        :param t_start: timestamp for beginning of discovery iteration of \
             the test.
         :param total_failed_flows: The number of failed flows after an add or \
             delete function
@@ -968,7 +970,7 @@ class NBgen(Monitor):
         This monitor function is used to create the result dictionary during \
             an add flows action
 
-        :param: add_controller_time: time for all add REST requests to be sent \
+        :param add_controller_time: time for all add REST requests to be sent \
             and their response to be received
         :param results_thread: The dictionary from monitor_threads_run \
             function including the contents from nbgen_queue
@@ -1051,7 +1053,7 @@ class NBgen(Monitor):
         This monitor function is used to create the result dictionary during a \
             delete flows action
 
-        :param: controller_time: time for all delete REST requests to be sent \
+        :param controller_time: time for all delete REST requests to be sent \
             and their response to be received
         :param results_thread: The dictionary from monitor_threads_run \
             function including the contents from nbgen_queue

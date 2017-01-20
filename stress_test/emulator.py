@@ -50,7 +50,7 @@ class SBEmu:
         self.status = 'UNKNOWN'
         self._ssh_conn = None
 
-        '''check handlers' validity'''
+        # check handlers' validity
         util.file_ops.check_filelist([self.build_hnd,
                                       self.clean_hnd])
 

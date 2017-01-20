@@ -72,10 +72,10 @@ class ReportGen:
         """
         Creates the result json file and writes test results in it
 
-        :param results A list containing the results.
-        :param out_json: The file path of json file to be created and write
-        results in it
-        :type results: <list<dictionary>>
+        :param results: A list containing the results.
+        :param out_json: The file path of json file to be created and write \
+            results in it
+        :type results: list
         :type out_json: str
         """
         try:
@@ -102,21 +102,21 @@ class ReportGen:
 
     def generate_plots(self):
         """
-        NSTAT post test actions \
+        NSTAT post test actions
 
-        :param args: argparse.ArgumentParser object containing user specified \
-            parameters (i.e test type, controller base directory, generator \
+        :param args: Object containing user specified parameters \
+            (i.e test type, controller base directory, generator \
             base directory) when running NSTAT
-        :param test_config : JSON input configuration
-        :param report_spec : A ReportSpec object that holds all the test \
+        :param test_config: JSON input configuration
+        :param report_spec: A ReportSpec object that holds all the test \
             report information and is passed as input to the generate_html() \
             function in the html_generation.py, that is responsible for the \
             report generation.
-        :type args: ArgumentParser object
-        :type test_config: python object resulting from a deserialized file \
-            like object containing a json document
-        :type report_spec: ReportSpec object
+        :type args: object
+        :type test_config: object
+        :type report_spec: object
         """
+
         if os.path.isfile(self.args.json_output):
             logging.info(
                 '[generate_plots] Creating output directory of test results')

@@ -430,10 +430,10 @@ class Controller:
 
         :param timeout_ms: milliseconds to wait (in milliseconds).
         :returns: the process ID PID of the controller.
-        :rtype int
+        :rtype: int
         :type timeout_ms: int
-        :raises controller_exceptions.CtrlReadyStateError: If controller fails \
-            to start
+        :raises controller_exceptions.CtrlReadyStateError: If controller \
+            fails to start
         :raises controller_exceptions.CtrlPortConflictError: if another \
             process listens on controllers port.
         """
@@ -521,6 +521,9 @@ class Controller:
 
 
 class ODL(Controller):
+    """
+    All OpenDaylight controller-related functionality is here
+    """
 
     def __init__(self, ctrl_base_dir, test_config):
         """
@@ -908,7 +911,9 @@ class ODL(Controller):
 
 
 class ONOS(Controller):
-
+    """
+    All ONOS controller-related functionality is here
+    """
     def __init__(self, ctrl_base_dir, test_config):
         """
         Initialize the creation of an ONOS controller object.
