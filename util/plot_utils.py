@@ -282,7 +282,7 @@ def create_xy_dict_from_file(results_file, x_axis_key, y_axis_key):
         x axis
     :param y_axis_key: field name from the result json that has the data for \
         y axis
-    :returns contents of results json files and x,y coordinations of the \
+    :returns: contents of results json files and x,y coordinations of the \
         values defined by x_axis_key and y_axis_key.
     :rtype: tuple<dictionary>
     :type results_file: str
@@ -318,7 +318,7 @@ def create_xyz_dict_from_file(results_file, x_axis_key, y_axis_key,
         y axis
     :param z_axis_key: field name from the result json that has the data for \
         z axis
-    :returns contents of results json files and x,y coordinations of the \
+    :returns: contents of results json files and x,y coordinations of the \
         values defined by x_axis_key and y_axis_key
     :rtype: tuple<dict>
     :type results_file: str

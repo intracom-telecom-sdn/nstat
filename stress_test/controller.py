@@ -429,8 +429,8 @@ class Controller:
         Waits for controller to start listening on specified port.
 
         :param timeout_ms: milliseconds to wait (in milliseconds).
-        :returns the process ID PID of the controller.
-        :rtype int
+        :returns: the process ID PID of the controller.
+        :rtype: int
         :type timeout_ms: int
         :raises controller_exceptions.CtrlReadyStateError: If controller \
             fails to start

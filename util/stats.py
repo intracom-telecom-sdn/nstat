@@ -54,9 +54,9 @@ def coefvariance(samples):
     """
     Computes the co-efficient of variation of a number list.
 
-    :param s: a list of float numbers, to calculate their coefficient.
-    :returns: the co-efficient of variation of the float numbers
-    in the list
+    :param samples: a list of float numbers, to calculate their coefficient.
+    :returns: the co-efficient of variation of the float numbers \
+        in the list
     :rtype: float
     :type samples: list<float>
     """

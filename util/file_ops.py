@@ -105,9 +105,9 @@ def merge_dict_and_avg(results_add, results_delete):
     :param results_delete: Includes the delete functionality results
     :returns: the exit code of the command to be executed remotely and the \
         combined stdout - stderr of the executed command
-    :rtype: dict<str or int depending on the value type>
-    :type dict
-    :type dict
+    :rtype: dict
+    :type results_add: dict
+    :type results_delete: dict
     """
     dict_merged = collections.defaultdict(list)
     for d in (results_delete, results_add):

@@ -73,8 +73,8 @@ class ReportGen:
         Creates the result json file and writes test results in it
 
         :param results: A list containing the results.
-        :param out_json: The file path of json file to be created and write
-        results in it
+        :param out_json: The file path of json file to be created and write \
+            results in it
         :type results: list
         :type out_json: str
         """

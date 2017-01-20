@@ -18,7 +18,7 @@ def getpid_listeningonport(port, ssh_client=None):
         on a specific port.
 
     :param port: the port number that we investigate.
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: -1, if no process is listening on port\
         0, if some process is listening on port but we are not owner of \
         it <pid> of the process listening on port and we are owner of it
