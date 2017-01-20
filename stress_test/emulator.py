@@ -604,8 +604,8 @@ class Multinet(SBEmu):
         :rtype: strcleanup_hnd
         :type new_ssh_conn: paramiko.SFTPClient
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetGetSwitchesError: if handler fails \
-            to run successfully and return a valid result
+        :raises emulator_exceptions.MultinetGetSwitchesError: if handler \
+            fails to run successfully and return a valid result
         """
         logging.info('[Multinet] get_switches')
         self.status = 'GETTING_SWITCHES'
