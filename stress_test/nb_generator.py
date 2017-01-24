@@ -53,7 +53,7 @@ class NBgen:
                           test_config['nb_emulator_clean_handler'])
         self.run_hnd = (self.base_dir +
                         test_config['nb_emulator_run_handler'])
-        self.run_hnd_path = os.path.dirname(self.run_hnd)
+        self.run_hnd_path = os.path.dirname(self.run_hnd) + '/'
 
         self.get_oper_ds_flows_hnd = (
             self.base_dir + test_config['nb_emulator_get_oper_ds_handler'])
