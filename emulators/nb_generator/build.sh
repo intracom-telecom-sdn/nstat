@@ -13,7 +13,7 @@ echo $SCRIPT_DIR
 NSTAT_NB_GENERATOR_LOCATION="https://github.com/intracom-telecom-sdn/nstat-nb-generator.git"
 
 if [ ! -d $SCRIPT_DIR"/nstat-nb-generator" ]; then
-    git clone -b nb-gen-fix $NSTAT_NB_GENERATOR_LOCATION $SCRIPT_DIR"/nstat-nb-generator"
+    git clone -b master $NSTAT_NB_GENERATOR_LOCATION $SCRIPT_DIR"/nstat-nb-generator"
     if [ $? -ne 0 ]; then
         echo "[build.sh] Cloning nstat-nb-generator failed. Exiting ..."
         exit 1
