@@ -855,35 +855,35 @@ class TestRun:
             try:
                 logging.info('[{0}] Clean NB-Generator.'.
                              format(self.test_type))
-                del self.nb_emu
+                #del self.nb_emu
             except:
                 logging.error('[{0}] Fail to clean NB-Generator.'.
                               format(self.test_type))
             try:
                 logging.info('[{0}] Clean NB-Generator Monitor'.
                              format(self.test_type))
-                del self.mon
+                #del self.mon
             except:
                 logging.error('[{0}] Fail to clean NB-Generator Monitor.'.
                               format(self.test_type))
             try:
                 logging.info('[{0}] Save controller logs'.
                              format(self.test_type))
-                self.ctrl.save_log(output_dir)
+                #self.ctrl.save_log(output_dir)
             except:
                 logging.error('[{0}] Fail to save controller logs'.
                               format(self.test_type))
             try:
                 logging.info('[{0}] Clean controller.'.
                              format(self.test_type))
-                del self.ctrl
+                #del self.ctrl
             except:
                 logging.error('[{0}] Fail to cleanup controller.'.
                               format(self.test_type))
             try:
                 logging.info('[{0}] Clean multinet.'.
                              format(self.test_type))
-                del self.sb_emu
+                #del self.sb_emu
             except:
                 logging.error('[{0}] Fail to clean multinet.'.
                               format(self.test_type))
