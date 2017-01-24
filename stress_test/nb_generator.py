@@ -9,6 +9,7 @@
 # import emulators.nb_generator
 import gevent
 import logging
+import os
 import stress_test.nb_generator_exceptions
 import sys
 import time
@@ -52,6 +53,8 @@ class NBgen:
                           test_config['nb_emulator_clean_handler'])
         self.run_hnd = (self.base_dir +
                         test_config['nb_emulator_run_handler'])
+        self.run_hnd_path = os.path.dirname(self.run_hnd)
+
         self.get_oper_ds_flows_hnd = (
             self.base_dir + test_config['nb_emulator_get_oper_ds_handler'])
 
@@ -250,7 +253,7 @@ class NBgen:
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
                         ' '.join([str(self.venv_hnd),
-                                  str(self.base_dir),
+                                  str(self.run_hnd_path),
                                   str(self.run_hnd),
                                   str(self.controller.ip),
                                   str(self.controller.restconf_port),
