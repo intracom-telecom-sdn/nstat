@@ -249,19 +249,6 @@ class NBgen:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.run_hnd)
-                print(' '.join([str(self.venv_hnd),
-                                  str(self.run_hnd_path),
-                                  str(self.run_hnd),
-                                  str(self.controller.ip),
-                                  str(self.controller.restconf_port),
-                                  str(self.total_flows),
-                                  str(self.flow_workers),
-                                  str(self.flow_operations_delay_ms),
-                                  str(self.flow_delete_flag),
-                                  str(self.controller.restconf_user),
-                                  str(self.controller.restconf_pass),
-                                  str(self.flows_per_request),
-                                  str(self.log_level)]))
                 exit_status, cmd_output = \
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
@@ -279,12 +266,6 @@ class NBgen:
                                   str(self.flows_per_request),
                                   str(self.log_level)]),
                         '[NB_generator] run_handler')
-                print('=======================================================')
-                print('==================EXIT STATUS==========================')
-                print(exit_status)
-                print('=======================================================')
-                print('===================COMMAND_OUTPUT======================')
-                print(cmd_output)
 
                 if exit_status == 0:
                     self.status = 'NB_GEN_RUNNING'
