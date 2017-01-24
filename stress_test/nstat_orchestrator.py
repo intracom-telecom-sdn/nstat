@@ -101,14 +101,6 @@ def main():
     args = parser.parse_args()
     nstat_test = stress_test.test_type.TestType(args)
     nstat_test.test_selector(args)
-    print('=====================================')
-    print('=====================================')
-    print('=====================================')
-    print(args.nb_emu_base_dir)
-    print('=====================================')
-    print('=====================================')
-    print('=====================================')
-
 
 if __name__ == '__main__':
     main()
