@@ -1140,7 +1140,7 @@ class MEF(Monitor):
             results['controller_port'] = str(self.controller.of_port)
             return results
 
-    def monitor_thread_topo_bootup(self):
+    def monitor_thread_topo_bootup(self, topo_boot_timestamp):
         """
         This monitor function is used from idle tests.
         Poll operational DS to discover installed switches.
@@ -1150,7 +1150,7 @@ class MEF(Monitor):
         discovery_deadline = 240
         expected_switches = self.emulator.get_overall_topo_size()
         logging.info('[monitor_thread_MEF] Monitor thread started')
-        t_start = time.time()
+        t_start = topo_boot_timestamp
         logging.info('[monitor_thread_MEF] Starting discovery')
         previous_discovered_switches = 0
         discovered_switches = 0
@@ -1232,15 +1232,19 @@ class MEF(Monitor):
     def bootup_monitor(self):
         threads = []
         # Run start handler in non blocking mode
-        self.emulator.start_topos(None, False, False, False, True)
-        topo_bootup_thread = gevent.spawn(self.monitor_thread_topo_bootup)
-        threads.append(topo_bootup_thread)
-        # topo_start_thread = gevent.spawn(self.emulator.start_topos,
-        #                                 self.data_queue, False, True, True)
-        # threads.append(topo_start_thread)
-        gevent.joinall(threads)
-        self.total_monitor_samples += self.result_queue.get()
-        gevent.killall(threads)
+        is_ctrl_crashed = False
+        t_start = time.time()
+        self.emulator.start_topos(None, True, True, False, True)
+        if self.controller.check_status() == '1':
+            topo_bootup_thread = gevent.spawn(self.monitor_thread_topo_bootup,
+                                              t_start)
+            threads.append(topo_bootup_thread)
+            gevent.joinall(threads)
+            self.total_monitor_samples += self.result_queue.get()
+            gevent.killall(threads)
+        else:
+            is_ctrl_crashed = True
+        return is_ctrl_crashed
 
     def stability_monitor(self):
         self.global_sample_id = 1
@@ -1275,22 +1279,26 @@ class MEF(Monitor):
             time.sleep(self.test_repeat_interval_sec)
 
     def monitor_run(self):
-        self.bootup_monitor()
-        expected_switches = self.emulator.get_overall_topo_size()
-        discovered_switches = int(self.controller.get_oper_switches())
-        discovered_links = int(self.controller.get_oper_links()) / 2
-        logging.info('[MEF_monitor] Check if stable after topo bootup | '
-                         'discovered_switches: {0} | discovered_links: {1} | '
-                         'expected_switches: {2}'.format(discovered_switches,
-                                                         discovered_links,
-                                                         expected_switches))
-        # If not expected switches found after topology discovery do not
-        # continue return results
-        if expected_switches == discovered_switches == discovered_links:
-            logging.info('[MEF_monitor] Controller is in stable state after '
-                         'bootup. Continue with stability test.')
-            self.stability_monitor()
+        is_ctrl_crashed = self.bootup_monitor()
+        if not is_ctrl_crashed:
+            expected_switches = self.emulator.get_overall_topo_size()
+            discovered_switches = int(self.controller.get_oper_switches())
+            discovered_links = int(self.controller.get_oper_links()) / 2
+            logging.info('[MEF_monitor] Check if stable after topo bootup | '
+                             'discovered_switches: {0} | discovered_links: {1} | '
+                             'expected_switches: {2}'.format(discovered_switches,
+                                                             discovered_links,
+                                                             expected_switches))
+            # If not expected switches found after topology discovery do not
+            # continue return results
+            if expected_switches == discovered_switches == discovered_links:
+                logging.info('[MEF_monitor] Controller is in stable state after '
+                             'bootup. Continue with stability test.')
+                self.stability_monitor()
+            else:
+                logging.info('[MEF_monitor] Controller is not in stable state. '
+                             'Return results and exit.')
         else:
-            logging.info('[MEF_monitor] Controller is not in stable state. '
-                         'Return results and exit.')
+            logging.info('[MEF_monitor] Controller crashed before topology has'
+                         ' started. Try starting a smaller topology. Exiting.')
         return self.total_monitor_samples
