@@ -16,10 +16,10 @@ import util.netutil
 
 def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
     """
-    Executes a command either locally or remotely and returns the result \
+    Executes a command either locally or remotely and returns the result
 
     :param cmd: the command to be executed
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :param return_type: Defines the return type of the command output
     :returns: The commands execution result as string
     :rtype: str, int, float
@@ -63,7 +63,7 @@ def sys_used_ram_mb(ssh_client=None):
     """
     Returns system used memory in MB.
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the amount of used RAM memory in the system in MB.
     :rtype: int
     :type ssh_client: paramiko.SSHClient
@@ -77,7 +77,7 @@ def sys_nprocs(ssh_client=None):
     """
     Returns the number of CPUs in the system.
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the number of CPUs in the system
     :rtype: int
     :type ssh_client: paramiko.SSHClient
@@ -91,7 +91,7 @@ def sys_free_ram_mb(ssh_client=None):
     """
     Returns system free memory in MB.
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the amount of free RAM memory in the system in MB.
     :rtype: int
     :type ssh_client: paramiko.SSHClient
@@ -105,7 +105,7 @@ def sys_used_memory_bytes(ssh_client=None):
     """
     Returns system used memory in bytes.
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: The amount of used RAM memory in the system in bytes.
     :rtype: int
     :type ssh_client: paramiko.SSHClient
@@ -118,7 +118,7 @@ def sys_free_memory_bytes(ssh_client=None):
     """
     Returns system free memory in bytes
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the amount of free RAM memory in the system in bytes
     :rtype: int
     :type ssh_client: paramiko.SSHClient
@@ -132,7 +132,7 @@ def sys_total_memory_bytes(ssh_client=None):
     """
     Returns system total memory in bytes
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: total system memory in bytes
     :rtype: int
     :type ssh_client: paramiko.SSHClient
@@ -149,7 +149,7 @@ def sys_iowait_time(ssh_client=None):
         outstanding disk I/O operation requested by a task scheduled on that \
         CPU (at the time it generated that I/O request).
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the I/O wait time
     :rtype: float
     :type ssh_client: paramiko.SSHClient
@@ -161,10 +161,10 @@ def sys_iowait_time(ssh_client=None):
 
 def proc_cmdline(pid, ssh_client=None):
     """
-    Returns the command line of a process as a string. \
+    Returns the command line of a process as a string.
 
     :param pid: the process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: The command execution output
     :rtype: str
     :type pid: int
@@ -177,10 +177,10 @@ def proc_cmdline(pid, ssh_client=None):
 
 def proc_cwd(pid, ssh_client=None):
     """
-    Method that returns the process current working directory. \
+    Method that returns the process current working directory.
 
     :param pid: the process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the full path of working directory
     :rtype: str
     :type pid: int
@@ -193,10 +193,10 @@ def proc_cwd(pid, ssh_client=None):
 
 def proc_cpu_system_time(pid, ssh_client=None):
     """
-    Method that returns the CPU system time of a process. \
+    Method that returns the CPU system time of a process.
 
     :param pid: the process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the CPU system time of a process
     :rtype: float
     :type pid: int
@@ -209,10 +209,10 @@ def proc_cpu_system_time(pid, ssh_client=None):
 
 def proc_cpu_user_time(pid, ssh_client=None):
     """
-    Method that returns the CPU user time of a process. \
+    Method that returns the CPU user time of a process.
 
     :param pid: the process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the CPU user time of a process
     :rtype: float
     :type pid: int
@@ -225,10 +225,10 @@ def proc_cpu_user_time(pid, ssh_client=None):
 
 def proc_vm_size(pid, ssh_client=None):
     """
-    Method that returns the virtual memory size of a process. \
+    Method that returns the virtual memory size of a process.
 
     :param pid: the process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the virtual memory size of a process
     :rtype: int
     :type pid: int
@@ -241,10 +241,10 @@ def proc_vm_size(pid, ssh_client=None):
 
 def proc_num_fds(pid, ssh_client=None):
     """
-    Returns the number of file descriptors opened by this process. \
+    Returns the number of file descriptors opened by this process.
 
     :param pid: the process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: total amount of open files for the specific process ID
     :rtype: int
     :type pid: int
@@ -257,10 +257,10 @@ def proc_num_fds(pid, ssh_client=None):
 
 def proc_num_threads(pid, ssh_client=None):
     """
-    Returns the number of threads used by this process. \
+    Returns the number of threads used by this process.
 
     :param pid: the process ID of the target process
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: the number of threads for the specific pid
     :rtype: int
     :type pid: int
@@ -275,7 +275,7 @@ def sys_load_average(ssh_client=None):
     """
     Returns the system load average.
 
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: tuple of floats with the 1-,5- and 15-min load average
     :rtype: tuple<float>
     :type ssh_client: paramiko.SSHClient
@@ -290,11 +290,10 @@ def sys_load_average(ssh_client=None):
 
 def get_java_options(pid, ssh_client=None):
     """
-    Returns a list with all java options of a process defined by its process \
-        ID \
+    Returns a list with all java options of a process defined by its process ID
 
     :param pid: process id of the process we want to get the javaopts
-    :param ssh_client : SSH client provided by paramiko to run the command
+    :param ssh_client: SSH client provided by paramiko to run the command
     :returns: a list with all java options
     :rtype: list<str>
     :type pid: int
@@ -303,5 +302,6 @@ def get_java_options(pid, ssh_client=None):
 
     cmd_output = command_exec_wrapper('ps -ef | grep \' {0} \''.format(pid),
                                       ssh_client, 'str')
-    java_options = [o for o in cmd_output.strip().split() if o.startswith('-X')]
+    java_options = \
+        [o for o in cmd_output.strip().split() if o.startswith('-X')]
     return java_options

@@ -102,6 +102,5 @@ def main():
     nstat_test = stress_test.test_type.TestType(args)
     nstat_test.test_selector(args)
 
-
 if __name__ == '__main__':
     main()

@@ -24,11 +24,11 @@ def plot_json(results_file, x_axis_key, y_axis_key, z_axis_key, plot_type,
         {"k1": v5, "k2": v6, ... },      # ... \
         ... \
         ] \
-        2. the values for both the x_axis_key and y_axis_key must be numeric \
+        2. the values for both the x_axis_key and y_axis_key must be numeric
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value, \
-        which is intended to serve as the x-axis key
+    :param x_axis_key: some key from the results file with numeric type \
+        value, which is intended to serve as the x-axis key
     :param y_axis_key: some key from the result file with numeric type value, \
         which is intended to serve as the y-axis key
     :param z_axis_key: some key from the result file with numeric type value, \
@@ -102,8 +102,8 @@ def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
         which is intended to serve as the x-axis key
     :param y_axis_key: some key from the result file with numeric type value, \
         which is intended to serve as the y-axis key
-    :param plot_subtitle_keys: list of keys from the result file which we would \
-        like to print as key-value pairs in the plot subtitle
+    :param plot_subtitle_keys: list of keys from the result file which we \
+        would like to print as key-value pairs in the plot subtitle
     :param plot_options: object containing configuration parameters of the \
         produced plot.
     :type results_file: str
@@ -156,7 +156,7 @@ def plot_errorbar_json(results_file, x_axis_key, y_axis_key,
 def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
                             plot_subtitle_keys, plot_options):
     """
-    Draw multiple collection of errorbars over a set of samples from a
+    Draw multiple collection of errorbars over a set of samples from a \
         JSON file. \
         For each different z value do the following: \
         for each different x value, the function finds one or more \
@@ -175,8 +175,8 @@ def multiplot_errorbar_json(results_file, x_axis_key, y_axis_key, z_axis_key,
         2. the values for x_axis_key, y_axis_key and z_axis_key must be numeric
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value, \
-        which is intended to serve as the x-axis key
+    :param x_axis_key: some key from the results file with numeric type \
+        value, which is intended to serve as the x-axis key
     :param y_axis_key: some key from the result file with numeric type value, \
         which is intended to serve as the y-axis key
     :param z_axis_key: some key from the result file with numeric type value, \
@@ -233,11 +233,11 @@ def plot_scatter_json(results_file, x_axis_key, y_axis_key, plot_subtitle_keys,
         {"k1": v5, "k2": v6, ... },      # ... \
         ... \
         ] \
-        2. the values for both the x_axis_key and y_axis_key must be numeric \
+        2. the values for both the x_axis_key and y_axis_key must be numeric
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value, \
-        which is intended to serve as the x-axis key
+    :param x_axis_key: some key from the results file with numeric type \
+        value, which is intended to serve as the x-axis key
     :param y_axis_key: some key from the result file with numeric type value, \
         which is intended to serve as the y-axis key
     :param plot_title: description for the plot title
@@ -308,8 +308,8 @@ def multiplot_scatter_json(results_file, x_axis_key, y_axis_key, z_axis_key,
             numeric
 
     :param results_file: results file to plot samples from
-    :param x_axis_key: some key from the results file with numeric type value, \
-        which is intended to serve as the x-axis key
+    :param x_axis_key: some key from the results file with numeric type \
+        value, which is intended to serve as the x-axis key
     :param y_axis_key: some key from the result file with numeric type value, \
         which is intended to serve as the y-axis key
     :param z_axis_key: some key from the result file with numeric type value, \

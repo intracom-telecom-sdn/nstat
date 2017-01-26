@@ -85,7 +85,7 @@ class TestType:
         """
         Selects which test to run depending on the information coming from
         the args object. nstat_test_type_run variable contains information
-        test_type + sb_emulatore_name, necessary to select which test to run.
+        test_type + sb_emulator_name, necessary to select which test to run.
         """
         self.set_test_log_level(args)
         json_conf = self.load_test_conf(args)

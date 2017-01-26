@@ -9,6 +9,7 @@
 # import emulators.nb_generator
 import gevent
 import logging
+import os
 import stress_test.nb_generator_exceptions
 import sys
 import time
@@ -52,6 +53,8 @@ class NBgen:
                           test_config['nb_emulator_clean_handler'])
         self.run_hnd = (self.base_dir +
                         test_config['nb_emulator_run_handler'])
+        self.run_hnd_path = os.path.dirname(self.run_hnd) + '/'
+
         self.get_oper_ds_flows_hnd = (
             self.base_dir + test_config['nb_emulator_get_oper_ds_handler'])
 
@@ -75,6 +78,13 @@ class NBgen:
         self.discover_flows_on_switches_time = 0.0
 
         self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
+        print('=====================================')
+        print('=====================================')
+        print('=====================================')
+        print(nb_gen_base_dir)
+        print('=====================================')
+        print('=====================================')
+        print('=====================================')
 
     def _error_handling(self, error_message, error_num=1):
         """
@@ -221,8 +231,8 @@ class NBgen:
         :returns: Returns the combined stdout - stderr of the executed command
         :rtype: str
         :raises IOError: if the handler does not exist on the remote host
-        :raises nb_generator_exceptions.NBGenRunError: if running nb_generator \
-            fails
+        :raises nb_generator_exceptions.NBGenRunError: if running \
+            nb_generator fails
         """
         logging.info("[NB_generator] Run handler")
         self.status = 'STARTED'
@@ -243,7 +253,7 @@ class NBgen:
                     util.netutil.ssh_run_command(
                         self._ssh_conn,
                         ' '.join([str(self.venv_hnd),
-                                  str(self.base_dir),
+                                  str(self.run_hnd_path),
                                   str(self.run_hnd),
                                   str(self.controller.ip),
                                   str(self.controller.restconf_port),

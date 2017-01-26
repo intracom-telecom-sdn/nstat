@@ -275,14 +275,14 @@ def plot_multi_scatter(y_values, z_axis_key, plot_options):
 def create_xy_dict_from_file(results_file, x_axis_key, y_axis_key):
     """
     Reads a json file and returns the contents of the file as a dictionary \
-        as well as a dictionary that maps y_axis_keys to x_axis_keys \
+        as well as a dictionary that maps y_axis_keys to x_axis_keys
 
     :param results_file: filepath of json file that contains the results
     :param x_axis_key: field name from the result json that has the data for \
         x axis
     :param y_axis_key: field name from the result json that has the data for \
         y axis
-    :returns contents of results json files and x,y coordinations of the \
+    :returns: contents of results json files and x,y coordinations of the \
         values defined by x_axis_key and y_axis_key.
     :rtype: tuple<dictionary>
     :type results_file: str
@@ -309,7 +309,7 @@ def create_xyz_dict_from_file(results_file, x_axis_key, y_axis_key,
     """
     Reads a json file and returns the contents of the file as a \
         dictionary as well as a dictionary that maps y_axis_keys to \
-        x_axis_keys that in turn map to z_axis_keys \
+        x_axis_keys that in turn map to z_axis_keys
 
     :param results_file: filepath of json file that contains the results
     :param x_axis_key: field name from the result json that has the data for \
@@ -318,7 +318,7 @@ def create_xyz_dict_from_file(results_file, x_axis_key, y_axis_key,
         y axis
     :param z_axis_key: field name from the result json that has the data for \
         z axis
-    :returns contents of results json files and x,y coordinations of the \
+    :returns: contents of results json files and x,y coordinations of the \
         values defined by x_axis_key and y_axis_key
     :rtype: tuple<dict>
     :type results_file: str

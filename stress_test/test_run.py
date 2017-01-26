@@ -742,18 +742,25 @@ class TestRun:
                 if (initial_oper_ds_flows != 0 or initial_topo_flows != 0):
                     raise ValueError('Initial installed flows '
                                      'were not equal to 0.')
-                """
+
                 tries = 0
                 num_tries = 3
                 while tries < num_tries:
                     expected_switches = self.sb_emu.get_overall_topo_size()
-                    discovered_switches = self.sb_emu.check_topo_booted()
+                    discovered_switches = self.sb_emu.get_switches()
                     ds_switches = self.ctrl.get_oper_switches()
                     if discovered_switches == expected_switches and \
                         ds_switches == expected_switches and \
                             expected_switches != 0:
+                        logging.info('Switches topology is confirmed: ')
+                        logging.info('{0} found at Controller DS up and '
+                                     'running'.
+                                     format(ds_switches))
+                        logging.info('{0} of started switches found '
+                                     'within the distributed topologies'.
+                                     format(discovered_switches))
                         break
-                    elif tries == num_tries-1:
+                    elif tries == num_tries:
                         raise Exception('Topology did not fully '
                                         'initialize. Expected {0} '
                                         'switches, but found {1} at the '
@@ -765,7 +772,6 @@ class TestRun:
                     else:
                         continue
                     tries += 1
-                """
 
                 failed_flows_add = 0
                 failed_flows_del = 0
