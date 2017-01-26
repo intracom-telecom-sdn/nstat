@@ -11,6 +11,7 @@ import itertools
 import json
 import logging
 import stress_test.controller
+import stress_test.controller_exceptions
 import stress_test.emulator
 import stress_test.monitor
 import stress_test.nb_generator
@@ -382,6 +383,11 @@ class TestRun:
                 self.sb_emu.init_topos()
                 self.sb_emu.start_topos()
                 time.sleep(10)
+                # Check if controller process has crashed
+                if self.ctrl.check_status() == '0':
+                    raise(stress_test.controller_exceptions.CtrlError(
+                        'Controller process crashed during multinet topology '
+                        'start.'))
                 logging.info("The whole number of switches are: {0}"
                              .format(self.sb_emu.get_switches()))
                 logging.info("The whole number of flows are: {0}"
@@ -497,6 +503,11 @@ class TestRun:
                 topo_start_timestamp = time.time()
 
                 self.sb_emu.start_topos()
+                # Check if controller process has crashed
+                if self.ctrl.check_status() == '0':
+                    raise(stress_test.controller_exceptions.CtrlError(
+                        'Controller process crashed during multinet topology '
+                        'start.'))
                 self.total_samples += \
                     self.mon.monitor_run(boot_start_time=topo_start_timestamp)
 
@@ -594,7 +605,11 @@ class TestRun:
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
-
+            # Check if controller process has crashed
+            if self.ctrl.check_status() == '0':
+                raise(stress_test.controller_exceptions.CtrlError(
+                    'Controller process crashed during multinet topology '
+                    'start.'))
             self.of.start()
 
             logging.info("The whole number of switches are: {0}"
@@ -730,6 +745,11 @@ class TestRun:
                 self.sb_emu.init_topos()
                 self.sb_emu.start_topos()
                 time.sleep(10)
+                # Check if controller process has crashed
+                if self.ctrl.check_status() == '0':
+                    raise(stress_test.controller_exceptions.CtrlError(
+                        'Controller process crashed during multinet topology '
+                        'start.'))
                 logging.info("The whole number of switches are: {0}"
                              .format(self.sb_emu.get_switches()))
                 logging.info("The whole number of flows are: {0}"
