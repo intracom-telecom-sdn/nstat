@@ -20,7 +20,7 @@
 "nb_emulator_node_ssh_port":22,
 "nb_emulator_node_username":"root",
 "nb_emulator_node_password":"root123",
-"nb_emulator_run_handler":"run_handler.py",
+"nb_emulator_run_handler":"src/run_handler.py",
 "nb_emulator_get_oper_ds_handler":"get_oper_ds_flows.py",
 
 
