@@ -9,7 +9,7 @@ import requests
 import sys
 
 
-CONTROLLER_DIR_NAME = 'distribution-karaf-0.5.0-Boron'
+CONTROLLER_DIR_NAME = 'distribution-karaf-0.5.2-Boron-SR2'
 
 
 def change_stats_period():
