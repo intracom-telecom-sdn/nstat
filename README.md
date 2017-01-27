@@ -1,10 +1,10 @@
 [![Code Climate](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/gpa.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat)
-[![Build Status](https://travis-ci.org/intracom-telecom-sdn/nstat.svg?branch=master)](https://travis-ci.org/intracom-telecom-sdn/nstat)
-[![Coverage Status](https://coveralls.io/repos/intracom-telecom-sdn/nstat/badge.svg?branch=master&service=github)](https://coveralls.io/github/intracom-telecom-sdn/nstat?branch=master)
-[![Docker Automated buil](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg?maxAge=2592000)](https://hub.docker.com/r/intracom/nstat/)
 [![Documentation Status](https://readthedocs.org/projects/nstat/badge/?version=latest)](http://nstat.readthedocs.io/en/latest/?badge=latest)
+[![Build Status](https://travis-ci.org/intracom-telecom-sdn/nstat.svg?branch=master)](https://travis-ci.org/intracom-telecom-sdn/nstat)
+[![Docker Automated build](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg?maxAge=2592000)](https://hub.docker.com/r/intracom/nstat/)
+[![Issue Count](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/issue_count.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat)
 [![Code Health](https://landscape.io/github/intracom-telecom-sdn/nstat/master/landscape.svg?style=flat)](https://landscape.io/github/intracom-telecom-sdn/nstat/master)
-
+[![Coverage Status](https://coveralls.io/repos/intracom-telecom-sdn/nstat/badge.svg?branch=master&service=github)](https://coveralls.io/github/intracom-telecom-sdn/nstat?branch=master)
 
 # NSTAT: Network Stress-Test Automation Toolkit
 
