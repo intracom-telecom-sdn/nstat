@@ -11,18 +11,24 @@
 # If it doesn't exist, it downloads it in /opt and them extracts it.
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-cd $SCRIPT_DIR
+echo $SCRIPT_DIR
 
-ODL_ZIP_FILE="distribution-karaf-0.5.0-Boron.zip"
-ODL_NEXUS_LOCATION="https://nexus.opendaylight.org/content/groups/public/org/opendaylight/integration/distribution-karaf/0.5.0-Boron/"
+NSTAT_SDN_CONTROLLER_LOCATION="https://github.com/intracom-telecom-sdn/nstat-sdn-controllers.git"
 
-wget -nc "$ODL_NEXUS_LOCATION$ODL_ZIP_FILE" -P /opt/
-if [ $? -ne 0 ]; then
-    exit 1
+if [ ! -d $SCRIPT_DIR"/controllers/odl_boron_pb" ]; then
+    git clone -b get-handlers $NSTAT_SDN_CONTROLLER_LOCATION $SCRIPT_DIR"/controllers/odl_boron_pb"
+    if [ $? -ne 0 ]; then
+    	echo "Kostas"
+        echo "[build.sh] Cloning nstat-sdn-controllers failed. Exiting ..."
+        exit 1
+    fi
+    rm -rf $SCRIPT_DIR"/controllers/odl_boron_pb/.git"
+    mv $SCRIPT_DIR/controllers/odl_boron_pb/controllers/odl_boron_pb/* $SCRIPT_DIR/controllers/odl_boron_pb
+    if [ $? -ne 0 ]; then
+        echo "[build.sh] Moving nstat-sdn-controllers files failed. Exiting ..."
+        exit 1
+    fi
+    rm -rf $SCRIPT_DIR"/controllers/odl_boron_pb/controllers/odl_boron_pb"
 fi
 
-unzip -o /opt/$ODL_ZIP_FILE -d ./
-if [ $? -ne 0 ]; then
-    exit 1
-fi
-
+echo "[build.sh] Building nstat-sdn-controllers completed successfully"
