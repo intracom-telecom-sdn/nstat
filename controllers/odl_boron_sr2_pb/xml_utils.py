@@ -31,7 +31,6 @@ def manipulate_xml(input_filename, output_filename,
 
     if os.path.isfile(input_filename):
         doc = etree.parse(input_filename)
-        #go inside snapshot
         for elt in doc.getiterator():
             if str(elt.tag).find(string_to_find) != -1:
                 elt.text = target_value

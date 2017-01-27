@@ -1,29 +1,35 @@
 #! /usr/bin/env python3.4
 
-"""Handler changing the rate of statistics collection from the topology switches
+"""Handler changing the rate of statistics collection from the topology
+switches
 """
 
-import xml_utils
+import json
+import requests
 import sys
-import os
+
 
 CONTROLLER_DIR_NAME = 'distribution-karaf-0.5.0-Boron'
 
 
 def change_stats_period():
     """
-    Takes as command line argument the new interval of statistics period we \
-        want to set in the configuration file of the controller and writes it \
-        in this file.
+    Takes as command line argument the string as a command line argument
+    <controller_ip>:<controller_sb_port>:<controller_auth_username>:<controller_auth_pass>
+    and disables statistic collection from controller.
     """
-
-    string_to_find = 'log-report-delay'
-    input_file = os.path.sep.join([os.path.dirname(os.path.realpath(__file__)),
-                                   CONTROLLER_DIR_NAME, 'etc', 'opendaylight',
-                                   'karaf', '45-openflowjava-stats.xml'])
-    xml_utils.manipulate_xml(input_file, input_file, string_to_find,
-                             str(int(sys.argv[1])))
-
+    conn_attributes = str(sys.argv[0])
+    url = 'http://{0}/restconf/operations/statistics-manager-control:'
+    'change-statistics-work-mode'.format(conn_attributes[0],
+                                         conn_attributes[1])
+    auth = (conn_attributes[2], conn_attributes[3])
+    headers = {'content-type': 'application/json'}
+    data = {'input': {'mode': 'FULLY_DISABLED'}}
+    r = requests.post(url, data=json.dumps(data), headers=headers, auth=auth)
+    if r.status_code == r.codes.ok:
+        sys.exit(0)
+    else:
+        sys.exit(r.status_code)
 
 if __name__ == '__main__':
     change_stats_period()
