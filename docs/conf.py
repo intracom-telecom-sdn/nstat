@@ -20,13 +20,6 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.append(os.path.abspath('../stress_test/'))
-sys.path.append(os.path.abspath('../controllers/odl_beryllium_pb/'))
-sys.path.append(os.path.abspath('../controllers/odl_beryllium_sr3_pb/'))
-sys.path.append(os.path.abspath('../controllers/odl_boron_pb/'))
-sys.path.append(os.path.abspath('../controllers/odl_helium_sr3_pb/'))
-sys.path.append(os.path.abspath('../controllers/odl_lithium_sr1_pb/'))
-sys.path.append(os.path.abspath('../controllers/odl_lithium_sr2_pb/'))
-sys.path.append(os.path.abspath('../controllers/odl_lithium_sr3_pb/'))
 sys.path.append(os.path.abspath('../util/'))
 sys.path.append(os.path.abspath('../util/unittests/'))
 sys.path.append(os.path.abspath('..'))
