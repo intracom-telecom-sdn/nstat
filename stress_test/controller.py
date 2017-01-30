@@ -661,7 +661,6 @@ class ODL(Controller):
                                               str(stat_hnd_input)]),
                     '[controller.statistics_handler] Changing statistics '
                     'interval')
-                print(' '.join([self.statistics_hnd, str(stat_hnd_input)]), '----------------DEBUG MESSAGE------------')
                 if exit_status == 0:
                     logging.info(
                         '[Controller] Statistics period changed. Handler '
