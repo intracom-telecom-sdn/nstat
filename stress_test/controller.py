@@ -656,16 +656,23 @@ class ODL(Controller):
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.statistics_hnd)
-                util.netutil.ssh_run_command(
+                exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join([self.statistics_hnd,
                                               str(stat_hnd_input)]),
                     '[controller.statistics_handler]'
                     ' Changing statistics interval')
-                logging.info(
-                    '[Controller] Changed statistics period to {0} ms'.
-                    format(self.stat_period_ms))
+                if exit_status == 0:
+                    logging.info(
+                        '[Controller] Statistics period changed. Handler '
+                        'input:{0}'.format(stat_hnd_input))
+                else:
+                    raise(stress_test.controller_exceptions.ODLChangeStats(
+                        '[change_stats] Error during changing controller'
+                        'stat period: {0}'.format(cmd_output), exit_status))
+            except stress_test.controller_exceptions.ODLChangeStats as e:
+                self._error_handling(e.err_msg, e.err_code)
             except:
-                raise(stress_test.controller_exceptions.ODLChangeStats)
+                raise(stress_test.controller_exceptions.CtrlError)
         except stress_test.controller_exceptions.CtrlError as e:
             self._error_handling(e.err_msg, e.err_code)
 
