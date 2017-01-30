@@ -784,6 +784,8 @@ class TestReport:
                  ('bootup_time_secs', 'Time to discover switches (seconds)'),
                  ('max_discovered_switches', 'Max discovered switches'),
                  ('discovered_switches', 'Discovered switches'),
+                 ('max_discovered_links', 'Max discovered links'),
+                 ('discovered_links', 'Discovered links'),
                  ('multinet_size', 'Multinet Size'),
                  ('multinet_worker_topo_size',
                   'Topology size per Multinet worker'),
