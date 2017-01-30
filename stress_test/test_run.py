@@ -929,8 +929,12 @@ class TestRun:
                     self.ctrl.disable_persistence()
 
                 self.ctrl.check_status()
-                self.ctrl.change_stats(change_stats_args)
-                self.ctrl.start()
+                if self.ctrl.stat_period_ms is None:
+                    self.ctrl.change_stats(change_stats_args)
+                    self.ctrl.start()
+                else:
+                    self.ctrl.start()
+                    self.ctrl.change_stats(change_stats_args)
 
                 # start a MULTINET topology
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
