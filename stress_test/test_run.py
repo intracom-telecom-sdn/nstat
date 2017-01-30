@@ -897,8 +897,16 @@ class TestRun:
 
             test_repeats = json_conf['test_repeats']
             test_repeat_interval_ms = json_conf['test_repeat_interval_ms']
-            self.ctrl.stat_period_ms = json_conf['controller_statistics_'
-                                                 'period_ms']
+            if 'controller_statistics_period_ms' in json_conf:
+                self.ctrl.stat_period_ms = json_conf['controller_statistics_'
+                                                     'period_ms']
+            elif 'controller_statistics_disable' in json_conf:
+                if json_conf['controller_statistics_disable']:
+                    change_stats_args = '{0}:{1}:{2}:{3}'.format(
+                        self.ctrl.ip, self.ctrl.restconf_port,
+                        self.ctrl.restconf_user, self.ctrl.restconf_pass)
+                else:
+                    change_stats_args = None
             mef_monitor = stress_test.monitor.MEF(self.ctrl, self.sb_emu,
                                                   test_repeats,
                                                   test_repeat_interval_ms)
@@ -921,7 +929,7 @@ class TestRun:
                     self.ctrl.disable_persistence()
 
                 self.ctrl.check_status()
-                self.ctrl.change_stats()
+                self.ctrl.change_stats(change_stats_args)
                 self.ctrl.start()
 
                 # start a MULTINET topology

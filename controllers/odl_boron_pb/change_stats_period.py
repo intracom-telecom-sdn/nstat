@@ -18,7 +18,7 @@ def change_stats_period():
     <controller_ip>:<controller_sb_port>:<controller_auth_username>:<controller_auth_pass>
     and disables statistic collection from controller.
     """
-    conn_attributes = str(sys.argv[0])
+    conn_attributes = str(sys.argv[1]).split(':')
     url = 'http://{0}/restconf/operations/statistics-manager-control:'
     'change-statistics-work-mode'.format(conn_attributes[0],
                                          conn_attributes[1])

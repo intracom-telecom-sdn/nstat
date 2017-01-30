@@ -627,7 +627,7 @@ class ODL(Controller):
         except stress_test.controller_exceptions.CtrlError as e:
             self._error_handling(e.err_msg, e.err_code)
 
-    def change_stats(self):
+    def change_stats(self, change_stat_args=None):
         """
         Wrapper to the controller statistics handler. Changes the value of \
             statistics interval in the configuration files of controller.
@@ -639,6 +639,13 @@ class ODL(Controller):
         logging.info('[Controller] Changing statistics period')
         try:
             try:
+                if change_stat_args is not None:
+                    stat_hnd_input = change_stat_args
+                elif self.stat_period_ms is not None:
+                    stat_hnd_input = self.stat_period_ms
+                else:
+                    raise ValueError('{0} Invalid input arguments for change '
+                                     'statistics handler')
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.statistics_hnd]):
@@ -651,7 +658,7 @@ class ODL(Controller):
                         self.statistics_hnd)
                 util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join([self.statistics_hnd,
-                                              str(self.stat_period_ms)]),
+                                              str(stat_hnd_input)]),
                     '[controller.statistics_handler]'
                     ' Changing statistics interval')
                 logging.info(
