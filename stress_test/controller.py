@@ -659,8 +659,9 @@ class ODL(Controller):
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join([self.statistics_hnd,
                                               str(stat_hnd_input)]),
-                    '[controller.statistics_handler]'
-                    ' Changing statistics interval')
+                    '[controller.statistics_handler] Changing statistics '
+                    'interval')
+                print(' '.join([self.statistics_hnd, str(stat_hnd_input)]))
                 if exit_status == 0:
                     logging.info(
                         '[Controller] Statistics period changed. Handler '
