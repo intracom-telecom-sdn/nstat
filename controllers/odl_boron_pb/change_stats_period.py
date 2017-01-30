@@ -19,14 +19,14 @@ def change_stats_period():
     and disables statistic collection from controller.
     """
     conn_attributes = str(sys.argv[1]).split(':')
-    url = 'http://{0}/restconf/operations/statistics-manager-control:'
-    'change-statistics-work-mode'.format(conn_attributes[0],
-                                         conn_attributes[1])
+    url = ('http://{0}:{1}/restconf/operations/statistics-manager-control:'
+           'change-statistics-work-mode'.format(conn_attributes[0],
+                                                conn_attributes[1]))
     auth = (conn_attributes[2], conn_attributes[3])
     headers = {'content-type': 'application/json'}
     data = {'input': {'mode': 'FULLY_DISABLED'}}
     r = requests.post(url, data=json.dumps(data), headers=headers, auth=auth)
-    if r.status_code == r.codes.ok:
+    if r.status_code == 200:
         sys.exit(0)
     else:
         sys.exit(r.status_code)
