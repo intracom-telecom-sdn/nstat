@@ -931,7 +931,8 @@ class TestRun:
                 self.ctrl.check_status()
                 if self.ctrl.stat_period_ms is None:
                     self.ctrl.start()
-                    self.ctrl.change_stats(change_stats_args)
+                    if change_stats_args is not None:
+                        self.ctrl.change_stats(change_stats_args)
                 else:
                     self.ctrl.change_stats(change_stats_args)
                     self.ctrl.start()
