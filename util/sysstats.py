@@ -113,7 +113,7 @@ def sys_free_ram_mb(ssh_client=None):
     :type ssh_client: paramiko.SSHClient
     """
     return command_exec_wrapper('free -m | awk \'/^Mem:/{print $4}\'',
-                                      ssh_client, 'int')
+                                ssh_client, 'int')
 
 
 def sys_used_memory_bytes(ssh_client=None):
