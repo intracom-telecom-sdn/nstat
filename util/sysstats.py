@@ -68,9 +68,12 @@ def get_units_base(unit_key):
     :rtype: int
     """
     units_conversion = {'kB': 1000, 'KB': 1000, 'mB': 1000000, 'MB': 1000000}
-    if unit_key in units_conversion:
-        return units_conversion[unit_key]
-    else:
+    try:
+        if unit_key in units_conversion:
+            return units_conversion[unit_key]
+        else:
+            return 1
+    except:
         return 1
 
 
