@@ -163,7 +163,7 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
             stdout=cls.useless_file_htop_local,
             stderr=cls.useless_file_htop_local)
         cls.htop_pid_local = cls.htop_process_local.pid
-        cls.cur_dir_local = os.path.dirname(os.path.realpath(__file__))
+        cls.cur_dir_local = subprocess.check_output(['pwd'])
         cls.total_cpus_local = int(os.popen('nproc').read())
         cls.cmd_local = util.sysstats.proc_cmdline(cls.htop_pid_local)
         util.netutil.ssh_run_command(
