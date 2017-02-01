@@ -90,5 +90,5 @@ exec_client_command "feature:install odl-openflowplugin-flow-services-rest"
 echo "odl-openflowplugin-flow-services-rest feature was installed successfully"
 
 # Setting loglevel to error
-exec_client_command "log:set WARNING"
+exec_client_command "log:set WARN"
 echo "Karaf log level was set to ERROR successfully"
