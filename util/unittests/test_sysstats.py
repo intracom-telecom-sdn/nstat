@@ -259,8 +259,9 @@ class ProcessThreadAndFDsTests(unittest.TestCase):
         for num_file in range(0, cls.num_files):
             open_file = open('./temp_test_file_{0}'.format(num_file), 'w+')
             cls.files.append(open_file)
-        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP,
-            SSH_UNAME, SSH_PWD, 10, 22)
+        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP, 22,
+                                                            SSH_UNAME, SSH_PWD,
+                                                            10)
         util.netutil.ssh_run_command(cls.ssh_client,
             'sleep 1000 & echo $! > sleep_pid.txt', prefix='',
             lines_queue=None, print_flag=True, block_flag=False)
