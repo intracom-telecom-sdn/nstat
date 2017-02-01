@@ -27,6 +27,7 @@ SSH_IP = '127.0.0.1'
 SSH_UNAME = 'jenkins'
 SSH_PWD = 'jenkins'
 
+
 def worker_thread():
     """
     Creates a thread used for testing senarios.
@@ -108,6 +109,7 @@ class MemoryUtilsTest(unittest.TestCase):
         """
         cls.ssh_client.close()
 
+
 class ProcIOTEst(unittest.TestCase):
     """Class that has unittests for process I/O related functions in
     util/sysstats.py"""
@@ -116,8 +118,9 @@ class ProcIOTEst(unittest.TestCase):
     def setUpClass(cls):
         """Creates the initial environment to run testcases of this class.
         """
-        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP,
-            SSH_UNAME, SSH_PWD, 10, 22)
+        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP, 22,
+                                                            SSH_UNAME, SSH_PWD,
+                                                            10)
 
     def test01_io_error(self):
         """Test functionality of sysstats.sys_iowait_time function
@@ -143,8 +146,9 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
     def setUpClass(cls):
         """Creates the initial environment to run testcases of this class.
         """
-        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP,
-            SSH_UNAME, SSH_PWD, 10, 22)
+        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP, 22,
+                                                            SSH_UNAME, SSH_PWD,
+                                                            10)
         cls.useless_file_htop_local = open('useless_file_htop_local', 'w+')
         cls.htop_process_local = subprocess.Popen(
             ['htop'],
@@ -154,8 +158,8 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         cls.cur_dir_local = os.getcwd()
         cls.total_cpus_local = int(os.popen('nproc').read())
         cls.cmd_local = util.sysstats.proc_cmdline(cls.htop_pid_local)
-        util.netutil.ssh_run_command(cls.ssh_client,
-            'sleep 1000 & echo $! > sleep_pid.txt', prefix='',
+        util.netutil.ssh_run_command(
+            cls.ssh_client, 'sleep 1000 & echo $! > sleep_pid.txt', prefix='',
             lines_queue=None, print_flag=True, block_flag=False)
         cls.exit_status, cls.sleep_pid_remote = \
             util.netutil.ssh_run_command(cls.ssh_client, 'cat sleep_pid.txt')
@@ -200,7 +204,6 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
                 util.sysstats.proc_cpu_system_time(self.sleep_pid_remote,
                                                    self.ssh_client),
                 float), 'Testing using ssh_client')
-
 
     def test05_vm_size(self):
         """Test functionality of sysstats.proc_vm_size function
