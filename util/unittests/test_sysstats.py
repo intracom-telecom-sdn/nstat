@@ -167,10 +167,10 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         cls.total_cpus_local = int(os.popen('nproc').read())
         cls.cmd_local = util.sysstats.proc_cmdline(cls.htop_pid_local)
         util.netutil.ssh_run_command(
-            cls.ssh_client, 'sleep 1000 & echo $! > sleep_pid.txt', prefix='',
+            cls.ssh_client, 'sleep 1000 & echo $! > /tmp/sleep_pid.txt', prefix='',
             lines_queue=None, print_flag=True, block_flag=False)
         cls.exit_status, cls.sleep_pid_remote = \
-            util.netutil.ssh_run_command(cls.ssh_client, 'cat sleep_pid.txt')
+            util.netutil.ssh_run_command(cls.ssh_client, 'cat /tmp/sleep_pid.txt')
         cls.sleep_pid_remote = cls.sleep_pid_remote.strip()
         cls.exit_status, cls.cur_dir_remote = \
             util.netutil.ssh_run_command(cls.ssh_client, 'pwd')
@@ -186,13 +186,13 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         """
         self.assertEqual(self.cmd_local, 'htop',
                          'Testing without using ssh_client')
-        self.assertEqual(self.cmd_remote, 'sleep 1000',
+        # In the following line the string sleep1000 is not a typo
+        self.assertEqual(self.cmd_remote, 'sleep1000',
                          'Testing using ssh_client')
 
     def test02_cwd(self):
         """Test functionality of sysstats.proc_cwd function
         """
-
         self.assertEqual(self.cur_dir_local, util.sysstats.proc_cwd(
             self.htop_pid_local), 'Testing without using ssh_client')
         self.assertEqual(self.cur_dir_remote.strip(), util.sysstats.proc_cwd(
