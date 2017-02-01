@@ -43,8 +43,9 @@ class MemoryUtilsTest(unittest.TestCase):
     def setUpClass(cls):
         """Creates the initial environment to run testcases of this class.
         """
-        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP,
-            SSH_UNAME, SSH_PWD, 10, 22)
+        cls.ssh_client = util.netutil.ssh_connect_or_return(SSH_IP, 22,
+                                                            SSH_UNAME, SSH_PWD,
+                                                            10)
 
     def test01_used_ram(self):
         """Test functionality of sysstats.sys_free_ram_mb function.
