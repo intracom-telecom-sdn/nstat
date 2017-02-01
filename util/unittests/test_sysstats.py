@@ -168,13 +168,13 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         cls.total_cpus_local = int(os.popen('nproc').read())
         cls.cmd_local = util.sysstats.proc_cmdline(cls.htop_pid_local)
         util.netutil.ssh_run_command(
-            cls.ssh_client, 'sleep 1000 & echo $! > $HOME/sleep_pid.txt', prefix='',
+            cls.ssh_client, 'cd $HOME;sleep 1000 & echo $! > $HOME/sleep_pid.txt', prefix='',
             lines_queue=None, print_flag=True, block_flag=False)
         cls.exit_status, cls.sleep_pid_remote = util.netutil.ssh_run_command(
             cls.ssh_client, 'cat $HOME/sleep_pid.txt')
         cls.sleep_pid_remote = cls.sleep_pid_remote.strip()
         cls.exit_status, cls.cur_dir_remote = util.netutil.ssh_run_command(
-            cls.ssh_client, 'pwd', prefix='', lines_queue=None,
+            cls.ssh_client, 'echo $HOME', prefix='', lines_queue=None,
             print_flag=True, block_flag=False)
         cls.cur_dir_remote = cls.cur_dir_remote.strip()
         cls.exit_status, cls.total_cpus_remote = \
