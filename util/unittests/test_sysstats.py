@@ -169,11 +169,12 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         util.netutil.ssh_run_command(
             cls.ssh_client, 'sleep 1000 & echo $! > /tmp/sleep_pid.txt', prefix='',
             lines_queue=None, print_flag=True, block_flag=False)
-        cls.exit_status, cls.sleep_pid_remote = \
-            util.netutil.ssh_run_command(cls.ssh_client, 'cat /tmp/sleep_pid.txt')
+        cls.exit_status, cls.sleep_pid_remote = util.netutil.ssh_run_command(
+            cls.ssh_client, 'cat /tmp/sleep_pid.txt')
         cls.sleep_pid_remote = cls.sleep_pid_remote.strip()
-        cls.exit_status, cls.cur_dir_remote = \
-            util.netutil.ssh_run_command(cls.ssh_client, 'pwd')
+        cls.exit_status, cls.cur_dir_remote = util.netutil.ssh_run_command(
+            cls.ssh_client, 'pwd', prefix='', lines_queue=None,
+            print_flag=True, block_flag=False)
         cls.cur_dir_remote = cls.cur_dir_remote.strip()
         cls.exit_status, cls.total_cpus_remote = \
             util.netutil.ssh_run_command(cls.ssh_client,
