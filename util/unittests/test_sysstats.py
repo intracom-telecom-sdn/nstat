@@ -178,7 +178,7 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         """
         self.assertEqual(self.cmd_local, 'htop',
                          'Testing without using ssh_client')
-        self.assertEqual(self.cmd_remote, 'sleep1000',
+        self.assertEqual(self.cmd_remote, 'sleep 1000',
                          'Testing using ssh_client')
 
     def test02_cwd(self):
