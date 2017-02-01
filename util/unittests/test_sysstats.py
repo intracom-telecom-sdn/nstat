@@ -107,7 +107,7 @@ class MemoryUtilsTest(unittest.TestCase):
         """Test functionality of sysstats.get_units_base function
         """
         base_kbytes = util.sysstats.get_units_base('kB')
-        self.assertEqual(base_kbytes, 1000)
+        self.assertEqual(base_kbytes, 1024)
         false_base = util.sysstats.get_units_base('Invalid_Base')
         self.assertEqual(false_base, 1)
 
