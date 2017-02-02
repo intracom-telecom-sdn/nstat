@@ -25,15 +25,14 @@ def get_oper_switches():
     username = sys.argv[3]
     password = sys.argv[4]
 
-    url = ('http://{0}:{1}/restconf/operational/network-topology:'
-           'network-topology/network-topology:topology/flow:1/'.
+    url = ('http://{0}:{1}/opendaylight-inventory:nodes/'.
            format(ip, port))
     s = requests.Session()
     s.trust_env = False
     auth_token = (username, password)
     try:
         datastore = s.get(url=url,
-                          auth=auth_token).json()['topology'][0]
+                          auth=auth_token).json()['nodes'][0]
     except:
         logging.error('[get_oper_switches] Fail response from operational DS')
         return -1
