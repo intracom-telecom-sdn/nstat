@@ -1212,7 +1212,7 @@ class MEF(Monitor):
                 # In MEF we test with ring topology so this condition of
                 # success works only for ring topologies where number of
                 # switches equals number of links
-                if discovered_switches == expected_switches == discovered_links:
+                if discovered_switches == expected_switches and discovered_links == 0:
                     delta_t = time.time() - t_start
                     logging.info(
                         '[monitor_thread_MEF] {0} switches found in '
@@ -1265,7 +1265,7 @@ class MEF(Monitor):
                                                          discovered_switches,
                                                          discovered_links,
                                                          expected_switches))
-            if expected_switches == discovered_switches == discovered_links:
+            if expected_switches == discovered_switches and discovered_links == 0:
                 error_code = 0
             else:
                 error_code = 201

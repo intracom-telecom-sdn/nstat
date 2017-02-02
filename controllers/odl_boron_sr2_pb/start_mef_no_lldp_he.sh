@@ -13,7 +13,7 @@ UNTIL_MAX_TRIES=120
 UNTIL_SLEEP_TIME=2
 UNTIL_COUNTER=0
 INIT_CONTROLLER=20
-KARAF_PATH="distribution-karaf-0.5.0-Boron"
+KARAF_PATH="distribution-karaf-0.5.2-Boron-SR2"
 
 function exec_client_command()
 {
@@ -83,11 +83,11 @@ fi
 exec_client_command "feature:install odl-restconf-all"
 echo "odl-restconf-all feature was installed successfully"
 
-exec_client_command "feature:install odl-openflowplugin-app-table-miss-enforcer"
-echo "odl-openflowplugin-app-table-miss-enforcer feature was installed successfully"
+exec_client_command "feature:install odl-openflowplugin-flow-services-rest-he"
+echo "odl-openflowplugin-flow-services-rest-he feature was installed successfully"
 
-exec_client_command "feature:install odl-openflowplugin-flow-services-rest"
-echo "odl-openflowplugin-flow-services-rest feature was installed successfully"
+exec_client_command "feature:uninstall odl-openflowplugin-app-topology"
+echo "odl-openflowplugin-app-topology feature was uninstalled successfully"
 
 # Setting loglevel to error
 exec_client_command "log:set WARN"

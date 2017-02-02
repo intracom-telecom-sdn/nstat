@@ -91,4 +91,4 @@ echo "odl-openflowplugin-app-topology feature was uninstalled successfully"
 
 # Setting loglevel to error
 exec_client_command "log:set WARN"
-echo "Karaf log level was set to ERROR successfully"
+echo "Karaf log level was set to WARNING successfully"
