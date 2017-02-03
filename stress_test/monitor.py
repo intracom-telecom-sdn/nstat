@@ -1110,16 +1110,32 @@ class NBgen(Monitor):
 class MEF(Monitor):
 
     def __init__(self, controller, emulator, test_repeats,
-                 test_repeat_interval_ms):
+                 test_repeat_interval_ms, stat_active_ms, stat_deactive_ms):
         super(self.__class__, self).__init__(controller)
         self.emulator = emulator
         self.test_repeats = test_repeats
         self.test_repeat_interval_sec = float(test_repeat_interval_ms) / 1000
         self.repeat_id = 0
         self.global_sample_id = 0
+        self.stat_active = float(stat_active_ms) / 1000
+        self.stat_deactive = float(stat_deactive_ms) / 1000
         self.result_queue = gevent.queue.Queue()
         self.data_queue = gevent.queue.Queue()
         self.total_monitor_samples = []
+
+    def monitor_thread_stat(self):
+        logging.info('[monitor_thread_stats] Disable statistics on controller')
+        change_stats_args = '{0}:{1}:{2}:{3}:disable'.format(
+            self.controller.ip, self.controller.restconf_port,
+            self.controller.restconf_user, self.controller.restconf_pass)
+        self.controller.change_stats(change_stats_args)
+        gevent.sleep(self.stat_deactive)
+        logging.info('[monitor_thread_stats] Enable statistics on controller')
+        change_stats_args = '{0}:{1}:{2}:{3}:enable'.format(
+            self.controller.ip, self.controller.restconf_port,
+            self.controller.restconf_user, self.controller.restconf_pass)
+        self.controller.change_stats(change_stats_args)
+        gevent.sleep(self.stat_active)
 
     def monitor_mef_stability_results(self):
             results = self.system_results()
@@ -1231,24 +1247,7 @@ class MEF(Monitor):
                     return 0
             gevent.sleep(1)
 
-    def bootup_monitor(self):
-        threads = []
-        # Run start handler in non blocking mode
-        is_ctrl_crashed = False
-        t_start = time.time()
-        self.emulator.start_topos(None, True, True, False, True)
-        if self.controller.check_status() == '1':
-            topo_bootup_thread = gevent.spawn(self.monitor_thread_topo_bootup,
-                                              t_start)
-            threads.append(topo_bootup_thread)
-            gevent.joinall(threads)
-            self.total_monitor_samples += self.result_queue.get()
-            gevent.killall(threads)
-        else:
-            is_ctrl_crashed = True
-        return is_ctrl_crashed
-
-    def stability_monitor(self):
+    def monitor_thread_stability(self):
         self.global_sample_id = 1
         bootup_time_secs = self.total_monitor_samples[-1]['bootup_time_secs']
         max_discovered_switches = self.total_monitor_samples[-1]['max_discovered_switches']
@@ -1257,8 +1256,8 @@ class MEF(Monitor):
         expected_switches = self.emulator.get_overall_topo_size()
         for self.repeat_id in list(range(self.test_repeats)):
             test_sample = self.monitor_mef_stability_results()
-            discovered_switches = int(self.controller.get_oper_switches())
-            discovered_links = int(self.controller.get_oper_links()) / 2
+            discovered_switches = int(self.controller.get_oper_switches(self.controller.init_ssh()))
+            discovered_links = int(self.controller.get_oper_links(self.controller.init_ssh())) / 2
             logging.info('[MEF_monitor] Stability test | repeat_id: {0} | '
                          'discovered_switches: {1} | discovered_links: {2} | '
                          'expected_switches: {3}'.format(self.repeat_id,
@@ -1278,7 +1277,37 @@ class MEF(Monitor):
             test_sample['max_discovered_links'] = max_discovered_links
             test_sample['successful_bootup_time'] = successful_bootup_time
             self.total_monitor_samples.append(test_sample)
-            time.sleep(self.test_repeat_interval_sec)
+            gevent.sleep(self.test_repeat_interval_sec)
+
+    def bootup_monitor(self):
+        threads = []
+        # Run start handler in non blocking mode
+        is_ctrl_crashed = False
+        t_start = time.time()
+        self.emulator.start_topos(None, True, True, False, True)
+        if self.controller.check_status() == '1':
+            topo_bootup_thread = gevent.spawn(self.monitor_thread_topo_bootup,
+                                              t_start)
+            threads.append(topo_bootup_thread)
+            if self.stat_active > 0 or self.stat_deactive > 0:
+                stat_thread = gevent.spawn(self.monitor_thread_stat)
+            threads.append(stat_thread)
+            gevent.joinall(threads)
+            self.total_monitor_samples += self.result_queue.get()
+            gevent.killall(threads)
+        else:
+            is_ctrl_crashed = True
+        return is_ctrl_crashed
+
+    def stability_monitor(self):
+        threads = []
+        stability_thread = gevent.spawn(self.monitor_thread_stability)
+        threads.append(stability_thread)
+        if self.stat_active > 0 or self.stat_deactive > 0:
+            stat_thread = gevent.spawn(self.monitor_thread_stat)
+        threads.append(stat_thread)
+        gevent.joinall(threads)
+        gevent.killall(threads)
 
     def monitor_run(self):
         is_ctrl_crashed = self.bootup_monitor()

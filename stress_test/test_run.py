@@ -894,7 +894,9 @@ class TestRun:
                                json_output,
                                output_dir):
         try:
-
+            stat_active_ms = 0
+            stat_deactive_ms = 0
+            change_stats_args = None
             test_repeats = json_conf['test_repeats']
             test_repeat_interval_ms = json_conf['test_repeat_interval_ms']
             if 'controller_statistics_period_ms' in json_conf:
@@ -902,14 +904,18 @@ class TestRun:
                                                      'period_ms']
             elif 'controller_statistics_disable' in json_conf:
                 if json_conf['controller_statistics_disable']:
-                    change_stats_args = '{0}:{1}:{2}:{3}'.format(
+                    change_stats_args = '{0}:{1}:{2}:{3}:disable'.format(
                         self.ctrl.ip, self.ctrl.restconf_port,
                         self.ctrl.restconf_user, self.ctrl.restconf_pass)
-                else:
-                    change_stats_args = None
+            elif 'controller_statistics_active_ms' in json_conf and 'controller_statistics_deactive_ms' in json_conf:
+                stat_active_ms = json_conf['controller_statistics_active_ms']
+                stat_deactive_ms = json_conf['controller_statistics_deactive_ms']
+
             mef_monitor = stress_test.monitor.MEF(self.ctrl, self.sb_emu,
                                                   test_repeats,
-                                                  test_repeat_interval_ms)
+                                                  test_repeat_interval_ms,
+                                                  stat_active_ms,
+                                                  stat_deactive_ms)
 
             for(self.sb_emu.topo_size,
                 self.sb_emu.topo_type,
@@ -932,9 +938,13 @@ class TestRun:
                 if self.ctrl.stat_period_ms is None:
                     self.ctrl.start()
                     if change_stats_args is not None:
+                        logging.info('[mef_stability_test] Disable statistics '
+                                     'on controller')
                         self.ctrl.change_stats(change_stats_args)
                 else:
-                    self.ctrl.change_stats(change_stats_args)
+                    logging.info('[mef_stability_test] Change statistics '
+                                 'interval')
+                    self.ctrl.change_stats(self.ctrl.stat_period_ms)
                     self.ctrl.start()
 
                 # start a MULTINET topology

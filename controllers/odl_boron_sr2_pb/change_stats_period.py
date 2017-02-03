@@ -9,7 +9,7 @@ import requests
 import sys
 
 
-CONTROLLER_DIR_NAME = 'distribution-karaf-0.5.2-Boron-SR2'
+CONTROLLER_DIR_NAME = 'distribution-karaf-0.5.0-Boron'
 
 
 def change_stats_period():
@@ -24,7 +24,10 @@ def change_stats_period():
                                                 conn_attributes[1]))
     auth = (conn_attributes[2], conn_attributes[3])
     headers = {'content-type': 'application/json'}
-    data = {'input': {'mode': 'FULLY_DISABLED'}}
+    if conn_attributes[4] == 'enable':
+        data = {'input': {'mode': 'COLLECT_ALL'}}
+    else:
+        data = {'input': {'mode': 'FULLY_DISABLED'}}
     r = requests.post(url, data=json.dumps(data), headers=headers, auth=auth)
     if r.status_code == 200:
         sys.exit(0)
