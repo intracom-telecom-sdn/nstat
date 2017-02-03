@@ -1293,7 +1293,7 @@ class MEF(Monitor):
                                                              expected_switches))
             # If not expected switches found after topology discovery do not
             # continue return results
-            if expected_switches == discovered_switches == discovered_links:
+            if expected_switches == discovered_switches and discovered_links == 0:
                 logging.info('[MEF_monitor] Controller is in stable state after '
                              'bootup. Continue with stability test.')
                 self.stability_monitor()
