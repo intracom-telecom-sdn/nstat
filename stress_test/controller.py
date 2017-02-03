@@ -44,6 +44,8 @@ class Controller:
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
+        self.get_hnd = (self.base_dir +
+                          test_config['controller_get_handler'])
         self.build_hnd = (self.base_dir +
                           test_config['controller_build_handler'])
         self.start_hnd = (self.base_dir +
@@ -63,10 +65,15 @@ class Controller:
         self._ssh_conn = None
 
         # check handlers' validity
-        util.file_ops.check_filelist([self.build_hnd,
+        '''util.file_ops.check_filelist([self.build_hnd,
                                       self.start_hnd,
                                       self.stop_hnd,
                                       self.status_hnd,
+                                      self.clean_hnd])
+        '''
+        # NSTAT Controller dirs contain only build/clean handlers
+
+        util.file_ops.check_filelist([self.build_hnd,
                                       self.clean_hnd])
 
     @staticmethod
@@ -379,6 +386,50 @@ class Controller:
                 self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlStopError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self._error_handling(e.err_msg, e.err_code)
+
+
+    def getcontroller(self):
+        """
+        Wrapper to the get controller handler
+
+        :raises IOError: if the handler does not exist on the remote host
+        :raises controller_exceptions.CtrlGetError: if get controller process
+            fails
+        """
+        logging.info('[Controller] Downloading...')
+        self.status = 'BUILDING'
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.get_hnd]):
+                    self.status = 'NOT_BUILT'
+                    raise(IOError(
+                        '{0} get controller handler does not exist'.
+                        format('[controller.build]')))
+                else:
+                    util.netutil.make_remote_file_executable(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.get_hnd)
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.get_hnd]),
+                    '[controller.get]')
+                if exit_status == 0:
+                    self.status = 'BUILT'
+                    logging.info("[Controller.get] Successfully downloaded")
+                else:
+                    self.status = 'NOT_BUILT'
+                    raise(stress_test.controller_exceptions.CtrlGetError(
+                        '[Controller.get] Failure during controller download. '
+                        'Get handler exited with non zero exit status. \n '
+                        'Handler output: {0}'.
+                        format(cmd_output)), exit_status)
+            except stress_test.controller_exceptions.CtrlError as e:
+                self._error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlGetError)
         except stress_test.controller_exceptions.CtrlError as e:
             self._error_handling(e.err_msg, e.err_code)
 

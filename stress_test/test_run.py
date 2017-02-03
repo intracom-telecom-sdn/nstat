@@ -44,6 +44,7 @@ class TestRun:
                                                           json_conf)
         self.ctrl.init_ssh()
         self.ctrl.build()
+        self.ctrl.getcontroller()
         self.ctrl.generate_xmls()
 
         # SB EMULATOR preparation
