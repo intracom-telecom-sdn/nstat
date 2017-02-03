@@ -15,6 +15,7 @@
 "sb_emulator_node_username":"root",
 "sb_emulator_node_password":"root123",
 
+"controller_get_handler":"get_controller.sh",
 "controller_build_handler":"build.sh",
 "controller_start_handler":"start.sh",
 "controller_stop_handler":"stop.sh",

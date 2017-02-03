@@ -23,7 +23,7 @@
 "nb_emulator_run_handler":"run_handler.py",
 "nb_emulator_get_oper_ds_handler":"get_oper_ds_flows.py",
 
-
+"controller_get_handler":"get_controller.sh",
 "controller_build_handler":"build.sh",
 "controller_start_handler":"start_no_dlux.sh",
 "controller_stop_handler":"stop.sh",
