@@ -13,7 +13,7 @@ echo $SCRIPT_DIR
 OFTRAF_LOCATION="https://github.com/intracom-telecom-sdn/oftraf.git"
 
 if [ ! -d $SCRIPT_DIR"/oftraf" ]; then
-    git clone -b add-new-handlers $OFTRAF_LOCATION $SCRIPT_DIR"/oftraf"
+    git clone -b master $OFTRAF_LOCATION $SCRIPT_DIR"/oftraf"
     if [ $? -ne 0 ]; then
         echo "[build.sh] Cloning oftraf failed. Exiting ..."
         exit $?
