@@ -43,7 +43,7 @@ class TestRun:
         self.ctrl = stress_test.controller.Controller.new(args.ctrl_base_dir,
                                                           json_conf)
         self.ctrl.init_ssh()
-        self.ctrl.build()
+        #self.ctrl.build()
         self.ctrl.getcontroller()
         self.ctrl.generate_xmls()
 
