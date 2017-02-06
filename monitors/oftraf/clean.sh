@@ -11,7 +11,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
 for item in $( ls -1 $SCRIPT_DIR ); do
-    if [ $item != 'build.sh' ] && [ $item != 'clean.sh' ] && [ $item != 'start.sh' ] && [ $item != 'stop.sh' ]; then
+    if [ $item != 'build.sh' ] && [ $item != 'clean.sh' ]; then
         rm -rf $SCRIPT_DIR/$item
         if [ $? -ne 0 ]; then
             echo "[clean.sh] Cleanup of oftraf failed. Exiting ..."
