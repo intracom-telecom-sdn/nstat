@@ -594,27 +594,29 @@ class ODL(Controller):
         self.stat_period_ms = None
         self.init_ssh()
         self.build()
+        exit
         # ---------------------------------------------------------------------
+        
         if 'controller_flowmods_conf_handler' in test_config:
             self.flowmods_conf_hnd = \
                 ctrl_base_dir + test_config['controller_flowmods_conf_handler']
 
             # check handler's validity
-            util.file_ops.check_filelist([self.flowmods_conf_hnd])
+            #util.file_ops.check_filelist([self.flowmods_conf_hnd])
 
         if 'controller_statistics_handler' in test_config:
             self.statistics_hnd = \
                 ctrl_base_dir + test_config['controller_statistics_handler']
 
             # check handler's validity
-            util.file_ops.check_filelist([self.statistics_hnd])
+            #util.file_ops.check_filelist([self.statistics_hnd])
 
         if 'controller_persistent_handler' in test_config:
             self.persistence_hnd = \
                 ctrl_base_dir + test_config['controller_persistent_handler']
 
             # check handler's validity
-            util.file_ops.check_filelist([self.persistence_hnd])
+            #util.file_ops.check_filelist([self.persistence_hnd])
 
         if 'controller_restconf_port' in test_config:
             self.restconf_port = test_config['controller_restconf_port']
