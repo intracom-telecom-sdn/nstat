@@ -1291,7 +1291,7 @@ class MEF(Monitor):
             threads.append(topo_bootup_thread)
             if self.stat_active > 0 or self.stat_deactive > 0:
                 stat_thread = gevent.spawn(self.monitor_thread_stat)
-            threads.append(stat_thread)
+                threads.append(stat_thread)
             gevent.joinall(threads)
             self.total_monitor_samples += self.result_queue.get()
             gevent.killall(threads)
@@ -1305,7 +1305,7 @@ class MEF(Monitor):
         threads.append(stability_thread)
         if self.stat_active > 0 or self.stat_deactive > 0:
             stat_thread = gevent.spawn(self.monitor_thread_stat)
-        threads.append(stat_thread)
+            threads.append(stat_thread)
         gevent.joinall(threads)
         gevent.killall(threads)
 
