@@ -592,7 +592,7 @@ class ODL(Controller):
         # These values are passed outside, from the test in the main for loop.
         # ---------------------------------------------------------------------
         self.stat_period_ms = None
-        self.ctrl.build()
+        self.build()
         # ---------------------------------------------------------------------
         if 'controller_flowmods_conf_handler' in test_config:
             self.flowmods_conf_hnd = \
