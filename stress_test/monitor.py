@@ -1165,7 +1165,7 @@ class MEF(Monitor):
         It is used for idle tests from mtcbench and multinet emulators.
         """
 
-        discovery_deadline = 240
+        discovery_deadline = (self.emulator.topo_group_delay_ms / 1000) * 100
         expected_switches = self.emulator.get_overall_topo_size()
         logging.info('[monitor_thread_MEF] Monitor thread started')
         t_start = topo_boot_timestamp
@@ -1245,7 +1245,7 @@ class MEF(Monitor):
                     results['successful_bootup_time'] = delta_t
                     self.result_queue.put([results])
                     return 0
-            gevent.sleep(1)
+            gevent.sleep((self.emulator.topo_group_delay_ms / 1000) + 1)
 
     def monitor_thread_stability(self):
         self.global_sample_id = 1
