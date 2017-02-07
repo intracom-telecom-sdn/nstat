@@ -39,7 +39,7 @@ def main():
                         action='store_true',
                         default=False,
                         help="bypass test execution and proceed to report\n"
-                             "generation, based on a previous output.")
+                             "generation, based on an existing output.")
     parser.add_argument('--ctrl-base-dir',
                         required=True,
                         type=str,
@@ -52,7 +52,7 @@ def main():
                         dest='sb_emu_base_dir',
                         action='store',
                         help='southbound emulator base directory,\n'
-                             'supported emulators: MT-Cbench, Multinet')
+                             'supported network emulators: MT-Cbench, Multinet')
     parser.add_argument('--nb-emulator-base-dir',
                         required=False,
                         type=str,
@@ -92,8 +92,8 @@ def main():
                         dest='logging_level',
                         action='store',
                         default='DEBUG',
-                        help="log level set."
-                             "possible values are:\n"
+                        help="LOG level set."
+                             "Possible values are:\n"
                              "INFO\n"
                              "DEBUG (default)\n"
                              "ERROR")
