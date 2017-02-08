@@ -580,6 +580,7 @@ class ODL(Controller):
                            test_config['controller_oper_links_handler'])
         self.oper_flows = (ctrl_base_dir +
                            test_config['controller_oper_flows_handler'])
+        self.disable_persistence()
 
     def generate_xmls(self):
         """

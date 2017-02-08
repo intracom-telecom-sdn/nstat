@@ -368,13 +368,8 @@ class TestRun:
                     json_conf['controller_statistics_period_ms']):
                 self.mon.global_sample_id = global_sample_id
                 self.mon.test_repeats = json_conf['test_repeats']
-
                 self.ctrl.check_status()
                 self.ctrl.start()
-
-                if self.ctrl.persistence_hnd:
-                    self.ctrl.disable_persistence()
-
                 self.of.start()
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 logging.info('[sb_active_scalability_multinet] '
@@ -490,11 +485,6 @@ class TestRun:
                 self.ctrl.check_status()
                 self.ctrl.change_stats()
                 self.ctrl.start()
-                # disable persistence
-                if self.ctrl.persistence_hnd:
-                    self.ctrl.disable_persistence()
-
-                # start a Multinet topology
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 logging.info("{0} Starting Multinet idle switches topology".
                              format(self.test_type))
@@ -592,15 +582,9 @@ class TestRun:
                                                         'delay_ms']
             self.ctrl.stat_period_ms = json_conf['controller_statistics_'
                                                  'period_ms']
-
-            if self.ctrl.persistence_hnd:
-                self.ctrl.disable_persistence()
-
             self.ctrl.check_status()
             self.ctrl.change_stats()
             self.ctrl.start()
-
-            # start a MULTINET topology
             self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
             self.sb_emu.init_topos()
             self.sb_emu.start_topos()
@@ -735,9 +719,6 @@ class TestRun:
 
                 self.ctrl.check_status()
                 self.ctrl.start()
-
-                if self.ctrl.persistence_hnd:
-                    self.ctrl.disable_persistence()
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 logging.info('[sb_active_scalability_multinet] '
                              'Generate multinet config file')
