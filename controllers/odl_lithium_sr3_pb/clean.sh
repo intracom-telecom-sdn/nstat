@@ -7,6 +7,7 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
 echo $SCRIPT_DIR
 
 for item in $( ls -1 $SCRIPT_DIR ); do

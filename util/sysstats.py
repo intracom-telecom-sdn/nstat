@@ -27,10 +27,9 @@ def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
     :type ssh_client: paramiko.SSHClient
     :type return_type: str
     """
-
     max_exec_tries = 5
     cmd_output = None
-    while (not cmd_output) and max_exec_tries>0:
+    while (not cmd_output) and max_exec_tries > 0:
         if ssh_client is not None:
             cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)[1]
         else:
@@ -59,6 +58,26 @@ def command_exec_wrapper(cmd, ssh_client=None, return_type='str'):
             return '-1'
 
 
+def get_units_base(unit_key):
+    """
+    Gets the units in string format and returns the base in order to make
+    appropriate conversions
+    :param unit_key: the type of unit we want to convert
+    :type unit_key: str
+    :returns: the base for the conversion of the units
+    :rtype: int
+    """
+    units_conversion = {'kB': 1024, 'KB': 1024, 'mB': 1048576, 'MB': 1048576,
+                        'gB': 1073741824, 'GB': 1073741824}
+    try:
+        if unit_key in units_conversion:
+            return units_conversion[unit_key]
+        else:
+            return 1
+    except:
+        return 1
+
+
 def sys_used_ram_mb(ssh_client=None):
     """
     Returns system used memory in MB.
@@ -68,7 +87,6 @@ def sys_used_ram_mb(ssh_client=None):
     :rtype: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return command_exec_wrapper('free -m | awk \'/^Mem:/{print $3}\'',
                                 ssh_client, 'int')
 
@@ -82,7 +100,6 @@ def sys_nprocs(ssh_client=None):
     :rtype: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return command_exec_wrapper('cat /proc/cpuinfo | grep processor | wc -l',
                                 ssh_client, 'int')
 
@@ -96,9 +113,8 @@ def sys_free_ram_mb(ssh_client=None):
     :rtype: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return command_exec_wrapper('free -m | awk \'/^Mem:/{print $4}\'',
-                                      ssh_client, 'int')
+                                ssh_client, 'int')
 
 
 def sys_used_memory_bytes(ssh_client=None):
@@ -110,7 +126,6 @@ def sys_used_memory_bytes(ssh_client=None):
     :rtype: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return sys_total_memory_bytes(ssh_client) - sys_free_memory_bytes(ssh_client)
 
 
@@ -123,9 +138,12 @@ def sys_free_memory_bytes(ssh_client=None):
     :rtype: int
     :type ssh_client: paramiko.SSHClient
     """
-
-    return command_exec_wrapper('cat /proc/meminfo | grep MemFree | awk \'{{print $2}}\'',
-                                ssh_client, 'int')
+    unit_key = command_exec_wrapper('cat /proc/meminfo | grep MemFree | awk \'{{print $3}}\'',
+                                    ssh_client, 'str')
+    unit_base = get_units_base(unit_key)
+    free_memory = command_exec_wrapper('cat /proc/meminfo | grep MemFree | awk \'{{print $2}}\'',
+                                       ssh_client, 'int')
+    return free_memory * unit_base
 
 
 def sys_total_memory_bytes(ssh_client=None):
@@ -137,9 +155,12 @@ def sys_total_memory_bytes(ssh_client=None):
     :rtype: int
     :type ssh_client: paramiko.SSHClient
     """
-
-    return command_exec_wrapper('cat /proc/meminfo | grep MemTotal | awk \'{{print $2}}\'',
-                                ssh_client, 'int')
+    unit_key = command_exec_wrapper('cat /proc/meminfo | grep MemTotal | awk \'{{print $3}}\'',
+                                    ssh_client, 'str')
+    unit_base = get_units_base(unit_key)
+    total_memory = command_exec_wrapper('cat /proc/meminfo | grep MemTotal | awk \'{{print $2}}\'',
+                                        ssh_client, 'int')
+    return total_memory * unit_base
 
 
 def sys_iowait_time(ssh_client=None):
@@ -156,7 +177,7 @@ def sys_iowait_time(ssh_client=None):
     """
 
     return command_exec_wrapper('cat /proc/stat | awk \'NR==1 {{print $6}}\'',
-                                      ssh_client, 'float')
+                                ssh_client, 'float')
 
 
 def proc_cmdline(pid, ssh_client=None):
@@ -170,7 +191,6 @@ def proc_cmdline(pid, ssh_client=None):
     :type pid: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return command_exec_wrapper("cat /proc/{0}/cmdline".format(pid),
                                 ssh_client, 'str').replace('\x00', '')
 
@@ -202,7 +222,6 @@ def proc_cpu_system_time(pid, ssh_client=None):
     :type pid: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return command_exec_wrapper('cat /proc/{0}/stat | awk \' {{ print $15 }} \''.
                                 format(pid), ssh_client, 'float')
 
@@ -218,7 +237,6 @@ def proc_cpu_user_time(pid, ssh_client=None):
     :type pid: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return command_exec_wrapper('cat /proc/{0}/stat | awk \'{{print $14}}\''.
                                 format(pid), ssh_client, 'float')
 
@@ -234,9 +252,8 @@ def proc_vm_size(pid, ssh_client=None):
     :type pid: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return (command_exec_wrapper(('cat /proc/{0}/status |grep VmSize | awk \'{{print $2}}\''.
-        format(pid)), ssh_client, 'int') * 1024)
+            format(pid)), ssh_client, 'int') * 1024)
 
 
 def proc_num_fds(pid, ssh_client=None):
@@ -266,7 +283,6 @@ def proc_num_threads(pid, ssh_client=None):
     :type pid: int
     :type ssh_client: paramiko.SSHClient
     """
-
     return command_exec_wrapper(('cat /proc/{0}/status |grep Threads | awk \'{{print $2}}\''.
                                  format(pid)), ssh_client, 'int')
 
@@ -280,7 +296,6 @@ def sys_load_average(ssh_client=None):
     :rtype: tuple<float>
     :type ssh_client: paramiko.SSHClient
     """
-
     cmd_output = command_exec_wrapper('uptime', ssh_client, 'str')
     matches = re.search(r'load average: (.+), (.+), (.+)', cmd_output.strip())
     return (float(matches.group(1)),
@@ -299,7 +314,6 @@ def get_java_options(pid, ssh_client=None):
     :type pid: int
     :type ssh_client: paramiko.SSHClient
     """
-
     cmd_output = command_exec_wrapper('ps -ef | grep \' {0} \''.format(pid),
                                       ssh_client, 'str')
     java_options = \
