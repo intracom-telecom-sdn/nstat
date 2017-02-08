@@ -7,8 +7,17 @@
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-cd $SCRIPT_DIR
 
-ODL_INSTALL_DIR="distribution-karaf-0.3.2-Lithium-SR2"
+echo $SCRIPT_DIR
 
-rm -rf $ODL_INSTALL_DIR
+for item in $( ls -1 $SCRIPT_DIR ); do
+    if [ $item != 'build.sh' ] && [ $item != 'clean.sh' ]; then
+        rm -rf $SCRIPT_DIR/$item
+        if [ $? -ne 0 ]; then
+            echo "[clean.sh] Cleanup of nstat-sdn-controllers handlers failed. Exiting ..."
+            exit 1
+        fi
+    fi
+done
+
+echo "[clean.sh] Cleanup of nstat-sdn-controllers handlers completed successfully"

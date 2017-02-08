@@ -247,7 +247,7 @@ class MTCBench(SBEmu):
         self.run_hnd = self.base_dir + test_config['mtcbench_run_handler']
 
         '''check handlers' validity'''
-        util.file_ops.check_filelist([self.run_hnd])
+        #util.file_ops.check_filelist([self.run_hnd])
 
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.

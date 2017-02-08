@@ -14,7 +14,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
 NSTAT_SDN_CONTROLLER_LOCATION="https://github.com/intracom-telecom-sdn/nstat-sdn-controllers.git"
-NSTAT_SDN_CONTROLLER_HANDLERS="controllers/odl_beryllium_sr3_pb"
+NSTAT_SDN_CONTROLLER_HANDLERS="controllers/odl_boron_sr2_pb"
 
 if [ ! -d $SCRIPT_DIR/$NSTAT_SDN_CONTROLLER_HANDLERS ]; then
     git clone -b master $NSTAT_SDN_CONTROLLER_LOCATION $SCRIPT_DIR/nstat-sdn-controllers""

@@ -6,15 +6,18 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
+
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+echo $SCRIPT_DIR
 
-cd  $SCRIPT_DIR/oflops/cbench
+for item in $( ls -1 $SCRIPT_DIR ); do
+    if [ $item != 'build.sh' ] && [ $item != 'clean.sh' ]; then
+        rm -rf $SCRIPT_DIR/$item
+        if [ $? -ne 0 ]; then
+            echo "[clean.sh] Cleanup of mtcbench failed. Exiting ..."
+            exit 1
+        fi
+    fi
+done
 
-if [ -f ./cbench ]; then
-    rm -f cbench
-else
-    echo "===WARNING=== CBENCH executable file does not exist. Nothing to clean"
-fi
-
-cd ..
-make clean clean-libtool
+echo "[clean.sh] Cleanup of mtcbench completed successfully"

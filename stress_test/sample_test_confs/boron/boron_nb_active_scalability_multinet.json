@@ -23,12 +23,13 @@
 "nb_emulator_run_handler":"src/run_handler.py",
 "nb_emulator_get_oper_ds_handler":"get_oper_ds_flows.py",
 
-
 "controller_build_handler":"build.sh",
+"controller_clean_handler":"clean.sh",
+
+"controller_get_handler":"get_controller.sh",
 "controller_start_handler":"start_no_dlux.sh",
 "controller_stop_handler":"stop.sh",
 "controller_status_handler":"status.sh",
-"controller_clean_handler":"clean.sh",
 "controller_statistics_handler":"change_stats_period.py",
 "controller_persistent_handler":"change_persistence.py",
 "controller_oper_hosts_handler":"get_hosts.py",

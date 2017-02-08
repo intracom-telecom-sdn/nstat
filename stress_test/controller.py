@@ -44,6 +44,8 @@ class Controller:
         self.of_port = test_config['controller_port']
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
+        self.get_hnd = (self.base_dir +
+                          test_config['controller_get_handler'])
         self.build_hnd = (self.base_dir +
                           test_config['controller_build_handler'])
         self.start_hnd = (self.base_dir +
@@ -54,19 +56,12 @@ class Controller:
                            test_config['controller_status_handler'])
         self.clean_hnd = (self.base_dir +
                           test_config['controller_clean_handler'])
-
-        self.status = 'UNKNOWN'
-
         self.java_opts = ' '.join(test_config['java_opts'])
         self.pid = -1
-
         self._ssh_conn = None
 
-        # check handlers' validity
+        # check NSTAT handlers' validity
         util.file_ops.check_filelist([self.build_hnd,
-                                      self.start_hnd,
-                                      self.stop_hnd,
-                                      self.status_hnd,
                                       self.clean_hnd])
 
     @staticmethod
@@ -155,13 +150,11 @@ class Controller:
             handler fails
         """
         logging.info('[Controller] Cleaning up')
-        self.status = 'CLEANING'
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.clean_hnd]):
-                    self.status = 'NOT_CLEANED'
                     raise(IOError(
                         '{0} clean handler does not exist'.
                         format('[controller.cleanup]')))
@@ -173,11 +166,9 @@ class Controller:
                     self._ssh_conn, self.clean_hnd,
                     '[controller.clean_handler]')
                 if exit_status == 0:
-                    self.status = 'CLEANED'
                     logging.info('[controller.clean_handler] controller '
                                  'successfully cleaned.')
                 else:
-                    self.status = 'NOT_CLEANED'
                     raise(stress_test.controller_exceptions.CtrlCleanupError(
                         '[controller.clean_handler] controller cleanup '
                         'handler exited with non zero exit status. \n '
@@ -272,11 +263,8 @@ class Controller:
         Restarts the controller
         """
         logging.info('[Controller] Restarting')
-
-        self.status = 'RESTARTING'
         self.stop()
         self.start()
-        self.status = 'RESTARTED'
 
     def start(self):
         """
@@ -287,13 +275,11 @@ class Controller:
             start.
         """
         logging.info('[Controller.start] Starting')
-        self.status = 'STARTING'
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.start_hnd]):
-                    self.status = 'NOT_STARTED'
                     raise(IOError(
                         '{0} start handler does not exist'.
                         format('[controller.stop]')))
@@ -316,7 +302,6 @@ class Controller:
                                  'pid: {0}'.format(self.pid))
                     self.wait_until_up(420000)
                     if exit_status != 0 or self.pid == -1:
-                        self.status = 'NOT_STARTED'
                         raise(stress_test.controller_exceptions.CtrlStartError(
                             '[Controller.start] Fail to start. Start handler '
                             'exited with non zero exit status. \n '
@@ -325,7 +310,6 @@ class Controller:
                 elif self.check_status() == '1':
                     logging.info('[Controller.start] Controller already '
                                  'started.')
-                self.status = 'STARTED'
             except stress_test.controller_exceptions.CtrlError as e:
                 self._error_handling(e.err_msg, e.err_code)
             except:
@@ -341,13 +325,11 @@ class Controller:
         :raises controller_exceptions.CtrlStopError: if controller fails to \
             stop successfully
         """
-        self.status = 'STOPPING'
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.stop_hnd]):
-                    self.status = 'NOT_STOPED'
                     raise(IOError(
                         '{0} stop handler does not exist'.
                         format('[controller.stop]')))
@@ -364,21 +346,57 @@ class Controller:
                     util.process.wait_until_process_finishes(self.pid,
                                                              self._ssh_conn)
                     if exit_status == 0:
-                        self.status = 'STOPPED'
                         logging.info("[Controller.stop] Successful stopped")
                     else:
-                        self.status = 'NOT_STOPPED'
                         raise(stress_test.controller_exceptions.CtrlStopError(
                             '[Controller.stop] Controller failed to stop: {0}'.
                             format(cmd_output), exit_status))
                 else:
-                    self.status = 'STOPPED'
                     logging.info('[Controller.stop] Controller already '
                                  'stopped.')
             except stress_test.controller_exceptions.CtrlError as e:
                 self._error_handling(e.err_msg, e.err_code)
             except:
                 raise(stress_test.controller_exceptions.CtrlStopError)
+        except stress_test.controller_exceptions.CtrlError as e:
+            self._error_handling(e.err_msg, e.err_code)
+
+    def getcontroller(self):
+        """
+        Wrapper to the get controller handler
+
+        :raises IOError: if the handler does not exist on the remote host
+        :raises controller_exceptions.CtrlGetError: if get controller process
+            fails
+        """
+        logging.info('[Controller] Downloading...')
+        try:
+            try:
+                if not util.netutil.isfile(self.ip, self.ssh_port,
+                                           self.ssh_user, self.ssh_pass,
+                                           [self.get_hnd]):
+                    raise(IOError(
+                        '{0} get controller handler does not exist'.
+                        format('[controller.build]')))
+                else:
+                    util.netutil.make_remote_file_executable(
+                        self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
+                        self.get_hnd)
+                exit_status, cmd_output = util.netutil.ssh_run_command(
+                    self._ssh_conn, ' '.join([self.get_hnd]),
+                    '[controller.get]')
+                if exit_status == 0:
+                    logging.info("[Controller.get] Successfully downloaded")
+                else:
+                    raise(stress_test.controller_exceptions.CtrlGetError(
+                        '[Controller.get] Failure during controller download. '
+                        'Get handler exited with non zero exit status. \n '
+                        'Handler output: {0}'.
+                        format(cmd_output)), exit_status)
+            except stress_test.controller_exceptions.CtrlError as e:
+                self._error_handling(e.err_msg, e.err_code)
+            except:
+                raise(stress_test.controller_exceptions.CtrlGetError)
         except stress_test.controller_exceptions.CtrlError as e:
             self._error_handling(e.err_msg, e.err_code)
 
@@ -390,13 +408,11 @@ class Controller:
         :raises controller_exceptions.CtrlBuildError: if build process fails
         """
         logging.info('[Controller] Building')
-        self.status = 'BUILDING'
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.build_hnd]):
-                    self.status = 'NOT_BUILT'
                     raise(IOError(
                         '{0} build handler does not exist'.
                         format('[controller.build]')))
@@ -408,10 +424,8 @@ class Controller:
                     self._ssh_conn, ' '.join([self.build_hnd]),
                     '[controller.build]')
                 if exit_status == 0:
-                    self.status = 'BUILT'
                     logging.info("[Controller.build] Successful building")
                 else:
-                    self.status = 'NOT_BUILT'
                     raise(stress_test.controller_exceptions.CtrlBuildError(
                         '[Controller.build] Failure during building. Build '
                         'handler exited with non zero exit status. \n '
@@ -541,28 +555,18 @@ class ODL(Controller):
         # These values are passed outside, from the test in the main for loop.
         # ---------------------------------------------------------------------
         self.stat_period_ms = None
-        # ---------------------------------------------------------------------
+        self.init_ssh()
+        self.build()
+
         if 'controller_flowmods_conf_handler' in test_config:
             self.flowmods_conf_hnd = \
                 ctrl_base_dir + test_config['controller_flowmods_conf_handler']
-
-            # check handler's validity
-            util.file_ops.check_filelist([self.flowmods_conf_hnd])
-
         if 'controller_statistics_handler' in test_config:
             self.statistics_hnd = \
                 ctrl_base_dir + test_config['controller_statistics_handler']
-
-            # check handler's validity
-            util.file_ops.check_filelist([self.statistics_hnd])
-
         if 'controller_persistent_handler' in test_config:
             self.persistence_hnd = \
                 ctrl_base_dir + test_config['controller_persistent_handler']
-
-            # check handler's validity
-            util.file_ops.check_filelist([self.persistence_hnd])
-
         if 'controller_restconf_port' in test_config:
             self.restconf_port = test_config['controller_restconf_port']
             self.restconf_user = test_config['controller_restconf_user']
@@ -944,3 +948,6 @@ class ONOS(Controller):
         self.oper_switches = -1
         self.oper_links = -1
         self.oper_flows = -1
+
+        self.init_ssh()
+        self.build()
