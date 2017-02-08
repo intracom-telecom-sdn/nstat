@@ -898,6 +898,12 @@ class TestRun:
             stat_deactive_ms = 0
             change_stats_args = None
             test_repeats = json_conf['test_repeats']
+            # Disable persistence of controller if the handler is defined in
+            # json file
+            if self.ctrl.persistence_hnd:
+                logging.info('[mef_stability_test] Disable controller '
+                             'persistence')
+                self.ctrl.disable_persistence()
             test_repeat_interval_ms = json_conf['test_repeat_interval_ms']
             if 'controller_statistics_period_ms' in json_conf:
                 self.ctrl.stat_period_ms = json_conf['controller_statistics_'
@@ -928,11 +934,6 @@ class TestRun:
                     json_conf['multinet_topo_hosts_per_switch'],
                     json_conf['multinet_topo_group_size'],
                     json_conf['multinet_topo_group_delay_ms']):
-
-                if self.ctrl.persistence_hnd:
-                    logging.info('[mef_stability_test] Disable controller '
-                                 'persistence')
-                    self.ctrl.disable_persistence()
 
                 self.ctrl.check_status()
                 if self.ctrl.stat_period_ms is None:
