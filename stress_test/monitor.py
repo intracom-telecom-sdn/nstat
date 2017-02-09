@@ -326,8 +326,7 @@ class Mtcbench(Monitor):
 
         # will hold samples taken in the lifetime of this thread
         test_samples = []
-        # Opening connection with controller
-        # node to be utilized in the sequel
+
         while True:
             try:
                 # read messages from queue while TERM_SUCCESS has not been sent
@@ -449,7 +448,7 @@ class Multinet(Monitor):
         :type emulator: object
         """
         Monitor.__init__(self, controller)
-        # Oftraf.__init__(self, controller, oftraf)
+
         self.oftraf_node = oftraf
         self.emulator = emulator
         self.result_queue = gevent.queue.Queue()
@@ -490,7 +489,7 @@ class Multinet(Monitor):
                 gevent.spawn(self.monitor_thread_idle_stability,
                              reference_results,
                              sample_id)
-            # self.emulator.start_topos()
+
         gevent.joinall([monitor_thread])
         total_results = self.result_queue.get()
         gevent.killall([monitor_thread])
@@ -775,7 +774,6 @@ class NBgen(Monitor):
                     logging.info('[NB_generator] [Poll_flows thread] '
                                  'End to End installation time is: {0}'
                                  .format(self.nbgen.e2e_installation_time))
-
                     return
             gevent.sleep(1)
 

@@ -92,12 +92,12 @@ class TestType:
         nstat_test_type_run = args.test_type + '_' + \
             json_conf['sb_emulator_name'].lower()
 
-        # Create instance of TestRun and initialize controller
+        # create instance of TestRun and initialize controller/sb/nb emulators
         if not args.bypass_test:
             nstat_test_run = stress_test.test_run.TestRun(args, json_conf,
                                                           nstat_test_type_run)
 
-        # Run the test
+        # run the test
         if nstat_test_type_run == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.

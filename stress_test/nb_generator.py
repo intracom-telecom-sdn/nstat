@@ -78,13 +78,6 @@ class NBgen:
         self.discover_flows_on_switches_time = 0.0
 
         self.venv_hnd = self.base_dir + "bin/venv_handler.sh"
-        print('=====================================')
-        print('=====================================')
-        print('=====================================')
-        print(nb_gen_base_dir)
-        print('=====================================')
-        print('=====================================')
-        print('=====================================')
 
     def _error_handling(self, error_message, error_num=1):
         """
