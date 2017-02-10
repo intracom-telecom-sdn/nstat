@@ -59,8 +59,6 @@ class Controller:
         self.java_opts = ' '.join(test_config['java_opts'])
         self.pid = -1
         self._ssh_conn = None
-
-        # check NSTAT handlers' validity
         util.file_ops.check_filelist([self.build_hnd,
                                       self.clean_hnd])
 
@@ -78,14 +76,10 @@ class Controller:
         name = test_config['controller_name']
         if (name == 'ODL'):
             return ODL(ctrl_base_dir, test_config)
-
         elif name == 'ONOS':
             raise NotImplementedError('ONOS is not supported yet')
-        #  return ONOS(ctrl_base_dir, test_config)
-
         else:
             raise NotImplementedError('Not supported yet')
-        #   return None
 
     def _error_handling(self, error_message, error_num=1):
         """
@@ -108,7 +102,7 @@ class Controller:
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
         if self.traceback_enabled:
             traceback.print_exc()
-        # Propagate error outside the class to stop execution of test
+        # Propagate error outside the class to stop test execution
         raise(stress_test.controller_exceptions.CtrlError)
 
     def init_ssh(self):
@@ -580,6 +574,7 @@ class ODL(Controller):
                            test_config['controller_oper_links_handler'])
         self.oper_flows = (ctrl_base_dir +
                            test_config['controller_oper_flows_handler'])
+        self.disable_persistence()
 
     def generate_xmls(self):
         """
@@ -909,7 +904,7 @@ class ODL(Controller):
         :param output_dir: the directory where the controller logs are stored
         :type output_dir: str
         """
-        # Move controller log file if exist inside the test output dir
+
         try:
             logging.info('[controller_save_log] collecting logs from '
                          'controller node. Logs path:{0}'.

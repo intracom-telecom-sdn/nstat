@@ -35,9 +35,6 @@ class SBEmu:
         """
         self.name = test_config['sb_emulator_name']
         self.base_dir = sb_emu_base_dir
-
-        # self.host_spec = test_config['SB-Emulator_node_spec']
-        # self.host_ip = test_config['SB-Emulator_host_ip']
         self.traceback_enabled = False
         self.ip = test_config['sb_emulator_node_ip']
         self.ssh_port = test_config['sb_emulator_node_ssh_port']
@@ -50,8 +47,6 @@ class SBEmu:
                           test_config['sb_emulator_clean_handler'])
         self.status = 'UNKNOWN'
         self._ssh_conn = None
-
-        # check handlers' validity
         util.file_ops.check_filelist([self.build_hnd,
                                       self.clean_hnd])
 
@@ -245,9 +240,6 @@ class MTCBench(SBEmu):
         super(self.__class__, self).__init__(sb_emu_base_dir, test_config)
 
         self.run_hnd = self.base_dir + test_config['mtcbench_run_handler']
-
-        '''check handlers' validity'''
-        #util.file_ops.check_filelist([self.run_hnd])
 
         # The parameters initialized as None are dimensions of the test.
         # These values are passed outside, from the test in the main for loop.
@@ -919,7 +911,6 @@ class Multinet(SBEmu):
                 raise(stress_test.emulator_exceptions.MultinetTraffigGenError)
         except stress_test.emulator_exceptions.SBEmuError as e:
             self._error_handling(e.err_msg, e.err_code)
-
 
     def __del__(self):
         """
