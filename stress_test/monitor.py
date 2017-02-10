@@ -186,17 +186,17 @@ class Mtcbench(Monitor):
         self.global_sample_id += 1
         results['repeat_id'] = self.repeat_id
 
-        results['cbench_simulated_hosts'] = \
+        results['mtcbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
-        results['cbench_switches'] = \
+        results['mtcbench_switches'] = \
             self.emulator.get_overall_topo_size()
-        results['cbench_threads'] = \
+        results['mtcbench_threads'] = \
             self.emulator.threads
-        results['cbench_switches_per_thread'] = \
+        results['mtcbench_switches_per_thread'] = \
             self.emulator.switches_per_thread
-        results['cbench_thread_creation_delay_ms'] = \
+        results['mtcbench_thread_creation_delay_ms'] = \
             self.emulator.thread_creation_delay_ms
-        results['cbench_delay_before_traffic_ms'] = \
+        results['mtcbench_delay_before_traffic_ms'] = \
             self.emulator.delay_before_traffic_ms
         results['controller_statistics_period_ms'] = \
             self.controller.stat_period_ms
@@ -204,12 +204,12 @@ class Mtcbench(Monitor):
         results['controller_node_ip'] = self.controller.ip
         results['controller_port'] = \
             str(self.controller.of_port)
-        results['cbench_mode'] = self.emulator.mode
-        results['cbench_ms_per_test'] = \
+        results['mtcbench_mode'] = self.emulator.mode
+        results['mtcbench_ms_per_test'] = \
             self.emulator.ms_per_test
-        results['cbench_internal_repeats'] = \
+        results['mtcbench_internal_repeats'] = \
             self.emulator.internal_repeats
-        results['cbench_warmup'] = self.emulator.warmup
+        results['mtcbench_warmup'] = self.emulator.warmup
         return results
 
     def monitor_results_idle(self):
@@ -224,25 +224,25 @@ class Mtcbench(Monitor):
         results = self.system_results()
         results['global_sample_id'] = self.global_sample_id
         self.global_sample_id += 1
-        results['cbench_simulated_hosts'] = \
+        results['mtcbench_simulated_hosts'] = \
             self.emulator.simulated_hosts
-        results['cbench_switches'] = self.emulator.get_overall_topo_size()
-        results['cbench_threads'] = self.emulator.threads
-        results['cbench_switches_per_thread'] = \
+        results['mtcbench_switches'] = self.emulator.get_overall_topo_size()
+        results['mtcbench_threads'] = self.emulator.threads
+        results['mtcbench_switches_per_thread'] = \
             self.emulator.switches_per_thread
-        results['cbench_thread_creation_delay_ms'] = \
+        results['mtcbench_thread_creation_delay_ms'] = \
             self.emulator.thread_creation_delay_ms
         results['controller_statistics_period_ms'] = \
             self.controller.stat_period_ms
-        results['cbench_delay_before_traffic_ms'] = \
+        results['mtcbench_delay_before_traffic_ms'] = \
             self.emulator.delay_before_traffic_ms
         results['controller_node_ip'] = self.controller.ip
         results['controller_port'] = self.controller.of_port
-        results['cbench_mode'] = self.emulator.mode
-        results['cbench_ms_per_test'] = self.emulator.ms_per_test
-        results['cbench_internal_repeats'] = \
+        results['mtcbench_mode'] = self.emulator.mode
+        results['mtcbench_ms_per_test'] = self.emulator.ms_per_test
+        results['mtcbench_internal_repeats'] = \
             self.emulator.internal_repeats
-        results['cbench_warmup'] = self.emulator.warmup
+        results['mtcbench_warmup'] = self.emulator.warmup
         return results
 
     def monitor_thread_idle(self, boot_start_time):
