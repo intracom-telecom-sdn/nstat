@@ -6,6 +6,7 @@
 
 """ Controller Class- All controller-related functionality is here"""
 
+import coloredlogs
 import json
 import logging
 import stress_test.report_gen
@@ -60,6 +61,8 @@ class TestType:
         :type args: ArgumentParser object
         """
         logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
+        coloredlogs.install(level='DEBUG')
+
         if args.logging_level == 'INFO':
             logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                                 format=logging_format)
@@ -91,7 +94,8 @@ class TestType:
         json_conf = self.load_test_conf(args)
         nstat_test_type_run = args.test_type + '_' + \
             json_conf['sb_emulator_name'].lower()
-
+        print('Kostas')
+        exit
         # create instance of TestRun and initialize controller/sb/nb emulators
         if not args.bypass_test:
             nstat_test_run = stress_test.test_run.TestRun(args, json_conf,
