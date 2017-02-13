@@ -103,8 +103,6 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
-                print('Kostas Papadopoulos')
-                exit()
                 self.total_samples = \
                     nstat_test_run.sb_active_scalability_mtcbench_run(
                         json_conf,
