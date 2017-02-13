@@ -328,7 +328,7 @@ class TestReport:
             '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
-                 ('controller_name', 'Controller name'),
+                [('controller_name', 'Controller name'),
                  ('controller_build_handler', 'Controller build script'),
                  ('controller_start_handler', 'Controller start script'),
                  ('controller_stop_handler', 'Controller stop script'),
