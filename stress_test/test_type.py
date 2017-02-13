@@ -6,6 +6,7 @@
 
 """ Controller Class- All controller-related functionality is here"""
 
+import coloredlogs
 import json
 import logging
 import stress_test.report_gen
@@ -64,12 +65,15 @@ class TestType:
         if args.logging_level == 'INFO':
             logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                                 format=logging_format)
+            coloredlogs.install(level='INFO')
         elif args.logging_level == 'ERROR':
             logging.basicConfig(level=logging.ERROR, stream=sys.stdout,
                                 format=logging_format)
+            coloredlogs.install(level='ERROR')
         else:
             logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
                                 format=logging_format)
+            coloredlogs.install(level='DEBUG')
 
         if args.log_file:
             open(args.log_file, 'a').close()
