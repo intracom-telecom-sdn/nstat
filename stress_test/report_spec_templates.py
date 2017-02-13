@@ -367,7 +367,6 @@ class TestReport:
                 [('global_sample_id', 'Sample ID'),
                  ('timestamp', 'Sample timestamp (seconds)'),
                  ('date', 'Sample timestamp (date)'),
-                 ('repeat_id', 'External repeat ID'),
                  ('of_out_bytes_per_sec',
                   'Outgoing controller throughput '
                   '(Bytes per second)'),
