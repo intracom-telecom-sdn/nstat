@@ -63,17 +63,17 @@ class TestType:
         logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
 
         if args.logging_level == 'INFO':
+            coloredlogs.install(level='INFO')
             logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                                 format=logging_format)
-            coloredlogs.install(level='INFO')
         elif args.logging_level == 'ERROR':
+            coloredlogs.install(level='ERROR')
             logging.basicConfig(level=logging.ERROR, stream=sys.stdout,
                                 format=logging_format)
-            coloredlogs.install(level='ERROR')
         else:
+            coloredlogs.install(level='DEBUG')
             logging.basicConfig(level=logging.DEBUG, stream=sys.stdout,
                                 format=logging_format)
-            coloredlogs.install(level='DEBUG')
 
         if args.log_file:
             open(args.log_file, 'a').close()
