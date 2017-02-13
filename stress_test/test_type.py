@@ -6,7 +6,6 @@
 
 """ Controller Class- All controller-related functionality is here"""
 
-import coloredlogs
 import json
 import logging
 import stress_test.report_gen
@@ -61,7 +60,6 @@ class TestType:
         :type args: ArgumentParser object
         """
         logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
-        coloredlogs.install(level='DEBUG')
 
         if args.logging_level == 'INFO':
             logging.basicConfig(level=logging.INFO, stream=sys.stdout,
