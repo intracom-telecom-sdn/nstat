@@ -364,7 +364,6 @@ class TestRun:
                     json_conf['multinet_topo_group_delay_ms'],
                     json_conf['controller_statistics_period_ms']):
                 self.mon.global_sample_id = global_sample_id
-                self.mon.test_repeats = json_conf['test_repeats']
                 self.ctrl.check_status()
                 self.ctrl.start()
                 self.of.start()

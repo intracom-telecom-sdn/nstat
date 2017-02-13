@@ -71,7 +71,7 @@
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
 
-"test_repeats":2,
+
 
 "plots":[
     {
