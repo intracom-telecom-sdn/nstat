@@ -94,8 +94,7 @@ class TestType:
         json_conf = self.load_test_conf(args)
         nstat_test_type_run = args.test_type + '_' + \
             json_conf['sb_emulator_name'].lower()
-        print('Kostas')
-        exit
+
         # create instance of TestRun and initialize controller/sb/nb emulators
         if not args.bypass_test:
             nstat_test_run = stress_test.test_run.TestRun(args, json_conf,
@@ -106,6 +105,8 @@ class TestType:
             if not args.bypass_test:
                 logging.info('[nstat_orchestrator] running test: {0}'.
                              format(nstat_test_type_run))
+                print('Kostas Papadopoulos')
+                exit()
                 self.total_samples = \
                     nstat_test_run.sb_active_scalability_mtcbench_run(
                         json_conf,
