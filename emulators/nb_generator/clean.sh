@@ -14,10 +14,10 @@ for item in $( ls -1 $SCRIPT_DIR ); do
     if [ $item != 'build.sh' ] && [ $item != 'clean.sh' ]; then
         rm -rf $SCRIPT_DIR/$item
         if [ $? -ne 0 ]; then
-            echo "[clean.sh] Cleanup of nstat-nb-generator failed. Exiting ..."
+            echo "[clean.sh] Cleanup of nstat-nb-emulator failed. Exiting ..."
             exit 1
         fi
     fi
 done
 
-echo "[clean.sh] Cleanup of nstat-nb-generator completed successfully"
+echo "[clean.sh] Cleanup of nstat-nb-emulator completed successfully"

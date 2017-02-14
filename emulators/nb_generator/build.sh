@@ -10,21 +10,21 @@
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 echo $SCRIPT_DIR
 
-NSTAT_NB_GENERATOR_LOCATION="https://github.com/intracom-telecom-sdn/nstat-nb-generator.git"
+NSTAT_NB_EMULATOR_LOCATION="https://github.com/intracom-telecom-sdn/nstat-nb-emulator.git"
 
-if [ ! -d $SCRIPT_DIR"/nstat-nb-generator" ]; then
-    git clone -b v.1.0 $NSTAT_NB_GENERATOR_LOCATION $SCRIPT_DIR"/nstat-nb-generator"
+if [ ! -d $SCRIPT_DIR"/nstat-nb-emulator" ]; then
+    git clone -b v.1.0 $NSTAT_NB_EMULATOR_LOCATION $SCRIPT_DIR"/nstat-nb-emulator"
     if [ $? -ne 0 ]; then
-        echo "[build.sh] Cloning nstat-nb-generator failed. Exiting ..."
+        echo "[build.sh] Cloning nstat-nb-emulator failed. Exiting ..."
         exit 1
     fi
-    rm -rf $SCRIPT_DIR"/nstat-nb-generator/.git"
-    mv $SCRIPT_DIR/nstat-nb-generator/* $SCRIPT_DIR
+    rm -rf $SCRIPT_DIR"/nstat-nb-emulator/.git"
+    mv $SCRIPT_DIR/nstat-nb-emulator/* $SCRIPT_DIR
     if [ $? -ne 0 ]; then
-        echo "[build.sh] Moving nstat-nb-generator files failed. Exiting ..."
+        echo "[build.sh] Moving nstat-nb-emulator files failed. Exiting ..."
         exit 1
     fi
-    rm -rf $SCRIPT_DIR/nstat-nb-generator
+    rm -rf $SCRIPT_DIR/nstat-nb-emulator
 fi
 
-echo "[build.sh] Building nstat-nb-generator completed successfully"
+echo "[build.sh] Building nstat-nb-emulator completed successfully"

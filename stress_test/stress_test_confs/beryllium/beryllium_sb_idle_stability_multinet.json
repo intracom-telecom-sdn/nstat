@@ -31,7 +31,6 @@
 
 "controller_logs_dir":"distribution-karaf-0.4.0-Beryllium/data/log/",
 
-"controller_cleanup":false,
 "controller_name":"ODL",
 "controller_port":6653,
 "controller_statistics_period_ms":5000,
