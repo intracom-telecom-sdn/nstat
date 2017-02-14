@@ -17,7 +17,7 @@ NSTAT_SDN_CONTROLLER_LOCATION="https://github.com/intracom-telecom-sdn/nstat-sdn
 NSTAT_SDN_CONTROLLER_HANDLERS="controllers/odl_beryllium_sr3_pb"
 
 if [ ! -d $SCRIPT_DIR/$NSTAT_SDN_CONTROLLER_HANDLERS ]; then
-    git clone -b master $NSTAT_SDN_CONTROLLER_LOCATION $SCRIPT_DIR/nstat-sdn-controllers""
+    git clone -b v.1.0 $NSTAT_SDN_CONTROLLER_LOCATION $SCRIPT_DIR/nstat-sdn-controllers""
     if [ $? -ne 0 ]; then
         echo "[build.sh] Cloning nstat-sdn-controllers failed. Exiting ..."
         exit 1
