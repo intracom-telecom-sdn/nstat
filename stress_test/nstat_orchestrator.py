@@ -13,7 +13,7 @@ Orchestrator for stress tests.
 import argparse
 import json
 import stress_test.controller
-import stress_test.emulator
+import stress_test.sbemu
 import stress_test.test_type
 
 def main():
