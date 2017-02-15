@@ -108,7 +108,7 @@ class Oftraf:
                     self.status = 'NOT_BUILT'
                     raise(IOError(
                         '{0} build handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[oftraf.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -119,7 +119,7 @@ class Oftraf:
                                                  '[oftraf.build_handler]')
                 if exit_status == 0:
                     self.status = 'BUILT'
-                    logging.info("[Oftraf] Successful building")
+                    logging.info("[OFTraf] Successful building")
                 else:
                     self.status = 'NOT_BUILT'
                     raise(stress_test.oftraf_exceptions.OftrafBuildError(
@@ -152,7 +152,7 @@ class Oftraf:
                     self.status = 'NOT_CLEANED'
                     raise(IOError(
                         '{0} clean handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[oftraf.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -198,7 +198,7 @@ class Oftraf:
                     self.status = 'NOT_STARTED'
                     raise(IOError(
                         '{0} start handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[oftraf.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,

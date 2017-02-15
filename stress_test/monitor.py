@@ -742,20 +742,20 @@ class NBgen(Monitor):
         while True:
             if (time.time() - t_discovery_start) > \
                     self.nbgen.flows_ds_discovery_deadline:
-                logging.info('[NB_generator] [Poll_flows thread] Deadline of '
+                logging.info('[NB_emulator] [Poll_flows thread] Deadline of '
                              '{0} seconds passed'
                              .format(self.nbgen.flows_ds_discovery_deadline))
                 self.nbgen.e2e_installation_time = -1.0
                 self.nbgen_queue.put({'end_to_end_flows_operation_time': -1.0},
                                      block=True)
-                logging.info('[NB_generator] [Poll_flows thread] End to End '
+                logging.info('[NB_emulator] [Poll_flows thread] End to End '
                              'installation time monitor FAILED')
 
                 return
             else:
                 new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows thread] Found {0}'
+                logging.debug('[NB_emulator] [Poll_flows thread] Found {0}'
                               ' flows at inventory'.
                               format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
@@ -763,14 +763,14 @@ class NBgen(Monitor):
                     previous_discovered_flows = oper_ds_found_flows
                 if oper_ds_found_flows == expected_flows:
                     time_interval = time.time() - t_start
-                    logging.debug('[NB_generator] [Poll_flows thread] '
+                    logging.debug('[NB_emulator] [Poll_flows thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
                                   .format(expected_flows, time_interval))
                     self.nbgen.e2e_installation_time = time_interval
                     self.nbgen_queue.put(
                         {'end_to_end_flows_operation_time': time_interval},
                         block=True)
-                    logging.info('[NB_generator] [Poll_flows thread] '
+                    logging.info('[NB_emulator] [Poll_flows thread] '
                                  'End to End installation time is: {0}'
                                  .format(self.nbgen.e2e_installation_time))
                     return
@@ -795,19 +795,19 @@ class NBgen(Monitor):
         while True:
             if (time.time() - t_discovery_start) > \
                     self.nbgen.flows_ds_discovery_deadline:
-                logging.info('[NB_generator] [Poll_flows_confirm thread] '
+                logging.info('[NB_emulator] [Poll_flows_confirm thread] '
                              ' Deadline of {0} seconds passed'
                              .format(self.flows_ds_discovery_deadline))
                 self.nbgen.confirm_time = -1.0
                 self.nbgen_queue.put({'confirm_time': -1.0}, block=True)
-                logging.info('[NB_generator] [Poll_flows_confirm thread] '
+                logging.info('[NB_emulator] [Poll_flows_confirm thread] '
                              'Confirmation time monitoring FAILED')
 
                 return
             else:
                 new_ssh = self.controller.init_ssh()
                 oper_ds_found_flows = self.controller.get_oper_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows_confirm thread] '
+                logging.debug('[NB_emulator] [Poll_flows_confirm thread] '
                               'Found {0} flows at inventory'
                               .format(oper_ds_found_flows))
                 if (oper_ds_found_flows - previous_discovered_flows) != 0:
@@ -815,14 +815,14 @@ class NBgen(Monitor):
                     previous_discovered_flows = oper_ds_found_flows
                 if oper_ds_found_flows == expected_flows:
                     time_interval = time.time() - t_start
-                    logging.debug('[NB_generator] [Poll_flows_confirm thread] '
+                    logging.debug('[NB_emulator] [Poll_flows_confirm thread] '
                                   'Flow-Master {0} flows found in {1} seconds'
                                   .format(expected_flows,
                                           time_interval))
                     self.nbgen.confirm_time = time_interval
                     self.nbgen_queue.put({'confirm_time': time_interval},
                                          block=True)
-                    logging.info('[NB_generator] [Poll_flows_confirm thread] '
+                    logging.info('[NB_emulator] [Poll_flows_confirm thread] '
                                  'Confirmation time is: {0}'
                                  .format(self.nbgen.confirm_time))
 
@@ -851,20 +851,20 @@ class NBgen(Monitor):
         while True:
             if (time.time() - t_discovery_start) > \
                     self.nbgen.flows_ds_discovery_deadline:
-                logging.info('[NB_generator] [Poll_flows_switches thread] '
+                logging.info('[NB_emulator] [Poll_flows_switches thread] '
                              'Deadline of {0} seconds passed'
                              .format(self.flows_ds_discovery_deadline))
                 self.nbgen.discover_flows_on_switches_time = -1.0
                 self.nbgen_queue.put({'switch_operation_time': -1.0},
                                      block=True)
-                logging.info('[NB_generator] [Poll_flows_switches thread] '
+                logging.info('[NB_emulator] [Poll_flows_switches thread] '
                              'Discovering flows on switches FAILED')
 
                 return
             else:
                 new_ssh = self.sbemu.init_ssh()
                 discovered_flows = self.sbemu.get_flows(new_ssh)
-                logging.debug('[NB_generator] [Poll_flows_switches thread] '
+                logging.debug('[NB_emulator] [Poll_flows_switches thread] '
                               'Found {0} flows at topology switches'
                               .format(discovered_flows))
                 if (discovered_flows - previous_discovered_flows) != 0:
@@ -872,14 +872,14 @@ class NBgen(Monitor):
                     previous_discovered_flows = discovered_flows
                 if discovered_flows == expected_flows:
                     time_interval = time.time() - t_start
-                    logging.debug('[NB_generator] [Poll_flows_switches thread]'
+                    logging.debug('[NB_emulator] [Poll_flows_switches thread]'
                                   ' expected flows = {0} \n '
                                   'discovered flows = {1}'
                                   .format(expected_flows, discovered_flows))
                     self.discover_flows_on_switches_time = time_interval
                     self.nbgen_queue.put(
                         {'switch_operation_time': time_interval}, block=True)
-                    logging.info('[NB_generator] [Poll_flows_switches thread] '
+                    logging.info('[NB_emulator] [Poll_flows_switches thread] '
                                  'Time to discover flows on switches is: {0}'
                                  .format(self.nbgen.
                                          discover_flows_on_switches_time))
@@ -924,7 +924,7 @@ class NBgen(Monitor):
         :type expected_flows: int
         :type flow_delete_flag: boolean
         """
-        logging.info('[NB_generator] Start polling measurements')
+        logging.info('[NB_emulator] Start polling measurements')
         monitor_ds = gevent.spawn(self.__poll_flows_ds,
                                   t_start,
                                   expected_flows)
@@ -940,7 +940,7 @@ class NBgen(Monitor):
         controller_time = self.__controller_time(t_start)
         discovered_flows = self.sbemu.get_flows()
         flow_measurement_latency_interval = time.time() - time_start
-        logging.info('[NB_generator] Flows measurement latency '
+        logging.info('[NB_emulator] Flows measurement latency '
                      'interval: {0} sec. | Discovered flows: {1}'
                      .format(flow_measurement_latency_interval,
                              discovered_flows))
