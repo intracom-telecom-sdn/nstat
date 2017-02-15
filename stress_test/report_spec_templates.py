@@ -328,8 +328,7 @@ class TestReport:
             '{0}'.format(self.test_type),
             [stress_test.report_spec.TableSpec(
                 '1d', 'Test configuration parameters (detailed)',
-                [('test_repeats', 'Test repeats'),
-                 ('controller_name', 'Controller name'),
+                [('controller_name', 'Controller name'),
                  ('controller_build_handler', 'Controller build script'),
                  ('controller_start_handler', 'Controller start script'),
                  ('controller_stop_handler', 'Controller stop script'),
@@ -368,8 +367,6 @@ class TestReport:
                 [('global_sample_id', 'Sample ID'),
                  ('timestamp', 'Sample timestamp (seconds)'),
                  ('date', 'Sample timestamp (date)'),
-                 ('test_repeats', 'Total test repeats'),
-                 ('repeat_id', 'External repeat ID'),
                  ('of_out_bytes_per_sec',
                   'Outgoing controller throughput '
                   '(Bytes per second)'),

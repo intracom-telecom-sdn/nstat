@@ -60,6 +60,7 @@ class TestType:
         :type args: ArgumentParser object
         """
         logging_format = '[%(asctime)s %(levelname)7s ] %(message)s'
+
         if args.logging_level == 'INFO':
             logging.basicConfig(level=logging.INFO, stream=sys.stdout,
                                 format=logging_format)

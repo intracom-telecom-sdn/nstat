@@ -32,7 +32,6 @@
 
 "controller_logs_dir":"./distribution-karaf-0.3.2-Lithium-SR2/data/log/",
 
-"controller_cleanup":false,
 "controller_name":"ODL",
 "controller_port":6653,
 "controller_statistics_period_ms":[5000],
@@ -69,8 +68,6 @@
 
 
 "java_opts":["-Xmx2G","-Xms2G","-XX:+UseG1GC","-XX:MaxPermSize=512M"],
-
-"test_repeats":2,
 
 "plots":[
     {

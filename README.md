@@ -5,6 +5,8 @@
 [![Issue Count](https://codeclimate.com/github/intracom-telecom-sdn/nstat/badges/issue_count.svg)](https://codeclimate.com/github/intracom-telecom-sdn/nstat)
 [![Code Health](https://landscape.io/github/intracom-telecom-sdn/nstat/master/landscape.svg?style=flat)](https://landscape.io/github/intracom-telecom-sdn/nstat/master)
 [![Coverage Status](https://coveralls.io/repos/intracom-telecom-sdn/nstat/badge.svg?branch=master&service=github)](https://coveralls.io/github/intracom-telecom-sdn/nstat?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2c0663990de243a09e986d4f30b59dd3)](https://www.codacy.com/app/kostis-g-papadopoulos/nstat?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=intracom-telecom-sdn/nstat&amp;utm_campaign=Badge_Grade)
+[![Code Issues](https://www.quantifiedcode.com/api/v1/project/fcb21ff93ae24832a562595afafcd94f/badge.svg)](https://www.quantifiedcode.com/app/project/fcb21ff93ae24832a562595afafcd94f)
 
 # NSTAT: Network Stress-Test Automation Toolkit
 
