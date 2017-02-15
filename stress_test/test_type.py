@@ -101,7 +101,7 @@ class TestType:
         # run the test
         if nstat_test_type_run == 'sb_active_scalability_mtcbench':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] running test: {0}'.
+                logging.info('[nstat] running test: {0}'.
                              format(nstat_test_type_run))
                 self.total_samples = \
                     nstat_test_run.sb_active_scalability_mtcbench_run(
@@ -123,7 +123,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_active_stability_mtcbench':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] running test:{0}'.
+                logging.info('[nstat] running test:{0}'.
                              format(nstat_test_type_run))
                 self.total_samples = \
                     nstat_test_run.sb_active_stability_mtcbench_run(
@@ -145,7 +145,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_active_scalability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] running test: {0}'.
+                logging.info('[nstat] running test: {0}'.
                              format(nstat_test_type_run))
                 self.total_samples = \
                     nstat_test_run.sb_active_scalability_multinet_run(
@@ -167,7 +167,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_idle_scalability_mtcbench':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] running test: {0}'.
+                logging.info('[nstat] running test: {0}'.
                              format(nstat_test_type_run))
                 self.total_samples = \
                     nstat_test_run.sb_idle_scalability_mtcbench_run(
@@ -189,7 +189,7 @@ class TestType:
 
         elif nstat_test_type_run == 'sb_idle_scalability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] running test: {0}'.
+                logging.info('[nstat] running test: {0}'.
                              format(nstat_test_type_run))
                 self.total_samples = \
                     nstat_test_run.sb_idle_scalability_multinet_run(
@@ -210,7 +210,7 @@ class TestType:
                               format(self.test_type))
         elif nstat_test_type_run == 'sb_idle_stability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] running test: {0}'.
+                logging.info('[nstat] running test: {0}'.
                              format(nstat_test_type_run))
                 self.total_samples = \
                     nstat_test_run.sb_idle_stability_multinet_run(
@@ -232,7 +232,7 @@ class TestType:
 
         elif nstat_test_type_run == 'nb_active_scalability_multinet':
             if not args.bypass_test:
-                logging.info('[nstat_orchestrator] running test: {0}'.
+                logging.info('[nstat] running test: {0}'.
                              format(nstat_test_type_run))
                 self.total_samples = \
                     nstat_test_run.nb_active_scalability_multinet_run(
@@ -252,5 +252,5 @@ class TestType:
                 logging.error('[{0}] Fail to generate test report.'.
                               format(self.test_type))
         else:
-            logging.error('[nstat_orchestrator] not valid test configuration')
+            logging.error('[nstat] not valid test configuration')
             exit(0)

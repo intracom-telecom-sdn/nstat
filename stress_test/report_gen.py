@@ -204,7 +204,7 @@ class ReportGen:
         """
         # Generate html report and move it within test output dir
         # ---------------------------------------------------------------------
-        logging.info('[nstat_orchestrator] Generating html report')
+        logging.info('[nstat] Generating html report')
         stress_test.html_generation.generate_html(self.report_spec,
                                                   self.args.html_report)
         shutil.move(self.args.html_report, self.args.output_dir)
