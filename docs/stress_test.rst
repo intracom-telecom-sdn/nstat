@@ -20,22 +20,6 @@ stress_test.controller_exceptions module
     :undoc-members:
     :show-inheritance:
 
-stress_test.emulator module
----------------------------
-
-.. automodule:: stress_test.emulator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-stress_test.emulator_exceptions module
---------------------------------------
-
-.. automodule:: stress_test.emulator_exceptions
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 stress_test.html_generation module
 ----------------------------------
 
@@ -52,18 +36,18 @@ stress_test.monitor module
     :undoc-members:
     :show-inheritance:
 
-stress_test.nb_generator module
--------------------------------
+stress_test.nbemu module
+------------------------
 
-.. automodule:: stress_test.nb_generator
+.. automodule:: stress_test.nbemu
     :members:
     :undoc-members:
     :show-inheritance:
 
-stress_test.nb_generator_exceptions module
-------------------------------------------
+stress_test.nbemu_exceptions module
+-----------------------------------
 
-.. automodule:: stress_test.nb_generator_exceptions
+.. automodule:: stress_test.nbemu_exceptions
     :members:
     :undoc-members:
     :show-inheritance:
@@ -112,6 +96,22 @@ stress_test.report_spec_templates module
 ----------------------------------------
 
 .. automodule:: stress_test.report_spec_templates
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+stress_test.sbemu module
+------------------------
+
+.. automodule:: stress_test.sbemu
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+stress_test.sbemu_exceptions module
+-----------------------------------
+
+.. automodule:: stress_test.sbemu_exceptions
     :members:
     :undoc-members:
     :show-inheritance:

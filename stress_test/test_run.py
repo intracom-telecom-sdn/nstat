@@ -12,9 +12,9 @@ import json
 import logging
 import stress_test.controller
 import stress_test.controller_exceptions
-import stress_test.emulator
+import stress_test.sbemu
 import stress_test.monitor
-import stress_test.nb_generator
+import stress_test.nbemu
 import stress_test.oftraf
 import sys
 import time
@@ -47,7 +47,7 @@ class TestRun:
 
         # SB EMULATOR preparation
         # ----------------------------------------------------------------------
-        self.sb_emu = stress_test.emulator.SBEmu.new(args.sb_emu_base_dir,
+        self.sb_emu = stress_test.sbemu.SBEmu.new(args.sb_emu_base_dir,
                                                      json_conf)
         self.sb_emu.init_ssh()
         self.sb_emu.build()
@@ -55,7 +55,7 @@ class TestRun:
         # NB EMULATOR preparation
         # ----------------------------------------------------------------------
         if 'nb_emulator_name' in json_conf:
-                self.nb_emu = stress_test.nb_generator.NBgen(
+                self.nb_emu = stress_test.nbemu.NBgen(
                     args.nb_emu_base_dir,
                     json_conf,
                     self.ctrl,

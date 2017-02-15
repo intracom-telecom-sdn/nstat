@@ -6,11 +6,10 @@
 
 """ NB-Generator Class- All NB-Generator-related functionality is here"""
 
-# import emulators.nb_generator
 import gevent
 import logging
 import os
-import stress_test.nb_generator_exceptions
+import stress_test.nbemu_exceptions
 import sys
 import time
 import traceback
@@ -19,7 +18,7 @@ import util.netutil
 
 class NBgen:
     """
-    All NB-generator related functionality is here
+    NorthBound emulator class
     """
 
     def __init__(self, nb_gen_base_dir, test_config, controller, sbemu,
@@ -57,10 +56,7 @@ class NBgen:
 
         self.get_oper_ds_flows_hnd = (
             self.base_dir + test_config['nb_emulator_get_oper_ds_handler'])
-
-        self.status = 'UNKNOWN'
         self._ssh_conn = None
-
         self.flow_delete_flag = test_config['flow_delete_flag']
         self.flows_per_request = test_config['flows_per_request']
         self.log_level = log_level
@@ -81,14 +77,14 @@ class NBgen:
 
     def _error_handling(self, error_message, error_num=1):
         """
-        Handles custom errors of nb_generator
+        Handles custom errors of nb_emulator
 
         :param error_message: message of the handled error
         :param error_num: error number of the handled error, used to define
         subcases of raised errors.
         :type error_message: str
         :type error_num: int
-        :raises nb_generator_exceptions.NBGenError: to terminate execution of
+        :raises nb_emulator_exceptions.NBGenError: to terminate execution of
         test after error handling
         """
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -100,16 +96,16 @@ class NBgen:
                       format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
         if self.traceback_enabled:
             traceback.print_exc()
-        raise(stress_test.nb_generator_exceptions.NBGenError)
+        raise(stress_test.nbemu_exceptions.NBGenError)
 
     def init_ssh(self):
         """
-        Initializes a new SSH client object, with the nb_generator node and \
+        Initializes a new SSH client object, with the nb_emulator node and \
             assigns it to the protected attribute _ssh_conn. If a connection \
             already exists it returns a new SSH client object to the  \
             controller node.
 
-        :raises nb_generator_exceptions.NBGenNodeConnectionError: if ssh \
+        :raises nb_emulator_exceptions.NBGenNodeConnectionError: if ssh \
             connection establishment fails
         """
         logging.info(
@@ -127,8 +123,8 @@ class NBgen:
                         self.ip, int(self.ssh_port), self.ssh_user,
                         self.ssh_pass, 10)
             except:
-                raise(stress_test.nb_generator_exceptions.NBGenNodeConnectionError)
-        except stress_test.nb_generator_exceptions.NBGenError as e:
+                raise(stress_test.nbemu_exceptions.NBGenNodeConnectionError)
+        except stress_test.nbemu_exceptions.NBGenError as e:
             self._error_handling(e.err_msg, e.err_code)
 
     def build(self):
@@ -136,42 +132,38 @@ class NBgen:
         Wrapper to the NB-Generator build handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises nb_generator_exceptions.NBGenBuildError: if build process fails
+        :raises nb_emulator_exceptions.NBGenBuildError: if build process fails
         """
-        logging.info('[NB_generator] Building')
-        self.status = 'BUILDING'
+        logging.info('[NB_emulator] Building')
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.build_hnd]):
-                    self.status = 'NOT_BUILT'
                     raise(IOError(
                         '{0} build handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[nb_emulator.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.build_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, ' '.join([self.build_hnd]),
-                    '[NB_generator.build_handler]')
+                    '[NB_emulator.build_handler]')
                 if exit_status == 0:
-                    self.status = 'BUILT'
-                    logging.info("[NB_generator] Successful building")
+                    logging.info("[NB_emulator] Successful building")
                 else:
-                    self.status = 'NOT_BUILT'
-                    raise(stress_test.nb_generator_exceptions.NBGenBuildError(
-                        '[NB_generator] Failure during running. Build handler '
+                    raise(stress_test.nbemu_exceptions.NBGenBuildError(
+                        '[NB_emulator] Failure during running. Build handler '
                         'exited with no zero exit status. \n '
                         'Handler output: {0}'.format(cmd_output), exit_status))
-            except stress_test.nb_generator_exceptions.NBGenError as e:
+            except stress_test.nbemu_exceptions.NBGenError as e:
                 self._error_handling(e.err_msg, e.err_code)
             except:
-                raise(stress_test.nb_generator_exceptions.NBGenBuildError(
-                    '[NB_generator] Build handler was not executed at all. '
+                raise(stress_test.nbemu_exceptions.NBGenBuildError(
+                    '[NB_emulator] Build handler was not executed at all. '
                     'Failure running the handler.'))
-        except stress_test.nb_generator_exceptions.NBGenError as e:
+        except stress_test.nbemu_exceptions.NBGenError as e:
             self._error_handling(e.err_msg, e.err_code)
 
     def clean(self):
@@ -179,42 +171,38 @@ class NBgen:
         Wrapper to the NB-Generator clean handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises nb_generator_exceptions.NBGenCleanError: if clean process fails
+        :raises nb_emulator_exceptions.NBGenCleanError: if clean process fails
         """
-        logging.info('[NB_generator] Cleaning')
-        self.status = 'CLEANING'
+        logging.info('[NB_emulator] Cleaning')
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.clean_hnd]):
-                    self.status = 'NOT_CLEANED'
                     raise(IOError(
                         '{0} clean handler does not exist'.
-                        format('[nb_generator.clean]')))
+                        format('[nb_emulator.clean]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
                         self.clean_hnd)
                 exit_status, cmd_output = util.netutil.ssh_run_command(
                     self._ssh_conn, self.clean_hnd,
-                    '[NB_generator.clean_handler]')
+                    '[NB_emulator.clean_handler]')
                 if exit_status == 0:
-                    self.status = 'CLEANED'
-                    logging.info("[NB_generator] Successful clean")
+                    logging.info("[NB_emulator] Successful clean")
                 else:
-                    self.status = 'NOT_CLEANED'
-                    raise(stress_test.nb_generator_exceptions.NBGenCleanError(
-                        '[NB_generator] Failure during running. Clean handler '
+                    raise(stress_test.nbemu_exceptions.NBGenCleanError(
+                        '[NB_emulator] Failure during running. Clean handler '
                         'exited with no zero exit status. \n '
                         'Handler output: {0}'.format(cmd_output), exit_status))
-            except stress_test.nb_generator_exceptions.NBGenError as e:
+            except stress_test.nbemu_exceptions.NBGenError as e:
                 self._error_handling(e.err_msg, e.err_code)
             except:
-                raise(stress_test.nb_generator_exceptions.NBGenCleanError(
-                    '[NB_generator] Clean handler was not executed at all. '
+                raise(stress_test.nbemu_exceptions.NBGenCleanError(
+                    '[NB_emulator] Clean handler was not executed at all. '
                     'Failure running the handler.'))
-        except stress_test.nb_generator_exceptions.NBGenError as e:
+        except stress_test.nbemu_exceptions.NBGenError as e:
             self._error_handling(e.err_msg, e.err_code)
 
     def run(self):
@@ -224,20 +212,18 @@ class NBgen:
         :returns: Returns the combined stdout - stderr of the executed command
         :rtype: str
         :raises IOError: if the handler does not exist on the remote host
-        :raises nb_generator_exceptions.NBGenRunError: if running \
-            nb_generator fails
+        :raises nb_emulator_exceptions.NBGenRunError: if running \
+            nb_emulator fails
         """
-        logging.info("[NB_generator] Run handler")
-        self.status = 'STARTED'
+        logging.info("[NB_emulator] Run handler")
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.run_hnd]):
-                    self.status = 'NB_GEN_NOT_RUNNING'
                     raise(IOError(
                         '{0} run handler does not exist'.
-                        format('[nb_generator.run]')))
+                        format('[nb_emulator.run]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -258,22 +244,19 @@ class NBgen:
                                   str(self.controller.restconf_pass),
                                   str(self.flows_per_request),
                                   str(self.log_level)]),
-                        '[NB_generator] run_handler')
-
+                        '[NB_emulator] run_handler')
                 if exit_status == 0:
-                    self.status = 'NB_GEN_RUNNING'
-                    logging.info("[NB_generator] up and running")
+                    logging.info("[NB_emulator] up and running")
                 else:
-                    self.status = 'NB_GEN_NOT_RUNNING'
-                    raise(stress_test.nb_generator_exceptions.NBGenRunError(
-                        '[NB_generator] Failure during running. {0}'.
+                    raise(stress_test.nbemu_exceptions.NBGenRunError(
+                        '[NB_emulator] Failure during running. {0}'.
                         format(cmd_output), exit_status))
                 return cmd_output
-            except stress_test.nb_generator_exceptions.NBGenError as e:
+            except stress_test.nbemu_exceptions.NBGenError as e:
                 self._error_handling(e.err_msg, e.err_code)
             except:
-                raise(stress_test.nb_generator_exceptions.NBGenRunError)
-        except stress_test.nb_generator_exceptions.NBGenError as e:
+                raise(stress_test.nbemu_exceptions.NBGenRunError)
+        except stress_test.nbemu_exceptions.NBGenError as e:
             self._error_handling(e.err_msg, e.err_code)
 
     def __del__(self):

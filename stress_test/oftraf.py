@@ -43,7 +43,6 @@ class Oftraf:
         self.ssh_pass = controller.ssh_pass
 
         self.of_port = controller.of_port
-        self.status = 'UNKNOWN'
         self._ssh_conn = controller.init_ssh()
         self.traceback_enabled = False
 
@@ -95,7 +94,6 @@ class Oftraf:
         :raises oftraf_exceptions.OftrafBuildError: if build process fails
         """
         logging.info('[Oftraf] Building')
-        self.status = 'BUILDING'
         try:
             try:
                 oftraf_path = str(self.get_oftraf_path())
@@ -105,10 +103,9 @@ class Oftraf:
                                            self.ssh_user,
                                            self.ssh_pass,
                                            [build_hnd]):
-                    self.status = 'NOT_BUILT'
                     raise(IOError(
                         '{0} build handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[oftraf.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -118,10 +115,8 @@ class Oftraf:
                                                  ' '.join([build_hnd]),
                                                  '[oftraf.build_handler]')
                 if exit_status == 0:
-                    self.status = 'BUILT'
-                    logging.info("[Oftraf] Successful building")
+                    logging.info("[OFTraf] Successful building")
                 else:
-                    self.status = 'NOT_BUILT'
                     raise(stress_test.oftraf_exceptions.OftrafBuildError(
                         'Build process exited with non zero exit code. '
                         'Command-line output: {0} \n Exit status code: {1}'.
@@ -141,7 +136,6 @@ class Oftraf:
         :raises oftraf_exceptions.OftrafCleanError: if clean process fails
         """
         logging.info('[Oftraf] Cleaning')
-        self.status = 'CLEANING'
         try:
             try:
                 oftraf_path = self.get_oftraf_path()
@@ -149,10 +143,9 @@ class Oftraf:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [clean_hnd]):
-                    self.status = 'NOT_CLEANED'
                     raise(IOError(
                         '{0} clean handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[oftraf.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -162,10 +155,8 @@ class Oftraf:
                                                  ' '.join([clean_hnd]),
                                                  '[oftraf.clean_handler]')
                 if exit_status == 0:
-                    self.status = 'CLEANED'
                     logging.info("[Oftraf] Successful cleaning")
                 else:
-                    self.status = 'NOT_CLEANED'
                     raise(stress_test.oftraf_exceptions.OftrafCleanError(
                         'clean process exited with non zero exit code. '
                         'Command-line output: {0} \n Exit status code: {1}'.
@@ -187,7 +178,6 @@ class Oftraf:
         :raises oftraf_exceptions.OftrafStartError: if start process fails
         """
         logging.info('[Oftraf] Starting')
-        self.status = 'STARTING'
         try:
             try:
                 oftraf_path = self.get_oftraf_path()
@@ -195,10 +185,9 @@ class Oftraf:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [start_hnd]):
-                    self.status = 'NOT_STARTED'
                     raise(IOError(
                         '{0} start handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[oftraf.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -213,10 +202,8 @@ class Oftraf:
                         lines_queue=None, print_flag=True, block_flag=True,
                         getpty_flag=True)
                 if exit_status == 0:
-                    self.status = 'STARTED'
                     logging.info("[Oftraf] Successful starting")
                 else:
-                    self.status = 'NOT_STARTED'
                     raise(stress_test.oftraf_exceptions.OftrafStartError(
                         'Start process exited with non zero exit code. '
                         'Command-line output: {0} \n Exit status code: {1}'.
@@ -235,7 +222,6 @@ class Oftraf:
         :raises oftraf_exceptions.OftrafStopError: if stop process fails
         """
         logging.info('[Oftraf] Starting')
-        self.status = 'STOPPING'
         try:
             try:
                 oftraf_path = self.get_oftraf_path()
@@ -243,10 +229,9 @@ class Oftraf:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [stop_hnd]):
-                    self.status = 'NOT_STOPPED'
                     raise(IOError(
                         '{0} stop handler does not exist'.
-                        format('[nb_generator.build]')))
+                        format('[oftraf.build]')))
                 else:
                     util.netutil.make_remote_file_executable(
                         self.ip, self.ssh_port, self.ssh_user, self.ssh_pass,
@@ -259,10 +244,8 @@ class Oftraf:
                                   str(self.rest_server_port)]),
                         '[oftraf.stop_handler]')
                 if exit_status == 0:
-                    self.status = 'STOPED'
                     logging.info("[Oftraf] Successful stopping")
                 else:
-                    self.status = 'NOT_STOPPED'
                     raise(stress_test.oftraf_exceptions.OftrafStopError(
                         'Stop process exited with non zero exit code. '
                         'Command-line output: {0} \n Exit status code: {1}'.

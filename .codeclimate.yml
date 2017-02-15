@@ -17,6 +17,5 @@ ratings:
     - "**.md"
 exclude_paths:
 - "jenkins_jobs/*"
-- "emulators/cbench/*"
-- "emulators/mt_cbench/*"
+- "emulators/sbemu/mtcbench/*"
 - "controllers/*"
