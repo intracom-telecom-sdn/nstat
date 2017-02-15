@@ -18,7 +18,7 @@ import util.netutil
 
 class NBgen:
     """
-    All NB-generator related functionality is here
+    NorthBound emulator class
     """
 
     def __init__(self, nb_gen_base_dir, test_config, controller, sbemu,

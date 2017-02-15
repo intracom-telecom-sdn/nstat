@@ -61,7 +61,10 @@ class NBGenBuildError(NBGenError):
 
 
 class NBGenCleanError(NBGenError):
-
+    """
+    Contains the exception handling concerning the North-Bound Emulator
+    cleaning functionality.
+    """
     def __init__(self, additional_error_info='', err_code=1):
         """
         NB generator clean failure.

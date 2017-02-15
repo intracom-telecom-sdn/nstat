@@ -22,7 +22,7 @@ import util.file_ops
 
 class SBEmu:
     """
-    All South-bound related functionality is here
+    Southbound emulator super class
     """
     def __init__(self, sb_emu_base_dir, test_config):
         """
