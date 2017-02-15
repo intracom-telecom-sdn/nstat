@@ -56,10 +56,7 @@ class NBgen:
 
         self.get_oper_ds_flows_hnd = (
             self.base_dir + test_config['nb_emulator_get_oper_ds_handler'])
-
-        self.status = 'UNKNOWN'
         self._ssh_conn = None
-
         self.flow_delete_flag = test_config['flow_delete_flag']
         self.flows_per_request = test_config['flows_per_request']
         self.log_level = log_level
@@ -138,13 +135,11 @@ class NBgen:
         :raises nb_emulator_exceptions.NBGenBuildError: if build process fails
         """
         logging.info('[NB_emulator] Building')
-        self.status = 'BUILDING'
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.build_hnd]):
-                    self.status = 'NOT_BUILT'
                     raise(IOError(
                         '{0} build handler does not exist'.
                         format('[nb_emulator.build]')))
@@ -156,10 +151,8 @@ class NBgen:
                     self._ssh_conn, ' '.join([self.build_hnd]),
                     '[NB_emulator.build_handler]')
                 if exit_status == 0:
-                    self.status = 'BUILT'
                     logging.info("[NB_emulator] Successful building")
                 else:
-                    self.status = 'NOT_BUILT'
                     raise(stress_test.nbemu_exceptions.NBGenBuildError(
                         '[NB_emulator] Failure during running. Build handler '
                         'exited with no zero exit status. \n '
@@ -181,13 +174,11 @@ class NBgen:
         :raises nb_emulator_exceptions.NBGenCleanError: if clean process fails
         """
         logging.info('[NB_emulator] Cleaning')
-        self.status = 'CLEANING'
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.clean_hnd]):
-                    self.status = 'NOT_CLEANED'
                     raise(IOError(
                         '{0} clean handler does not exist'.
                         format('[nb_emulator.clean]')))
@@ -199,10 +190,8 @@ class NBgen:
                     self._ssh_conn, self.clean_hnd,
                     '[NB_emulator.clean_handler]')
                 if exit_status == 0:
-                    self.status = 'CLEANED'
                     logging.info("[NB_emulator] Successful clean")
                 else:
-                    self.status = 'NOT_CLEANED'
                     raise(stress_test.nbemu_exceptions.NBGenCleanError(
                         '[NB_emulator] Failure during running. Clean handler '
                         'exited with no zero exit status. \n '
@@ -227,13 +216,11 @@ class NBgen:
             nb_emulator fails
         """
         logging.info("[NB_emulator] Run handler")
-        self.status = 'STARTED'
         try:
             try:
                 if not util.netutil.isfile(self.ip, self.ssh_port,
                                            self.ssh_user, self.ssh_pass,
                                            [self.run_hnd]):
-                    self.status = 'NB_GEN_NOT_RUNNING'
                     raise(IOError(
                         '{0} run handler does not exist'.
                         format('[nb_emulator.run]')))
@@ -258,12 +245,9 @@ class NBgen:
                                   str(self.flows_per_request),
                                   str(self.log_level)]),
                         '[NB_emulator] run_handler')
-
                 if exit_status == 0:
-                    self.status = 'NB_GEN_RUNNING'
                     logging.info("[NB_emulator] up and running")
                 else:
-                    self.status = 'NB_GEN_NOT_RUNNING'
                     raise(stress_test.nbemu_exceptions.NBGenRunError(
                         '[NB_emulator] Failure during running. {0}'.
                         format(cmd_output), exit_status))
