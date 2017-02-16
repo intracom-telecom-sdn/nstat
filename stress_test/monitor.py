@@ -1205,10 +1205,10 @@ class MEF(Monitor):
                     int(self.controller.get_oper_switches(self.controller.init_ssh()))
                 logging.info('Discovered switches: ='
                              .format(discovered_switches))
-                discovered_links = \
-                    int(self.controller.get_oper_links(self.controller.init_ssh())) / 2
-                logging.info('Discovered links: ='
-                             .format(discovered_switches))
+                #discovered_links = \
+                #    int(self.controller.get_oper_links(self.controller.init_ssh())) / 2
+                #logging.info('Discovered links: ='
+                #             .format(discovered_links))
 
                 if discovered_switches == -1:
                     discovered_switches = previous_discovered_switches
@@ -1254,10 +1254,12 @@ class MEF(Monitor):
         max_discovered_links = self.total_monitor_samples[-1]['max_discovered_links']
         successful_bootup_time = self.total_monitor_samples[-1]['successful_bootup_time']
         expected_switches = self.emulator.get_overall_topo_size()
+        discovered_switches = 0
+        discovered_links = 0
         for self.repeat_id in list(range(self.test_repeats)):
             test_sample = self.monitor_mef_stability_results()
             discovered_switches = int(self.controller.get_oper_switches(self.controller.init_ssh()))
-            discovered_links = int(self.controller.get_oper_links(self.controller.init_ssh())) / 2
+            #discovered_links = int(self.controller.get_oper_links(self.controller.init_ssh())) / 2
             logging.info('[MEF_monitor] Stability test | repeat_id: {0} | '
                          'discovered_switches: {1} | discovered_links: {2} | '
                          'expected_switches: {3}'.format(self.repeat_id,
