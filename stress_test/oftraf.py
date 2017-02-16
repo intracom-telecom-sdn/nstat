@@ -65,7 +65,7 @@ class Oftraf:
         logging.error(error_message)
         logging.error('Error number:{0}'.format(error_num))
         logging.error('{0} - {1} Exception: {2}, {3}'.
-                      format(exc_obj, self.name, exc_type, exc_tb.tb_lineno))
+                      format(exc_obj, 'oftraf', exc_type, exc_tb.tb_lineno))
         if self.traceback_enabled:
             traceback.print_exc()
         # Propagate error outside the class to stop execution
