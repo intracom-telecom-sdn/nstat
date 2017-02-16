@@ -923,6 +923,9 @@ class TestRun:
                                                   stat_active_ms,
                                                   stat_deactive_ms)
 
+            if self.of is not None:
+                self.of.build()
+
             for(self.sb_emu.topo_size,
                 self.sb_emu.topo_type,
                 self.sb_emu.topo_hosts_per_switch,
@@ -948,15 +951,21 @@ class TestRun:
                     self.ctrl.change_stats(self.ctrl.stat_period_ms)
                     self.ctrl.start()
 
+                if self.of is not None:
+                    self.of.start()
                 # start a MULTINET topology
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
                 self.sb_emu.init_topos()
                 # Run the Mef monitor and collect the results
                 self.total_samples += mef_monitor.monitor_run()
-
+                if self.of is not None:
+                    logging.info('[mef_stability_test] oftraf results: {0}'.
+                                 format(self.of.oftraf_get_of_counts()))
+                    self.of.stop()
                 # stop/clean nodes
                 # ---------------------------------------------------------
                 self.ctrl.stop()
+
                 self.sb_emu.stop_topos()
                 self.sb_emu.cleanup()
 
