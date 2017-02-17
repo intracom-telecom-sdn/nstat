@@ -955,7 +955,7 @@ class TestRun:
                     self.of.start()
                 # start a MULTINET topology
                 self.sb_emu.deploy(self.ctrl.ip, self.ctrl.of_port)
-                self.sb_emu.init_topos()
+                self.sb_emu.init_topos(serial_requests=True)
                 # Run the Mef monitor and collect the results
                 self.total_samples += mef_monitor.monitor_run()
                 if self.of is not None:
