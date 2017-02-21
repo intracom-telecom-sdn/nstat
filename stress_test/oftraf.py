@@ -302,6 +302,34 @@ class Oftraf:
         except stress_test.oftraf_exceptions.OftrafError as e:
             self._error_handling(e.err_msg, e.err_code)
 
+    def oftraf_get_of13_counts(self):
+        """
+        Gets the openFlow 1.3 packets counts, measured by oftraf. It uses the
+        oftraf REST interface and returns the result as a string in JSON format
+
+        :returns: oftraf metrics as string in JSON format
+        :rtype: str
+        :raises oftraf_exceptions.OftrafError: if execution of handler fails
+        """
+        try:
+            try:
+                getheaders = {'Accept': 'application/json'}
+                url = \
+                    'http://{0}:{1}/get_of13_counts'.format(
+                        self.ip, self.rest_server_port)
+                s = requests.Session()
+                s.trust_env = False
+                req = s.get(url, headers=getheaders, stream=False)
+                return req.content.decode('utf-8')
+            except:
+                raise(stress_test.oftraf_exceptions.OftrafGetResultError(
+                    'Fail getting total number of13 installed flows \n Oftraf '
+                    'REST request status code: {0} \n Oftraf REST request '
+                    'data: {1}'.format(req.status_code,
+                                       req.content.decode('utf-8'))))
+        except stress_test.oftraf_exceptions.OftrafError as e:
+            self._error_handling(e.err_msg, e.err_code)
+
     def __del__(self):
         """
         Method called when object is destroyed

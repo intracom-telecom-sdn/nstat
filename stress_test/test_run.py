@@ -960,7 +960,7 @@ class TestRun:
                 self.total_samples += mef_monitor.monitor_run()
                 if self.of is not None:
                     logging.info('[mef_stability_test] oftraf results: {0}'.
-                                 format(self.of.oftraf_get_of_counts()))
+                                 format(self.of.oftraf_get_of13_counts()))
                     self.of.stop()
                 # stop/clean nodes
                 # ---------------------------------------------------------
