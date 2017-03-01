@@ -48,7 +48,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_mtcbench
+          cd fnctl_tests/boron/sb_mtcbench
           ./cperf_ci.sh boron_DS_sb_active_scalability_mtcbench.json
 
 # ------------------------------------------------------------------------------
@@ -77,7 +77,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_mtcbench
+          cd fnctl_tests/boron/sb_mtcbench
           ./cperf_ci.sh boron_DS_sb_active_stability_mtcbench.json
 
 # ------------------------------------------------------------------------------
@@ -101,7 +101,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_mtcbench
+          cd fnctl_tests/boron/sb_mtcbench
           ./cperf_ci.sh boron_DS_sb_idle_scalability_mtcbench.json
 
 # ------------------------------------------------------------------------------
@@ -130,7 +130,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/nb_multinet
+          cd fnctl_tests/boron/nb_multinet
           source ./cperf_ci.sh boron_nb_active_scalability_multinet.json
 
 # ------------------------------------------------------------------------------
@@ -161,7 +161,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_mtcbench
+          cd fnctl_tests/boron/sb_mtcbench
           ./cperf_ci.sh boron_RPC_sb_active_scalability_mtcbench.json
 
 # ------------------------------------------------------------------------------
@@ -188,7 +188,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_mtcbench
+          cd fnctl_tests/boron/sb_mtcbench
           ./cperf_ci.sh boron_RPC_sb_active_stability_mtcbench.json
 
 # ------------------------------------------------------------------------------
@@ -210,7 +210,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_mtcbench
+          cd fnctl_tests/boron/sb_mtcbench
           ./cperf_ci.sh boron_RPC_sb_idle_scalability_mtcbench.json
 
 # ------------------------------------------------------------------------------
@@ -232,7 +232,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_multinet
+          cd fnctl_tests/boron/sb_multinet
           ./cperf_ci.sh boron_sb_idle_scalability_multinet.json
 
 # ------------------------------------------------------------------------------
@@ -254,7 +254,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_multinet
+          cd fnctl_tests/boron/sb_multinet
           ./cperf_ci.sh boron_sb_active_scalability_multinet.json
 
 # ------------------------------------------------------------------------------
@@ -276,7 +276,7 @@
 
           # test execution
           # --------------------------------------------------------------------
-          cd boron/sb_multinet
+          cd fnctl_tests/boron/sb_multinet
           ./cperf_ci.sh boron_sb_idle_stability_multinet.json
 
 # ------------------------------------------------------------------------------
