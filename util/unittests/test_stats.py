@@ -11,6 +11,7 @@ import unittest
 import util.stats
 import math
 
+
 class StatsAllFunctionsTest(unittest.TestCase):
     """Unittest that tests the different functionalities of stats Module
     in util/statutil.stats.py.
@@ -34,29 +35,6 @@ class StatsAllFunctionsTest(unittest.TestCase):
         """
         self.assertEqual(self.mean, util.stats.mean(self.l),
                          'Testing mean')
-
-    def test02_variance(self):
-        """
-        Checks the variance() function of util/statutil.stats.py
-        module.
-        """
-        self.assertEqual(self.variance, util.stats.variance(self.l),
-                         'Testing variance')
-
-    def test03_stddev(self):
-        """
-        Checks the stddev() function of util/statutil.stats.py
-        module.
-        """
-        self.assertEqual(self.stddev, util.stats.stddev(self.l),
-                         'Testing stddev')
-
-    def test04_coefvariance(self):
-        """
-        Checks the cv() function of util/statutil.stats.py module.
-        """
-        self.assertEqual(self.coefvariance, util.stats.coefvariance(self.l),
-                         'Testing coefvariance method')
 
     @classmethod
     def tearDownClass(cls):

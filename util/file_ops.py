@@ -8,7 +8,6 @@
 
 import collections
 import os
-import stat
 
 
 def check_files_exist(file_list):
@@ -81,18 +80,6 @@ def is_file_exe(fpath):
     """
 
     return os.access(fpath, os.X_OK)
-
-
-def make_file_exe(fpath):
-    """
-    Gives executable rights to a file.
-
-    :param fpath: file path to handle
-    :type fpath: str
-    """
-
-    statinfo = os.stat(fpath)
-    os.chmod(fpath, statinfo.st_mode | stat.S_IEXEC)
 
 
 def merge_dict_and_avg(results_add, results_delete):

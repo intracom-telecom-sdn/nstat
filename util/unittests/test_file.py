@@ -47,8 +47,8 @@ class FileTestFileExist(unittest.TestCase):
             subprocess.check_output(mvcommand, shell=True)
         index = 3
         cls.filepath = []
-        while index !=0:
-            name = './' + cls.virtualfolder + '/' + 'foo'+ str(index) + '.txt'
+        while index != 0:
+            name = './' + cls.virtualfolder + '/' + 'foo' + str(index) + '.txt'
             cls.filepath.append(name)
             index -= 1
 
