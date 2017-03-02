@@ -68,6 +68,7 @@ class CtrlBuildError(CtrlError):
         CtrlError.__init__(self, 'Controller build failure. {0}'.
                                  format(additional_error_info), err_code)
 
+
 class CtrlGetError(CtrlError):
     """
     Contains the exception handling concerning the Controller Get
@@ -85,6 +86,7 @@ class CtrlGetError(CtrlError):
         """
         CtrlError.__init__(self, 'Controller get failure. {0}'.
                                  format(additional_error_info), err_code)
+
 
 class CtrlStartError(CtrlError):
     """

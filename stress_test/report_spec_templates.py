@@ -318,7 +318,7 @@ class TestReport:
         Returns the report specification object for SouthBound active
         scalability test with Multinet
 
-        :param results_json_file: This is the filepath to the results json file.
+        :param results_json_file: Filepath to the results json file
         :returns: report specification object
         :rtype: ReportSpec
         :type: results_json_file: str

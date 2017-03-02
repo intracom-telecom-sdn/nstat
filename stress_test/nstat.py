@@ -4,24 +4,23 @@
 # terms of the Eclipse Public License v1.0 which accompanies this distribution,
 # and is available at http://www.eclipse.org/legal/epl-v10.html
 
-
-
 """
 Orchestrator for stress tests.
 """
 
 import argparse
-import json
 import stress_test.controller
 import stress_test.sbemu
 import stress_test.test_type
+
 
 def main():
     """
     Main function where NSTAT test application starts.
     """
 
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    parser = \
+        argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 
     parser.add_argument('--test',
                         required=True,
@@ -32,8 +31,7 @@ def main():
                              "sb_idle_scalability\n"
                              "sb_active_stability\n"
                              "sb_idle_stability\n"
-                             "nb_active_scalability"
-                             )
+                             "nb_active_scalability")
     parser.add_argument('--bypass-execution',
                         dest='bypass_test',
                         action='store_true',

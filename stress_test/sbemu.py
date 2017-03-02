@@ -14,7 +14,6 @@ import os
 import re
 import stress_test.sbemu_exceptions
 import sys
-import time
 import traceback
 import util.netutil
 import util.file_ops

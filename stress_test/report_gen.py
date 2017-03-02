@@ -231,4 +231,4 @@ class ReportGen:
             shutil.copy(self.args.json_config, self.args.output_dir)
         except:
             self._error_handling('Error in copy of results in results '
-                                  'folder.')
+                                 'folder.')
