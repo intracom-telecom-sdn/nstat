@@ -384,7 +384,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     """
 
     channel = ssh_client.get_transport().open_session()
-    bufferSize = 8*1024
+    buffersize = 8*1024
     channel_timeout = None
     channel.setblocking(1)
     channel.set_combine_stderr(True)
@@ -402,7 +402,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
     channel_output = ''
     while not channel.exit_status_ready():
         data = ''
-        data = channel.recv(bufferSize).decode('utf-8')
+        data = channel.recv(buffersize).decode('utf-8')
         while data is not '':
             channel_output += data
             if print_flag:
@@ -412,7 +412,7 @@ def ssh_run_command(ssh_client, command_to_run, prefix='', lines_queue=None,
                     lines_queue.put(line)
             if type(lines_queue) is type(gevent.queue.Queue()):
                 gevent.sleep(0.01)
-            data = channel.recv(bufferSize).decode('utf-8')
+            data = channel.recv(buffersize).decode('utf-8')
 
     channel_exit_status = channel.recv_exit_status()
     channel.close()
