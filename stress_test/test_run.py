@@ -48,7 +48,7 @@ class TestRun:
         # SB EMULATOR preparation
         # ----------------------------------------------------------------------
         self.sb_emu = stress_test.sbemu.SBEmu.new(args.sb_emu_base_dir,
-                                                     json_conf)
+                                                  json_conf)
         self.sb_emu.init_ssh()
         self.sb_emu.build()
 

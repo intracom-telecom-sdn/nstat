@@ -48,7 +48,7 @@ class MemoryUtilsTest(unittest.TestCase):
                                                             SSH_UNAME, SSH_PWD,
                                                             10)
 
-    def test01_used_ram(self):
+    def test_used_ram(self):
         """Test functionality of sysstats.sys_free_ram_mb function.
         """
 
@@ -59,7 +59,7 @@ class MemoryUtilsTest(unittest.TestCase):
         self.assertTrue((var > 0) and isinstance(var, int),
                         'Testing using ssh_client')
 
-    def test02_free_ram(self):
+    def test_free_ram(self):
         """Test functionality of sysstats.sys_free_ram_mb function
         """
 
@@ -70,7 +70,7 @@ class MemoryUtilsTest(unittest.TestCase):
         self.assertTrue((var > 0) and isinstance(var, int),
                         'Testing using ssh_client')
 
-    def test03_used_ramb(self):
+    def test_used_ramb(self):
         """Test functionality of sysstats.sys_used_memory_bytes function
         """
 
@@ -81,7 +81,7 @@ class MemoryUtilsTest(unittest.TestCase):
         self.assertTrue((var > 0) and isinstance(var, int),
                         'Testing using ssh_client')
 
-    def test04_free_ramb(self):
+    def test_free_ramb(self):
         """Test functionality of sysstats.sys_free_memory_bytes function
         """
 
@@ -92,7 +92,7 @@ class MemoryUtilsTest(unittest.TestCase):
         self.assertTrue((var > 0) and isinstance(var, int),
                         'Testing using ssh_client')
 
-    def test05_totam_ramb(self):
+    def test_totam_ramb(self):
         """Test functionality of sysstats.sys_total_memory_bytes function
         """
 
@@ -103,7 +103,7 @@ class MemoryUtilsTest(unittest.TestCase):
         self.assertTrue((var > 0) and isinstance(var, int),
                         'Testing using ssh_client')
 
-    def test06_get_units_base(self):
+    def test_get_units_base(self):
         """Test functionality of sysstats.get_units_base function
         """
         base_kbytes = util.sysstats.get_units_base('kB')
@@ -130,7 +130,7 @@ class ProcIOTEst(unittest.TestCase):
                                                             SSH_UNAME, SSH_PWD,
                                                             10)
 
-    def test01_io_error(self):
+    def test_io_error(self):
         """Test functionality of sysstats.sys_iowait_time function
         """
         var = util.sysstats.sys_iowait_time()
@@ -184,7 +184,7 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         cls.cmd_remote = util.sysstats.proc_cmdline(cls.sleep_pid_remote,
                                                     cls.ssh_client)
 
-    def test01_cmd_line(self):
+    def test_cmd_line(self):
         """Test functionality of sysstats.proc_cmdline function
         """
         self.assertEqual(self.cmd_local, 'htop',
@@ -193,7 +193,7 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
         self.assertEqual(self.cmd_remote, 'sleep1000',
                          'Testing using ssh_client')
 
-    def test02_cwd(self):
+    def test_cwd(self):
         """Test functionality of sysstats.proc_cwd function
         """
         self.assertEqual(self.cur_dir_local, util.sysstats.proc_cwd(
@@ -202,7 +202,7 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
             self.sleep_pid_remote, self.ssh_client),
             'Testing using ssh_client')
 
-    def test04_cpu_system_time(self):
+    def test_cpu_system_time(self):
         """Test functionality of sysstats.proc_cpu_system_time function
         """
 
@@ -216,7 +216,7 @@ class ProcVariousPidRelatedTests(unittest.TestCase):
                                                    self.ssh_client),
                 float), 'Testing using ssh_client')
 
-    def test05_vm_size(self):
+    def test_vm_size(self):
         """Test functionality of sysstats.proc_vm_size function
         """
 
@@ -290,7 +290,7 @@ class ProcessThreadAndFDsTests(unittest.TestCase):
                 'ls -l /proc/{0}/fd | wc -l'.format(cls.sleep_pid_remote))
         cls.num_remote_fds = int(cls.num_remote_fds.strip()) -3
 
-    def test01_num_fds(self):
+    def test_num_fds(self):
         """Test functionality of sysstats.proc_num_fds function
         """
 
@@ -301,7 +301,7 @@ class ProcessThreadAndFDsTests(unittest.TestCase):
         self.assertTrue(isinstance(num_fds_remote, int),
                         'Testing using ssh_client')
 
-    def test02_num_threads(self):
+    def test_num_threads(self):
         """Test functionality of sysstats.proc_num_threads function
         """
 
@@ -337,7 +337,7 @@ class SysLoadAverageTest(unittest.TestCase):
                                                             SSH_UNAME, SSH_PWD,
                                                             10)
 
-    def test01_sys_load_average(self):
+    def test_sys_load_average(self):
         """Test functionality of sysstats.sys_load_average function
         """
 

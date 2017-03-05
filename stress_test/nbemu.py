@@ -11,7 +11,6 @@ import logging
 import os
 import stress_test.nbemu_exceptions
 import sys
-import time
 import traceback
 import util.netutil
 

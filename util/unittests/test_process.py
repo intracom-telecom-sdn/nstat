@@ -105,7 +105,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
         logging.getLogger().info('NOT OWNED PORT: %s', cls.port_not_owned)
         cls.ssh_client = util.netutil.ssh_connect_or_return(NODE_CONNECTION, 10)
 
-    def test01_getpid_listeningonport(self):
+    def test_getpid_listeningonport_01(self):
         """Checks the getpid_listeningonport() function of
         util/process.py module. Checks the equality between the known process
         id of the initializes server, with the one returned from the function.
@@ -116,7 +116,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
                          'Testing the returned PID. Local')
 
 
-    def test02_getpid_listeningonport(self):
+    def test_getpid_listeningonport_02(self):
         """Checks the getpid_listeningonport() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function, a port number on which a process
@@ -132,7 +132,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
                                                 self.ssh_client),
                          'Testing when port is not owned. Remote')
 
-    def test03_getpid_listeningonport(self):
+    def test_getpid_listeningonport_03(self):
         """Checks the getpid_listeningonport() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function something that is not a port number.
@@ -147,7 +147,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
                                                 self.ssh_client),
                          'Testing with an invalid port. Remote')
 
-    def test01_is_process_running(self):
+    def test_is_process_running_01(self):
         """Checks the is_process_running() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function a valid process id.
@@ -158,7 +158,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
                                                         self.ssh_client),
                         'Testing true case for a valid process id. Remote')
 
-    def test02_is_process_running(self):
+    def test_is_process_running_02(self):
         """Checks the is_process_running() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function a invalid process id.
@@ -169,7 +169,7 @@ class ProcessTestAllFunctions(unittest.TestCase):
                                                          self.ssh_client),
                          'Testing false case for invalid process id. Remote')
 
-    def test03_is_process_running(self):
+    def test_is_process_running_03(self):
         """Checks the is_process_running() function of
         util/process.py module. In this scenario we check the result in case
         we give as input to the function a invalid process id.

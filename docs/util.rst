@@ -4,22 +4,6 @@ util package
 Submodules
 ----------
 
-util.cpu module
----------------
-
-.. automodule:: util.cpu
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-util.customsubprocess module
-----------------------------
-
-.. automodule:: util.customsubprocess
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 util.file_ops module
 --------------------
 
@@ -40,14 +24,6 @@ util.netutil module
 -------------------
 
 .. automodule:: util.netutil
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-util.numeric module
--------------------
-
-.. automodule:: util.numeric
     :members:
     :undoc-members:
     :show-inheritance:

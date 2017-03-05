@@ -8,6 +8,7 @@
 
 import collections
 
+
 def generate_html_foot(foot_content=''):
     """Returns the ending and the contents at the end of html page.
 

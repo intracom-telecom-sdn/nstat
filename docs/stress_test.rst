@@ -52,10 +52,10 @@ stress_test.nbemu_exceptions module
     :undoc-members:
     :show-inheritance:
 
-stress_test.nstat_orchestrator module
--------------------------------------
+stress_test.nstat module
+------------------------
 
-.. automodule:: stress_test.nstat_orchestrator
+.. automodule:: stress_test.nstat
     :members:
     :undoc-members:
     :show-inheritance:

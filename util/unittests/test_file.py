@@ -47,33 +47,33 @@ class FileTestFileExist(unittest.TestCase):
             subprocess.check_output(mvcommand, shell=True)
         index = 3
         cls.filepath = []
-        while index !=0:
-            name = './' + cls.virtualfolder + '/' + 'foo'+ str(index) + '.txt'
+        while index != 0:
+            name = './' + cls.virtualfolder + '/' + 'foo' + str(index) + '.txt'
             cls.filepath.append(name)
             index -= 1
 
-    def test01_file_exists(self):
+    def test_file_exists_01(self):
         """Checks if foo1.txt exists within self.virtualfolder folder
         """
         self.assertTrue(f.file_exists(self.filepath[0]))
 
-    def test02_file_exists(self):
+    def test_file_exists_02(self):
         """Checks if foo2.txt exists within the self.virtualfolder folder
         """
         self.assertTrue(f.file_exists(self.filepath[1]))
 
-    def test03_file_exists(self):
+    def test_file_exists_03(self):
         """Checks if foo3.txt exist within the self.virtualfolder.
         """
         self.assertTrue(f.file_exists(self.filepath[2]))
 
-    def test04_is_file_exe(self):
+    def test_is_file_exe(self):
         """Checks if foo1.txt within the self.virtualfolder is exe
         """
         os.chmod(self.filepath[0], self.chmode[0])
         self.assertTrue(f.is_file_exe(self.filepath[0]))
 
-    def test05_check_files_exist(self):
+    def test_check_files_exist(self):
         """Checks file existence within the virtualfolder
         """
         # Change to the virtualfolder directory and test the tstlist if files
@@ -85,7 +85,7 @@ class FileTestFileExist(unittest.TestCase):
         # Return to parent directory after test is over and continue
         os.chdir(os.pardir)
 
-    def test06_check_files_executables(self):
+    def test_check_files_executables(self):
         """Modifies recursively self.virtualfolder so that all
         files become executables and tests if all files within the
         self.virtualfolder are executables

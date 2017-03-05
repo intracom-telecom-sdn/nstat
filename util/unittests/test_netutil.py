@@ -83,7 +83,7 @@ class NetUtilTest(unittest.TestCase):
                 logging.info('could not reach remote node: test cannot continue')
 
                 return -1
-    def test01_ssh_connection_open(self):
+    def test_ssh_connection_open(self):
         """ssh_connection_open() false "remote ip" provided
         """
         logging.info('[netutil-test] remote address: {0} '.
@@ -93,7 +93,7 @@ class NetUtilTest(unittest.TestCase):
         self.assertIsNotNone(sftp)
         util.netutil.ssh_connection_close(sftp, transport_layer)
 
-    def test02_ssh_connect_or_return(self):
+    def test_ssh_connect_or_return(self):
         """ssh_connect_or_return() check returned ssh object
         """
         logging.info('[netutil-test] remote address: {0} '.
@@ -101,7 +101,7 @@ class NetUtilTest(unittest.TestCase):
         self.assertIsNotNone(util.netutil.ssh_connect_or_return(
              self.remote_node, self.constants_set.maxretries))
 
-    def test03_isdir(self):
+    def test_isdir(self):
         """testing isdir() with /tmp on localhost
         """
         (sftp, transport_layer) = \
@@ -112,7 +112,7 @@ class NetUtilTest(unittest.TestCase):
                                            sftp))
         util.netutil.ssh_connection_close(sftp, transport_layer)
 
-    def test04_ssh_copy_file_to_target(self):
+    def test_ssh_copy_file_to_target(self):
         """ssh_copy_file_to_target() copying a local file to remote target
         """
         subprocess.check_output("touch" + " " + 'fooDir/' +
@@ -131,7 +131,7 @@ class NetUtilTest(unittest.TestCase):
                                              localfile,
                                              remotefile)
 
-    def test05_copy_dir_local_to_remote(self):
+    def test_copy_dir_local_to_remote(self):
         """copy_dir_local_to_remote(). copying a local directory to remote node
          """
         util.netutil.copy_dir_local_to_remote(self.remote_node,self.localnodefilepath,
@@ -140,7 +140,7 @@ class NetUtilTest(unittest.TestCase):
         util.netutil.ssh_connection_open(self.remote_node)
         self.assertTrue(util.netutil.isdir(self.file_paths_set.rem_node_path,
                                            sftp))
-    def test06_create_dir_remote(self):
+    def test_create_dir_remote(self):
         """create_dir_remote(). creating directory to remote node
         """
         remote_dir_create = self.file_paths_set.rem_node_path + \
@@ -150,7 +150,7 @@ class NetUtilTest(unittest.TestCase):
         util.netutil.create_dir_remote(self.remote_node,
             remote_dir_create)
 
-    def test07_ssh_connect_or_return2(self):
+    def test_ssh_connect_or_return2(self):
         """ssh_connect_or_return2() check returned ssh object
         """
         logging.info('[netutil-test] remote address: {0} '.

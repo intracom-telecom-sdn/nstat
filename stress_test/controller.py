@@ -44,7 +44,7 @@ class Controller:
         self.logs_dir = self.base_dir + test_config['controller_logs_dir']
 
         self.get_hnd = (self.base_dir +
-                          test_config['controller_get_handler'])
+                        test_config['controller_get_handler'])
         self.build_hnd = (self.base_dir +
                           test_config['controller_build_handler'])
         self.start_hnd = (self.base_dir +

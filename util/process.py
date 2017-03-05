@@ -66,8 +66,9 @@ def is_process_running(pid, ssh_client=None):
             cmd_output = util.netutil.ssh_run_command(ssh_client, cmd)[1]
         else:
             p = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                close_fds=True)
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT,
+                                 close_fds=True)
             cmd_output = p.stdout.read().decode(sys.stdout.encoding)
         cmd_output = cmd_output.strip()
     except subprocess.CalledProcessError as exc:
@@ -77,6 +78,7 @@ def is_process_running(pid, ssh_client=None):
             return True
         else:
             return False
+
 
 def wait_until_process_finishes(pid, ssh_client=None):
     """Waits until the process with the specified ID finishes
