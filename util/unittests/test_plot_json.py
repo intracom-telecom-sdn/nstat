@@ -14,7 +14,7 @@ class PlotJsonKeyErrorTests(unittest.TestCase):
     module util/plot_json.py.
     """
 
-    def test01_errorbar(self):
+    def test_errorbar(self):
         """Checks the errorbar() method of util/plot_json.py.
         It checks the case of invalid json input.
         """
@@ -28,7 +28,7 @@ class PlotJsonKeyErrorTests(unittest.TestCase):
                                 ['java_opts', 'controller'], 'errorbar.png',
                                 None, None, 0, None)
 
-    def test02_errorbar_connected(self):
+    def test_errorbar_connected(self):
         """Checks the errorbar_connected() method of
         util/plot_json.py. It checks the case of invalid json input.
         """
@@ -43,7 +43,7 @@ class PlotJsonKeyErrorTests(unittest.TestCase):
                                 None, None,
                                 0, None)
 
-    def test03_scatter(self):
+    def test_scatter(self):
         """
         Checks the scatter() method of util/plot_json.py.
         It checks the case of invalid json input.
@@ -58,7 +58,7 @@ class PlotJsonKeyErrorTests(unittest.TestCase):
                                 ['java_opts', 'controller'], 'errorbar.png',
                                 None, None, 0, None)
 
-    def test04_multi_scatter(self):
+    def test_multi_scatter(self):
         """
         Checks the multy_scatter() method of util/plot_json.py
         It checks the case of invalid json input.
@@ -73,7 +73,7 @@ class PlotJsonKeyErrorTests(unittest.TestCase):
                                 ['java_opts', 'controller'], 'errorbar.png',
                                 None, None, 0, None)
 
-    def test05_multi_errorbar(self):
+    def test_multi_errorbar(self):
         """
         Checks the multi_errorbar() function of util/plot_json.py.
         It checks the case of invalid json input.
@@ -88,7 +88,7 @@ class PlotJsonKeyErrorTests(unittest.TestCase):
                                 ['java_opts', 'controller'], 'errorbar.png',
                                 None, None, 0, None)
 
-    def test06_multi_errorbar_connected(self):
+    def test_multi_errorbar_connected(self):
         """
         Method that checks the multi_errorbar_connected() function of
         util/plot_json.py. It checks the case of invalid json input.

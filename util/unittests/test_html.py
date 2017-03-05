@@ -23,7 +23,7 @@ class HtmlGenerateHtmlFoot(unittest.TestCase):
         self.foot_output = '<p>testing</p></body></html>'
         self.foot_input = '<p>testing</p>'
 
-    def test01_generate_html_foot(self):
+    def test_generate_html_foot(self):
         """Checks the generate_html_footl() method of util/html.py.
         It checks the equality of the result of an input.
         """
@@ -62,7 +62,7 @@ class HtmlGenerateHead(unittest.TestCase):
                            '<!-- Here goes JavaScript -->',
                            '<!-- Here goes Header content -->')
 
-    def test01_generate_html_head(self):
+    def test_generate_html_head(self):
         """Checks the generate_html_headl() method of util/html.py.
         It checks the equality of the result of an input.
         """
@@ -98,7 +98,7 @@ class HtmlIsAListOfDictionaries(unittest.TestCase):
         cls.not_list_of_dictionaries = [1, 2, 'a', 3]
         cls.noise = 'This_is_just_noise'
 
-    def test01_isalistofdictionaries(self):
+    def test_isalistofdictionaries(self):
         """Checks the isalistofdictionaries() method of
         util/html.py. It checks the equality of the result of an input.
         - in this case is checked the result, when the provided input is a
@@ -110,7 +110,7 @@ class HtmlIsAListOfDictionaries(unittest.TestCase):
                         ('Testing isalistofdictionaries output. '
                          'Assert true'))
 
-    def test02_isalistofdictionaries(self):
+    def test_isalistofdictionaries(self):
         """Checks the isalistofdictionaries() method of
         util/html.py. Checks the equality of the result of an input.
         - in this case is checked the result, when the provided input is a
@@ -123,7 +123,7 @@ class HtmlIsAListOfDictionaries(unittest.TestCase):
                          ('Testing isalistofdictionaries output. '
                           'Assert false 1'))
 
-    def test03_isalistofdictionaries(self):
+    def test_isalistofdictionaries(self):
         """Checks the isalistofdictionaries() method of
         util/html.py. Checks the equality of the result of an input.
         - in this case is checked the result, when the provided input is not
@@ -189,7 +189,7 @@ class HtmlMultyDictToHtml(unittest.TestCase):
         cls.row_data2['result3'] = 900
         cls.multy_dict_input.append([cls.row_data1, cls.row_data2])
 
-    def test01_multy_dict_to_html(self):
+    def test_multy_dict_to_html(self):
         """Tests the multy_dict_to_html() method of util/html.py.
         It checks the equality of the result of an input.
         - In this test case we are using only the compulsory arguments of the
@@ -202,7 +202,7 @@ class HtmlMultyDictToHtml(unittest.TestCase):
                              ('Testing multy_dict_to_'
                               'html_multiline output test 2'))
 
-    def test02_multy_dict_to_html(self):
+    def test_multy_dict_to_html(self):
         """Tests the multy_dict_to_html() method of util/html.py.
         It checks the equality of the result of an input. In this test case we
         are using only the compulsory arguments of the method
@@ -248,7 +248,7 @@ class HtmlSingleDictToHtml(unittest.TestCase):
                                   'Test table',
                                   self.data_row)
 
-    def test01_single_dict_to_html(self):
+    def test_single_dict_to_html(self):
         """
         Method that tests the single_dict_to_html() method of util/html.py
         It checks the equality of the result of an input.
@@ -283,7 +283,7 @@ class GetOrderedIndex(unittest.TestCase):
         cls.map_dict['result3'] = 'switches'
         cls.map_dict['result4'] = 'switches'
 
-    def test01_get_ordered_index(self):
+    def test_get_ordered_index(self):
         """Method that tests functionality of get_ordered_index() function
         in case where it returns a valid index"""
         self.assertEqual(1,
@@ -291,7 +291,7 @@ class GetOrderedIndex(unittest.TestCase):
                                                      self.map_dict),
                          'Testing returned index when key exists.')
 
-    def test02_get_ordered_index(self):
+    def test_get_ordered_index(self):
         """Method that tests functionality of get_ordered_index() function
         in case where it returns a invalid index (returns None)"""
         self.assertEqual(-1, util.html.get_ordered_index('result33',
@@ -332,7 +332,7 @@ class SingleDictTableData(unittest.TestCase):
         cls.td_style = 'font-size:bold;'
         cls.td_class = 'info'
 
-    def test_01_singledicttabledata(self):
+    def test_singledicttabledata(self):
         """
         Method that tests single_dict_table_data() when data_values parameter
         is a string value.
@@ -345,7 +345,7 @@ class SingleDictTableData(unittest.TestCase):
                          'Testing single_dict_table_data() '
                          'with a string input.')
 
-    def test_02_singledicttabledata(self):
+    def test_singledicttabledata(self):
         """
         Method that tests single_dict_table_data() when data_values parameter
         is a List of Dictionaries.

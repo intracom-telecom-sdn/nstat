@@ -28,7 +28,7 @@ class StatsAllFunctionsTest(unittest.TestCase):
         cls.stddev = math.sqrt(cls.variance)
         cls.coefvariance = cls.stddev / cls.mean
 
-    def test01_mean(self):
+    def test_mean(self):
         """
         Checks the mean() function of util/statutil.stats.py
         module.
