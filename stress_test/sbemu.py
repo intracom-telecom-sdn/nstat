@@ -201,16 +201,17 @@ class SBEmu:
         Method called when object is destroyed
         """
         try:
-            logging.info('Run emulator clean handler.')
-            self.cleanup()
-        except:
-            pass
-
+            logging.info('Run SB-Emulator clean handler.')
+            self.clean()
+        except Exception as e:
+            logging.info('Fail cleaning SB-Emulator during '
+                         'cleanup. Exception message: {0}'.format(e))
         try:
             logging.info('Close emulator node ssh connection.')
             self._ssh_conn.close()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail closing ssh SB-Emulator node connection during '
+                         'cleanup. Exception message: {0}'.format(e))
 
 
 class MTCBench(SBEmu):
@@ -628,7 +629,7 @@ class Multinet(SBEmu):
         :rtype: str
         :type new_ssh_conn: paramiko.SFTPClient
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetGetFlowsError: if handler fails to \
+        :raises emulator_exceptions.MultinetGetFlowsError: if handler fails to
             run successfully
         """
         logging.info('[Multinet] get_flows')
@@ -714,7 +715,7 @@ class Multinet(SBEmu):
         Wrapper to the Multinet SB-Emulator start_topos handler
 
         :raises IOError: if the handler does not exist on the remote host
-        :raises emulator_exceptions.MultinetStartToposError: if Multinet start \
+        :raises emulator_exceptions.MultinetStartToposError: if Multinet start
             topology handler fails
         """
         logging.info('[Multinet] start_topos')
@@ -873,6 +874,7 @@ class Multinet(SBEmu):
         try:
             logging.info('Run Multinet cleanup.')
             self.cleanup()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail cleaning Multinet during '
+                         'cleanup. Exception message: {0}'.format(e))
         super(self.__class__, self).__del__()

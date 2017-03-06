@@ -262,7 +262,15 @@ class NBgen:
         """
         Method called when object is destroyed"""
         try:
+            logging.info('Cleaning NB-Generator.')
+            self.clean()
+        except Exception as e:
+            logging.info('Fail cleaning NB-Generator during '
+                         'cleanup. Exception message: {0}'.format(e))
+
+        try:
             logging.info('Closing NB-Generator ssh connection.')
             self._ssh_conn.close()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail closing ssh NB-Generator node connection during '
+                         'cleanup. Exception message: {0}'.format(e))

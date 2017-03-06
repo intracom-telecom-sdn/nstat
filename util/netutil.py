@@ -43,8 +43,9 @@ def copy_dir_local_to_remote(ip, ssh_port, username, password,
         try:
             folder_to_make = os.path.join(remote_path, walker[0])
             sftp.mkdir(folder_to_make)
-        except:
-            pass
+        except Exception as e:
+            logging.error('Fail to create remote directory path. {0}'.
+                          format(e))
         for curr_file in walker[2]:
             local_file = os.path.join(walker[0], curr_file)
             remote_file = os.path.join(remote_path, walker[0], curr_file)
@@ -272,8 +273,8 @@ def ssh_connection_close(sftp, transport_layer):
     try:
         sftp.close()
         transport_layer.close()
-    except:
-        pass
+    except Exception as e:
+        logging.error('Fail during closing connection. {0}'.format(e))
 
 
 def ssh_connection_open(ip, ssh_port, username, password):

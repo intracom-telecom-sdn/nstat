@@ -292,17 +292,20 @@ class Oftraf:
         try:
             logging.info('Run oftraf stop.')
             self.stop()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail stopping oftraf during cleanup. '
+                         'Exception message: {0}'.format(e))
 
         try:
             logging.info('Run oftraf cleanup.')
             self.clean()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail cleaning oftraf files during cleanup. '
+                         'Exception message: {0}'.format(e))
 
         try:
             logging.info('Close oftraf node ssh connection.')
             self._ssh_conn.close()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail closing ssh oftraf node connection during '
+                         'cleanup. Exception message: {0}'.format(e))
