@@ -511,20 +511,23 @@ class Controller:
         try:
             logging.info('Run controller stop.')
             self.stop()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail stopping Controller during cleanup. '
+                         'Exception message: {0}'.format(e))
 
         try:
             logging.info('Run controller cleanup.')
             self.cleanup()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail cleaning Controller files during cleanup. '
+                         'Exception message: {0}'.format(e))
 
         try:
             logging.info('Close controller node ssh connection.')
             self._ssh_conn.close()
-        except:
-            pass
+        except Exception as e:
+            logging.info('Fail closing ssh Controller node connection during '
+                         'cleanup. Exception message: {0}'.format(e))
 
 
 class ODL(Controller):
